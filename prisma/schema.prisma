@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String           @unique @db.VarChar(255)
+  role            UserRole         @default(FREE)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  activeSessions  ActiveSession[]
+  magicLinkTokens MagicLinkToken[]
+  profile         Profile?
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  userId    String   @unique @db.Uuid
+  nickname  String   @unique @db.VarChar(255)
+  firstName String   @db.VarChar(255)
+  lastName  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model MagicLinkToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    String   @db.Uuid
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ActiveSession {
+  id        Int      @id @default(autoincrement())
+  jwt       String   @unique
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum UserRole {
+  FREE
+  PREMIUM
+  ULTRA_PREMIUM
+}

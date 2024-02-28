@@ -1,0 +1,35 @@
+"use server"
+import type { User } from "@prisma/client";
+import db from "@lib/db";
+
+/**
+ * Fetches a user from the database by their email.
+ *
+ * @param email - The email of the user to fetch.
+ * @returns A promise that resolves to the user if found, or null if not found.
+ */
+export const getUserByEmail = async (email: string): Promise<User | null> => {
+  return await db.user.findUnique({
+    where: { email },
+  });
+};
+
+/**
+ * Retrieves an existing user by email or creates a new user if none exists.
+ * 
+ * @param email - The email address of the user.
+ * @returns A Promise that resolves to the existing user if found, or a newly created user if not found.
+ */
+export const getOrCreateUserByEmail = async (email: string): Promise<User | null> => {
+  const existingUser = await getUserByEmail(email);
+
+  if (existingUser) {
+    return existingUser;
+  }
+
+  return await db.user.create({
+    data: {
+      email
+    },
+  });
+}
