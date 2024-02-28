@@ -19,8 +19,6 @@ export const createMagicLink = async (user: Pick<User, 'id' | 'email'>, expiresS
   const expiresAt = new Date(expiresTs);
   const token = generateToken({ id: user.id, email: user.email, _expiresTs: expiresTs }, expiresSeconds);
 
-  console.log({ token })
-
   return await db.magicLinkToken.create({
     data: {
       userId: user.id,
