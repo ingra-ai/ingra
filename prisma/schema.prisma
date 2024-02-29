@@ -15,6 +15,7 @@ model User {
   updatedAt       DateTime         @updatedAt
   activeSessions  ActiveSession[]
   magicLinkTokens MagicLinkToken[]
+  tasks           Task[]
   profile         Profile?
 }
 
@@ -53,4 +54,30 @@ enum UserRole {
   FREE
   PREMIUM
   ULTRA_PREMIUM
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String?
+  status      TaskStatus
+  priority    TaskPriority
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("tasks")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
 }
