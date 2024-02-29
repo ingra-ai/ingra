@@ -8,6 +8,7 @@ import { type NavItem, type NavItemParent, NavRoutes } from '@/routes/nav-routes
 import { useCallback } from 'react';
 import Link from 'next/link';
 import { AuthSessionResponse } from '@app/auth/session';
+import { usePathname } from 'next/navigation';
 
 type SideNavProps = {
   authSession: AuthSessionResponse;
@@ -16,10 +17,12 @@ type SideNavProps = {
 const SideNav: React.FC<SideNavProps> = (props) => {
   const { authSession } = props;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
+  const pathname = usePathname();
 
   // Type guard to determine if a NavItem is a NavItemParent
   const isNavItemParent = useCallback((item: NavItem): item is NavItemParent => {
-    return Object.prototype.hasOwnProperty.call(item, 'children');
+    const isParent = Object.prototype.hasOwnProperty.call(item, 'children');
+    return isParent;
   }, []);
 
   return (
@@ -38,66 +41,70 @@ const SideNav: React.FC<SideNavProps> = (props) => {
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
-              {NavRoutes.map((item) => (
-                <li key={item.name}>
-                  {isNavItemParent(item) ? (
-                    <Disclosure as="div">
-                      {
-                        (props) => {
-                          const { open } = props;
-                          return (
-                            <>
-                              <Disclosure.Button
-                                className={cn(
-                                  item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                                  'flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold'
-                                )}
-                              >
-                                <ChevronRightIcon
+              {NavRoutes.map((item) => {
+                const isParent = isNavItemParent(item);
+                const isCurrentRoute = isParent ? (item as NavItemParent).children.some((child) => child.href === pathname) : false;
+                return (
+                  <li key={item.name}>
+                    {isParent ? (
+                      <Disclosure as="div" defaultOpen={ isCurrentRoute }>
+                        {
+                          (props) => {
+                            const { open } = props;
+                            return (
+                              <>
+                                <Disclosure.Button
                                   className={cn(
-                                    open ? 'rotate-90 text-gray-500' : 'text-gray-400',
-                                    'h-5 w-5 shrink-0'
+                                    isCurrentRoute ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
+                                    'flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold'
                                   )}
-                                  aria-hidden="true"
-                                />
-                                {item.name}
-                              </Disclosure.Button>
-                              <Disclosure.Panel as="ul" className="mt-1 px-2">
-                                {item.children.map((subItem) => {
-                                  return (
-                                    <li key={subItem.name}>
-                                      <Disclosure.Button
-                                        as={ Link }
-                                        href={subItem.href}
-                                        className={cn(
-                                          subItem.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                                          'block rounded-md py-2 pr-2 pl-9 text-sm leading-6'
-                                        )}
-                                      >
-                                        {subItem.name}
-                                      </Disclosure.Button>
-                                    </li>
-                                  );
-                                })}
-                              </Disclosure.Panel>
-                            </>
-                          );
+                                >
+                                  <ChevronRightIcon
+                                    className={cn(
+                                      open ? 'rotate-90 text-gray-500' : 'text-gray-400',
+                                      'h-5 w-5 shrink-0'
+                                    )}
+                                    aria-hidden="true"
+                                  />
+                                  {item.name}
+                                </Disclosure.Button>
+                                <Disclosure.Panel as="ul" className="mt-1 px-2">
+                                  {item.children.map((subItem) => {
+                                    return (
+                                      <li key={subItem.name}>
+                                        <Disclosure.Button
+                                          as={ Link }
+                                          href={subItem.href}
+                                          className={cn(
+                                            subItem.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
+                                            'block rounded-md py-2 pr-2 pl-9 text-sm leading-6'
+                                          )}
+                                        >
+                                          {subItem.name}
+                                        </Disclosure.Button>
+                                      </li>
+                                    );
+                                  })}
+                                </Disclosure.Panel>
+                              </>
+                            );
+                          }
                         }
-                      }
-                    </Disclosure>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                        'block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold'
-                      )}
-                    >
-                      {item.name}
-                    </Link>
-                  )}
-                </li>
-              ))}
+                      </Disclosure>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          item.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
+                          'block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold'
+                        )}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </li>
           <li className="-mx-6 mt-auto">

@@ -6,7 +6,7 @@ import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
 
 export type AuthSessionResponse = Pick<ActiveSession, 'expiresAt'> & {
-  user: Pick<User, 'email' | 'role'>;
+  user: Pick<User, 'email' | 'role' | 'id'>;
 };
 
 export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
@@ -24,6 +24,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
         expiresAt: true,
         user: {
           select: {
+            id: true,
             email: true,
             role: true,
           },
