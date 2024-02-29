@@ -4,7 +4,7 @@ import * as z from "zod";
 import { TaskSchema, TaskStatus, TaskPriority } from "@/schemas/task";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createTask, updateTask } from "@app/(protected)/tasks/actions";
+import { createTask } from "@app/(protected)/tasks/actions";
 import {
   Form,
   FormField,
@@ -14,20 +14,10 @@ import {
   FormDescription,
   FormMessage,
 } from "@/components/ui/form";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Logger } from "@lib/logger";
 import { useToast } from "@components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@components/ui/button";
-
 export const TaskForm: React.FC = () => {
   const { toast } = useToast();
   // const [isEmailSent, setEmailSent] = useState(false);

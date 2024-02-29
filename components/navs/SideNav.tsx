@@ -9,6 +9,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { AuthSessionResponse } from '@app/auth/session';
 import { usePathname } from 'next/navigation';
+import { Profile } from '@prisma/client';
 
 type SideNavProps = {
   authSession: AuthSessionResponse;
@@ -16,6 +17,7 @@ type SideNavProps = {
 
 const SideNav: React.FC<SideNavProps> = (props) => {
   const { authSession } = props;
+  const userProfile: Profile | null = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
   const pathname = usePathname();
 
@@ -120,7 +122,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                 alt="user avatar"
               />
               <span className="sr-only">Your profile</span>
-              <span aria-hidden="true">{ censoredEmail }</span>
+              <span aria-hidden="true">{ userProfile?.userName || censoredEmail }</span>
             </Link>
           </li>
         </ul>

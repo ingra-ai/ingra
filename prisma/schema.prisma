@@ -22,7 +22,7 @@ model User {
 model Profile {
   id        Int      @id @default(autoincrement())
   userId    String   @unique @db.Uuid
-  nickname  String   @unique @db.VarChar(255)
+  userName  String   @unique @db.VarChar(255)
   firstName String   @db.VarChar(255)
   lastName  String   @db.VarChar(255)
   createdAt DateTime @default(now())
