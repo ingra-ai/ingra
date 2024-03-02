@@ -1,6 +1,6 @@
 {
   "name": "bakabit-portal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -34,6 +34,7 @@
     "clsx": "^2.1.0",
     "consola": "^3.2.3",
     "date-fns": "^3.3.1",
+    "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.344.0",
     "next": "14.1.1",
@@ -54,6 +55,7 @@
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@types/jest": "^29.5.12",
+    "@types/js-yaml": "^4.0.9",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
