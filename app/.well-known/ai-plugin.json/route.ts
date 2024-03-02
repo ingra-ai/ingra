@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { APP_SESSION_COOKIE_NAME } from "../../../lib/constants";
+import { APP_OPENAI_VERIFICATION_TOKEN, APP_SESSION_COOKIE_NAME, APP_SUPPORT_MAILTO, APP_URL } from "../../../lib/constants";
 // import { APP_SESSION_COOKIE_NAME } from "@lib/constants";
 
 export async function GET(request: NextRequest) {
   return NextResponse.json(
     {
       "schema_version": "v1",
-      "name_for_human": "TODO List (no auth)",
-      "name_for_model": "todo",
+      "name_for_human": "TODO List (OAuth)",
+      "name_for_model": "todo_oauth",
       "description_for_human": "Manage your TODO list. You can add, remove and view your TODOs.",
       "description_for_model": "Plugin for managing a TODO list, you can add, remove and view your TODOs.",
       "auth": {
-        "type": "none"
+        "type": "oauth",
+        "client_url": `${ APP_URL }/oauth`,
+        "scope": "",
+        "authorization_url": `${ APP_URL }/auth/oauth_exchange`,
+        "authorization_content_type": "application/json",
+        "verification_tokens": {
+          "openai": APP_OPENAI_VERIFICATION_TOKEN
+        }
       },
       "api": {
         "type": "openapi",
-        "url": "http://localhost:5003/openapi.yaml"
+        "url": `${APP_URL}/openapi.yaml`
       },
-      "logo_url": "http://localhost:5003/logo.png",
-      "contact_email": "legal@example.com",
-      "legal_info_url": "http://example.com/legal"
+      "logo_url": `${APP_URL}/static/brand/bakabit-white-logo-only-png`,
+      "contact_email": APP_SUPPORT_MAILTO,
+      "legal_info_url": `${APP_URL}/legal`,
     }
     ,
     {
