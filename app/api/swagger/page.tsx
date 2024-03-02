@@ -1,4 +1,4 @@
-import ReactSwagger from './SwaggerDocs';
+import SwaggerDocs from './SwaggerDocs';
 import { getSwaggerSpec } from '@/app/api/swagger/config';
 
 import '@css/swagger.scss';
@@ -8,7 +8,7 @@ export default async function Page() {
 
   return (
     <section className="container">
-      <ReactSwagger spec={swaggerSpec} />
+      <SwaggerDocs spec={swaggerSpec} />
     </section>
   );
 }
