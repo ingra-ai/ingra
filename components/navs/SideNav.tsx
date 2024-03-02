@@ -20,12 +20,12 @@ const SideNav: React.FC<SideNavProps> = (props) => {
   const userProfile: Profile | null = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
   const pathname = usePathname();
-
+  
   // Type guard to determine if a NavItem is a NavItemParent
   const isNavItemParent = useCallback((item: NavItem): item is NavItemParent => {
     const isParent = Object.prototype.hasOwnProperty.call(item, 'children');
     return isParent;
-  }, []);
+  }, [pathname]);
 
   return (
     <div className="flex grow flex-col gap-y-2 overflow-y-auto border-r border-gray-700 bg-gray-900 px-6 py-2 h-full">
