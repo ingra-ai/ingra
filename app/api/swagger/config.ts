@@ -5,7 +5,7 @@
  * @see https://platform.openai.com/docs/plugins/examples To create your first plugin with OAuth
  */
 
-import { APP_NAME, APP_PACKAGE_VERSION, APP_URL } from '@lib/constants';
+import { APP_NAME, APP_PACKAGE_VERSION } from '@lib/constants';
 import { createSwaggerSpec } from 'next-swagger-doc';
 
 export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]>;
@@ -17,7 +17,7 @@ export const swaggerOptions: SwaggerOptions = {
     info: {
       title: `${ APP_NAME } Plugin API`,
       version: APP_PACKAGE_VERSION,
-      description: `A plugin that allows the user to create and manage a TODO list using ChatGPT. If you do not know the user's username, ask them first before making queries to the plugin. Otherwise, use the username "global"`
+      description: `Bakabit is a highly personalized virtual assistant, capable of managing an array of tasks for each individual user, including to-dos/tasks, calendars, sending emails, and expanding into more personalized utilities as needed.`
     },
     // servers: {
     //   url: APP_URL,
