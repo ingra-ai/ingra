@@ -7,6 +7,7 @@ import { PropsWithChildren } from "react";
 import SideNav from "@components/navs/SideNav";
 
 const ProtectedLayout: React.FC<PropsWithChildren> = async ( props ) => {
+  const { children } = props;
   const authSession = await getAuthSession();
 
   if ( !authSession || authSession.expiresAt < new Date() ) {
@@ -22,7 +23,7 @@ const ProtectedLayout: React.FC<PropsWithChildren> = async ( props ) => {
           <SideNav authSession={ authSession } />
         </div>
         <main className={ cn('p-5', styles['main-container']) }>
-          {props.children}
+          { children }
         </main>
       </div>
     </div>
