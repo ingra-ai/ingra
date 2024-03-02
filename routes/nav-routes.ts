@@ -85,6 +85,31 @@ export const NavRoutes: NavItem[] = [
   }
 ];
 
+export type SettingsNavItem = NavItemChild;
+
+export const SettingsNavRoutes: SettingsNavItem[] = [
+  {
+    name: 'Profile',
+    href: '/settings/profile',
+  },
+  {
+    name: 'GPT Plugins',
+    href: '/settings/gpt-plugins',
+  },
+  // {
+  //   name: 'Billing',
+  //   href: '#',
+  // },
+  // {
+  //   name: 'Teams',
+  //   href: '#',
+  // },
+  // {
+  //   name: 'Integrations',
+  //   href: '#',
+  // },
+]
+
 // export const UserNavs: NavItem[] = [
 //   {
 //     name: 'Settings',

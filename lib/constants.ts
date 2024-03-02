@@ -20,7 +20,7 @@ export const APP_OPENAI_VERIFICATION_TOKEN = process.env.NEXT_PUBLIC_OPENAI_VERI
 
 export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = "BakabitVirtualAssistant";
 export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = "Bakabit Assistant";
-export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = "Bakabit is a personalized virtual assistant designed to manage tasks, calendars, and emails with expansion capabilities for personalized utilities. It uses a code phrase for secure user authentication. Bakabit integrates with various APIs, focusing on privacy and tailored assistance. It supports managing to-dos, scheduling, and personalized tasks. For optimal interaction, specify tasks clearly and provide the necessary authentication code phrase when requested. Bakabit is designed to adapt and expand based on user needs, making it a versatile tool for personal management.";
+export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = "Bakabit is a personalized virtual assistant designed to manage todos/tasks, calendars, and emails with expansion capabilities for personalized utilities. It uses a code phrase for secure user authentication. Bakabit integrates with various APIs, focusing on privacy and tailored assistance. It supports managing to-dos, scheduling, and personalized tasks. For optimal interaction, specify tasks clearly and provide the necessary authentication code phrase when requested. Bakabit is designed to adapt and expand based on user needs, making it a versatile tool for personal management.";
 export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = "Bakabit is a secure and personalized virtual assistant for managing tasks, calendars, and emails.";
 
 

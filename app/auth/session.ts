@@ -1,13 +1,14 @@
 "use server"
 import { cookies } from 'next/headers';
 import db from "@lib/db";
-import { type User, type Profile, type ActiveSession } from "@prisma/client";
+import { type User, type Profile, type ActiveSession, type PhraseCode } from "@prisma/client";
 import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
 
 export type AuthSessionResponse = Pick<ActiveSession, 'expiresAt'> & {
   user: Pick<User, 'email' | 'role' | 'id'> & {
     profile: Profile | null;
+    phraseCode: PhraseCode | null;
   };
 };
 
@@ -30,6 +31,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
             email: true,
             role: true,
             profile: true,
+            phraseCode: true,
           },
         },
       },

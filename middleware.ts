@@ -1,5 +1,5 @@
 import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 const authRoutes = [
   '/api/auth/callback',
@@ -14,7 +14,14 @@ const protectedRoutes = [
 
 
 async function middleware(request: NextRequest) {
-  return;
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-next-pathname', request.nextUrl.pathname);
+
+  return NextResponse.next({
+      request: {
+          headers: requestHeaders,
+      },
+  });
 }
 
 export const config = {
