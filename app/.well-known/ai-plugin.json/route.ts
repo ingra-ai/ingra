@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { APP_OPENAI_VERIFICATION_TOKEN, APP_SESSION_COOKIE_NAME, APP_SUPPORT_MAILTO, APP_URL } from "../../../lib/constants";
-// import { APP_SESSION_COOKIE_NAME } from "@lib/constants";
+import { APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_OPENAI_MANIFEST_DESC_FOR_MODEL, APP_OPENAI_MANIFEST_NAME_FOR_HUMAN, APP_OPENAI_MANIFEST_NAME_FOR_MODEL, APP_OPENAI_VERIFICATION_TOKEN, APP_SUPPORT_MAILTO, APP_URL } from "../../../lib/constants";
 
 export async function GET(request: NextRequest) {
   return NextResponse.json(
     {
       "schema_version": "v1",
-      "name_for_human": "TODO List (OAuth)",
-      "name_for_model": "todo_oauth",
-      "description_for_human": "Manage your TODO list. You can add, remove and view your TODOs.",
-      "description_for_model": "Plugin for managing a TODO list, you can add, remove and view your TODOs.",
+      "name_for_human": APP_OPENAI_MANIFEST_NAME_FOR_HUMAN,
+      "name_for_model": APP_OPENAI_MANIFEST_NAME_FOR_MODEL,
+      "description_for_human": APP_OPENAI_MANIFEST_DESC_FOR_HUMAN,
+      "description_for_model": APP_OPENAI_MANIFEST_DESC_FOR_MODEL,
+
+      /**
+       * Auth can be 'none', 'service_auth' or 'oauth'
+       * @see https://platform.openai.com/docs/plugins/authentication
+       */
       "auth": {
-        "type": "oauth",
-        "client_url": `${ APP_URL }/oauth`,
-        "scope": "",
-        "authorization_url": `${ APP_URL }/auth/oauth_exchange`,
-        "authorization_content_type": "application/json",
+        "type": "service_http",
+        "authorization_type": "bearer",
         "verification_tokens": {
           "openai": APP_OPENAI_VERIFICATION_TOKEN
         }

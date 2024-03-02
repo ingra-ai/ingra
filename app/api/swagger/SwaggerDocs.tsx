@@ -11,8 +11,9 @@ type ReactSwaggerProps = {
   spec: Record<string, any>,
 };
 
-const ReactSwagger: React.FC<ReactSwaggerProps> = props => {
-  return <DynamicSwaggerUI spec={props.spec} />;
+const ReactSwagger: React.FC<ReactSwaggerProps> = ( props ) => {
+  const { spec } = props;
+  return <DynamicSwaggerUI spec={spec} />;
 }
 
 export default ReactSwagger;
