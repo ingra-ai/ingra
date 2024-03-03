@@ -2,6 +2,8 @@
 import type { User } from "@prisma/client";
 import db from "@lib/db";
 
+// @todo VERCEL REDIS
+
 /**
  * Fetches a user from the database by their email.
  *
@@ -37,7 +39,10 @@ export const getOrCreateUserByEmail = async (email: string): Promise<User | null
 /**
  * Retrieves a user by their phrase code.
  * This function is used to grab the user ID by using the phrase code.
- *
+ * 
+ * @warning Heavy function calls, being used in almost all API calls;
+ * @todo Make this faster.
+ * 
  * @param code - The phrase code to search for.
  * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
  */
@@ -66,4 +71,41 @@ export const getUserByPhraseCode = async (code: string) => {
   });
 
   return phraseCode?.user || null;
+}
+
+/**
+ * Retrieves a user by their JWT.
+ * This function is used to grab the user, profile and phrasecode.
+ * 
+ * @warning Heavy function calls, being used in almost all API calls;
+ * @todo Make this faster.
+ * 
+ * @param code - The phrase code to search for.
+ * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
+ */
+export const getUserFull = async (jwt: string) => {
+  if ( !jwt ) {
+    return null;
+  }
+
+  return await db.activeSession.findUnique({
+    select: {
+      expiresAt: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          profile: true,
+          phraseCode: true,
+        },
+      },
+    },
+    where: {
+      jwt: jwt, // Use the JWT to find the session
+      expiresAt: {
+        gte: new Date(),
+      },
+    },
+  });
 }
