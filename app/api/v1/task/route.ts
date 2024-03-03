@@ -70,7 +70,11 @@ import { NextRequest, NextResponse } from "next/server";
  *             required: [phraseCode]
  *             properties:
  *               task:
- *                 $ref: '#/components/schemas/Task'
+ *                 allOf:
+ *                   - $ref: '#/components/schemas/Task'
+ *                   - type: object
+ *                     required: [title, description]
+ *                     properties: {}
  *               phraseCode:
  *                 type: string
  *                 description: A unique code to authenticate the user to perform this operation.
@@ -103,7 +107,10 @@ import { NextRequest, NextResponse } from "next/server";
  *             required: [phraseCode]
  *             properties:
  *               task:
- *                 $ref: '#/components/schemas/Task'
+ *                 allOf:
+ *                   - $ref: '#/components/schemas/Task'
+ *                   - type: object
+ *                     properties: {}
  *               phraseCode:
  *                 type: string
  *                 description: A unique code to authenticate the user to perform this operation.
@@ -183,9 +190,22 @@ export async function GET(req: NextRequest ) {
   );
 }
 
+/**
+ * Handles the POST request for creating a new task.
+ * - 'create' method from Prisma Client is used to create a new task.
+ * 
+ * @param req - The NextRequest object representing the incoming request.
+ * @returns A NextResponse object with the created task data or an error message.
+ */
 export async function POST(req: NextRequest ) {
   const data = await req.json()
-  const { phraseCode, ...taskPayload } = data || {};
+
+  /**
+   * The mapping of task is defined in requestBody of post schema for post:
+   * This also can be checked at /api/swagger to test your API.
+   * e.g. { task: { ...taskProps }, phraseCode: string }
+   */
+  const { phraseCode, task: taskPayload } = data || {};
 
   const userWithProfile = await getUserByPhraseCode(phraseCode);
 
@@ -213,12 +233,25 @@ export async function POST(req: NextRequest ) {
   );
 };
 
+/**
+ * Handles the PATCH request for updating a task.
+ * - 'update' method from Prisma Client is used to update an existing task.
+ * 
+ * @param req - The NextRequest object containing the request details.
+ * @returns A NextResponse object with the updated task data or an error message.
+ */
 export async function PATCH(req: NextRequest) {
   const data = await req.json()
-  const { phraseCode, ...taskPayload } = data || {};
+
+  /**
+   * The mapping of task is defined in requestBody of post schema for post:
+   * This also can be checked at /api/swagger to test your API.
+   * e.g. { task: { ...taskProps }, phraseCode: string }
+   */
+  const { phraseCode, task: taskPayload } = data || {};
 
   const userWithProfile = await getUserByPhraseCode(phraseCode);
-
+  
   if ( !userWithProfile ) {
     return NextResponse.json(
       { error: "Invalid phrase code" },
