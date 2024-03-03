@@ -267,7 +267,7 @@ export async function PATCH(req: NextRequest) {
 
   const taskBefore = await db.task.findUnique({
     where: {
-      id: taskPayload.taskId,
+      id: taskPayload.id,
       userId: userWithProfile.id
     }
   });
@@ -301,8 +301,7 @@ export async function PATCH(req: NextRequest) {
 
   const taskAfter = await db.task.update({
     where: {
-      id: taskPayload.taskId,
-      userId: userWithProfile.id
+      id: taskBefore.id
     },
     data: {
       id: taskBefore.id,
