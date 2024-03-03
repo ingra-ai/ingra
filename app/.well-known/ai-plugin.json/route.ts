@@ -14,12 +14,15 @@ export async function GET(request: NextRequest) {
        * Auth can be 'none', 'service_auth' or 'oauth'
        * @see https://platform.openai.com/docs/plugins/authentication
        */
+      // "auth": {
+      //   "type": "service_http",
+      //   "authorization_type": "bearer",
+      //   "verification_tokens": {
+      //     "openai": APP_OPENAI_VERIFICATION_TOKEN
+      //   }
+      // },
       "auth": {
-        "type": "service_http",
-        "authorization_type": "bearer",
-        "verification_tokens": {
-          "openai": APP_OPENAI_VERIFICATION_TOKEN
-        }
+        "type": "none"
       },
       "api": {
         "type": "openapi",
