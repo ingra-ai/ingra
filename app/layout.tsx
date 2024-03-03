@@ -11,17 +11,12 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
-type RootLayoutProps = {
-  noop?: any;
-}
-
 export const metadata: Metadata = {
   title: APP_NAME,
   description: APP_DESCRIPTION,
 };
 
-const RootLayout: React.FC<PropsWithChildren<RootLayoutProps>> = async ( props ) => {
-  const { children } = props;
+export default async function RootLayout({ children }: PropsWithChildren) {
   const bodyClasses = cn( 'dark', fontSans.className );
 
   return (
@@ -37,5 +32,3 @@ const RootLayout: React.FC<PropsWithChildren<RootLayoutProps>> = async ( props )
     </html>
   );
 }
-
-export default RootLayout;

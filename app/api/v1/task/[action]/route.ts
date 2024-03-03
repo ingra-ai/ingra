@@ -128,7 +128,7 @@ export async function GET(req: NextRequest, { params }: { params: TaskRequestPay
         andConditions.push({ priority: taskPayload.priority });
       }
 
-      return await db.task.findMany({
+      const tasks = await db.task.findMany({
         where: {
           userId: userWithProfile.id,
           OR: [
@@ -142,6 +142,13 @@ export async function GET(req: NextRequest, { params }: { params: TaskRequestPay
         },
         take: 5
       });
+
+      return NextResponse.json(
+        { message: "OK", data: tasks },
+        {
+          status: 200
+        }
+      );
     default:
       return NextResponse.json(
         { error: "Invalid action" },
@@ -231,12 +238,19 @@ export async function POST(req: NextRequest ) {
 
   switch ( action ) {
     case "addNewTask":
-      return await db.task.create({
+      const task = await db.task.create({
         data: {
           ...taskPayload,
           userId: userWithProfile.id
         }
       });
+
+      return NextResponse.json(
+        { message: "OK", data: [task] },
+        {
+          status: 200
+        }
+      );
     default:
       return NextResponse.json(
         { error: "Invalid action" },
@@ -339,7 +353,7 @@ export async function PATCH(req: NextRequest) {
 
   switch ( action ) {
     case "updateTask":
-      return await db.task.update({
+      const task = await db.task.update({
         where: {
           id: taskPayload.taskId,
           userId: userWithProfile.id
@@ -348,6 +362,12 @@ export async function PATCH(req: NextRequest) {
           ...taskPayload
         }
       });
+      return NextResponse.json(
+        { message: "OK", data: [task] },
+        {
+          status: 200
+        }
+      );
     default:
       return NextResponse.json(
         { error: "Invalid action" },
@@ -356,22 +376,4 @@ export async function PATCH(req: NextRequest) {
         }
       );
   }
-}
-
-export async function OPTIONS(req: NextRequest) {
-  return NextResponse.json(
-    { error: "Method not allowed" },
-    {
-      status: 405
-    }
-  );
-}
-
-export async function HEAD(req: NextRequest) {
-  return NextResponse.json(
-    { error: "Method not allowed" },
-    {
-      status: 405
-    }
-  );
 }
