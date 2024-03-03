@@ -16,7 +16,6 @@ import { NextRequest, NextResponse } from "next/server";
  *         schema:
  *           type: string
  *           default: ""
- *         required: true
  *         description: Title of the task to search for.
  *       - in: query
  *         name: description
@@ -40,7 +39,7 @@ import { NextRequest, NextResponse } from "next/server";
  *         name: phraseCode
  *         schema:
  *           type: string
- *         required: false
+ *         required: true
  *         description: A unique code for additional validation or action. Optional.
  *     responses:
  *       '200':
@@ -125,19 +124,18 @@ import { NextRequest, NextResponse } from "next/server";
  *       - Task and Todos
  */
 
-type TaskRequestPayload = Pick<Task , "title" | "description" | "status" | "priority"> & {
-  action: string;
+type TaskRequestParams = Pick<Task , "title" | "description" | "status" | "priority"> & {
   phraseCode: string;
 };
-
 
 /**
  * Dynamic route handlers for /api/v1/task
  * @see https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
  */
-export async function GET(req: NextRequest, { params }: { params: TaskRequestPayload } ) {
+export async function GET(req: NextRequest ) {
+  const { searchParams } = new URL(req.url)
+  const params = Object.fromEntries( searchParams ) as TaskRequestParams;
   const { phraseCode, ...taskPayload } = params || {};
-
   const userWithProfile = await getUserByPhraseCode(phraseCode);
 
   if ( !userWithProfile ) {

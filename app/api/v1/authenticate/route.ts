@@ -88,6 +88,15 @@ export async function POST(req: NextRequest ) {
     );
   }
 
+  db.phraseCode.update({
+    where: {
+      code,
+    },
+    data: {
+      isAuthenticated: true
+    }
+  });
+
   return NextResponse.json(
     { message: "OK" },
     {
