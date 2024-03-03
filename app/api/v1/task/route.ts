@@ -220,7 +220,11 @@ export async function POST(req: NextRequest ) {
 
   const task = await db.task.create({
     data: {
-      ...taskPayload,
+      // id: taskPayload.id, - do not send ID when creating.
+      title: taskPayload.title,
+      description: taskPayload.description,
+      status: taskPayload.status,
+      priority: taskPayload.priority,
       userId: userWithProfile.id
     }
   });
@@ -261,18 +265,61 @@ export async function PATCH(req: NextRequest) {
     );
   }
 
-  const task = await db.task.update({
+  const taskBefore = await db.task.findUnique({
+    where: {
+      id: taskPayload.taskId,
+      userId: userWithProfile.id
+    }
+  });
+
+  if ( !taskBefore ) {
+    return NextResponse.json(
+      { error: "Unable to find the current task" },
+      {
+        status: 404
+      }
+    );
+  }
+
+  const fieldsUpdatedMessages = [];
+
+  if ( taskBefore.title !== taskPayload.title ) {
+    fieldsUpdatedMessages.push("title");
+  }
+
+  if ( taskBefore.description !== taskPayload.description ) {
+    fieldsUpdatedMessages.push("description");
+  }
+
+  if ( taskBefore.status !== taskPayload.status ) {
+    fieldsUpdatedMessages.push(`status from ${taskBefore.status} to ${taskPayload.status}`);
+  }
+
+  if ( taskBefore.priority !== taskPayload.priority ) {
+    fieldsUpdatedMessages.push(`priority from ${taskBefore.priority} to ${taskPayload.priority}`);
+  }
+
+  const taskAfter = await db.task.update({
     where: {
       id: taskPayload.taskId,
       userId: userWithProfile.id
     },
     data: {
-      ...taskPayload
+      id: taskBefore.id,
+      title: taskPayload.title,
+      description: taskPayload.description,
+      status: taskPayload.status,
+      priority: taskPayload.priority,
+      userId: taskBefore.userId
     }
   });
 
   return NextResponse.json(
-    { message: "OK", data: [task] },
+    { message: "OK", data: {
+      taskBefore,
+      taskAfter,
+      updatedFields: fieldsUpdatedMessages.join(', ')
+    } },
     {
       status: 200
     }
