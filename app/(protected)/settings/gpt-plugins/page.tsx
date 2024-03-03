@@ -14,9 +14,6 @@ export default async function Page() {
       <p className="mt-1 text-sm leading-5 text-gray-400">
         Create a unique phrase code for secure authentication. Each generated code is valid for one minute after creation, ensuring enhanced security for your session.
       </p>
-      <p className="mt-2 font-semibold text-xs leading-5 text-gray-500">
-        Note: Within your active session, the phrase code can be reused for continuous access.
-      </p>
       {
         authSession && (
           <div className="mt-5">

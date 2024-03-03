@@ -25,7 +25,7 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
   });
 
   const copyToClipboard = useCallback(() => {
-    if ( phraseCode.code ) {
+    if (phraseCode.code) {
       navigator.clipboard.writeText(phraseCode.code);
       toast({
         title: "Copied to clipboard!",
@@ -63,7 +63,7 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="link" className="text-sm text-gray-400 mb-2 px-0 m-0" onClick={ copyToClipboard }>
+                  <Button variant="link" className="text-sm text-gray-400 mb-2 px-0 m-0" onClick={copyToClipboard}>
                     <p className="text-sm text-gray-400 m-0 leading-10">{phraseCode.code}</p>
                     <ClipboardDocumentIcon
                       className={cn('ml-2 h-6 w-6')}
@@ -81,11 +81,16 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
           )
         }
       </div>
+      <p className="mt-2 font-semibold text-sm leading-5 text-gray-500">
+        Note: Within your active session, the phrase code can be reused for continuous access until its expired or a new one is generated.
+      </p>
       {
         isPhraseCodeExpired && (
-          <p className="text-xs text-red-300 leading-7 pt-3">
-            Your phrase code has expired. Please generate a new one.
-          </p>
+          <>
+            <p className="text-sm text-red-300 leading-5">
+              Your phrase code has expired. Please generate a new one, or leave it expired until you want to use GPT features.
+            </p>
+          </>
         )
       }
 
@@ -93,7 +98,7 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
         <button
           type="button"
           className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-          onClick={ onSubmit }
+          onClick={onSubmit}
         >
           Generate
         </button>
