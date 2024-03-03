@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       },
       "api": {
         "type": "openapi",
-        "url": `${APP_URL}/openapi.yaml`
+        "url": `${APP_URL}/api/openapi.json`
       },
       "logo_url": `${APP_URL}/static/brand/bakabit-white-logo-only-png`,
       "contact_email": APP_SUPPORT_MAILTO,

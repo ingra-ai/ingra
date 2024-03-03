@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSwaggerSpec } from '@/app/api/swagger/config';
-import jsYaml from 'js-yaml';
 import { APP_URL } from '@lib/constants';
 
 /**
@@ -16,30 +15,15 @@ export async function GET(request: NextRequest) {
    * @todo find a way to add these in the swagger/config
    */
   Object.assign(swaggerSpec, {
-    servers: {
-      url: APP_URL + '/api',
-    },
-  })
+    servers: [{
+      url: APP_URL,
+    }],
+  });
 
-  if ( process.env.NODE_ENV === 'development' ) {
-    return NextResponse.json(
-      swaggerSpec,
-      {
-        status: 200
-      }
-    );
-  }
-  else {
-    const yamlData = jsYaml.dump(swaggerSpec);
-  
-    return NextResponse.json(
-      yamlData,
-      {
-        headers: {
-          'Content-Type': 'text/yaml'
-        },
-        status: 200
-      }
-    );
-  }
+  return NextResponse.json(
+    swaggerSpec,
+    {
+      status: 200
+    }
+  );
 };
