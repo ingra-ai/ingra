@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
  * /api/v1/authenticate:
  *   post:
  *     summary: Authenticate using a phrase code.
+ *     operationId: authenticate
  *     description: Validates a given phrase code for authentication. The code must be active and not previously used for authentication.
  *     requestBody:
  *       required: true
