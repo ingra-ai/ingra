@@ -22,18 +22,10 @@
  *        priority:
  *          $ref: '#/components/schemas/TaskPriority'
  *          description: Priority level of the task.
- *        createdAt:
- *          type: string
- *          format: date-time
- *          description: The date and time when the task was created. Optional in requests and might not be returned in all responses.
- *        updatedAt:
- *          type: string
- *          format: date-time
- *          description: The date and time when the task was last updated. Optional in requests and might not be returned in all responses.
  *        userId:
  *          type: string
  *          format: uuid
- *          description: Identifier for the user associated with the task. Optional in requests and might not be returned in all responses.
+ *          description: Identifier for the user associated with the task. Optional.
  *      required:
  *        - id
  *        - title
