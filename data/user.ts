@@ -33,3 +33,37 @@ export const getOrCreateUserByEmail = async (email: string): Promise<User | null
     },
   });
 }
+
+/**
+ * Retrieves a user by their phrase code.
+ * This function is used to grab the user ID by using the phrase code.
+ *
+ * @param code - The phrase code to search for.
+ * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
+ */
+export const getUserByPhraseCode = async (code: string) => {
+  if ( !code ) {
+    return null;
+  }
+
+  const phraseCode = await db.phraseCode.findUnique({
+    where: {
+      code,
+    },
+    select: {
+      expiresAt: true,
+      userId: true,
+      isAuthenticated: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          profile: true,
+        },
+      },
+    }
+  });
+
+  return phraseCode?.user || null;
+}
