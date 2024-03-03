@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSwaggerSpec } from '@/app/api/swagger/config';
-import jsYaml from 'js-yaml';
 import { APP_URL } from '@lib/constants';
 
 /**
