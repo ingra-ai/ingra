@@ -18,7 +18,7 @@ async function middleware(request: NextRequest) {
   requestHeaders.set('x-next-pathname', request.nextUrl.pathname);
 
   if ( request.nextUrl.pathname.includes('api/v1') ) {
-    console.log({ 
+    console.info({ 
       pathname: request.nextUrl.pathname,
       requestHeaders: { ...requestHeaders } 
     });
