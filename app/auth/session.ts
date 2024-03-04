@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { type User, type Profile, type ActiveSession, type PhraseCode } from "@prisma/client";
 import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
-import { getUserFull } from '@/data/user';
+import { getUserByJwt } from '@/data/user';
 
 export type AuthSessionResponse = Pick<ActiveSession, 'expiresAt'> & {
   user: Pick<User, 'email' | 'role' | 'id'> & {
@@ -22,7 +22,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
 
   try {
     // Retrieve the active session along with the user data in a single query
-    const sessionWithUser = await getUserFull(jwtCookie.value);
+    const sessionWithUser = await getUserByJwt(jwtCookie.value);
 
     // Check if a session was found
     if (!sessionWithUser) {
