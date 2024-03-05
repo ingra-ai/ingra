@@ -91,8 +91,14 @@ To understand how to play around with Prisma, view the [Prisma readme](https://g
    ```bash
    npx prisma generate
    ```
-   
-### JWT Configuration Setup
+
+## Authentication
+
+We're just using [Magic Link AUTH](https://owasp.org/www-chapter-vancouver/assets/presentations/2020-08_The_Evolution_of_Authentication.pdf) to authenticate user.
+
+Therefore, the following configuration is needed
+
+#### JWT Configuration Setup
 
 To securely manage user sessions and authentication, Bakabit Portal utilizes JSON Web Tokens (JWT). You must generate a secure JWT secret for your application:
 
@@ -103,9 +109,7 @@ You can use OpenSSL to generate a secure secret:
 openssl rand -base64 48
 ```
 
-### Authentication
-   
-#### Setup AWS SES Configuration (For Authentication purposes)
+#### Setup AWS SES Configuration
 
 These variables are required for integrating Amazon Simple Email Service (SES) for sending emails:
 
