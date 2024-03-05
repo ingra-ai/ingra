@@ -102,8 +102,10 @@ You can use OpenSSL to generate a secure secret:
 ```bash
 openssl rand -base64 48
 ```
+
+### Authentication
    
-### AWS SES Configuration
+#### Setup AWS SES Configuration (For Authentication purposes)
 
 These variables are required for integrating Amazon Simple Email Service (SES) for sending emails:
 
