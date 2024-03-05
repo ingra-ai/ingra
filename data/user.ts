@@ -2,8 +2,6 @@
 import type { User } from "@prisma/client";
 import db from "@lib/db";
 
-// @todo VERCEL REDIS
-
 /**
  * Fetches a user from the database by their email.
  *
@@ -83,7 +81,7 @@ export const getUserByPhraseCode = async (code: string) => {
  * @param code - The phrase code to search for.
  * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
  */
-export const getUserFull = async (jwt: string) => {
+export const getUserByJwt = async (jwt: string) => {
   if ( !jwt ) {
     return null;
   }
