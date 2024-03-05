@@ -142,7 +142,7 @@ type TaskRequestParams = Pick<Task , "title" | "description" | "status" | "prior
 export async function GET(req: NextRequest ) {
   const { searchParams } = new URL(req.url)
   const params = Object.fromEntries( searchParams ) as TaskRequestParams;
-  const { phraseCode, ...taskPayload } = params || {};
+  const { phraseCode, ...restOfPayload } = params || {};
   const userWithProfile = await getUserByPhraseCode(phraseCode);
 
   if ( !userWithProfile ) {
@@ -164,20 +164,20 @@ export async function GET(req: NextRequest ) {
     take: 5
   };
 
-  if ( taskPayload.status ) {
-    findManyParams.where!.status = taskPayload.status;
+  if ( restOfPayload.status ) {
+    findManyParams.where!.status = restOfPayload.status;
   }
 
-  if ( taskPayload.priority ) {
-    findManyParams.where!.priority = taskPayload.priority;
+  if ( restOfPayload.priority ) {
+    findManyParams.where!.priority = restOfPayload.priority;
   }
 
-  if ( taskPayload.title ) {
-    findManyParams.where!.title = { contains: taskPayload.title, mode: "insensitive" };
+  if ( restOfPayload.title ) {
+    findManyParams.where!.title = { contains: restOfPayload.title, mode: "insensitive" };
   }
 
-  if ( taskPayload.description ) {
-    findManyParams.where!.description = { contains: taskPayload.description, mode: "insensitive" };
+  if ( restOfPayload.description ) {
+    findManyParams.where!.description = { contains: restOfPayload.description, mode: "insensitive" };
   }
 
   const tasks = await db.task.findMany(findManyParams);
@@ -205,7 +205,7 @@ export async function POST(req: NextRequest ) {
    * This also can be checked at /api/swagger to test your API.
    * e.g. { task: { ...taskProps }, phraseCode: string }
    */
-  const { phraseCode, task: taskPayload } = data || {};
+  const { phraseCode, task: restOfPayload } = data || {};
 
   const userWithProfile = await getUserByPhraseCode(phraseCode);
 
@@ -221,10 +221,10 @@ export async function POST(req: NextRequest ) {
   const task = await db.task.create({
     data: {
       // id: taskPayload.id, - do not send ID when creating.
-      title: taskPayload.title,
-      description: taskPayload.description,
-      status: taskPayload.status,
-      priority: taskPayload.priority,
+      title: restOfPayload.title,
+      description: restOfPayload.description,
+      status: restOfPayload.status,
+      priority: restOfPayload.priority,
       userId: userWithProfile.id
     }
   });
@@ -252,7 +252,7 @@ export async function PATCH(req: NextRequest) {
    * This also can be checked at /api/swagger to test your API.
    * e.g. { task: { ...taskProps }, phraseCode: string }
    */
-  const { phraseCode, task: taskPayload } = data || {};
+  const { phraseCode, task: restOfPayload } = data || {};
 
   const userWithProfile = await getUserByPhraseCode(phraseCode);
   
@@ -267,7 +267,7 @@ export async function PATCH(req: NextRequest) {
 
   const taskBefore = await db.task.findUnique({
     where: {
-      id: taskPayload.id,
+      id: restOfPayload.id,
       userId: userWithProfile.id
     }
   });
@@ -283,20 +283,20 @@ export async function PATCH(req: NextRequest) {
 
   const fieldsUpdatedMessages = [];
 
-  if ( taskBefore.title !== taskPayload.title ) {
+  if ( taskBefore.title !== restOfPayload.title ) {
     fieldsUpdatedMessages.push("title");
   }
 
-  if ( taskBefore.description !== taskPayload.description ) {
+  if ( taskBefore.description !== restOfPayload.description ) {
     fieldsUpdatedMessages.push("description");
   }
 
-  if ( taskBefore.status !== taskPayload.status ) {
-    fieldsUpdatedMessages.push(`status from ${taskBefore.status} to ${taskPayload.status}`);
+  if ( taskBefore.status !== restOfPayload.status ) {
+    fieldsUpdatedMessages.push(`status from ${taskBefore.status} to ${restOfPayload.status}`);
   }
 
-  if ( taskBefore.priority !== taskPayload.priority ) {
-    fieldsUpdatedMessages.push(`priority from ${taskBefore.priority} to ${taskPayload.priority}`);
+  if ( taskBefore.priority !== restOfPayload.priority ) {
+    fieldsUpdatedMessages.push(`priority from ${taskBefore.priority} to ${restOfPayload.priority}`);
   }
 
   const taskAfter = await db.task.update({
@@ -305,10 +305,10 @@ export async function PATCH(req: NextRequest) {
     },
     data: {
       id: taskBefore.id,
-      title: taskPayload.title,
-      description: taskPayload.description,
-      status: taskPayload.status,
-      priority: taskPayload.priority,
+      title: restOfPayload.title,
+      description: restOfPayload.description,
+      status: restOfPayload.status,
+      priority: restOfPayload.priority,
       userId: taskBefore.userId
     }
   });
