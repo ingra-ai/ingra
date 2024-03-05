@@ -30,7 +30,6 @@ export const redisExtension = Prisma.defineExtension({
         return result;
       },
     },
-    /* Has login issue with this code at getAuthSession
     activeSession: {
       async findUnique({ model, operation, args, query }) {
         let cacheKey = '';
@@ -40,16 +39,16 @@ export const redisExtension = Prisma.defineExtension({
         if ( args.where && Object.keys(args.where).length === 2 && args.where.jwt && args.where.expiresAt ) {
           cacheKey = UACTIVESESSION_KEY_PREFIX + args.where.jwt;
           const cache = await kv.get<ActiveSession>( cacheKey );
-          console.log({ cacheKey, cache })
+
           if ( cache ) {
-            if ( cache.expiresAt <= args.where.expiresAt ) {
-              // If the cache is expired, return null and delete the cache
+            const argsExpiresAt = (args.where.expiresAt as Prisma.DateTimeFilter<"ActiveSession">)?.gte;
+
+            if ( argsExpiresAt && argsExpiresAt >= cache.expiresAt ) {
               await kv.del( cacheKey );
               return null;
             }
-            else {
-              return cache;
-            }
+            
+            return cache;
           }
         }
 
@@ -62,6 +61,5 @@ export const redisExtension = Prisma.defineExtension({
         return result;
       },
     }
-    */
   },
 });
