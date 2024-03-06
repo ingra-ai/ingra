@@ -12,6 +12,11 @@ export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]
 
 export const swaggerOptions: SwaggerOptions = {
   apiFolder: 'app/api/v1', // define api folder under app folder
+  apis: [
+    'schemas/**/*.ts',
+    'lib/**/*.ts',
+    'app/**/*.ts',
+  ],
   definition: {
     openapi: '3.0.0',
     info: {

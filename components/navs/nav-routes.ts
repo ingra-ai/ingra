@@ -51,38 +51,38 @@ export const NavRoutes: NavItem[] = [
       },
     ],
   },
-  {
-    name: 'Notes',
-    description: 'A secure place for writing, organizing, and storing your personal and work notes.',
-    children: [
-      {
-        name: 'My Notes',
-        description: 'Access and manage your collection of notes.',
-        href: '/notes/my-notes',
-      },
-      {
-        name: 'New Note',
-        description: 'Create a new note.',
-        href: '/notes/new',
-      },
-    ],
-  },
-  {
-    name: 'Projects',
-    description: 'Project management tools for tracking progress, collaboration, and resources.',
-    children: [
-      {
-        name: 'Project Dashboard',
-        description: 'Overview of current projects including status, timelines, and team members.',
-        href: '/projects/dashboard',
-      },
-      {
-        name: 'Create Project',
-        description: 'Initiate a new project, defining its scope, team, and milestones.',
-        href: '/projects/create',
-      },
-    ],
-  }
+  // {
+  //   name: 'Notes',
+  //   description: 'A secure place for writing, organizing, and storing your personal and work notes.',
+  //   children: [
+  //     {
+  //       name: 'My Notes',
+  //       description: 'Access and manage your collection of notes.',
+  //       href: '/notes/my-notes',
+  //     },
+  //     {
+  //       name: 'New Note',
+  //       description: 'Create a new note.',
+  //       href: '/notes/new',
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: 'Projects',
+  //   description: 'Project management tools for tracking progress, collaboration, and resources.',
+  //   children: [
+  //     {
+  //       name: 'Project Dashboard',
+  //       description: 'Overview of current projects including status, timelines, and team members.',
+  //       href: '/projects/dashboard',
+  //     },
+  //     {
+  //       name: 'Create Project',
+  //       description: 'Initiate a new project, defining its scope, team, and milestones.',
+  //       href: '/projects/create',
+  //     },
+  //   ],
+  // }
 ];
 
 export type SettingsNavItem = NavItemChild;

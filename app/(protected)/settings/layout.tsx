@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { SettingsNavRoutes } from "@/routes/nav-routes";
+import { SettingsNavRoutes } from '@/components/navs/nav-routes';
 import { headers } from "next/headers";
 
 export default async function SettingsLayout({ children }: PropsWithChildren) {
