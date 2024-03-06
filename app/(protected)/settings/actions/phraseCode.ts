@@ -1,6 +1,6 @@
 "use server";
 
-import { ActionError } from "@lib/error";
+import { ActionError } from "@lib/api-response";
 import { getAuthSession } from "@app/auth/session";
 import db from "@lib/db";
 import { generate } from 'generate-passphrase';

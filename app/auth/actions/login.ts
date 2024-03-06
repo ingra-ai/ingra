@@ -3,7 +3,7 @@
 import * as z from "zod";
 import { MagicLoginSchema } from "@/schemas/auth";
 import { getOrCreateUserByEmail } from "@/data/user";
-import { ActionError } from "@lib/error";
+import { ActionError } from "@lib/api-response";
 import { createMagicLink } from "@/data/auth";
 import { sendMagicLinkEmail } from "@lib/mail/sendMagicLinkEmail";
 

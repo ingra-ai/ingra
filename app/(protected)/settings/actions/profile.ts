@@ -1,7 +1,7 @@
 "use server";
 
 import * as z from "zod";
-import { ActionError } from "@lib/error";
+import { ActionError } from "@lib/api-response";
 import { ProfileSchema } from "@/schemas/profile";
 import { getAuthSession } from "@app/auth/session";
 import db from "@lib/db";
