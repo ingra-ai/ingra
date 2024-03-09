@@ -34,6 +34,7 @@ model Profile {
 model MagicLinkToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
+  otpCode   String?  @db.VarChar(6)
   userId    String   @db.Uuid
   expiresAt DateTime
   createdAt DateTime @default(now())

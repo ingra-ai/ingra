@@ -1,6 +1,7 @@
 "use client";
 import { Disclosure } from '@headlessui/react'
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
+import { LogOutIcon } from 'lucide-react';
 import Image from 'next/image'
 import { cn } from '@lib/utils';
 import { censorEmail } from '@lib/functions/censorEmail';
@@ -10,6 +11,12 @@ import Link from 'next/link';
 import { AuthSessionResponse } from '@app/auth/session';
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type SideNavProps = {
   authSession: AuthSessionResponse;
@@ -20,7 +27,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
   const userProfile: Profile | null = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
   const pathname = usePathname();
-  
+
   // Type guard to determine if a NavItem is a NavItemParent
   const isNavItemParent = useCallback((item: NavItem): item is NavItemParent => {
     const isParent = Object.prototype.hasOwnProperty.call(item, 'children');
@@ -49,7 +56,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                 return (
                   <li key={item.name}>
                     {isParent ? (
-                      <Disclosure as="div" defaultOpen={ isCurrentRoute }>
+                      <Disclosure as="div" defaultOpen={isCurrentRoute}>
                         {
                           (props) => {
                             const { open } = props;
@@ -75,7 +82,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                                     return (
                                       <li key={subItem.name}>
                                         <Disclosure.Button
-                                          as={ Link }
+                                          as={Link}
                                           href={subItem.href}
                                           className={cn(
                                             subItem.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
@@ -110,20 +117,39 @@ const SideNav: React.FC<SideNavProps> = (props) => {
             </ul>
           </li>
           <li className="-mx-6 mt-auto">
-            <Link
-              href="/settings/profile"
-              className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-400 hover:text-white hover:bg-gray-800'"
-            >
-              <Image
-                src={`https://ui-avatars.com/api?size=32&name=${ censoredUser }`}
-                width={32}
-                height={32}
-                className='h-8 w-8 rounded-full bg-gray-50'
-                alt="user avatar"
-              />
-              <span className="sr-only">Your profile</span>
-              <span aria-hidden="true">{ userProfile?.userName || censoredEmail }</span>
-            </Link>
+            <ul role="list" className="space-y-1">
+              <li>
+                <div className="flex items-center">
+                  <div className="flex-grow">
+                    <Link
+                      href="/settings/profile"
+                      className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-400 hover:text-white hover:bg-black/50"
+                      title="Profile"
+                    >
+                      <Image
+                        src={`https://ui-avatars.com/api?size=32&name=${censoredUser}`}
+                        width={32}
+                        height={32}
+                        className='h-8 w-8 rounded-full bg-gray-50'
+                        alt="user avatar"
+                      />
+                      <span className="sr-only">Your profile</span>
+                      <span aria-hidden="true">{userProfile?.userName || censoredEmail}</span>
+                    </Link>
+                  </div>
+                  <Link
+                    href="/auth/logout"
+                    className="flex items-center text-sm font-semibold leading-6 h-10 px-3 max-w-16 hover:bg-destructive/10 hover:text-destructive-foreground"
+                    title='Logout'
+                  >
+                    <LogOutIcon size={21} style={{ transform: 'rotate(180deg)' }} />
+                    <span className="sr-only">Logout</span>
+                  </Link>
+                </div>
+              </li>
+              <li>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>

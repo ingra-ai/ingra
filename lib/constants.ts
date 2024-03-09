@@ -2,7 +2,7 @@ export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Bakabit'
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Bakabit Utility App'
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://portal.bakabit.com'
 
-export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI || '/api/auth/callback';
+export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI || '/auth/callback';
 export const APP_AUTH_LOGIN_URI = process.env.NEXT_PUBLIC_AUTH_LOGIN_URI || '/auth/login';
 export const APP_LANDING_PAGE_URI = process.env.NEXT_PUBLIC_LANDING_PAGE_URI || '/dashboard';
 
