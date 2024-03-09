@@ -1,4 +1,4 @@
-import { createActiveSession } from '@/data/auth';
+import { createActiveSession, expireMagicLinkByToken } from '@/data/auth';
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers'
 import { APP_SESSION_COOKIE_NAME, APP_URL } from '@lib/constants';
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get('type') || '';
   const token = searchParams.get('token') || '';
 
-  if ( type === 'magic' && token.length > 0 ) {
+  if (type === 'magic' && token.length > 0) {
     const magicLinkWithUser = await db.magicLinkToken.findUnique({
       select: {
         token: true,
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    if ( !magicLinkWithUser ) {
+    if (!magicLinkWithUser) {
       return NextResponse.json(
         { error: "Invalid token" },
         {
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     const session = await createActiveSession(magicLinkWithUser.user);
 
-    if ( !session ) {
+    if (!session) {
       return NextResponse.json(
         { error: "Failed to create session" },
         {
@@ -52,6 +52,9 @@ export async function GET(request: NextRequest) {
     // Set session cookies
     const cookieStore = cookies();
     cookieStore.set(APP_SESSION_COOKIE_NAME, session.jwt, { expires: session.expiresAt, httpOnly: true, secure: true });
+    
+    // Expire magic link so its token can't be used again
+    await expireMagicLinkByToken(magicLinkWithUser.token);
 
     // Redirect to the app
     return NextResponse.redirect(APP_URL, { status: 302 });

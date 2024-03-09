@@ -12,14 +12,14 @@ export default async function AuthLogin() {
   }
 
   return (
-    <div className="h-screen flex flex-1 flex-col justify-center items-center p-6">
+    <div className="p-6 xl:p-10 mt-4 xl:mt-10">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image
-          className="mx-auto h-auto w-auto"
+          className="mx-auto h-12 w-12"
           src="/static/brand/bakabit-white-logo-only.svg"
           alt={ APP_NAME }
-          width={96}
-          height={96}
+          width={48}
+          height={48}
         />
       </div>
       <MagicLoginForm />
