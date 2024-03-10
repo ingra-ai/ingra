@@ -83,6 +83,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                                       <li key={subItem.name}>
                                         <Disclosure.Button
                                           as={Link}
+                                          prefetch={true}
                                           href={subItem.href}
                                           className={cn(
                                             subItem.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
@@ -103,6 +104,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                     ) : (
                       <Link
                         href={item.href}
+                        prefetch={true}
                         className={cn(
                           item.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800',
                           'block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold'
@@ -123,6 +125,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                   <div className="flex-grow">
                     <Link
                       href="/settings/profile"
+                      prefetch={true}
                       className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-400 hover:text-white hover:bg-black/50"
                       title="Profile"
                     >
@@ -137,14 +140,14 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                       <span aria-hidden="true">{userProfile?.userName || censoredEmail}</span>
                     </Link>
                   </div>
-                  <Link
+                  <a
                     href="/auth/logout"
                     className="flex items-center text-sm font-semibold leading-6 h-10 px-3 max-w-16 hover:bg-destructive/10 hover:text-destructive-foreground"
                     title='Logout'
                   >
                     <LogOutIcon size={21} style={{ transform: 'rotate(180deg)' }} />
                     <span className="sr-only">Logout</span>
-                  </Link>
+                  </a>
                 </div>
               </li>
               <li>
