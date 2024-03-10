@@ -32,13 +32,18 @@ export const MagicLoginForm: React.FC<MagicLoginFormProps> = (props) => {
   const doMagicLogin = async (values: z.infer<typeof MagicLoginSchema>) => {
     setIsLoading(true);
 
+    const hasOtp = values.otpCode,
+      hasEmail = values.email;
+
+    if ( hasOtp && hasEmail && formView === 'otp' ) {
+      setFormView('redirect');
+    }
+
     return magicLoginEmail(values).then((data) => {
-      if (data?.success) {
+      if ( !hasOtp && hasEmail && data?.success) {
         setFormView('otp');
         return;
       }
-
-      return setFormView('redirect');
     }).catch((error: Error) => {
       toast({
         title: "Uh oh! Something went wrong.",
