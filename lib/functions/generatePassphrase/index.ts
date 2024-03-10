@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import {resolve, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {type Buffer} from 'node:buffer';
+import { passphraseWords } from './words';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,10 +54,9 @@ function getRandomPattern(length: number, numbers: boolean, fast = false): strin
   return pattern;
 }
 
-const words = readFileSync(resolve(__dirname, './words.txt'), 'utf8').split('\n');
 function getRandomWord(fast = false): string {
-  const randomInt = fast ? Math.floor(Math.random() * words.length) : crypto.randomInt(0, words.length);
-  return words[randomInt];
+  const randomInt = fast ? Math.floor(Math.random() * passphraseWords.length) : crypto.randomInt(0, passphraseWords.length);
+  return passphraseWords[randomInt];
 }
 
 /**
