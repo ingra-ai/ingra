@@ -18,7 +18,7 @@ const ProtectedLayout: React.FC<PropsWithChildren> = async ( props ) => {
   
   return (
     <div className={ layoutClasses }>
-      <div className={ cn(styles['main-wrapper']) } data-testid="protected-layout">
+      <div id="protected-layout" className={ cn(styles['main-wrapper']) } data-testid="protected-layout">
         <div className={ cn('bg-secondary', styles['sidenav-container']) }>
           <SideNav authSession={ authSession } />
         </div>

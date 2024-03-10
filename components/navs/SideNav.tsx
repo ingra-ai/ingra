@@ -11,12 +11,6 @@ import Link from 'next/link';
 import { AuthSessionResponse } from '@app/auth/session';
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 type SideNavProps = {
   authSession: AuthSessionResponse;
