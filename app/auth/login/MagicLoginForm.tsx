@@ -156,7 +156,7 @@ export const MagicLoginForm: React.FC<MagicLoginFormProps> = (props) => {
                 className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm"
               >
                 {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
-                {isLoading ? 'Sending...' : 'Continue'}
+                {isLoading ? 'Working on it...' : 'Continue'}
               </Button>
             ) : (
               <>

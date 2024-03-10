@@ -1,9 +1,8 @@
 import crypto from 'node:crypto';
-import {readFileSync} from 'node:fs';
-import {resolve, dirname} from 'node:path';
+import {dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {type Buffer} from 'node:buffer';
-import { passphraseWords } from './words';
+import { passphraseWords } from '@lib/functions/generatePassphrase/words';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
