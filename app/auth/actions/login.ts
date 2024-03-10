@@ -35,7 +35,7 @@ export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) 
       throw new ActionError("error", 400, "Failed to generate magic link.");
     }
   
-    const res = await sendMagicLinkEmail(existingUser.email, magicLink);
+    const res = await sendMagicLinkEmail(existingUser.email, magicLink, 'web');
   
     if (!res) {
       throw new ActionError("error", 400, "Failed to send magic link.");

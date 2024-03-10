@@ -208,7 +208,7 @@ export async function GET(req: NextRequest) {
         throw new ActionError("error", 400, "Failed to generate magic link.");
       }
     
-      const res = await sendMagicLinkEmail(existingUser.email, magicLink);
+      const res = await sendMagicLinkEmail(existingUser.email, magicLink, 'gpt');
     
       if (!res) {
         throw new ActionError("error", 400, "Failed to send magic link.");
