@@ -71,9 +71,11 @@ export class ActionError extends Error implements ApiError {
  *        status:
  *          type: string
  *          description: A brief description of the successful operation.
+ *          example: OK
  *        message:
  *          type: string
- *          description: A brief description of the successful operation.
+ *          description: A brief message of the successful operation.
+ *          example: Operation successful.
  *        data:
  *          oneOf:
  *            - type: object

@@ -1,4 +1,5 @@
 import { getUserByPhraseCode } from "@/data/user";
+import { ActionError, ApiError, ApiSuccess } from "@lib/api-response";
 import db from "@lib/db";
 import { Task } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -143,51 +144,90 @@ export async function GET(req: NextRequest ) {
   const { searchParams } = new URL(req.url)
   const params = Object.fromEntries( searchParams ) as TaskRequestParams;
   const { phraseCode, ...restOfPayload } = params || {};
-  const userWithProfile = await getUserByPhraseCode(phraseCode);
 
-  if ( !userWithProfile ) {
-    return NextResponse.json(
-      { error: "Invalid phrase code" },
-      {
-        status: 400
-      }
-    );
-  }
-
-  const findManyParams: Parameters<typeof db.task.findMany>[0] = {
-    where: {
-      userId: userWithProfile.id
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5
-  };
-
-  if ( restOfPayload.status ) {
-    findManyParams.where!.status = restOfPayload.status;
-  }
-
-  if ( restOfPayload.priority ) {
-    findManyParams.where!.priority = restOfPayload.priority;
-  }
-
-  if ( restOfPayload.title ) {
-    findManyParams.where!.title = { contains: restOfPayload.title, mode: "insensitive" };
-  }
-
-  if ( restOfPayload.description ) {
-    findManyParams.where!.description = { contains: restOfPayload.description, mode: "insensitive" };
-  }
-
-  const tasks = await db.task.findMany(findManyParams);
-
-  return NextResponse.json(
-    { message: "OK", data: tasks },
-    {
-      status: 200
+  try {
+    const userWithProfile = await getUserByPhraseCode(phraseCode);
+  
+    if ( !userWithProfile ) {
+      throw new ActionError("error", 400, "Invalid phrase code");
     }
-  );
+  
+    const findManyParams: Parameters<typeof db.task.findMany>[0] = {
+      where: {
+        userId: userWithProfile.id
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 20
+    };
+  
+    if ( restOfPayload.status ) {
+      findManyParams.where!.status = restOfPayload.status;
+    }
+  
+    if ( restOfPayload.priority ) {
+      findManyParams.where!.priority = restOfPayload.priority;
+    }
+  
+    if ( restOfPayload.title ) {
+      findManyParams.where!.title = { contains: restOfPayload.title, mode: "insensitive" };
+    }
+  
+    if ( restOfPayload.description ) {
+      findManyParams.where!.description = { contains: restOfPayload.description, mode: "insensitive" };
+    }
+  
+    const tasks = await db.task.findMany(findManyParams),
+      numberOfTasks = tasks?.length || 0;
+
+    if ( numberOfTasks === 0 ) {
+      return NextResponse.json(
+        { 
+          status: "OK", 
+          message: "No tasks found",
+          data: tasks || []
+        } as ApiSuccess<Task>,
+        {
+          status: 200
+        }
+      );
+    }
+    else {
+      return NextResponse.json(
+        { 
+          status: "OK", 
+          message: `${ tasks.length} tasks found`,
+          data: tasks || []
+        } as ApiSuccess<Task>,
+        {
+          status: 201
+        }
+      );
+    }
+  }
+  catch (err: any) {
+    if ( err instanceof ActionError ) {
+      return NextResponse.json( err.toJson(),
+        {
+          status: err.status || 500
+        }
+      );
+
+    }
+    else {
+      return NextResponse.json(
+        { 
+          status: 400,
+          code: "BAD_REQUEST",
+          message: err?.message || "Something went wrong. Please try again." 
+        } as ApiError,
+        {
+          status: 400
+        }
+      );
+    }
+  }
 }
 
 /**
@@ -207,34 +247,58 @@ export async function POST(req: NextRequest ) {
    */
   const { phraseCode, task: restOfPayload } = data || {};
 
-  const userWithProfile = await getUserByPhraseCode(phraseCode);
+  try {
+    const userWithProfile = await getUserByPhraseCode(phraseCode);
+  
+    if ( !userWithProfile ) {
+      throw new ActionError("error", 400, "Invalid phrase code");
+    }
+  
+    const task = await db.task.create({
+      data: {
+        // id: taskPayload.id, - do not send ID when creating.
+        title: restOfPayload.title,
+        description: restOfPayload.description,
+        status: restOfPayload.status,
+        priority: restOfPayload.priority,
+        userId: userWithProfile.id
+      }
+    });
 
-  if ( !userWithProfile ) {
     return NextResponse.json(
-      { error: "Invalid phrase code" },
+      { 
+        status: "OK", 
+        message: 'Task created successfully.',
+        data: [task] 
+      } as ApiSuccess<Task>,
       {
-        status: 400
+        status: 201
       }
     );
   }
+  catch (err: any) {
+    if ( err instanceof ActionError ) {
+      return NextResponse.json( err.toJson(),
+        {
+          status: err.status || 500
+        }
+      );
 
-  const task = await db.task.create({
-    data: {
-      // id: taskPayload.id, - do not send ID when creating.
-      title: restOfPayload.title,
-      description: restOfPayload.description,
-      status: restOfPayload.status,
-      priority: restOfPayload.priority,
-      userId: userWithProfile.id
     }
-  });
+    else {
+      return NextResponse.json(
+        { 
+          status: 400,
+          code: "BAD_REQUEST",
+          message: err?.message || "Something went wrong. Please try again." 
+        } as ApiError,
+        {
+          status: 400
+        }
+      );
+    }
+  }
 
-  return NextResponse.json(
-    { message: "OK", data: [task] },
-    {
-      status: 201
-    }
-  );
 };
 
 /**
@@ -254,75 +318,94 @@ export async function PATCH(req: NextRequest) {
    */
   const { phraseCode, task: restOfPayload } = data || {};
 
-  const userWithProfile = await getUserByPhraseCode(phraseCode);
+  try {
+
+    const userWithProfile = await getUserByPhraseCode(phraseCode);
+    
+    if ( !userWithProfile ) {
+      throw new ActionError("error", 400, "Invalid phrase code");
+    }
   
-  if ( !userWithProfile ) {
+    const taskBefore = await db.task.findUnique({
+      where: {
+        id: restOfPayload.id,
+        userId: userWithProfile.id
+      }
+    });
+  
+    if ( !taskBefore ) {
+      throw new ActionError("error", 404, "Unable to find the current task");
+    }
+  
+    const fieldsUpdatedMessages = [];
+  
+    if ( taskBefore.title !== restOfPayload.title ) {
+      fieldsUpdatedMessages.push("title");
+    }
+  
+    if ( taskBefore.description !== restOfPayload.description ) {
+      fieldsUpdatedMessages.push("description");
+    }
+  
+    if ( taskBefore.status !== restOfPayload.status ) {
+      fieldsUpdatedMessages.push(`status from ${taskBefore.status} to ${restOfPayload.status}`);
+    }
+  
+    if ( taskBefore.priority !== restOfPayload.priority ) {
+      fieldsUpdatedMessages.push(`priority from ${taskBefore.priority} to ${restOfPayload.priority}`);
+    }
+  
+    const taskAfter = await db.task.update({
+      where: {
+        id: taskBefore.id
+      },
+      data: {
+        id: taskBefore.id,
+        title: restOfPayload.title,
+        description: restOfPayload.description,
+        status: restOfPayload.status,
+        priority: restOfPayload.priority,
+        userId: taskBefore.userId
+      }
+    });
+  
     return NextResponse.json(
-      { error: "Invalid phrase code" },
+      { 
+        status: "OK", 
+        message: "Task updated successfully.",
+        data: {
+          taskBefore,
+          taskAfter,
+          updatedFields: fieldsUpdatedMessages.join(', ')
+        } 
+      } as ApiSuccess<any>,
       {
-        status: 400
+        status: 200
       }
     );
   }
+  catch (err: any) {
+    if ( err instanceof ActionError ) {
+      return NextResponse.json( err.toJson(),
+        {
+          status: err.status || 500
+        }
+      );
 
-  const taskBefore = await db.task.findUnique({
-    where: {
-      id: restOfPayload.id,
-      userId: userWithProfile.id
     }
-  });
-
-  if ( !taskBefore ) {
-    return NextResponse.json(
-      { error: "Unable to find the current task" },
-      {
-        status: 404
-      }
-    );
-  }
-
-  const fieldsUpdatedMessages = [];
-
-  if ( taskBefore.title !== restOfPayload.title ) {
-    fieldsUpdatedMessages.push("title");
-  }
-
-  if ( taskBefore.description !== restOfPayload.description ) {
-    fieldsUpdatedMessages.push("description");
-  }
-
-  if ( taskBefore.status !== restOfPayload.status ) {
-    fieldsUpdatedMessages.push(`status from ${taskBefore.status} to ${restOfPayload.status}`);
-  }
-
-  if ( taskBefore.priority !== restOfPayload.priority ) {
-    fieldsUpdatedMessages.push(`priority from ${taskBefore.priority} to ${restOfPayload.priority}`);
-  }
-
-  const taskAfter = await db.task.update({
-    where: {
-      id: taskBefore.id
-    },
-    data: {
-      id: taskBefore.id,
-      title: restOfPayload.title,
-      description: restOfPayload.description,
-      status: restOfPayload.status,
-      priority: restOfPayload.priority,
-      userId: taskBefore.userId
+    else {
+      return NextResponse.json(
+        { 
+          status: 400,
+          code: "BAD_REQUEST",
+          message: err?.message || "Something went wrong. Please try again." 
+        } as ApiError,
+        {
+          status: 400
+        }
+      );
     }
-  });
-
-  return NextResponse.json(
-    { message: "OK", data: {
-      taskBefore,
-      taskAfter,
-      updatedFields: fieldsUpdatedMessages.join(', ')
-    } },
-    {
-      status: 200
-    }
-  );
+  }
 }
 
 export async function PUT(req: NextRequest) {
