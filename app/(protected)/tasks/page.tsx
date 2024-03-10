@@ -4,6 +4,7 @@ import { cn } from "@lib/utils";
 import { TaskStatus, TaskPriority } from '@/schemas/task';
 import { formatDistance } from 'date-fns';
 import { Badge, BadgeProps } from "@components/ui/badge";
+import { AddTaskButton } from "./AddTaskButton";
 
 const statuses: Record<any, string>  = {
   [TaskStatus.enum.TODO]: 'text-gray-400 bg-gray-400/10',
@@ -30,7 +31,14 @@ export default async function Page() {
 
   return (
     <div className="border-t border-white/10 pt-11">
-      <h1 className="px-3 text-base font-semibold leading-10">Tasks List</h1>
+      <div className="flex items-center px-2">
+        <div className="flex-grow">
+          <h1 className="text-base font-semibold leading-10">Tasks List</h1>
+        </div>
+        <div className="block">
+          <AddTaskButton />
+        </div>
+      </div>
       <table className="mt-6 w-full whitespace-nowrap text-left table-fixed">
         <colgroup>
           <col className="w-4/12 md:w-2/12 xl:w-2/12" />
