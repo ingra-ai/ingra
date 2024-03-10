@@ -13,9 +13,10 @@ import { RefreshCcw } from "lucide-react"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 
-type FormViewState = "email" | "otp";
+type FormViewState = "email" | "otp" | "redirect";
+type MagicLoginFormProps = {};
 
-export const MagicLoginForm: React.FC = () => {
+export const MagicLoginForm: React.FC<MagicLoginFormProps> = (props) => {
   const { toast } = useToast();
   const [formView, setFormView] = useState<FormViewState>("email");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,10 @@ export const MagicLoginForm: React.FC = () => {
     return magicLoginEmail(values).then((data) => {
       if (data?.success) {
         setFormView('otp');
+        return;
       }
+
+      return setFormView('redirect');
     }).catch((error: Error) => {
       toast({
         title: "Uh oh! Something went wrong.",
@@ -53,6 +57,25 @@ export const MagicLoginForm: React.FC = () => {
   const onOtpInputChange = (newValue: string) => {
     setValue('otpCode', newValue, { shouldValidate: true });
   };
+
+  if (formView === 'redirect') {
+    return (
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm" data-testid="magic-login-form">
+        <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight">
+          Signing You In
+        </h2>
+        <div className='flex space-x-2 justify-center items-center my-10'>
+          <span className='sr-only'>Loading...</span>
+          <div className='h-4 w-4 bg-slate-200 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+          <div className='h-4 w-4 bg-slate-200 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+          <div className='h-4 w-4 bg-slate-200 rounded-full animate-bounce'></div>
+        </div>
+        <p className="my-5 text-center text-sm text-white/70 max-w leading-6">
+          Please hold on a moment. We&lsquo;re currently working on signing you into your account. This should only take a few seconds. If it&lsquo;s taking longer than expected, please <Button variant={"link"} className="p-0" onClick={() => setFormView('email')}>try signing in again</Button>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="sm:mx-auto sm:w-full sm:max-w-sm" data-testid="magic-login-form">
