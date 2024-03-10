@@ -8,7 +8,7 @@ import { AuthSessionResponse } from "@app/auth/session";
 import { PhraseCode, type Profile } from "@prisma/client";
 import { useCallback, useState } from "react";
 import { updatePhraseCode } from "../actions/phraseCode";
-
+import { RefreshCcw } from "lucide-react"
 import { ClipboardDocumentIcon } from '@heroicons/react/20/solid'
 import { cn } from "@lib/utils";
 
@@ -19,6 +19,7 @@ type PhraseCodeFormProps = {
 export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
   const { authSession } = props;
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [phraseCode, setPhraseCode] = useState<Pick<PhraseCode, 'code' | 'expiresAt'>>({
     code: authSession.user.phraseCode?.code || '',
     expiresAt: authSession.user.phraseCode?.expiresAt || new Date()
@@ -35,7 +36,9 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
   }, [phraseCode.code]);
 
   const onSubmit = useCallback(() => {
-    updatePhraseCode().then(({ data }) => {
+    setIsLoading(true);
+
+    return updatePhraseCode().then(({ data }) => {
       setPhraseCode(data);
       toast({
         title: "New phrase code generated!",
@@ -48,7 +51,9 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
       });
 
       Logger.error(error?.message);
-    });
+    }).finally(() => {
+      setIsLoading(false);
+    })
   }, []);
 
   const isPhraseCodeExpired = phraseCode.code && new Date(phraseCode.expiresAt) < new Date();
@@ -56,6 +61,9 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
   return (
     <div className="w-full" data-testid="phrase-code-form">
       <h3 className="text-lg font-semibold text-white mb-4">Phrase Code</h3>
+      <p className="mt-5 mb-3 font-semibold text-sm leading-5 text-gray-500">
+        Note: Within your active session, the phrase code can be reused for continuous access until a new one is generated.
+      </p>
 
       <div className="border-l-2 pl-4 border-white/20 hover:border-white/50">
         {
@@ -81,27 +89,27 @@ export const PhraseCodeForm: React.FC<PhraseCodeFormProps> = (props) => {
           )
         }
       </div>
-      <p className="mt-2 font-semibold text-sm leading-5 text-gray-500">
-        Note: Within your active session, the phrase code can be reused for continuous access until its expired or a new one is generated.
-      </p>
       {
         isPhraseCodeExpired && (
           <>
-            <p className="text-sm text-red-300 leading-5">
-              Your phrase code has expired. Please generate a new one, or leave it expired until you want to use GPT features.
+            <p className="text-xs text-red-300 leading-5 mt-3">
+              Your phrase code has expired. You may generate a new one, or leave it expired until you need to re-authenticate with GPT.
             </p>
           </>
         )
       }
 
       <div className="mt-8 flex">
-        <button
-          type="button"
-          className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+        <Button
+          variant={'default'}
+          type='button'
           onClick={onSubmit}
+          disabled={isLoading}
+          className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
         >
-          Generate
-        </button>
+          {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
+          {isLoading ? 'Generating...' : 'Generate'}
+        </Button>
       </div>
 
     </div>
