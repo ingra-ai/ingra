@@ -3,7 +3,7 @@
 import { ActionError } from "@lib/api-response";
 import { getAuthSession } from "@app/auth/session";
 import db from "@lib/db";
-import { generate } from 'generate-passphrase';
+import { generate } from '@lib/functions/generatePassphrase';
 
 export const updatePhraseCode = async () => {
   const authSession = await getAuthSession();
