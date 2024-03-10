@@ -22,18 +22,7 @@ export const NavRoutes: NavItem[] = [
   {
     name: 'Tasks',
     description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
-    children: [
-      {
-        name: 'My Tasks',
-        description: 'Displays a comprehensive list of your current tasks, allowing for management and tracking.',
-        href: '/tasks/my-tasks',
-      },
-      {
-        name: 'New Task',
-        description: 'Create a new task, specifying details such as title, deadline, and priority.',
-        href: '/tasks/new',
-      },
-    ],
+    href: '/tasks'
   },
   {
     name: 'Calendar',
