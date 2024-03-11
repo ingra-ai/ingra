@@ -166,7 +166,9 @@ export async function GET(req: NextRequest) {
             summary: data.summary || '',
             description: data.description || '',
             timeZone: data.timeZone || '',
-            events: (data.items || []).map( mapGoogleCalendarEvent )
+            events: (data.items || []).map( (event) => {
+              return mapGoogleCalendarEvent(event, data.timeZone || 'UTC')
+            } )
           };
 
         return eventBody;
