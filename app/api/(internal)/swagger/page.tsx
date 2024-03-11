@@ -1,5 +1,5 @@
 import SwaggerDocs from './SwaggerDocs';
-import { getSwaggerSpec } from '@/app/api/swagger/config';
+import { getSwaggerSpec } from './config';
 
 import '@css/swagger.scss';
 

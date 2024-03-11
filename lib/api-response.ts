@@ -1,5 +1,3 @@
-import { Task } from "@prisma/client";
-
 /**
  * @swagger
  * components:
