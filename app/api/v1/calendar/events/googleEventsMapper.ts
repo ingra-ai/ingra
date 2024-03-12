@@ -1,18 +1,18 @@
 import { ApiCalendarEvent, ApiCalendarEventAttendee } from "@app/api/types/calendar"
 import { type calendar_v3 } from "googleapis/build/src/apis/calendar/v3"
 import { formatDistance } from "date-fns";
-import { format, utcToZonedTime } from 'date-fns-tz';
+import { format } from 'date-fns-tz';
 
 export const mapGoogleCalendarEvent = (event: calendar_v3.Schema$Event): ApiCalendarEvent => {
   // Extracting necessary information
   const { summary, start, end, htmlLink, reminders, attendees, location, creator, organizer } = event;
 
   // Formatting dates
-  const startDate = ( start?.dateTime && start?.timeZone ) ? utcToZonedTime(start.dateTime, start.timeZone) : null;
-  const endDate = ( end?.dateTime && end?.timeZone ) ? utcToZonedTime(end.dateTime, end.timeZone) : null;
+  const startDate = ( start?.dateTime ) ? new Date(start.dateTime) : null;
+  const endDate = ( end?.dateTime ) ? new Date(end.dateTime) : null;
   
-  const formattedStartDate = ( startDate && start?.timeZone ) ? format(startDate, 'eeee, MMMM d, yyyy, h:mm a', { timeZone: start.timeZone }) : null;
-  const formattedEndDate =  ( endDate && end?.timeZone ) ? format(endDate, 'h:mm a', { timeZone: end.timeZone }) : null;
+  const formattedStartDate = ( startDate ) ? format(startDate, 'eeee, MMMM d, yyyy, h:mm a zzz') : null;
+  const formattedEndDate =  ( endDate ) ? format(endDate, 'h:mm a zzz') : null;
 
   // Creating a readable reminder summary
   const reminderSummary = ( reminders?.overrides || [] ).map(reminder => `${reminder.method} ${reminder.minutes} minutes before`).join(", ");
