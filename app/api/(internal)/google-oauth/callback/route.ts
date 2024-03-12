@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     APP_GOOGLE_OAUTH_CALLBACK_URL // e.g., http://localhost:3000/api/auth/google-oauth/callback
   );
 
-  if ( type === 'redirect' ) {
+  if (type === 'redirect') {
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
 
@@ -48,56 +48,68 @@ export async function GET(request: NextRequest) {
         // 'https://www.googleapis.com/auth/calendar.addons.execute',
       ],
     });
-  
+
     return redirect(authUrl, RedirectType.push);
   }
-  else if ( code && scope ) {
+  else if (code && scope) {
     return await apiTryCatch<any>(async () => {
       const [authSession, tokenResponse] = await Promise.all([
         getAuthSession(),
         oauth2Client.getToken(code)
       ]);
-  
-      if ( authSession === null ) {
+
+      if (authSession === null) {
         throw new ActionError("error", 404, "User session not found");
       }
-  
-      if ( tokenResponse === null) {
+
+      if (tokenResponse === null) {
         throw new ActionError("error", 400, "Invalid token response");
       }
-  
+
       const { tokens } = tokenResponse;
 
       const credentials: Partial<typeof tokens> = {
         access_token: tokens.access_token
       };
 
-      if ( tokens.refresh_token ) {
+      if (tokens.refresh_token) {
         credentials.refresh_token = tokens.refresh_token;
       }
-  
+
       oauth2Client.setCredentials(credentials);
-  
-      const peopleService = google.people({version: 'v1', auth: oauth2Client}),
+
+      const peopleService = google.people({ version: 'v1', auth: oauth2Client }),
         profile = await peopleService.people.get({
           resourceName: 'people/me',
           personFields: 'emailAddresses',
         });
-  
-      if ( !profile || !profile.data ) {
+
+      if (!profile || !profile.data) {
         throw new ActionError("error", 400, "Profile not found");
       }
-  
-      const primaryEmailAddress = (profile.data.emailAddresses || [])?.find( email => email?.metadata?.primary === true );
-  
-      if ( !primaryEmailAddress || !primaryEmailAddress.value ) {
+
+      const primaryEmailAddress = (profile.data.emailAddresses || [])?.find(email => email?.metadata?.primary === true);
+
+      if (!primaryEmailAddress || !primaryEmailAddress.value) {
         throw new ActionError("error", 400, "Primary email address not found");
       }
 
-      if ( !tokens.access_token ) {
+      if (!tokens.access_token) {
         throw new ActionError("error", 400, "Invalid token response")
       }
-  
+
+      const updateData: Record<string, any> = {
+        accessToken: tokens.access_token || '',
+        scope: tokens.scope || '',
+        tokenType: tokens.token_type || '',
+        expiryDate: new Date(tokens.expiry_date || 0),
+      };
+
+      // Only add refreshToken to updateData if tokens.refresh_token is not empty
+      if (tokens.refresh_token) {
+        updateData.refreshToken = tokens.refresh_token;
+      }
+
       const oauthToken = await db.oAuthToken.upsert({
         where: {
           userId_primaryEmailAddress: {
@@ -115,13 +127,7 @@ export async function GET(request: NextRequest) {
           tokenType: tokens.token_type || '',
           expiryDate: new Date(tokens.expiry_date || 0),
         },
-        update: {
-          accessToken: tokens.access_token || '',
-          refreshToken: tokens.refresh_token || '',
-          scope: tokens.scope || '',
-          tokenType: tokens.token_type || '',
-          expiryDate: new Date(tokens.expiry_date || 0),
-        }
+        update: updateData
       });
 
       return NextResponse.json(

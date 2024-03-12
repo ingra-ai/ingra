@@ -122,6 +122,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
+  timezones-list:
+    specifier: ^3.0.3
+    version: 3.0.3
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
@@ -8399,6 +8402,10 @@ packages:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
     dependencies:
       any-promise: 1.3.0
+
+  /timezones-list@3.0.3:
+    resolution: {integrity: sha512-C+Vdvvj2c1xB6pu81pOX8geo6mrk/QsudFVlTVQET7QQwu8WAIyhDNeCrK5grU7EMzmbKLWqz7uU6dN8fvQvPQ==}
+    dev: false
 
   /tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}

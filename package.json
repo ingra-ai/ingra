@@ -52,6 +52,7 @@
     "swagger-ui-react": "^5.11.10",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "timezones-list": "^3.0.3",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },

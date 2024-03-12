@@ -25,6 +25,7 @@ model Profile {
   id        Int      @id @default(autoincrement())
   userId    String   @unique @db.Uuid
   userName  String   @unique @db.VarChar(255)
+  timeZone      String   @db.VarChar(128) @default("America/New_York")
   firstName String   @db.VarChar(255)
   lastName  String   @db.VarChar(255)
   createdAt DateTime @default(now())
