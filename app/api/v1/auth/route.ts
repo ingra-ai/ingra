@@ -7,6 +7,7 @@ import { sendMagicLinkEmail } from "@lib/mail/sendMagicLinkEmail";
 import { NextRequest, NextResponse } from "next/server";
 import { generate } from '@lib/functions/generatePassphrase';
 import { apiTryCatch } from "@app/api/utils/apiTryCatch";
+import { APP_URL } from "@lib/constants";
 
 /**
  * @swagger
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest ) {
     });
   
     if ( !phraseCode ) {
-      throw new ActionError("error", 400, "Invalid phrase code");
+      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
     }
   
     if ( phraseCode.isAuthenticated ) {

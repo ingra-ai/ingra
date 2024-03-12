@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
   
     if ( !userWithProfile ) {
-      throw new ActionError("error", 400, "Invalid phrase code");
+      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
     }
 
     const userOauthTokens = await db.oAuthToken.findMany({
