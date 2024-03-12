@@ -1,7 +1,7 @@
 "use server";
 import { NextRequest, NextResponse } from 'next/server';
 import { ActionError, ApiError, ApiSuccess } from '@lib/api-response';
-import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL } from "@lib/constants";
+import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from "@lib/constants";
 import { google } from 'googleapis';
 import { RedirectType, redirect } from "next/navigation";
 import db from '@lib/db';
@@ -130,18 +130,10 @@ export async function GET(request: NextRequest) {
         update: updateData
       });
 
-      return NextResponse.json(
-        {
-          status: 'Success',
-          message: 'Handshake successful',
-          data: {
-            ref: oauthToken.id
-          },
-        } as ApiSuccess<any>,
-        {
-          status: 200
-        }
-      );
+      const redirectUrl = new URL(APP_GOOGLE_OAUTH_REDIRECT_URL);
+      redirectUrl.searchParams.append('ref', oauthToken.id);
+
+      return NextResponse.redirect(redirectUrl);
     });
   }
 
