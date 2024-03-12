@@ -3,7 +3,7 @@ import { type calendar_v3 } from "googleapis/build/src/apis/calendar/v3"
 import { formatDistance } from "date-fns";
 import { format } from 'date-fns-tz';
 
-export const mapGoogleCalendarEvent = (event: calendar_v3.Schema$Event): ApiCalendarEvent => {
+export const mapGoogleCalendarEvent = (event: calendar_v3.Schema$Event, timeZone: string): ApiCalendarEvent => {
   // Extracting necessary information
   const { summary, start, end, htmlLink, reminders, attendees, location, creator, organizer } = event;
 
@@ -11,8 +11,8 @@ export const mapGoogleCalendarEvent = (event: calendar_v3.Schema$Event): ApiCale
   const startDate = ( start?.dateTime ) ? new Date(start.dateTime) : null;
   const endDate = ( end?.dateTime ) ? new Date(end.dateTime) : null;
   
-  const formattedStartDate = ( startDate ) ? format(startDate, 'eeee, MMMM d, yyyy, h:mm a zzz') : null;
-  const formattedEndDate =  ( endDate ) ? format(endDate, 'h:mm a zzz') : null;
+  const formattedStartDate = ( startDate ) ? format(startDate, 'eeee, MMMM d, yyyy, h:mm a zzz', { timeZone }) : null;
+  const formattedEndDate =  ( endDate ) ? format(endDate, 'h:mm a zzz', { timeZone }) : null;
 
   // Creating a readable reminder summary
   const reminderSummary = ( reminders?.overrides || [] ).map(reminder => `${reminder.method} ${reminder.minutes} minutes before`).join(", ");
