@@ -1,11 +1,12 @@
-import Link from "next/link";
-import { CSSProperties } from "react";
 
-export default async function Dashboard() {
+/**
+ * 
+ * @see GooglePrivacyPolicy https://support.google.com/cloud/answer/13464321?sjid=2045049615606551346-AP
+ */
+export default async function PrivacyPolicy() {
   return (
     <div className="leading-7">
-      <h1 className="text-lg">Setting up to use GPT Plugins</h1>
-      <p>Go to your <Link className="underline font-medium" href='/settings/gpt-plugins' prefetch={true}>GPT Plugins Settings</Link></p>
+      <p> Coming soon </p>
     </div>
   );
 }

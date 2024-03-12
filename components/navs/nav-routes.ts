@@ -27,18 +27,7 @@ export const NavRoutes: NavItem[] = [
   {
     name: 'Calendar',
     description: 'Manage and view your calendar for scheduling and tracking events, appointments, and deadlines.',
-    children: [
-      {
-        name: 'View Calendar',
-        description: 'Displays your calendar with all scheduled events and activities.',
-        href: '/calendar/view',
-      },
-      {
-        name: 'Add Event',
-        description: 'Create a new event or appointment in your calendar.',
-        href: '/calendar/add',
-      },
-    ],
+    href: '/calendars'
   },
   // {
   //   name: 'Notes',

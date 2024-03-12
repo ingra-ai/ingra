@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSwaggerSpec } from '@/app/api/swagger/config';
+import { getSwaggerSpec } from '../swagger/config';
 import { APP_URL } from '@lib/constants';
 
 /**

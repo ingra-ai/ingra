@@ -8,27 +8,27 @@ export const redisExtension = Prisma.defineExtension({
   name: 'redisExtension',
   query: {
     phraseCode: {
-      async findUnique({ model, operation, args, query }) {
-        let cacheKey = '';
+      // async findUnique({ model, operation, args, query }) {
+      //   let cacheKey = '';
     
-        // If there's only `code` in args.where;
-        // return the result from Redis if exists
-        if ( args.where && Object.keys(args.where).length === 1 && args.where.code ) {
-          cacheKey = UPHRASECODE_KEY_PREFIX + args.where.code;
-          const cache = await kv.get<PhraseCode>( cacheKey );
-          if ( cache ) {
-            return cache;
-          }
-        }
+      //   // If there's only `code` in args.where;
+      //   // return the result from Redis if exists
+      //   if ( args.where && Object.keys(args.where).length === 1 && args.where.code ) {
+      //     cacheKey = UPHRASECODE_KEY_PREFIX + args.where.code;
+      //     const cache = await kv.get<PhraseCode>( cacheKey );
+      //     if ( cache ) {
+      //       return cache;
+      //     }
+      //   }
 
-        const result = await query(args)
+      //   const result = await query(args)
 
-        if ( cacheKey ) {
-          await kv.set( cacheKey, result );
-        }
+      //   if ( cacheKey ) {
+      //     await kv.set( cacheKey, result );
+      //   }
 
-        return result;
-      },
+      //   return result;
+      // }
     },
     activeSession: {
       async findUnique({ model, operation, args, query }) {
