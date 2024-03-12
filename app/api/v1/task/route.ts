@@ -1,6 +1,7 @@
 import { getUserByPhraseCode } from "@/data/user";
 import { apiTryCatch } from "@app/api/utils/apiTryCatch";
 import { ActionError, ApiError, ApiSuccess } from "@lib/api-response";
+import { APP_URL } from "@lib/constants";
 import db from "@lib/db";
 import { Task } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -150,7 +151,7 @@ export async function GET(req: NextRequest ) {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
   
     if ( !userWithProfile ) {
-      throw new ActionError("error", 400, "Invalid phrase code");
+      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
     }
   
     const findManyParams: Parameters<typeof db.task.findMany>[0] = {
@@ -230,7 +231,7 @@ export async function POST(req: NextRequest ) {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
   
     if ( !userWithProfile ) {
-      throw new ActionError("error", 400, "Invalid phrase code");
+      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
     }
   
     const task = await db.task.create({
@@ -278,7 +279,7 @@ export async function PATCH(req: NextRequest) {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
     
     if ( !userWithProfile ) {
-      throw new ActionError("error", 400, "Invalid phrase code");
+      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
     }
   
     const taskBefore = await db.task.findUnique({
