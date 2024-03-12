@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
   // Clamp maxResults to minimum 0 and maximum 30
   const maxResultsClamped = Math.min(30, Math.max(0, parseInt(maxResults, 10) || 10));
 
-  return await apiTryCatch<unknown>(async () => {
+  return await apiTryCatch<any>(async () => {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
   
     if ( !userWithProfile ) {
