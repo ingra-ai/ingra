@@ -6,6 +6,7 @@ import db from "@lib/db";
 import { sendMagicLinkEmail } from "@lib/mail/sendMagicLinkEmail";
 import { NextRequest, NextResponse } from "next/server";
 import { generate } from '@lib/functions/generatePassphrase';
+import { apiTryCatch } from "@app/api/utils/apiTryCatch";
 
 /**
  * @swagger
@@ -185,7 +186,7 @@ export async function GET(req: NextRequest) {
     otpCode: params?.otpCode || ''
   });
 
-  try {
+  return apiTryCatch<any>(async () => {
     if (!validatedFields.success) {
       throw new ActionError("error", 400, "One or more provided values is invalid. Please check your input and try again.");
     }
@@ -276,29 +277,7 @@ export async function GET(req: NextRequest) {
         }
       );
     }
-  }
-  catch (err: any) {
-    if ( err instanceof ActionError ) {
-      return NextResponse.json( err.toJson() ,
-        {
-          status: err.status || 400
-        }
-      );
-
-    }
-    else {
-      return NextResponse.json(
-        { 
-          status: 400,
-          code: "BAD_REQUEST",
-          message: err?.message || "Something went wrong. Please try again." 
-        } as ApiError,
-        {
-          status: 400
-        }
-      );
-    }
-  }
+  });
 }
 
 export async function PUT(req: NextRequest) {

@@ -1,4 +1,5 @@
 import { getUserByPhraseCode } from "@/data/user";
+import { apiTryCatch } from "@app/api/utils/apiTryCatch";
 import { ActionError, ApiError, ApiSuccess } from "@lib/api-response";
 import db from "@lib/db";
 import { Task } from "@prisma/client";
@@ -145,7 +146,7 @@ export async function GET(req: NextRequest ) {
   const params = Object.fromEntries( searchParams ) as TaskRequestParams;
   const { phraseCode, ...restOfPayload } = params || {};
 
-  try {
+  return apiTryCatch<any>( async () => {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
   
     if ( !userWithProfile ) {
@@ -205,29 +206,7 @@ export async function GET(req: NextRequest ) {
         }
       );
     }
-  }
-  catch (err: any) {
-    if ( err instanceof ActionError ) {
-      return NextResponse.json( err.toJson(),
-        {
-          status: err.status || 500
-        }
-      );
-
-    }
-    else {
-      return NextResponse.json(
-        { 
-          status: 400,
-          code: "BAD_REQUEST",
-          message: err?.message || "Something went wrong. Please try again." 
-        } as ApiError,
-        {
-          status: 400
-        }
-      );
-    }
-  }
+  });
 }
 
 /**
@@ -247,7 +226,7 @@ export async function POST(req: NextRequest ) {
    */
   const { phraseCode, task: restOfPayload } = data || {};
 
-  try {
+  return apiTryCatch<any>( async () => {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
   
     if ( !userWithProfile ) {
@@ -275,30 +254,7 @@ export async function POST(req: NextRequest ) {
         status: 201
       }
     );
-  }
-  catch (err: any) {
-    if ( err instanceof ActionError ) {
-      return NextResponse.json( err.toJson(),
-        {
-          status: err.status || 500
-        }
-      );
-
-    }
-    else {
-      return NextResponse.json(
-        { 
-          status: 400,
-          code: "BAD_REQUEST",
-          message: err?.message || "Something went wrong. Please try again." 
-        } as ApiError,
-        {
-          status: 400
-        }
-      );
-    }
-  }
-
+  });
 };
 
 /**
@@ -318,8 +274,7 @@ export async function PATCH(req: NextRequest) {
    */
   const { phraseCode, task: restOfPayload } = data || {};
 
-  try {
-
+  return apiTryCatch<any>( async () => {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
     
     if ( !userWithProfile ) {
@@ -383,29 +338,7 @@ export async function PATCH(req: NextRequest) {
         status: 200
       }
     );
-  }
-  catch (err: any) {
-    if ( err instanceof ActionError ) {
-      return NextResponse.json( err.toJson(),
-        {
-          status: err.status || 500
-        }
-      );
-
-    }
-    else {
-      return NextResponse.json(
-        { 
-          status: 400,
-          code: "BAD_REQUEST",
-          message: err?.message || "Something went wrong. Please try again." 
-        } as ApiError,
-        {
-          status: 400
-        }
-      );
-    }
-  }
+  });
 }
 
 export async function PUT(req: NextRequest) {
