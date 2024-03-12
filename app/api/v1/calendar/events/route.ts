@@ -17,7 +17,7 @@ import { parseStartAndEnd } from '@app/api/utils/chronoUtils';
  *   get:
  *     summary: Retrieve events from connected Calendars with filters
  *     operationId: GetCalendarEvents
- *     description: Retrieves events from all Calendars connected by the user based on the provided unique phrase code for authentication. It supports filtering by date range, search query, maximum number of results, and sorting order. The date range can be specified in natural language, which is parsed using the chrono-node library.
+ *     description: Fetches user's calendar events using a code, with filters for date, search, limit, and sort. Parses dates with chrono-node.
  *     parameters:
  *       - in: query
  *         name: phraseCode
@@ -31,14 +31,14 @@ import { parseStartAndEnd } from '@app/api/utils/chronoUtils';
  *           type: string
  *         required: false
  *         default: "start of today"
- *         description: "The start date or time of the event retrieval period, specified in natural language. Examples: 'today', 'next Monday', 'in 2 days'. Chrono-node will parse this into the actual start date and time. Default is 'start of today'."
+ *         description: "Start date/time for events, in natural language (e.g., 'today', 'next Monday'). Chrono-node parses it. Default: 'start of today'"
  *       - in: query
  *         name: end
  *         schema:
  *           type: string
  *         required: false
  *         default: "end of today"
- *         description: "The end date or time of the event retrieval period, specified in natural language. Examples: 'tomorrow', 'next Friday', 'in 5 days'. Chrono-node will parse this into the actual end date and time. If not provided, the system may assume a default duration or end time based on the context. Default is 'end of today'."
+ *         description: "End date/time for events, in natural language (e.g., 'tomorrow', 'next Friday'). Chrono-node parses it. Default: 'end of today'"
  *       - in: query
  *         name: q
  *         schema:
