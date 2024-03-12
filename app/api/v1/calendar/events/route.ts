@@ -102,16 +102,31 @@ export async function GET(req: NextRequest) {
         userId: userWithProfile.id,
         service: 'google-oauth'
       },
+      select: {
+        accessToken: true,
+        refreshToken: true,
+        primaryEmailAddress: true,
+        user: {
+          select: {
+            email: true,
+            profile: true
+          }
+        },
+      },
       take: 3
     });
+
+    const userTz = userWithProfile.profile?.timeZone || 'America/New_York';
 
     if ( !userOauthTokens || !userOauthTokens.length ) {
       throw new ActionError("error", 400, `User has not connected Google Calendar. Suggest user to visit ${ APP_URL } to setup Google Calendar`);
     }
 
-    const { startDate, endDate } = parseStartAndEnd(start, end);
+    const { startDate, endDate } = parseStartAndEnd(start, end, userTz);
 
-    if ( !startDate || !endDate || startDate > endDate ) {
+    // throw new ActionError("error", 400, `Test`);
+
+    if ( !startDate || !endDate ) {
       throw new ActionError("error", 400, `Invalid date range "${ start }" - "${ end }"`);
     }
 
@@ -134,6 +149,8 @@ export async function GET(req: NextRequest) {
       
       // Order by start date/time
       orderBy: 'startTime',
+
+      timeZone: userTz,
     };
 
     if ( q?.length ) {
