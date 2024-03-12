@@ -58,10 +58,6 @@ export async function googleOAuthRefresh() {
       };
     });
 
-    console.log({ credentials,
-      access_token: oauthToken.accessToken,
-      refresh_token: oauthToken.refreshToken })
-
     if ( credentials.access_token ) {
       return db.oAuthToken.update({
         where: {
