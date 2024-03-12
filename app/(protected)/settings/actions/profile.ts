@@ -19,7 +19,7 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
     throw new ActionError("error", 400, "User not authenticated!");
   }
 
-  const { firstName, lastName, userName } = validatedFields.data;
+  const { firstName, lastName, userName, timeZone } = validatedFields.data;
 
   const profile = await db.profile.upsert({
     where: {
@@ -28,12 +28,14 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
     update: {
       firstName,
       lastName,
-      userName
+      userName,
+      timeZone
     },
     create: {
       firstName,
       lastName,
       userName,
+      timeZone,
       userId: authSession.user.id
     }
   });
