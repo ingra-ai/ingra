@@ -30,15 +30,15 @@ import { parseStartAndEnd } from '@app/api/utils/chronoUtils';
  *         schema:
  *           type: string
  *         required: false
- *         default: "start of today"
- *         description: "Start date/time for events, in natural language (e.g., 'today', 'next Monday'). Chrono-node parses it. Default: 'start of today'"
+ *         default: "today at 0:00"
+ *         description: "Start date/time for events, in natural language (e.g., 'today', 'next Monday'). Chrono-node parses it. Default: 'today at 0:00'"
  *       - in: query
  *         name: end
  *         schema:
  *           type: string
  *         required: false
- *         default: "end of today"
- *         description: "End date/time for events, in natural language (e.g., 'tomorrow', 'next Friday'). Chrono-node parses it. Default: 'end of today'"
+ *         default: "today at 23:59"
+ *         description: "End date/time for events, in natural language (e.g., 'tomorrow', 'next Friday'). Chrono-node parses it. Default: 'today at 23:59'"
  *       - in: query
  *         name: q
  *         schema:
@@ -80,8 +80,8 @@ export async function GET(req: NextRequest) {
   const params = Object.fromEntries( searchParams );
   const { 
     phraseCode,
-    start = 'start of today',
-    end = 'end of today',
+    start = 'today at 0:00',
+    end = 'today at 23:59',
     q = '',
     maxResults = '10',
     orderBy = 'startTime'
