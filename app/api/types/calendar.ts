@@ -27,7 +27,8 @@ export type ApiCalendarEventAttendee = {
  *     ApiCalendarEvent:
  *       type: object
  *       required:
- *         - title
+ *         - summary
+ *         - description
  *         - creator
  *         - organizer
  *         - startDateTime
@@ -41,9 +42,12 @@ export type ApiCalendarEventAttendee = {
  *         eventId:
  *           type: string
  *           description: The resource ID of the calendar event, this will be reused for editing the calendar.
- *         title:
+ *         summary:
  *           type: string
- *           description: The title of the calendar event.
+ *           description: The summary of the calendar event.
+ *         description:
+ *           type: string
+ *           description: The description of the calendar event. This can be a detailed description of the event or a summary of the event.
  *         creator:
  *           type: string
  *           description: The email of the person who created the event. 'me' indicates the current user.
@@ -78,7 +82,8 @@ export type ApiCalendarEventAttendee = {
  */
 export type ApiCalendarEvent = {
   eventId: string;
-  title: string;
+  summary: string;
+  description: string;
   creator: 'me' | string;
   organizer: 'me' | string;
   startDateTime: string;
