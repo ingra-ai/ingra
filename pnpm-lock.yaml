@@ -110,9 +110,6 @@ dependencies:
   sass:
     specifier: ^1.72.0
     version: 1.72.0
-  server-only:
-    specifier: ^0.0.1
-    version: 0.0.1
   swagger-ui-react:
     specifier: ^5.12.0
     version: 5.12.0(@types/react@18.2.56)(react-dom@18.2.0)(react@18.2.0)
@@ -8096,10 +8093,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       type-fest: 0.20.2
-    dev: false
-
-  /server-only@0.0.1:
-    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
     dev: false
 
   /set-function-length@1.2.1:
