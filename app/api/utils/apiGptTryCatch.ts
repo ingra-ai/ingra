@@ -3,7 +3,7 @@ import { ActionError } from '@lib/api-response';
 import { APP_URL } from '@lib/constants';
 import { apiTryCatch } from './apiTryCatch';
 
-type ApiGptTryCallbackArg = NonNullable<Awaited<ReturnType<typeof getUserByPhraseCode>>>;
+export type ApiGptTryCallbackArg = NonNullable<Awaited<ReturnType<typeof getUserByPhraseCode>>>;
 
 export const apiGptTryCatch = async <T>(phraseCode: string, fn: (userWithProfile: ApiGptTryCallbackArg) => Promise<T>): Promise<T> => {
   return await apiTryCatch(async () => {

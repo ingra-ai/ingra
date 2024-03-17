@@ -5,7 +5,7 @@ import { format, utcToZonedTime } from 'date-fns-tz';
 
 export const mapGoogleCalendarEvent = (event: calendar_v3.Schema$Event, timeZone: string): ApiCalendarEvent => {
   // Extracting necessary information
-  const { summary, start, end, htmlLink, reminders, attendees, location, creator, organizer } = event;
+  const { id, summary, start, end, htmlLink, reminders, attendees, location, creator, organizer } = event;
 
   // Formatting dates
   const startDate = start?.dateTime ? utcToZonedTime(new Date(start.dateTime), timeZone) : null;
@@ -31,6 +31,7 @@ export const mapGoogleCalendarEvent = (event: calendar_v3.Schema$Event, timeZone
   });
 
   return {
+    eventId: id || 'N/A',
     title: summary || 'N/A',
     creator: creator?.self ? 'me' : creator?.email || 'N/A',
     organizer: organizer?.self ? 'me' : organizer?.email || 'N/A',

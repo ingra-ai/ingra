@@ -21,10 +21,21 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 
 ## Features
 
-- [ ] **User Management**: Manual authentication system for better security and privacy.
-- [ ] **Task Management**: Intuitive interface to manage your tasks efficiently.
-- [ ] **Calendar Scheduling**: Integrated calendar for easy scheduling and event management.
-- [ ] **GPT Integration**: Leverage GPT function calls for enhanced productivity tools.
+- [x] **User Management**: Manual authentication system for better security and privacy.
+- [x] **Task Management**: Intuitive interface to manage your tasks efficiently.
+- [ ] **Calendar Scheduling**: Integrated calendar for easy scheduling and event management, powered by Google Calendar API.
+- [x] **GPT Integration**: Leverage GPT function calls for enhanced productivity tools.
+- [ ] **Email Integration**: Manage and send emails directly through the platform, utilizing the Gmail API.
+- [ ] **Contacts Management**: Access and manage your contacts, leveraging Google Contacts API for seamless integration.
+- [ ] **File Management**: Store, access, and manage files with Google Drive API integration, ensuring secure and organized file handling.
+- [ ] **Data Analysis and Reporting**: Utilize Google Sheets API for advanced data analysis and reporting capabilities within your workflows.
+- [ ] **Rich Communication Features**: Enhance user engagement with personalized email and notification services through Gmail API.
+- [ ] **Comprehensive Contact Insights**: Gain deeper insights into your contacts, improve networking and relationships using the People API.
+- [ ] **Advanced Task Automation**: Implement sophisticated task management and automation using GPT integration combined with Google Tasks.
+- [ ] **Enhanced Search Capabilities**: Future integration with a Postgres vector database will provide advanced search features, making it easier to retrieve relevant information and documents quickly.
+- [ ] **Intelligent Data Embedding**: Utilize the Postgres vector database for embedding data intelligently, enabling more efficient data retrieval and analysis.
+- [ ] **Personalized Content Recommendations**: With GPT integration and Postgres vector database, offer personalized content and task recommendations based on user behavior and preferences.
+- [ ] **Semantic Search in Emails and Documents**: Implement semantic search across emails and documents stored in Google Drive, enhancing the ability to find relevant information effortlessly.
 
 
 ## Getting Started
