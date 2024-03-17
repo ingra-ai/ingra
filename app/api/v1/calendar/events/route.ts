@@ -11,6 +11,7 @@ import type { ApiCalendarEventBody, ApiCalendarEventsResponse } from '@app/api/t
 import { mapGoogleCalendarEvent } from './googleEventsMapper';
 import { parseStartAndEnd } from '@app/api/utils/chronoUtils';
 import { apiGptTryCatch } from '@app/api/utils/apiGptTryCatch';
+import { fetchUserOAuthTokens } from './fetchUserOAuthTokens';
 
 /**
  * @swagger
@@ -85,34 +86,10 @@ export async function GET(req: NextRequest) {
   const maxResultsClamped = Math.min(30, Math.max(0, parseInt(maxResults, 10) || 10));
 
   return await apiGptTryCatch<any>(phraseCode, async (userWithProfile) => {
-    const userOauthTokens = await db.oAuthToken.findMany({
-      where: {
-        userId: userWithProfile.id,
-        service: 'google-oauth',
-      },
-      select: {
-        accessToken: true,
-        refreshToken: true,
-        primaryEmailAddress: true,
-        user: {
-          select: {
-            email: true,
-            profile: true,
-          },
-        },
-      },
-      take: 3,
-    });
-
+    const userOauthTokens = await fetchUserOAuthTokens(userWithProfile);
     const userTz = userWithProfile.profile?.timeZone || 'America/New_York';
 
-    if (!userOauthTokens || !userOauthTokens.length) {
-      throw new ActionError('error', 400, `User has not connected Google Calendar. Suggest user to visit ${APP_URL} to setup Google Calendar`);
-    }
-
     const { startDate, endDate } = parseStartAndEnd(start, end, userTz);
-
-    // throw new ActionError("error", 400, `Test`);
 
     if (!startDate || !endDate) {
       throw new ActionError('error', 400, `Invalid date range "${start}" - "${end}"`);
@@ -146,19 +123,19 @@ export async function GET(req: NextRequest) {
       eventListParams.q = q;
     }
 
-    const calendarEventsDataMapPromises = userOauthTokens.map(async (userCalendarOAuthToken) => {
+    const calendarEventsDataMapPromises = userOauthTokens.map(async (userOAuthToken) => {
       const oauth2Client = new google.auth.OAuth2(
         APP_GOOGLE_OAUTH_CLIENT_ID,
         APP_GOOGLE_OAUTH_CLIENT_SECRET,
-        APP_GOOGLE_OAUTH_CALLBACK_URL // e.g., http://localhost:3000/api/auth/google-oauth/callback
+        APP_GOOGLE_OAUTH_CALLBACK_URL
       );
 
       const credentials: Record<string, any> = {
-        access_token: userCalendarOAuthToken.accessToken,
+        access_token: userOAuthToken.accessToken,
       };
 
-      if (userCalendarOAuthToken.refreshToken) {
-        credentials.refresh_token = userCalendarOAuthToken.refreshToken;
+      if (userOAuthToken.refreshToken) {
+        credentials.refresh_token = userOAuthToken.refreshToken;
       }
 
       oauth2Client.setCredentials(credentials);
@@ -182,11 +159,11 @@ export async function GET(req: NextRequest) {
         })
         .catch((err) => {
           Logger.withTag('/api/v1/calendar/events').error('The API returned an error: ' + err);
-          return null;
+          throw new ActionError('error', 500, 'The API returned an error: ' + err.message || 'Unknown error occurred');
         });
 
       return {
-        email: userCalendarOAuthToken.primaryEmailAddress,
+        email: userOAuthToken.primaryEmailAddress,
         eventBody,
       };
     });
@@ -206,3 +183,111 @@ export async function GET(req: NextRequest) {
     );
   });
 }
+
+
+/**
+ * @swagger
+ * /api/v1/calendar/events:
+ *   post:
+ *     summary: Create new calendar event
+ *     operationId: CreateNewCalendarEvent
+ *     description: Creates a new calendar event. Requires a phrase code to authenticate the user and perform this operation, and affiliated email if the user has multiple calendars. Do not assume the required fields, but ask clarifications to user.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [phraseCode, email, start, end]
+ *             properties:
+ *               calendarEvent:
+ *                 allOf:
+ *                   - $ref: '#/components/schemas/ApiCalendarEvent'
+ *                   - type: object
+ *                     required: [title]
+ *                     properties: {}
+ *               phraseCode:
+ *                 type: string
+ *                 description: A unique code to authenticate the user to perform this operation.
+ *               email:
+ *                 type: string
+ *                 description: The email address associated with the calendar events. Required if the user has multiple calendars.
+ *               start:
+ *                 type: string
+ *                 description: "Start date/time for events, in natural language (e.g., 'today', 'next Monday'). Chrono-node parses it. Default: 'today at 0:00'"
+ *               end:
+ *                 type: string
+ *                 description: "End date/time for events, in natural language (e.g., 'tomorrow', 'next Friday'). Chrono-node parses it. Default: 'today at 23:59'"
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved events from connected calendars based on the filters applied.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiSuccess'
+ *       '400':
+ *         description: Bad request, such as missing or invalid parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiError'
+ *     tags:
+ *       - Calendar
+ */
+export async function POST(req: NextRequest) {
+  const data = await req.json();
+  const { 
+    phraseCode, 
+    email, 
+    start = 'today at 0:00', 
+    end = 'today at 23:59', 
+    calendarEvent 
+  } = data || {};
+
+  return await apiGptTryCatch<any>(phraseCode, async (userWithProfile) => {
+    const userOAuthTokens = await fetchUserOAuthTokens(userWithProfile);
+    const userTz = userWithProfile.profile?.timeZone || 'America/New_York';
+
+    const { startDate, endDate } = parseStartAndEnd(start, end, userTz);
+
+    if (!startDate || !endDate) {
+      throw new ActionError('error', 400, `Invalid date range "${start}" - "${end}"`);
+    }
+
+    const userOAuthToken = userOAuthTokens.find((token) => token.primaryEmailAddress === email);
+
+    if ( !userOAuthToken ) {
+      throw new ActionError('error', 400, `User does not have access to the calendar with email "${email}"`);
+    }
+
+    const oauth2Client = new google.auth.OAuth2(
+      APP_GOOGLE_OAUTH_CLIENT_ID,
+      APP_GOOGLE_OAUTH_CLIENT_SECRET,
+      APP_GOOGLE_OAUTH_CALLBACK_URL
+    );
+
+    const credentials: Record<string, any> = {
+      access_token: userOAuthToken.accessToken,
+    };
+
+    if (userOAuthToken.refreshToken) {
+      credentials.refresh_token = userOAuthToken.refreshToken;
+    }
+
+    oauth2Client.setCredentials(credentials);
+
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+    return NextResponse.json(
+      {
+        status: 'success',
+        message: `Not implemented yet`,
+        data: {},
+      } as ApiSuccess<ApiCalendarEventsResponse>,
+      {
+        status: 200,
+      }
+    );
+  });
+}
+

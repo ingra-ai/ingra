@@ -38,6 +38,9 @@ export type ApiCalendarEventAttendee = {
  *         - reminder
  *         - attendees
  *       properties:
+ *         eventId:
+ *           type: string
+ *           description: The resource ID of the calendar event, this will be reused for editing the calendar.
  *         title:
  *           type: string
  *           description: The title of the calendar event.
@@ -74,6 +77,7 @@ export type ApiCalendarEventAttendee = {
  *           description: A list of attendees for the event.
  */
 export type ApiCalendarEvent = {
+  eventId: string;
   title: string;
   creator: 'me' | string;
   organizer: 'me' | string;
