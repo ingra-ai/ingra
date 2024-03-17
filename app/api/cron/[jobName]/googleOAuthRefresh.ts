@@ -1,9 +1,9 @@
-import { ApiSuccess } from "@lib/api-response";
-import { APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET } from "@lib/constants";
-import db from "@lib/db";
-import { google } from "googleapis";
-import { NextResponse } from "next/server";
-import { Logger } from "@lib/logger";
+import { ApiSuccess } from '@lib/api-response';
+import { APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET } from '@lib/constants';
+import db from '@lib/db';
+import { google } from 'googleapis';
+import { NextResponse } from 'next/server';
+import { Logger } from '@lib/logger';
 
 export async function googleOAuthRefresh() {
   const _startMs = Date.now();
@@ -12,12 +12,12 @@ export async function googleOAuthRefresh() {
     where: {
       service: 'google-oauth',
       refreshToken: {
-        not: null
-      }
-    }
+        not: null,
+      },
+    },
   });
 
-  if ( !allOAuthTokens || !allOAuthTokens.length ) {
+  if (!allOAuthTokens || !allOAuthTokens.length) {
     return NextResponse.json(
       {
         status: 'success',
@@ -26,16 +26,16 @@ export async function googleOAuthRefresh() {
           total: 0,
           success: 0,
           failed: 0,
-          durationMs: Date.now() - _startMs
-        }
+          durationMs: Date.now() - _startMs,
+        },
       } as ApiSuccess<any>,
       {
-        status: 200
+        status: 200,
       }
     );
   }
 
-  const refreshOperationsPromises = allOAuthTokens.map( async (oauthToken) => {
+  const refreshOperationsPromises = allOAuthTokens.map(async (oauthToken) => {
     const recordId = oauthToken.id;
     const oauth2Client = new google.auth.OAuth2(
       APP_GOOGLE_OAUTH_CLIENT_ID,
@@ -45,52 +45,52 @@ export async function googleOAuthRefresh() {
 
     oauth2Client.setCredentials({
       access_token: oauthToken.accessToken,
-      refresh_token: oauthToken.refreshToken
+      refresh_token: oauthToken.refreshToken,
     });
 
-    const { credentials } = await oauth2Client.refreshAccessToken().catch( (err) => {
+    const { credentials } = await oauth2Client.refreshAccessToken().catch((err) => {
       Logger.withTag('googleOAuthRefresh').error('Error refreshing token: ' + err);
       return {
         credentials: {
           access_token: null,
-          expiry_date: null
-        }
+          expiry_date: null,
+        },
       };
     });
 
-    if ( credentials.access_token ) {
+    if (credentials.access_token) {
       return db.oAuthToken.update({
         where: {
-          id: recordId
+          id: recordId,
         },
         data: {
           accessToken: credentials.access_token,
           expiryDate: new Date(credentials.expiry_date || Date.now()),
-          lastRefreshedAt: new Date()
-        }
+          lastRefreshedAt: new Date(),
+        },
       });
     }
 
     return false;
-  } );
+  });
 
   const refreshOperations = await Promise.all(refreshOperationsPromises),
     totalRefreshOperations = refreshOperations.length,
-    totalFalsey = refreshOperations.filter( op => op === false ).length;
+    totalFalsey = refreshOperations.filter((op) => op === false).length;
 
   return NextResponse.json(
     {
       status: 'success',
-      message: `Successfully refreshed ${ totalRefreshOperations - totalFalsey } token(s)`,
+      message: `Successfully refreshed ${totalRefreshOperations - totalFalsey} token(s)`,
       data: {
         total: totalRefreshOperations,
         success: totalRefreshOperations - totalFalsey,
         failed: totalFalsey,
-        durationMs: Date.now() - _startMs
-      }
+        durationMs: Date.now() - _startMs,
+      },
     } as ApiSuccess<any>,
     {
-      status: 200
+      status: 200,
     }
   );
 }

@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 type ErrorPageProps = {
-  error: Error & { digest?: string }
-  reset: () => void
-}
+  error: Error & { digest?: string };
+  reset: () => void;
+};
 
-const ErrorPage: React.FC<ErrorPageProps> = ( props ) => {
+const ErrorPage: React.FC<ErrorPageProps> = (props) => {
   const { error, reset } = props;
 
   return (
@@ -13,7 +13,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ( props ) => {
       <h2>Something went wrong!</h2>
       <button onClick={() => reset()}>Try again</button>
     </div>
-  )
-}
+  );
+};
 
 export default ErrorPage;

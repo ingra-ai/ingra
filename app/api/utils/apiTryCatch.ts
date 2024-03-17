@@ -1,6 +1,6 @@
-import { ActionError, ApiError } from "@lib/api-response";
-import { Logger } from "@lib/logger";
-import { NextResponse } from "next/server";
+import { ActionError, ApiError } from '@lib/api-response';
+import { Logger } from '@lib/logger';
+import { NextResponse } from 'next/server';
 
 export const apiTryCatch = async <T>(fn: () => Promise<T>): Promise<T> => {
   try {
@@ -8,22 +8,19 @@ export const apiTryCatch = async <T>(fn: () => Promise<T>): Promise<T> => {
   } catch (error: any) {
     Logger.withTag('apiTryCatch').error('Error:', error);
 
-    if ( error instanceof ActionError ) {
-      NextResponse.json( error.toJson(),
-        {
-          status: error.status || 500
-        }
-      );
-    }
-    else {
+    if (error instanceof ActionError) {
+      NextResponse.json(error.toJson(), {
+        status: error.status || 500,
+      });
+    } else {
       NextResponse.json(
-        { 
+        {
           status: 400,
-          code: "BAD_REQUEST",
-          message: error?.message || "Something went wrong. Please try again." 
+          code: 'BAD_REQUEST',
+          message: error?.message || 'Something went wrong. Please try again.',
         } as ApiError,
         {
-          status: 400
+          status: 400,
         }
       );
     }
@@ -31,4 +28,3 @@ export const apiTryCatch = async <T>(fn: () => Promise<T>): Promise<T> => {
     return error;
   }
 };
-

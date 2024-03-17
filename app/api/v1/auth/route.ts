@@ -1,13 +1,13 @@
-import { createMagicLink, expireMagicLinkByToken, getMagicLinkByOtp } from "@/data/auth";
-import { getOrCreateUserByEmail } from "@/data/user";
-import { MagicLoginSchema } from "@/schemas/auth";
-import { ActionError, ApiError, ApiSuccess } from "@lib/api-response";
-import db from "@lib/db";
-import { sendMagicLinkEmail } from "@lib/mail/sendMagicLinkEmail";
-import { NextRequest, NextResponse } from "next/server";
+import { createMagicLink, expireMagicLinkByToken, getMagicLinkByOtp } from '@/data/auth';
+import { getOrCreateUserByEmail } from '@/data/user';
+import { MagicLoginSchema } from '@/schemas/auth';
+import { ActionError, ApiError, ApiSuccess } from '@lib/api-response';
+import db from '@lib/db';
+import { sendMagicLinkEmail } from '@lib/mail/sendMagicLinkEmail';
+import { NextRequest, NextResponse } from 'next/server';
 import { generate } from '@lib/functions/generatePassphrase';
-import { apiTryCatch } from "@app/api/utils/apiTryCatch";
-import { APP_URL } from "@lib/constants";
+import { apiTryCatch } from '@app/api/utils/apiTryCatch';
+import { APP_URL } from '@lib/constants';
 
 /**
  * @swagger
@@ -52,76 +52,70 @@ import { APP_URL } from "@lib/constants";
  *     tags:
  *       - Authentication
  */
-export async function POST(req: NextRequest ) {
-  const data = await req.json()
+export async function POST(req: NextRequest) {
+  const data = await req.json();
   const { code = '' } = data || {};
 
   try {
-    if ( !code ) {
-      throw new ActionError("error", 400, "Phrase code is required");
+    if (!code) {
+      throw new ActionError('error', 400, 'Phrase code is required');
     }
-  
+
     const phraseCode = await db.phraseCode.findUnique({
       where: {
         code,
         expiresAt: {
-          gte: new Date()
+          gte: new Date(),
         },
-      }
+      },
     });
-  
-    if ( !phraseCode ) {
-      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
+
+    if (!phraseCode) {
+      throw new ActionError('error', 400, `Invalid phrase code, consider to re-authenticate or visit ${APP_URL} to generate new phrase code`);
     }
-  
-    if ( phraseCode.isAuthenticated ) {
-      throw new ActionError("error", 400, "This phrase code can't be used.");
+
+    if (phraseCode.isAuthenticated) {
+      throw new ActionError('error', 400, "This phrase code can't be used.");
     }
-  
+
     db.phraseCode.update({
       where: {
         code,
       },
       data: {
-        isAuthenticated: true
-      }
+        isAuthenticated: true,
+      },
     });
-  
+
     return NextResponse.json(
-      { 
-        status: "OK", 
-        message: "Authentication successful.",
-        data: []
+      {
+        status: 'OK',
+        message: 'Authentication successful.',
+        data: [],
       } as ApiSuccess<any>,
       {
-        status: 200
+        status: 200,
       }
     );
-  }
-  catch (err: any) {
-    if ( err instanceof ActionError ) {
-      return NextResponse.json( err.toJson() ,
-        {
-          status: err.status || 400
-        }
-      );
-
-    }
-    else {
+  } catch (err: any) {
+    if (err instanceof ActionError) {
+      return NextResponse.json(err.toJson(), {
+        status: err.status || 400,
+      });
+    } else {
       return NextResponse.json(
-        { 
+        {
           status: 400,
-          code: "BAD_REQUEST",
-          message: err?.message || "Something went wrong. Please try again." 
+          code: 'BAD_REQUEST',
+          message: err?.message || 'Something went wrong. Please try again.',
         } as ApiError,
         {
-          status: 400
+          status: 400,
         }
       );
     }
   }
 }
-
 
 /**
  * @swagger
@@ -179,102 +173,101 @@ export async function POST(req: NextRequest ) {
  *       - Authentication
  */
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const params = Object.fromEntries( searchParams );
+  const { searchParams } = new URL(req.url);
+  const params = Object.fromEntries(searchParams);
 
   const validatedFields = MagicLoginSchema.safeParse({
     email: params?.email || '',
-    otpCode: params?.otpCode || ''
+    otpCode: params?.otpCode || '',
   });
 
   return apiTryCatch<any>(async () => {
     if (!validatedFields.success) {
-      throw new ActionError("error", 400, "One or more provided values is invalid. Please check your input and try again.");
+      throw new ActionError('error', 400, 'One or more provided values is invalid. Please check your input and try again.');
     }
-  
+
     const { email, otpCode } = validatedFields.data;
-  
+
     const existingUser = await getOrCreateUserByEmail(email);
-  
-    if (!existingUser || !existingUser.email ) {
-      throw new ActionError("error", 400, "Failed in login operation.");
+
+    if (!existingUser || !existingUser.email) {
+      throw new ActionError('error', 400, 'Failed in login operation.');
     }
-  
-    if ( !otpCode ) {
+
+    if (!otpCode) {
       /**
        * When user just provides email but not otpCode, we will generate a magic link and send it to the user's email.
        */
       const magicLink = await createMagicLink(existingUser);
-    
-      if ( !magicLink ) {
-        throw new ActionError("error", 400, "Failed to generate magic link.");
+
+      if (!magicLink) {
+        throw new ActionError('error', 400, 'Failed to generate magic link.');
       }
-    
+
       const res = await sendMagicLinkEmail(existingUser.email, magicLink, 'gpt');
-    
+
       if (!res) {
-        throw new ActionError("error", 400, "Failed to send magic link.");
+        throw new ActionError('error', 400, 'Failed to send magic link.');
       }
-  
+
       return NextResponse.json(
-        { 
-          status: "OK", 
+        {
+          status: 'OK',
           message: `We've sent a magic link to your email address. Please check your inbox and find the one-time password to continue.`,
           data: [],
         } as ApiSuccess<any>,
         {
-          status: 200
+          status: 200,
         }
       );
-    }
-    else if ( otpCode ) {
+    } else if (otpCode) {
       /**
        * When user provides both email and otpCode, we will verify the otpCode and create an active session for the user.
        */
       const magicLinkWithUser = await getMagicLinkByOtp(existingUser, otpCode);
-  
-      if ( !magicLinkWithUser ) {
-        throw new ActionError("error", 400, "Failed to validate your OTP code. Please try again.");
+
+      if (!magicLinkWithUser) {
+        throw new ActionError('error', 400, 'Failed to validate your OTP code. Please try again.');
       }
-  
+
       // Expire magic link so its token can't be used again
       await expireMagicLinkByToken(magicLinkWithUser.token);
 
-      const code = generate({ fast: true, numbers: false, separator: ' ', length: 5 })
+      const code = generate({ fast: true, numbers: false, separator: ' ', length: 5 });
 
       const expiresAt = new Date();
       expiresAt.setMinutes(expiresAt.getMinutes() + 1);
-    
+
       const phraseCode = await db.phraseCode.upsert({
         where: {
-          userId: magicLinkWithUser.user.id
+          userId: magicLinkWithUser.user.id,
         },
         create: {
           code,
           userId: magicLinkWithUser.user.id,
-          expiresAt: expiresAt
+          expiresAt: expiresAt,
         },
         update: {
           code,
-          expiresAt: expiresAt
-        }
+          expiresAt: expiresAt,
+        },
       });
 
-      if ( !phraseCode ) {
-        throw new ActionError("error", 400, "Failed to generate phrase code. Please try again.");
+      if (!phraseCode) {
+        throw new ActionError('error', 400, 'Failed to generate phrase code. Please try again.');
       }
 
       return NextResponse.json(
-        { 
-          status: "OK", 
+        {
+          status: 'OK',
           message: `We've generated a phrase code for you. Please use the following code to continue: "${phraseCode.code}"`,
           data: {
             phraseCode: phraseCode.code,
-            expiresAt: phraseCode.expiresAt
+            expiresAt: phraseCode.expiresAt,
           },
         } as ApiSuccess<any>,
         {
-          status: 200
+          status: 200,
         }
       );
     }
@@ -283,45 +276,45 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }
 
 export async function DELETE(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }
 
 export async function PATCH(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }
 
 export async function OPTIONS(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }
 
 export async function HEAD(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }

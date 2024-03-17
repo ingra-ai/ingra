@@ -1,15 +1,15 @@
 type NavItemBase = {
   name: string;
   description?: string;
-}
+};
 
 export type NavItemChild = NavItemBase & {
   href: string;
-}
+};
 
 export type NavItemParent = NavItemBase & {
   children: NavItemChild[];
-}
+};
 
 export type NavItem = NavItemParent | NavItemChild;
 
@@ -22,12 +22,12 @@ export const NavRoutes: NavItem[] = [
   {
     name: 'Tasks',
     description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
-    href: '/tasks'
+    href: '/tasks',
   },
   {
     name: 'Calendar',
     description: 'Manage and view your calendar for scheduling and tracking events, appointments, and deadlines.',
-    href: '/calendars'
+    href: '/calendars',
   },
   // {
   //   name: 'Notes',
@@ -86,7 +86,7 @@ export const SettingsNavRoutes: SettingsNavItem[] = [
   //   name: 'Integrations',
   //   href: '#',
   // },
-]
+];
 
 // export const UserNavs: NavItem[] = [
 //   {

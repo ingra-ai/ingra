@@ -10,7 +10,7 @@ import { Logger } from './logger';
 export const generateToken = <T extends string | object>(payload: T, expiresSeconds = 86400): string => {
   const token = jwt.sign(payload, process.env.JWT_SECRET || '', { expiresIn: expiresSeconds });
   return token;
-}
+};
 
 /**
  * Decodes a JWT token and returns the payload.
@@ -26,4 +26,4 @@ export const decodeToken = <T extends string | object>(token: string): T | null 
     Logger.withTag('JWT').error('Error decoding token:', error?.message);
     return null;
   }
-}
+};
