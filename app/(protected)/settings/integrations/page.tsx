@@ -2,7 +2,7 @@ import { GoogleButtonUI } from './GoogleButtonUI';
 
 export default async function Calendar() {
   return (
-    <div className="leading-7">
+    <div className="mt-7 leading-7">
       <p> Coming soon </p>
       <p>
         {' '}

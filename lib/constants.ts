@@ -34,7 +34,7 @@ export const APP_GOOGLE_OAUTH_CLIENT_ID = process.env.GOOG_OAUTH_CLIENT_ID || ''
 export const APP_GOOGLE_OAUTH_CLIENT_SECRET = process.env.GOOG_OAUTH_CLIENT_SECRET || '';
 export const APP_GOOGLE_OAUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_GOOG_OAUTH_CALLBACK_URI || '/auth/google/callback';
 export const APP_GOOGLE_OAUTH_CALLBACK_URL = APP_URL + APP_GOOGLE_OAUTH_CALLBACK_URI;
-export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + '/calendars';
+export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + '/settings/integrations';
 
 /**
  * The version of the app as defined in package.json
