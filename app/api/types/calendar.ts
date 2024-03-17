@@ -18,7 +18,7 @@
 export type ApiCalendarEventAttendee = {
   email: string;
   displayName: string;
-}
+};
 
 /**
  * @swagger
@@ -84,7 +84,7 @@ export type ApiCalendarEvent = {
   link: string;
   reminder: string;
   attendees: ApiCalendarEventAttendee[];
-}
+};
 /**
  * @swagger
  * components:
@@ -117,7 +117,7 @@ export type ApiCalendarEventBody = {
   description: string;
   timeZone: string;
   events: ApiCalendarEvent[];
-}
+};
 
 /**
  * @swagger

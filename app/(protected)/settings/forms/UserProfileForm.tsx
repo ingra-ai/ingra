@@ -1,30 +1,25 @@
-"use client";
+'use client';
 
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from 'next/image'
-import { Logger } from "@lib/logger";
-import { useToast } from "@components/ui/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { AuthSessionResponse } from "@app/auth/session";
-import { type Profile } from "@prisma/client";
-import { ProfileSchema } from "@/schemas/profile";
-import { censorEmail } from "@lib/functions/censorEmail";
-import { APP_URL } from "@lib/constants";
-import { updateProfile } from "@/app/(protected)/settings/actions/profile";
-import { useCallback } from "react";
-import { Input } from "@components/ui/input";
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import { Logger } from '@lib/logger';
+import { useToast } from '@components/ui/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { AuthSessionResponse } from '@app/auth/session';
+import { type Profile } from '@prisma/client';
+import { ProfileSchema } from '@/schemas/profile';
+import { censorEmail } from '@lib/functions/censorEmail';
+import { APP_URL } from '@lib/constants';
+import { updateProfile } from '@/app/(protected)/settings/actions/profile';
+import { useCallback } from 'react';
+import { Input } from '@components/ui/input';
 import timezones from 'timezones-list';
 
 type UserProfileFormProps = {
   authSession: AuthSessionResponse;
-}
+};
 
 export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
   const { authSession } = props;
@@ -39,29 +34,31 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
       lastName: userProfile?.lastName || '',
       userName: userProfile?.userName || '',
       timeZone: userProfile?.timeZone || '',
-    }
+    },
   });
 
   const onSubmit = useCallback((values: z.infer<typeof ProfileSchema>) => {
-    updateProfile(values).then((data) => {
-      toast({
-        title: "Profile updated!",
-        description: "Profile has been updated successfully.",
-      });
+    updateProfile(values)
+      .then((data) => {
+        toast({
+          title: 'Profile updated!',
+          description: 'Profile has been updated successfully.',
+        });
 
-      reset();
-    }).catch((error: Error) => {
-      toast({
-        title: "Uh oh! Something went wrong.",
-        description: error?.message || "Failed to update profile!",
-      });
+        reset();
+      })
+      .catch((error: Error) => {
+        toast({
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to update profile!',
+        });
 
-      Logger.error(error?.message);
-    });
+        Logger.error(error?.message);
+      });
   }, []);
 
-  function onTimezoneChanged( e: React.ChangeEvent<HTMLSelectElement> ) {
-    setValue('timeZone', e.target.value );
+  function onTimezoneChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+    setValue('timeZone', e.target.value);
   }
 
   return (
@@ -69,13 +66,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
       <form className="md:col-span-2" method="POST" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
           <div className="col-span-full flex items-center gap-x-8">
-            <Image
-              src={`https://ui-avatars.com/api?size=256&name=${censoredUser}`}
-              width={256}
-              height={256}
-              className='h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover'
-              alt="user avatar"
-            />
+            <Image src={`https://ui-avatars.com/api?size=256&name=${censoredUser}`} width={256} height={256} className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover" alt="user avatar" />
             <div>
               <TooltipProvider>
                 <Tooltip>
@@ -92,10 +83,12 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
           </div>
 
           <div className="space-y-2 sm:col-span-3">
-            <label htmlFor="firstName" className="block text-sm font-medium leading-6 mb-3">First name</label>
+            <label htmlFor="firstName" className="block text-sm font-medium leading-6 mb-3">
+              First name
+            </label>
             <input
               id="firstName"
-              {...register("firstName")}
+              {...register('firstName')}
               placeholder="John"
               type="firstName"
               autoComplete="firstName"
@@ -103,18 +96,16 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
               autoFocus
               className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
-            {
-              formState.errors.firstName && (
-                <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.firstName.message}</p>
-              )
-            }
+            {formState.errors.firstName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.firstName.message}</p>}
           </div>
 
           <div className="space-y-2 sm:col-span-3">
-            <label htmlFor="lastName" className="block text-sm font-medium leading-6 mb-3">Last name</label>
+            <label htmlFor="lastName" className="block text-sm font-medium leading-6 mb-3">
+              Last name
+            </label>
             <input
               id="lastName"
-              {...register("lastName")}
+              {...register('lastName')}
               placeholder="Doe"
               type="lastName"
               autoComplete="lastName"
@@ -122,11 +113,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
               autoFocus
               className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
-            {
-              formState.errors.lastName && (
-                <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>
-              )
-            }
+            {formState.errors.lastName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>}
           </div>
 
           <div className="col-span-full">
@@ -145,27 +132,27 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
             <div className="mt-2">
               <select
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-secondary dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={ onTimezoneChanged }
+                onChange={onTimezoneChanged}
               >
                 <option value="UTC">Timezone</option>
-                  {
-                    timezones.map((timezone, index) => (
-                      <option key={index} value={timezone.tzCode} selected={ userProfile?.timeZone === timezone.tzCode }>{timezone.label}</option>
-                    ))
-                  }
+                {timezones.map((timezone, index) => (
+                  <option key={index} value={timezone.tzCode} selected={userProfile?.timeZone === timezone.tzCode}>
+                    {timezone.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
           <div className="space-y-2 sm:col-span-full">
-            <label htmlFor="userName" className="block text-sm font-medium leading-6 mb-3">Username</label>
+            <label htmlFor="userName" className="block text-sm font-medium leading-6 mb-3">
+              Username
+            </label>
             <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-              <span className="flex select-none items-center pl-3 text-gray-400 sm:text-sm">
-                {APP_URL}/u/
-              </span>
+              <span className="flex select-none items-center pl-3 text-gray-400 sm:text-sm">{APP_URL}/u/</span>
               <input
                 id="userName"
-                {...register("userName")}
+                {...register('userName')}
                 placeholder="john.doe"
                 type="userName"
                 autoComplete="off"
@@ -174,24 +161,16 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
                 className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
               />
             </div>
-            {
-              formState.errors.lastName && (
-                <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>
-              )
-            }
+            {formState.errors.lastName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>}
           </div>
         </div>
 
         <div className="mt-8 flex">
-          <button
-            type="submit"
-            className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-          >
+          <button type="submit" className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
             Save
           </button>
         </div>
       </form>
     </div>
-
   );
-}
+};

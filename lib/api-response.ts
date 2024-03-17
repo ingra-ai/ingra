@@ -35,7 +35,7 @@ export class ActionError extends Error implements ApiError {
   // 403 - Forbidden
   // 404 - Not Found
   // 500 - Internal Server Error
-  constructor(code: "error", status = 400, message = 'Unexpected error occurred') {
+  constructor(code: 'error', status = 400, message = 'Unexpected error occurred') {
     super(message);
     this.name = 'ActionError';
     this.code = code;
@@ -51,7 +51,7 @@ export class ActionError extends Error implements ApiError {
     return {
       status: this.status,
       code: this.code,
-      message: this.message
+      message: this.message,
     };
   }
 }
@@ -89,4 +89,4 @@ export type ApiSuccess<T extends object> = {
   status: string;
   message: string;
   data?: T | T[];
-}
+};

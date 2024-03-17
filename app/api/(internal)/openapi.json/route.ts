@@ -15,15 +15,14 @@ export async function GET(request: NextRequest) {
    * @todo find a way to add these in the swagger/config
    */
   Object.assign(swaggerSpec, {
-    servers: [{
-      url: APP_URL,
-    }],
+    servers: [
+      {
+        url: APP_URL,
+      },
+    ],
   });
 
-  return NextResponse.json(
-    swaggerSpec,
-    {
-      status: 200
-    }
-  );
-};
+  return NextResponse.json(swaggerSpec, {
+    status: 200,
+  });
+}

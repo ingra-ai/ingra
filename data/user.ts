@@ -1,6 +1,6 @@
-"use server"
-import type { User } from "@prisma/client";
-import db from "@lib/db";
+'use server';
+import type { User } from '@prisma/client';
+import db from '@lib/db';
 
 /**
  * Fetches a user from the database by their email.
@@ -16,7 +16,7 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
 
 /**
  * Retrieves an existing user by email or creates a new user if none exists.
- * 
+ *
  * @param email - The email address of the user.
  * @returns A Promise that resolves to the existing user if found, or a newly created user if not found.
  */
@@ -29,23 +29,23 @@ export const getOrCreateUserByEmail = async (email: string): Promise<User | null
 
   return await db.user.create({
     data: {
-      email
+      email,
     },
   });
-}
+};
 
 /**
  * Retrieves a user by their phrase code.
  * This function is used to grab the user ID by using the phrase code.
- * 
+ *
  * @warning Heavy function calls, being used in almost all API calls;
  * @todo Make this faster.
- * 
+ *
  * @param code - The phrase code to search for.
  * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
  */
 export const getUserByPhraseCode = async (code: string) => {
-  if ( !code ) {
+  if (!code) {
     return null;
   }
 
@@ -65,24 +65,24 @@ export const getUserByPhraseCode = async (code: string) => {
           profile: true,
         },
       },
-    }
+    },
   });
 
   return phraseCode?.user || null;
-}
+};
 
 /**
  * Retrieves a user by their JWT.
  * This function is used to grab the user, profile and phrasecode.
- * 
+ *
  * @warning Heavy function calls, being used in almost all API calls;
  * @todo Make this faster.
- * 
+ *
  * @param code - The phrase code to search for.
  * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
  */
 export const getUserByJwt = async (jwt: string) => {
-  if ( !jwt ) {
+  if (!jwt) {
     return null;
   }
 
@@ -106,4 +106,4 @@ export const getUserByJwt = async (jwt: string) => {
       },
     },
   });
-}
+};
