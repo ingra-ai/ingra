@@ -94,7 +94,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
               autoComplete="firstName"
               required
               autoFocus
-              className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
             {formState.errors.firstName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.firstName.message}</p>}
           </div>
@@ -111,7 +111,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
               autoComplete="lastName"
               required
               autoFocus
-              className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
             />
             {formState.errors.lastName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>}
           </div>
@@ -131,12 +131,13 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
             </label>
             <div className="mt-2">
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-secondary dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5 dark:bg-secondary dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={onTimezoneChanged}
+                defaultValue={userProfile?.timeZone}
               >
                 <option value="UTC">Timezone</option>
                 {timezones.map((timezone, index) => (
-                  <option key={index} value={timezone.tzCode} selected={userProfile?.timeZone === timezone.tzCode}>
+                  <option key={index} value={timezone.tzCode}>
                     {timezone.label}
                   </option>
                 ))}
@@ -148,20 +149,17 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
             <label htmlFor="userName" className="block text-sm font-medium leading-6 mb-3">
               Username
             </label>
-            <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-              <span className="flex select-none items-center pl-3 text-gray-400 sm:text-sm">{APP_URL}/u/</span>
-              <input
-                id="userName"
-                {...register('userName')}
-                placeholder="john.doe"
-                type="userName"
-                autoComplete="off"
-                required
-                autoFocus
-                className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-              />
-            </div>
-            {formState.errors.lastName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>}
+            <input
+              id="userName"
+              {...register('userName')}
+              placeholder="john.doe"
+              type="userName"
+              autoComplete="off"
+              required
+              autoFocus
+              className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            />
+            {formState.errors.userName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.userName.message}</p>}
           </div>
         </div>
 

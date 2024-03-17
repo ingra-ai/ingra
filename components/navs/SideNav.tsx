@@ -5,16 +5,87 @@ import { LogOutIcon } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@lib/utils';
 import { censorEmail } from '@lib/functions/censorEmail';
-import { type NavItem, type NavItemParent, NavRoutes } from '@/components/navs/nav-routes';
 import { useCallback } from 'react';
 import Link from 'next/link';
 import { AuthSessionResponse } from '@app/auth/session';
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
+import type { NavItem, NavItemParent } from '@components/navs/types';
+import { BookCheckIcon } from 'lucide-react';
+import {
+  ChartBarSquareIcon,
+  LinkIcon,
+} from '@heroicons/react/24/outline'
 
-type SideNavProps = {
+export type SideNavProps = {
   authSession: AuthSessionResponse;
 };
+
+export const sideNavRoutes: NavItem[] = [
+  {
+    name: 'Overview',
+    description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
+    href: '/overview',
+    icon: ChartBarSquareIcon,
+  },
+  {
+    name: 'Tasks',
+    description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
+    href: '/tasks',
+    icon: BookCheckIcon,
+  },
+  {
+    name: "Integrations",
+    description: "Configure and manage connections with external services for calendars, emails, and more.",
+    href: '/settings/integrations',
+    icon: LinkIcon,
+  },
+  // {
+  //   name: 'Settings',
+  //   description: 'A secure place for writing, organizing, and storing your personal and work notes.',
+  //   icon: LinkIcon,
+  //   children: [
+  //     {
+  //       name: 'My Notes',
+  //       description: 'Access and manage your collection of notes.',
+  //       href: '/notes/my-notes',
+  //       icon: LinkIcon,
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: 'Notes',
+  //   description: 'A secure place for writing, organizing, and storing your personal and work notes.',
+  //   children: [
+  //     {
+  //       name: 'My Notes',
+  //       description: 'Access and manage your collection of notes.',
+  //       href: '/notes/my-notes',
+  //     },
+  //     {
+  //       name: 'New Note',
+  //       description: 'Create a new note.',
+  //       href: '/notes/new',
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: 'Projects',
+  //   description: 'Project management tools for tracking progress, collaboration, and resources.',
+  //   children: [
+  //     {
+  //       name: 'Project Dashboard',
+  //       description: 'Overview of current projects including status, timelines, and team members.',
+  //       href: '/projects/dashboard',
+  //     },
+  //     {
+  //       name: 'Create Project',
+  //       description: 'Initiate a new project, defining its scope, team, and milestones.',
+  //       href: '/projects/create',
+  //     },
+  //   ],
+  // }
+];
 
 const SideNav: React.FC<SideNavProps> = (props) => {
   const { authSession } = props;
@@ -30,15 +101,15 @@ const SideNav: React.FC<SideNavProps> = (props) => {
 
   return (
     <div className="flex grow flex-col gap-y-2 overflow-y-auto border-r border-gray-700 bg-gray-900 px-6 py-2 h-full">
-      <div className="flex h-12 shrink-0 items-center">
+      <div className="flex h-20 shrink-0 items-center">
         <Image src="/static/brand/bakabit-white-logo-only.svg" width={50} height={50} className="h-10 w-auto" alt="Bakabit Logo" />
-        <h1 className="text-white text-lg font-semibold ml-2">Bakabit</h1>
+        {/* <h1 className="text-white text-lg font-semibold ml-2">Bakabit</h1> */}
       </div>
       <nav className="flex flex-1 flex-col">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
-            <ul role="list" className="-mx-2 space-y-1">
-              {NavRoutes.map((item) => {
+            <ul role="list" className="-mx-2 space-y-2">
+              {sideNavRoutes.map((item) => {
                 const isParent = isNavItemParent(item);
                 const isCurrentRoute = isParent ? (item as NavItemParent).children.some((child) => child.href === pathname) : false;
                 return (
@@ -57,7 +128,8 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                                 {item.children.map((subItem) => {
                                   return (
                                     <li key={subItem.name}>
-                                      <Disclosure.Button as={Link} prefetch={true} href={subItem.href} className={cn(subItem.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'block rounded-md py-2 pr-2 pl-9 text-sm leading-6')}>
+                                      <Disclosure.Button as={Link} prefetch={true} href={subItem.href} className={cn(subItem.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center')}>
+                                        <subItem.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         {subItem.name}
                                       </Disclosure.Button>
                                     </li>
@@ -69,8 +141,11 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                         }}
                       </Disclosure>
                     ) : (
-                      <Link href={item.href} prefetch={true} className={cn(item.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold')}>
-                        {item.name}
+                      <Link href={item.href} prefetch={true} className={cn(item.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center')}>
+                        <>
+                          <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+                          {item.name}
+                        </>
                       </Link>
                     )}
                   </li>
