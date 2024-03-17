@@ -1,7 +1,6 @@
 'use client';
 
 import { APP_GOOGLE_OAUTH_CALLBACK_URL } from '@lib/constants';
-import Link from 'next/link';
 import React from 'react';
 
 type GoogleButtonUIProps = {
