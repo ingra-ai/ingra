@@ -6,7 +6,7 @@ export function parseStartAndEnd(startInput: string, endInput: string, userTz: s
     throw new Error('Start and end inputs must be provided.');
   }
 
-  const now = new Date();
+  const now = Date.now();
 
   // Adjust 'now' to the user's timezone
   const referenceDate = utcToZonedTime(now, userTz);
