@@ -10,6 +10,7 @@ import { apiTryCatch } from '@app/api/utils/apiTryCatch';
 import type { ApiCalendarEventBody, ApiCalendarEventsResponse } from '@app/api/types/calendar';
 import { mapGoogleCalendarEvent } from './googleEventsMapper';
 import { parseStartAndEnd } from '@app/api/utils/chronoUtils';
+import { apiGptTryCatch } from '@app/api/utils/apiGptTryCatch';
 
 /**
  * @swagger
@@ -90,13 +91,7 @@ export async function GET(req: NextRequest) {
   // Clamp maxResults to minimum 0 and maximum 30
   const maxResultsClamped = Math.min(30, Math.max(0, parseInt(maxResults, 10) || 10));
 
-  return await apiTryCatch<any>(async () => {
-    const userWithProfile = await getUserByPhraseCode(phraseCode);
-  
-    if ( !userWithProfile ) {
-      throw new ActionError("error", 400, `Invalid phrase code, consider to re-authenticate or visit ${ APP_URL } to generate new phrase code`);
-    }
-
+  return await apiGptTryCatch<any>(phraseCode, async (userWithProfile) => {
     const userOauthTokens = await db.oAuthToken.findMany({
       where: {
         userId: userWithProfile.id,
