@@ -1,9 +1,4 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getAuthSession } from '@app/auth/session';
 import { UserProfileForm } from '@protected/settings/forms/UserProfileForm';
 
@@ -19,26 +14,19 @@ export default async function Page() {
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <h2 className="text-base font-semibold leading-7 text-white">Personal Information</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
-            Use a permanent address where you can receive mail.
-          </p>
+          <p className="mt-1 text-sm leading-6 text-gray-400">Use a permanent address where you can receive mail.</p>
         </div>
-         {
-          authSession && (
-            <div className="md:col-span-2">
-              <UserProfileForm authSession={authSession} />
-            </div>
-          )
-         }
+        {authSession && (
+          <div className="md:col-span-2">
+            <UserProfileForm authSession={authSession} />
+          </div>
+        )}
       </div>
 
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <h2 className="text-base font-semibold leading-7 text-white">Log out other sessions</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
-            Please enter your password to confirm you would like to log out of your other sessions across all of
-            your devices.
-          </p>
+          <p className="mt-1 text-sm leading-6 text-gray-400">Please enter your password to confirm you would like to log out of your other sessions across all of your devices.</p>
         </div>
 
         <div className="flex items-center justify-center md:col-span-2">
@@ -46,7 +34,7 @@ export default async function Page() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger type="button" className="rounded-md bg-gray-500 px-3 py-2 text-sm font-semibold text-white shadow-sm">
-                    Log out other sessions
+                  Log out other sessions
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>This is not supported at the moment</p>
@@ -60,10 +48,7 @@ export default async function Page() {
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <h2 className="text-base font-semibold leading-7 text-white">Delete account</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-400">
-            No longer want to use our service? You can delete your account here. This action is not reversible.
-            All information related to this account will be deleted permanently.
-          </p>
+          <p className="mt-1 text-sm leading-6 text-gray-400">No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.</p>
         </div>
 
         <div className="flex items-center justify-center md:col-span-2">
@@ -80,5 +65,5 @@ export default async function Page() {
         </div>
       </div>
     </div>
-  )
+  );
 }

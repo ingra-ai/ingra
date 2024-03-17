@@ -1,8 +1,8 @@
-import { apiGptTryCatch } from "@app/api/utils/apiGptTryCatch";
-import { ActionError, ApiSuccess } from "@lib/api-response";
-import db from "@lib/db";
-import { Task } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { apiGptTryCatch } from '@app/api/utils/apiGptTryCatch';
+import { ActionError, ApiSuccess } from '@lib/api-response';
+import db from '@lib/db';
+import { Task } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * @swagger
@@ -57,7 +57,7 @@ import { NextRequest, NextResponse } from "next/server";
  *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Task and Todos
- * 
+ *
  *   post:
  *     summary: Create a new task
  *     operationId: CreateTask
@@ -94,7 +94,7 @@ import { NextRequest, NextResponse } from "next/server";
  *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Task and Todos
- * 
+ *
  *   patch:
  *     summary: Update an existing task
  *     operationId: UpdateTask
@@ -132,7 +132,7 @@ import { NextRequest, NextResponse } from "next/server";
  *       - Task and Todos
  */
 
-type TaskRequestParams = Pick<Task , "title" | "description" | "status" | "priority"> & {
+type TaskRequestParams = Pick<Task, 'title' | 'description' | 'status' | 'priority'> & {
   phraseCode: string;
 };
 
@@ -140,62 +140,61 @@ type TaskRequestParams = Pick<Task , "title" | "description" | "status" | "prior
  * Dynamic route handlers for /api/v1/task
  * @see https://nextjs.org/docs/app/building-your-application/routing/route-handlers#dynamic-route-segments
  */
-export async function GET(req: NextRequest ) {
-  const { searchParams } = new URL(req.url)
-  const params = Object.fromEntries( searchParams ) as TaskRequestParams;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const params = Object.fromEntries(searchParams) as TaskRequestParams;
   const { phraseCode, ...restOfPayload } = params || {};
 
   return await apiGptTryCatch(phraseCode, async (userWithProfile) => {
     const findManyParams: Parameters<typeof db.task.findMany>[0] = {
       where: {
-        userId: userWithProfile.id
+        userId: userWithProfile.id,
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
-      take: 20
+      take: 20,
     };
-  
-    if ( restOfPayload.status ) {
+
+    if (restOfPayload.status) {
       findManyParams.where!.status = restOfPayload.status;
     }
-  
-    if ( restOfPayload.priority ) {
+
+    if (restOfPayload.priority) {
       findManyParams.where!.priority = restOfPayload.priority;
     }
-  
-    if ( restOfPayload.title ) {
-      findManyParams.where!.title = { contains: restOfPayload.title, mode: "insensitive" };
+
+    if (restOfPayload.title) {
+      findManyParams.where!.title = { contains: restOfPayload.title, mode: 'insensitive' };
     }
-  
-    if ( restOfPayload.description ) {
-      findManyParams.where!.description = { contains: restOfPayload.description, mode: "insensitive" };
+
+    if (restOfPayload.description) {
+      findManyParams.where!.description = { contains: restOfPayload.description, mode: 'insensitive' };
     }
-  
+
     const tasks = await db.task.findMany(findManyParams),
       numberOfTasks = tasks?.length || 0;
 
-    if ( numberOfTasks === 0 ) {
+    if (numberOfTasks === 0) {
       return NextResponse.json(
-        { 
-          status: "OK", 
-          message: "No tasks found",
-          data: tasks || []
+        {
+          status: 'OK',
+          message: 'No tasks found',
+          data: tasks || [],
         } as ApiSuccess<Task>,
         {
-          status: 200
+          status: 200,
         }
       );
-    }
-    else {
+    } else {
       return NextResponse.json(
-        { 
-          status: "OK", 
-          message: `${ tasks.length} tasks found`,
-          data: tasks || []
+        {
+          status: 'OK',
+          message: `${tasks.length} tasks found`,
+          data: tasks || [],
         } as ApiSuccess<Task>,
         {
-          status: 201
+          status: 201,
         }
       );
     }
@@ -205,12 +204,12 @@ export async function GET(req: NextRequest ) {
 /**
  * Handles the POST request for creating a new task.
  * - 'create' method from Prisma Client is used to create a new task.
- * 
+ *
  * @param req - The NextRequest object representing the incoming request.
  * @returns A NextResponse object with the created task data or an error message.
  */
-export async function POST(req: NextRequest ) {
-  const data = await req.json()
+export async function POST(req: NextRequest) {
+  const data = await req.json();
 
   /**
    * The mapping of task is defined in requestBody of post schema for post:
@@ -227,32 +226,32 @@ export async function POST(req: NextRequest ) {
         description: restOfPayload.description,
         status: restOfPayload.status,
         priority: restOfPayload.priority,
-        userId: userWithProfile.id
-      }
+        userId: userWithProfile.id,
+      },
     });
 
     return NextResponse.json(
-      { 
-        status: "OK", 
+      {
+        status: 'OK',
         message: 'Task created successfully.',
-        data: [task] 
+        data: [task],
       } as ApiSuccess<Task>,
       {
-        status: 201
+        status: 201,
       }
     );
   });
-};
+}
 
 /**
  * Handles the PATCH request for updating a task.
  * - 'update' method from Prisma Client is used to update an existing task.
- * 
+ *
  * @param req - The NextRequest object containing the request details.
  * @returns A NextResponse object with the updated task data or an error message.
  */
 export async function PATCH(req: NextRequest) {
-  const data = await req.json()
+  const data = await req.json();
 
   /**
    * The mapping of task is defined in requestBody of post schema for post:
@@ -265,35 +264,35 @@ export async function PATCH(req: NextRequest) {
     const taskBefore = await db.task.findUnique({
       where: {
         id: restOfPayload.id,
-        userId: userWithProfile.id
-      }
+        userId: userWithProfile.id,
+      },
     });
-  
-    if ( !taskBefore ) {
-      throw new ActionError("error", 404, "Unable to find the current task");
+
+    if (!taskBefore) {
+      throw new ActionError('error', 404, 'Unable to find the current task');
     }
-  
+
     const fieldsUpdatedMessages = [];
-  
-    if ( taskBefore.title !== restOfPayload.title ) {
-      fieldsUpdatedMessages.push("title");
+
+    if (taskBefore.title !== restOfPayload.title) {
+      fieldsUpdatedMessages.push('title');
     }
-  
-    if ( taskBefore.description !== restOfPayload.description ) {
-      fieldsUpdatedMessages.push("description");
+
+    if (taskBefore.description !== restOfPayload.description) {
+      fieldsUpdatedMessages.push('description');
     }
-  
-    if ( taskBefore.status !== restOfPayload.status ) {
+
+    if (taskBefore.status !== restOfPayload.status) {
       fieldsUpdatedMessages.push(`status from ${taskBefore.status} to ${restOfPayload.status}`);
     }
-  
-    if ( taskBefore.priority !== restOfPayload.priority ) {
+
+    if (taskBefore.priority !== restOfPayload.priority) {
       fieldsUpdatedMessages.push(`priority from ${taskBefore.priority} to ${restOfPayload.priority}`);
     }
-  
+
     const taskAfter = await db.task.update({
       where: {
-        id: taskBefore.id
+        id: taskBefore.id,
       },
       data: {
         id: taskBefore.id,
@@ -301,22 +300,22 @@ export async function PATCH(req: NextRequest) {
         description: restOfPayload.description,
         status: restOfPayload.status,
         priority: restOfPayload.priority,
-        userId: taskBefore.userId
-      }
+        userId: taskBefore.userId,
+      },
     });
-  
+
     return NextResponse.json(
-      { 
-        status: "OK", 
-        message: "Task updated successfully.",
+      {
+        status: 'OK',
+        message: 'Task updated successfully.',
         data: {
           taskBefore,
           taskAfter,
-          updatedFields: fieldsUpdatedMessages.join(', ')
-        } 
+          updatedFields: fieldsUpdatedMessages.join(', '),
+        },
       } as ApiSuccess<any>,
       {
-        status: 200
+        status: 200,
       }
     );
   });
@@ -324,19 +323,18 @@ export async function PATCH(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }
 
 export async function DELETE(req: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }
-

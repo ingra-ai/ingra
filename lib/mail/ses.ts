@@ -7,15 +7,10 @@ const SESConfig: SESClientConfig = {
   credentials: {
     accessKeyId: process.env.AWS_SES_ACCESS_KEY || '',
     secretAccessKey: process.env.AWS_SES_SECRET || '',
-  }
+  },
 };
 
-export async function sendEmailHtml(
-  from: string | null | undefined,
-  to: string,
-  subject: string,
-  body: Body
-): Promise<SendEmailCommandOutput | null> {
+export async function sendEmailHtml(from: string | null | undefined, to: string, subject: string, body: Body): Promise<SendEmailCommandOutput | null> {
   const ses = new SESClient(SESConfig);
 
   const params: SendEmailCommandInput = {
@@ -27,12 +22,12 @@ export async function sendEmailHtml(
       Subject: {
         Data: subject,
       },
-      Body: body
+      Body: body,
     },
   };
 
   try {
-    const sendEmailCommand = new SendEmailCommand( params );
+    const sendEmailCommand = new SendEmailCommand(params);
     const result = await ses.send(sendEmailCommand);
     Logger.withTag('📧').info('📧 Email sent successfully to:', to);
     return result;

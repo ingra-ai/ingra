@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
-import {dirname} from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {type Buffer} from 'node:buffer';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { type Buffer } from 'node:buffer';
 import { passphraseWords } from '@lib/functions/generatePassphrase/words';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -44,7 +44,7 @@ function getRandomNumber(max: number, fast = false): number {
 }
 
 function getRandomPattern(length: number, numbers: boolean, fast = false): string {
-  const pool = (numbers) ? 'NWW' : 'WWW';
+  const pool = numbers ? 'NWW' : 'WWW';
   let pattern = '';
   for (let i = 0; i < length; i++) {
     pattern += pool[getRandomNumber(2, fast)];
@@ -75,7 +75,7 @@ export function generate(options: Partial<GenerateOptions> = {}): string {
     fast: false,
   };
 
-  const options_ = {...defaults, ...options};
+  const options_ = { ...defaults, ...options };
 
   if (options_.length <= 0) {
     throw new Error('Length should be 1 or bigger. It should not be zero or lower.');
@@ -94,7 +94,7 @@ export function generate(options: Partial<GenerateOptions> = {}): string {
       if (options_.uppercase) {
         passphraseArray.push(word.toUpperCase());
       } else if (options_.titlecase) {
-        passphraseArray.push(word.replace(/\w\S*/g, text => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()));
+        passphraseArray.push(word.replace(/\w\S*/g, (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()));
       } else {
         passphraseArray.push(word);
       }

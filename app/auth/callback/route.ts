@@ -1,6 +1,6 @@
 import { createActiveSession, expireMagicLinkByToken } from '@/data/auth';
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { APP_SESSION_COOKIE_NAME, APP_URL } from '@lib/constants';
 import db from '@lib/db';
 
@@ -17,23 +17,23 @@ export async function GET(request: NextRequest) {
         user: {
           select: {
             id: true,
-            email: true
-          }
-        }
+            email: true,
+          },
+        },
       },
       where: {
         token,
         expiresAt: {
-          gte: new Date()
-        }
-      }
+          gte: new Date(),
+        },
+      },
     });
 
     if (!magicLinkWithUser) {
       return NextResponse.json(
-        { error: "Invalid token" },
+        { error: 'Invalid token' },
         {
-          status: 400
+          status: 400,
         }
       );
     }
@@ -42,9 +42,9 @@ export async function GET(request: NextRequest) {
 
     if (!session) {
       return NextResponse.json(
-        { error: "Failed to create session" },
+        { error: 'Failed to create session' },
         {
-          status: 500
+          status: 500,
         }
       );
     }
@@ -52,18 +52,17 @@ export async function GET(request: NextRequest) {
     // Set session cookies
     const cookieStore = cookies();
     cookieStore.set(APP_SESSION_COOKIE_NAME, session.jwt, { expires: session.expiresAt, httpOnly: true, secure: true });
-    
+
     // Expire magic link so its token can't be used again
     await expireMagicLinkByToken(magicLinkWithUser.token);
 
     // Redirect to the app
     return NextResponse.redirect(APP_URL, { status: 302 });
-  }
-  else {
+  } else {
     return NextResponse.json(
-      { error: "Invalid request" },
+      { error: 'Invalid request' },
       {
-        status: 400
+        status: 400,
       }
     );
   }
@@ -72,9 +71,9 @@ export async function GET(request: NextRequest) {
 // Notice the funciton definiton:
 export async function POST(request: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
-      status: 405
+      status: 405,
     }
   );
 }

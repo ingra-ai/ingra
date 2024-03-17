@@ -1,7 +1,7 @@
-"use server";
+'use server';
 import { NextRequest, NextResponse } from 'next/server';
 import { ActionError, type ApiSuccess } from '@lib/api-response';
-import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_URL } from "@lib/constants";
+import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_URL } from '@lib/constants';
 import { type calendar_v3, google } from 'googleapis';
 import db from '@lib/db';
 import { getUserByPhraseCode } from '@/data/user';
@@ -77,16 +77,9 @@ import { apiGptTryCatch } from '@app/api/utils/apiGptTryCatch';
  *       - Calendar
  */
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const params = Object.fromEntries( searchParams );
-  const { 
-    phraseCode,
-    start = 'today at 0:00',
-    end = 'today at 23:59',
-    q = '',
-    maxResults = '10',
-    orderBy = 'startTime'
-  } = params || {};
+  const { searchParams } = new URL(req.url);
+  const params = Object.fromEntries(searchParams);
+  const { phraseCode, start = 'today at 0:00', end = 'today at 23:59', q = '', maxResults = '10', orderBy = 'startTime' } = params || {};
 
   // Clamp maxResults to minimum 0 and maximum 30
   const maxResultsClamped = Math.min(30, Math.max(0, parseInt(maxResults, 10) || 10));
@@ -95,7 +88,7 @@ export async function GET(req: NextRequest) {
     const userOauthTokens = await db.oAuthToken.findMany({
       where: {
         userId: userWithProfile.id,
-        service: 'google-oauth'
+        service: 'google-oauth',
       },
       select: {
         accessToken: true,
@@ -104,56 +97,56 @@ export async function GET(req: NextRequest) {
         user: {
           select: {
             email: true,
-            profile: true
-          }
+            profile: true,
+          },
         },
       },
-      take: 3
+      take: 3,
     });
 
     const userTz = userWithProfile.profile?.timeZone || 'America/New_York';
 
-    if ( !userOauthTokens || !userOauthTokens.length ) {
-      throw new ActionError("error", 400, `User has not connected Google Calendar. Suggest user to visit ${ APP_URL } to setup Google Calendar`);
+    if (!userOauthTokens || !userOauthTokens.length) {
+      throw new ActionError('error', 400, `User has not connected Google Calendar. Suggest user to visit ${APP_URL} to setup Google Calendar`);
     }
 
     const { startDate, endDate } = parseStartAndEnd(start, end, userTz);
 
     // throw new ActionError("error", 400, `Test`);
 
-    if ( !startDate || !endDate ) {
-      throw new ActionError("error", 400, `Invalid date range "${ start }" - "${ end }"`);
+    if (!startDate || !endDate) {
+      throw new ActionError('error', 400, `Invalid date range "${start}" - "${end}"`);
     }
 
     // Generate calendar events params
     const eventListParams: calendar_v3.Params$Resource$Events$List = {
       // 'primary' refers to the primary calendar. You can use a different calendar ID if necessary.
       calendarId: 'primary',
-      
+
       // List events starting from now
       timeMin: startDate.toISOString(),
-      
+
       // List events up to 7 days from now
       timeMax: endDate.toISOString(),
-      
+
       // Maximum number of events to return
       maxResults: maxResultsClamped,
-      
+
       // Treat recurring events as individual events
       singleEvents: true,
-      
+
       // Order by start date/time
       orderBy: 'startTime',
 
       timeZone: userTz,
     };
 
-    if ( q?.length ) {
+    if (q?.length) {
       // Search query
       eventListParams.q = q;
     }
 
-    const calendarEventsDataMapPromises = userOauthTokens.map( async (userCalendarOAuthToken) => {
+    const calendarEventsDataMapPromises = userOauthTokens.map(async (userCalendarOAuthToken) => {
       const oauth2Client = new google.auth.OAuth2(
         APP_GOOGLE_OAUTH_CLIENT_ID,
         APP_GOOGLE_OAUTH_CLIENT_SECRET,
@@ -161,39 +154,42 @@ export async function GET(req: NextRequest) {
       );
 
       const credentials: Record<string, any> = {
-        access_token: userCalendarOAuthToken.accessToken
+        access_token: userCalendarOAuthToken.accessToken,
       };
 
-      if ( userCalendarOAuthToken.refreshToken ) {
+      if (userCalendarOAuthToken.refreshToken) {
         credentials.refresh_token = userCalendarOAuthToken.refreshToken;
       }
 
       oauth2Client.setCredentials(credentials);
 
-      const calendar = google.calendar({version: 'v3', auth: oauth2Client});
+      const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
-      const eventBody = await calendar.events.list(eventListParams).then( response => {
-        const data = response?.data || {},
-          eventBody: ApiCalendarEventBody = {
-            summary: data.summary || '',
-            description: data.description || '',
-            timeZone: data.timeZone || '',
-            events: (data.items || []).map( (event) => {
-              return mapGoogleCalendarEvent(event, data.timeZone || 'UTC')
-            } )
-          };
+      const eventBody = await calendar.events
+        .list(eventListParams)
+        .then((response) => {
+          const data = response?.data || {},
+            eventBody: ApiCalendarEventBody = {
+              summary: data.summary || '',
+              description: data.description || '',
+              timeZone: data.timeZone || '',
+              events: (data.items || []).map((event) => {
+                return mapGoogleCalendarEvent(event, data.timeZone || 'UTC');
+              }),
+            };
 
-        return eventBody;
-      } ).catch((err) => {
-        Logger.withTag('/api/v1/calendar/events').error('The API returned an error: ' + err);
-        return null;
-      });
+          return eventBody;
+        })
+        .catch((err) => {
+          Logger.withTag('/api/v1/calendar/events').error('The API returned an error: ' + err);
+          return null;
+        });
 
       return {
         email: userCalendarOAuthToken.primaryEmailAddress,
         eventBody,
-      }
-    } );
+      };
+    });
 
     const totalCalendars = calendarEventsDataMapPromises.length;
     const calendarEventsDataMap = await Promise.all(calendarEventsDataMapPromises);
@@ -201,12 +197,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         status: 'success',
-        message: `Successfully fetched ${ totalCalendars } calendar(s)`,
-        data: calendarEventsDataMap
+        message: `Successfully fetched ${totalCalendars} calendar(s)`,
+        data: calendarEventsDataMap,
       } as ApiSuccess<ApiCalendarEventsResponse>,
       {
-        status: 200
+        status: 200,
       }
     );
-  } );
-};
+  });
+}

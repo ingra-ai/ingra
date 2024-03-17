@@ -1,12 +1,12 @@
-import { getAuthSession } from "@app/auth/session";
-import db from "@lib/db";
-import { cn } from "@lib/utils";
+import { getAuthSession } from '@app/auth/session';
+import db from '@lib/db';
+import { cn } from '@lib/utils';
 import { TaskStatus, TaskPriority } from '@/schemas/task';
 import { formatDistance } from 'date-fns';
-import { Badge, BadgeProps } from "@components/ui/badge";
-import { AddTaskButton } from "./AddTaskButton";
+import { Badge, BadgeProps } from '@components/ui/badge';
+import { AddTaskButton } from './AddTaskButton';
 
-const statuses: Record<any, string>  = {
+const statuses: Record<any, string> = {
   [TaskStatus.enum.TODO]: 'text-gray-400 bg-gray-400/10',
   [TaskStatus.enum.IN_PROGRESS]: 'text-blue-400 bg-blue-400/10',
   [TaskStatus.enum.DONE]: 'text-green-400 bg-green-400/10',
@@ -20,14 +20,16 @@ const priorities: Record<any, BadgeProps['variant']> = {
 
 export default async function Page() {
   const authSession = await getAuthSession();
-  const tasks = authSession ? await db.task.findMany({
-    where: {
-      userId: authSession.user.id
-    },
-    orderBy: {
-      createdAt: "desc"
-    }
-  }) : [];
+  const tasks = authSession
+    ? await db.task.findMany({
+        where: {
+          userId: authSession.user.id,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+    : [];
 
   return (
     <div className="border-t border-white/10 pt-11">
@@ -61,10 +63,7 @@ export default async function Page() {
             <th scope="col" className="p-3 font-semibold text-right">
               Status
             </th>
-            <th
-              scope="col"
-              className="p-3 font-semibold text-right hidden xl:table-cell"
-            >
+            <th scope="col" className="p-3 font-semibold text-right hidden xl:table-cell">
               Created at
             </th>
           </tr>
@@ -74,15 +73,15 @@ export default async function Page() {
             <tr key={item.id}>
               <td className="p-3">
                 <div className="flex items-center gap-x-4">
-                  <div className="text-sm font-medium leading-6 truncate">{ item.title }</div>
+                  <div className="text-sm font-medium leading-6 truncate">{item.title}</div>
                 </div>
               </td>
               <td className="p-3">
-                <div className="font-mono text-sm leading-6 text-gray-400 w-100 truncate">{ item.description || '-' }</div>
+                <div className="font-mono text-sm leading-6 text-gray-400 w-100 truncate">{item.description || '-'}</div>
               </td>
               <td className="p-3 text-right hidden md:table-cell">
                 <div className="flex items-center justify-end gap-x-2">
-                  <Badge variant={ priorities[item.priority] }>{item.priority}</Badge>
+                  <Badge variant={priorities[item.priority]}>{item.priority}</Badge>
                 </div>
               </td>
               <td className="p-3 text-xs text-right">
@@ -94,7 +93,7 @@ export default async function Page() {
                 </div>
               </td>
               <td className="p-3 text-right text-sm leading-6 text-gray-400 hidden xl:table-cell">
-                <time dateTime={item.createdAt.toISOString()}>{ formatDistance(item.createdAt, Date.now(), { addSuffix: true }) }</time>
+                <time dateTime={item.createdAt.toISOString()}>{formatDistance(item.createdAt, Date.now(), { addSuffix: true })}</time>
               </td>
             </tr>
           ))}
@@ -102,4 +101,4 @@ export default async function Page() {
       </table>
     </div>
   );
-} 
+}

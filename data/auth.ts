@@ -1,6 +1,6 @@
-import type { User, MagicLinkToken, ActiveSession } from "@prisma/client";
-import { generateToken } from "@lib/tokens";
-import db from "@lib/db";
+import type { User, MagicLinkToken, ActiveSession } from '@prisma/client';
+import { generateToken } from '@lib/tokens';
+import db from '@lib/db';
 
 /**
  * ---------------------------------
@@ -16,11 +16,11 @@ import db from "@lib/db";
  */
 const generateRandomNumber = (length = 6) => {
   // Generate a random number between 0 and 999999
-  const randomNumber = Math.floor(Math.random() * (10 ** length));
+  const randomNumber = Math.floor(Math.random() * 10 ** length);
   // Convert to a string and pad with leading zeros to ensure it is 6 digits
   const paddedRandomNumber = randomNumber.toString().padStart(6, '0');
   return paddedRandomNumber;
-}
+};
 
 /**
  * Creates a magic link token for the given user.
@@ -40,11 +40,10 @@ export const createMagicLink = async (user: Pick<User, 'id' | 'email'>, expiresS
       userId: user.id,
       token,
       otpCode,
-      expiresAt
-    }
+      expiresAt,
+    },
   });
-}
-
+};
 
 /**
  * Retrieves a magic link with user information based on the provided OTP code.
@@ -60,21 +59,21 @@ export const getMagicLinkByOtp = async (user: Pick<User, 'id'>, otpCode: string)
       user: {
         select: {
           id: true,
-          email: true
-        }
-      }
+          email: true,
+        },
+      },
     },
     where: {
       otpCode,
       userId: user.id,
       expiresAt: {
-        gte: new Date()
-      }
-    }
+        gte: new Date(),
+      },
+    },
   });
 
   return magicLinkWithUser;
-}
+};
 
 /**
  * Expires a magic link token by updating its expiration date to a specific value.
@@ -84,15 +83,15 @@ export const getMagicLinkByOtp = async (user: Pick<User, 'id'>, otpCode: string)
 export const expireMagicLinkByToken = async (token: string) => {
   return await db.magicLinkToken.update({
     where: {
-      token
+      token,
     },
     data: {
-      expiresAt: new Date(0)
-    }
+      expiresAt: new Date(0),
+    },
   });
-}
+};
 
-/** 
+/**
  * ---------------------------------
  * ActiveSession
  * ---------------------------------
@@ -113,7 +112,7 @@ export const createActiveSession = async (user: Pick<User, 'id' | 'email'>, expi
     data: {
       userId: user.id,
       jwt: token,
-      expiresAt
-    }
+      expiresAt,
+    },
   });
-}
+};

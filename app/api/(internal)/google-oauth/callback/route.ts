@@ -1,9 +1,9 @@
-"use server";
+'use server';
 import { NextRequest, NextResponse } from 'next/server';
 import { ActionError, ApiError, ApiSuccess } from '@lib/api-response';
-import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from "@lib/constants";
+import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from '@lib/constants';
 import { google } from 'googleapis';
-import { RedirectType, redirect } from "next/navigation";
+import { RedirectType, redirect } from 'next/navigation';
 import db from '@lib/db';
 import { getAuthSession } from '@app/auth/session';
 import { apiTryCatch } from '@app/api/utils/apiTryCatch';
@@ -50,26 +50,22 @@ export async function GET(request: NextRequest) {
     });
 
     return redirect(authUrl, RedirectType.push);
-  }
-  else if (code && scope) {
+  } else if (code && scope) {
     return await apiTryCatch<any>(async () => {
-      const [authSession, tokenResponse] = await Promise.all([
-        getAuthSession(),
-        oauth2Client.getToken(code)
-      ]);
+      const [authSession, tokenResponse] = await Promise.all([getAuthSession(), oauth2Client.getToken(code)]);
 
       if (authSession === null) {
-        throw new ActionError("error", 404, "User session not found");
+        throw new ActionError('error', 404, 'User session not found');
       }
 
       if (tokenResponse === null) {
-        throw new ActionError("error", 400, "Invalid token response");
+        throw new ActionError('error', 400, 'Invalid token response');
       }
 
       const { tokens } = tokenResponse;
 
       const credentials: Partial<typeof tokens> = {
-        access_token: tokens.access_token
+        access_token: tokens.access_token,
       };
 
       if (tokens.refresh_token) {
@@ -85,17 +81,17 @@ export async function GET(request: NextRequest) {
         });
 
       if (!profile || !profile.data) {
-        throw new ActionError("error", 400, "Profile not found");
+        throw new ActionError('error', 400, 'Profile not found');
       }
 
-      const primaryEmailAddress = (profile.data.emailAddresses || [])?.find(email => email?.metadata?.primary === true);
+      const primaryEmailAddress = (profile.data.emailAddresses || [])?.find((email) => email?.metadata?.primary === true);
 
       if (!primaryEmailAddress || !primaryEmailAddress.value) {
-        throw new ActionError("error", 400, "Primary email address not found");
+        throw new ActionError('error', 400, 'Primary email address not found');
       }
 
       if (!tokens.access_token) {
-        throw new ActionError("error", 400, "Invalid token response")
+        throw new ActionError('error', 400, 'Invalid token response');
       }
 
       const updateData: Record<string, any> = {
@@ -115,7 +111,7 @@ export async function GET(request: NextRequest) {
           userId_primaryEmailAddress: {
             userId: authSession.user.id,
             primaryEmailAddress: primaryEmailAddress.value,
-          }
+          },
         },
         create: {
           userId: authSession.user.id,
@@ -127,7 +123,7 @@ export async function GET(request: NextRequest) {
           tokenType: tokens.token_type || '',
           expiryDate: new Date(tokens.expiry_date || 0),
         },
-        update: updateData
+        update: updateData,
       });
 
       const redirectUrl = new URL(APP_GOOGLE_OAUTH_REDIRECT_URL);
@@ -144,7 +140,7 @@ export async function GET(request: NextRequest) {
       message: 'You are not authorized to access this resource',
     } as ApiError,
     {
-      status: 400
+      status: 400,
     }
   );
-};
+}

@@ -1,22 +1,22 @@
-"use server";
+'use server';
 
-import * as z from "zod";
-import { TaskSchema } from "@/schemas/task";
-import { ActionError } from "@lib/api-response";
-import { getAuthSession } from "@app/auth/session";
-import db from "@lib/db";
+import * as z from 'zod';
+import { TaskSchema } from '@/schemas/task';
+import { ActionError } from '@lib/api-response';
+import { getAuthSession } from '@app/auth/session';
+import db from '@lib/db';
 
 export const createTask = async (values: z.infer<typeof TaskSchema>) => {
   const validatedFields = TaskSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new ActionError("error", 400, "Invalid fields!");
+    throw new ActionError('error', 400, 'Invalid fields!');
   }
 
   const authSession = await getAuthSession();
 
-  if ( !authSession || authSession.expiresAt < new Date() ) {
-    throw new ActionError("error", 400, "User not authenticated!");
+  if (!authSession || authSession.expiresAt < new Date()) {
+    throw new ActionError('error', 400, 'User not authenticated!');
   }
 
   const { title, description, status, priority } = validatedFields.data;
@@ -27,17 +27,17 @@ export const createTask = async (values: z.infer<typeof TaskSchema>) => {
       description,
       status,
       priority,
-      userId: authSession.user.id
-    }
+      userId: authSession.user.id,
+    },
   });
 
-  if ( !task ) {
-    throw new ActionError("error", 400, "Failed to create task!");
+  if (!task) {
+    throw new ActionError('error', 400, 'Failed to create task!');
   }
 
   return {
-    success: "Task created!",
-    data: task
+    success: 'Task created!',
+    data: task,
   };
 };
 
@@ -45,35 +45,35 @@ export const updateTask = async (id: number, values: z.infer<typeof TaskSchema>)
   const validatedFields = TaskSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new ActionError("error", 400, "Invalid fields!");
+    throw new ActionError('error', 400, 'Invalid fields!');
   }
 
   const authSession = await getAuthSession();
 
-  if ( !authSession || authSession.expiresAt < new Date() ) {
-    throw new ActionError("error", 400, "User not authenticated!");
+  if (!authSession || authSession.expiresAt < new Date()) {
+    throw new ActionError('error', 400, 'User not authenticated!');
   }
 
   const { title, description, status, priority } = validatedFields.data;
 
   const task = await db.task.update({
     where: {
-      id
+      id,
     },
     data: {
       title,
       description,
       status,
-      priority
-    }
+      priority,
+    },
   });
 
-  if ( !task ) {
-    throw new ActionError("error", 400, "Failed to update task!");
+  if (!task) {
+    throw new ActionError('error', 400, 'Failed to update task!');
   }
 
   return {
-    success: "Task updated!",
-    data: task
+    success: 'Task updated!',
+    data: task,
   };
-}
+};

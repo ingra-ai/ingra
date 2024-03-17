@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { FormSlideOver } from "@components/slideovers/FormSlideOver";
-import { TaskForm } from "./TaskForm";
-import { useState, useTransition } from "react";
+import { FormSlideOver } from '@components/slideovers/FormSlideOver';
+import { TaskForm } from './TaskForm';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 export const AddTaskButton: React.FC = () => {
@@ -10,8 +10,8 @@ export const AddTaskButton: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
-  function onSuccess () {
-    setOpen( false );
+  function onSuccess() {
+    setOpen(false);
     startTransition(() => {
       // Refresh the current route and fetch new data from the server without
       // losing client-side browser or React state.
@@ -33,4 +33,4 @@ export const AddTaskButton: React.FC = () => {
       </FormSlideOver>
     </div>
   );
-}
+};

@@ -1,5 +1,5 @@
-import type { User, Profile } from "@prisma/client";
-import db from "@lib/db";
+import type { User, Profile } from '@prisma/client';
+import db from '@lib/db';
 
 /**
  * Retrieves the user profile for a given user.

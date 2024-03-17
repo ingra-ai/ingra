@@ -1,6 +1,6 @@
-"use server"
+'use server';
 import { cookies } from 'next/headers';
-import { type User, type Profile, type ActiveSession, type PhraseCode } from "@prisma/client";
+import { type User, type Profile, type ActiveSession, type PhraseCode } from '@prisma/client';
 import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
 import { getUserByJwt } from '@/data/user';
@@ -16,7 +16,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
   const cookieStore = cookies();
   const jwtCookie = cookieStore.get(APP_SESSION_COOKIE_NAME);
 
-  if ( !jwtCookie || !jwtCookie.value ) {
+  if (!jwtCookie || !jwtCookie.value) {
     return null;
   }
 
@@ -35,6 +35,4 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
     Logger.withTag('AuthSession').error('Error fetching user and session by JWT:', error);
     return null;
   }
-}
-
-
+};
