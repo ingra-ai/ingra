@@ -1,8 +1,9 @@
 import { ActionError, type ApiError, type ApiSuccess } from '@lib/api-response';
 import { Logger } from '@lib/logger';
 import { NextResponse } from 'next/server';
+import type { ApiTryCatchReturnType } from './types';
 
-export const apiTryCatch = async <T>( fn: () => Promise<NextResponse<ApiError | ApiSuccess<T>>> ): Promise<NextResponse<ApiError | ApiSuccess<T>>> => {
+export const apiTryCatch = async <T>( fn: () => Promise<ApiTryCatchReturnType<T>> ): Promise<ApiTryCatchReturnType<T>> => {
   try {
     return await fn();
   }

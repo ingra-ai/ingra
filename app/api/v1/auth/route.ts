@@ -220,7 +220,7 @@ export async function GET(req: NextRequest) {
           status: 200,
         }
       );
-    } else if (otpCode) {
+    } else {
       /**
        * When user provides both email and otpCode, we will verify the otpCode and create an active session for the user.
        */
