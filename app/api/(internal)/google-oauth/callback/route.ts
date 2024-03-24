@@ -77,6 +77,7 @@ export async function GET(request: NextRequest) {
 
     return redirect(authUrl, RedirectType.push);
   } else if (code && scope) {
+
     return await apiTryCatch<any>(async () => {
       const [authSession, tokenResponse] = await Promise.all([getAuthSession(), oauth2Client.getToken(code)]);
 

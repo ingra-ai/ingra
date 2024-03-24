@@ -1,12 +1,10 @@
 import { getUserByPhraseCode } from '@/data/user';
-import { ActionError, type ApiError, type ApiSuccess } from '@lib/api-response';
+import { ActionError } from '@lib/api-response';
 import { APP_URL } from '@lib/constants';
 import { apiTryCatch } from './apiTryCatch';
-import { NextResponse } from 'next/server';
+import type { ApiGptTryCallbackArg, ApiTryCatchReturnType } from './types';
 
-export type ApiGptTryCallbackArg = NonNullable<Awaited<ReturnType<typeof getUserByPhraseCode>>>;
-
-export const apiGptTryCatch = async <T>(phraseCode: string, fn: (userWithProfile: ApiGptTryCallbackArg) => Promise<NextResponse<ApiError | ApiSuccess<T>>>): Promise<NextResponse<ApiError | ApiSuccess<T>>> => {
+export const apiGptTryCatch = async <T>(phraseCode: string, fn: (userWithProfile: ApiGptTryCallbackArg) => Promise<ApiTryCatchReturnType<T>>): Promise<ApiTryCatchReturnType<T>> => {
   return await apiTryCatch(async () => {
     const userWithProfile = await getUserByPhraseCode(phraseCode);
 
