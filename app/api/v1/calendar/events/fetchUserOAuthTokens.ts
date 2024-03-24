@@ -1,4 +1,4 @@
-import { ApiGptTryCallbackArg } from "@app/api/utils/apiGptTryCatch";
+import type { ApiGptTryCallbackArg } from "@app/api/utils/types";
 import { ActionError } from "@lib/api-response";
 import { APP_URL } from "@lib/constants";
 import db from "@lib/db";
