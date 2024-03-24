@@ -85,7 +85,7 @@ export class ActionError extends Error implements ApiError {
  *                additionalProperties: true
  *              description: An array of arbitrary objects returned by the operation.
  */
-export type ApiSuccess<T extends object> = {
+export type ApiSuccess<T> = {
   status: string;
   message: string;
   data?: T | T[];

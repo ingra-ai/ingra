@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { headers } from 'next/headers';
 import { NavItemChild } from '@components/navs/types';
 
-export const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
+const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
   {
     name: 'Profile',
     href: '/settings/profile',

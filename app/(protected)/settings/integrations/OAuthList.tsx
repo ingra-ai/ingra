@@ -1,9 +1,13 @@
 'use client';
+import { startTransition, useState } from "react";
 import { OAuthToken } from "@prisma/client";
 import { TrashIcon } from '@heroicons/react/20/solid'
 import format from 'date-fns/format';
 import { Button } from "@components/ui/button";
 import { cn } from "@lib/utils";
+import { useToast } from '@components/ui/use-toast';
+import { useRouter } from 'next/navigation';
+import { RefreshCcw } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { APP_NAME } from "@lib/constants";
+import { revokeOAuth } from "../actions/oauth";
 
 type OAuthListProps = {
   oAuthTokens: OAuthToken[];
@@ -43,9 +48,32 @@ const getTokenDetail = (token: OAuthToken) => {
 
 const OAuthList: React.FC<OAuthListProps> = (props) => {
   const { oAuthTokens } = props;
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   function onRevoke(token: OAuthToken) {
-    console.info('Not implemented yet');
+    setIsLoading(true);
+    revokeOAuth(token).then(() => {
+      toast({
+        title: 'Token has been revoked!',
+        description: 'Access token has been successfully revoked.',
+      });
+      startTransition(() => {
+        // Refresh the current route and fetch new data from the server without
+        // losing client-side browser or React state.
+        router.refresh();
+      });
+    })
+    .catch((error: any) => {
+      toast({
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message || 'Failed to revoke token!',
+      });
+    })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -96,7 +124,15 @@ const OAuthList: React.FC<OAuthListProps> = (props) => {
                           </p>
                         </DialogDescription>
                         <DialogFooter>
-                          <Button variant='destructive' type="button" onClick={() => onRevoke(token)}>Revoke</Button>
+                          <Button
+                            variant='destructive'
+                            type="button"
+                            onClick={() => onRevoke(token)}
+                            disabled={isLoading}
+                          >
+                            {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
+                            {isLoading ? 'Revoking...' : 'Revoke'}
+                          </Button>
                         </DialogFooter>
                       </DialogHeader>
                     </DialogContent>
