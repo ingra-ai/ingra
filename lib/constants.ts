@@ -17,10 +17,14 @@ export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 
 export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'BAKA_SESSION';
 
 /**
+ * API Security
+ */
+export const APP_X_API_KEY = process.env.X_API_KEY || '';
+
+/**
  * OPENAI Plugin Variables
  */
 export const APP_OPENAI_VERIFICATION_TOKEN = process.env.NEXT_PUBLIC_OPENAI_VERIFICATION || '';
-
 export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = 'BakabitVirtualAssistant';
 export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Bakabit Assistant';
 export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL =
