@@ -106,6 +106,7 @@ model OAuthToken {
   service       String   // e.g., "google", "microsoft", to identify the OAuth service
   accessToken   String
   refreshToken  String?
+  idToken       String?
   scope         String
   tokenType     String   @db.VarChar(64) @default("Bearer")
   expiryDate    DateTime

@@ -63,6 +63,13 @@ export const getUserByPhraseCode = async (code: string) => {
           email: true,
           role: true,
           profile: true,
+          oauthTokens: {
+            select: {
+              accessToken: true,
+              refreshToken: true,
+              primaryEmailAddress: true,
+            },
+          },
         },
       },
     },

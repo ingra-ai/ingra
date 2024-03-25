@@ -146,6 +146,7 @@ export async function GET(request: NextRequest) {
           service: 'google-oauth',
           accessToken: tokens.access_token || '',
           refreshToken: tokens.refresh_token || '',
+          idToken: tokens.id_token || '',
           scope: tokens.scope || '',
           tokenType: tokens.token_type || '',
           expiryDate: new Date(tokens.expiry_date || 0),
