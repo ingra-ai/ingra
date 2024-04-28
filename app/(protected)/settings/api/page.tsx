@@ -1,21 +1,29 @@
 import { getAuthSession } from '@app/auth/session';
-import { PhraseCodeForm } from '@protected/settings/forms/PhraseCodeForm';
+import { GenerateApiKeyButton } from '@protected/settings/api/GenerateApiKeyButton';
+import db from '@lib/db';
+import { ApiKeysTable } from './ApiKeysTable';
 
-/**
- * Profile Page
- * @see https://tailwindui.com/components/application-ui/forms/form-layouts
- */
 export default async function Page() {
   const authSession = await getAuthSession();
+  const allApiKeys = authSession && await db.apiKey.findMany({
+    where: {
+      userId: authSession.user.id,
+    },
+  });
 
   return (
     <div className="mt-7 leading-7">
       <h2 className="text-base font-semibold leading-7 text-white">Generate Your API Key</h2>
-      <p className="mt-1 text-sm leading-5 text-gray-400">Create a unique phrase code for secure authentication. Each generated code is valid for one minute after creation, ensuring enhanced security for your session.</p>
+      <p className="mt-1 text-sm leading-5 text-gray-400">Generate an API key for your GPT Plugin <code>X-API-KEY</code> header</p>
       {authSession && (
         <div className="mt-5">
-          <PhraseCodeForm authSession={authSession} />
+          <GenerateApiKeyButton />
         </div>
+      )}
+
+      {/* Table to display all api keys */}
+      {allApiKeys && (
+        <ApiKeysTable apiKeys={allApiKeys} />
       )}
     </div>
   );
