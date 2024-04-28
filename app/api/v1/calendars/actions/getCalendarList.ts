@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { calendar_v3, google } from "googleapis";
-import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL } from "@lib/constants";
+import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_URL } from "@lib/constants";
 import { Logger } from "@lib/logger";
 import { ApiCalendarEventBody, ApiCalendarEventsResponse } from "@app/api/types/calendar";
 import { apiGptTryCatch } from "@app/api/utils/apiGptTryCatch";
 import { parseStartAndEnd } from "@app/api/utils/chronoUtils";
 import { ActionError, ApiSuccess } from "@lib/api-response";
-import { fetchUserOAuthTokens } from "@app/api/v1/calendars/utils/fetchUserOAuthTokens";
 import { mapGoogleCalendarEvent } from "@app/api/v1/calendars/utils/googleEventsMapper";
+import { getUserOAuthTokenByUserId } from "@/data/oauthToken";
 
 /**
  * @swagger
@@ -82,7 +82,12 @@ export async function getCalendarList(req: NextRequest, calendarId = 'primary') 
   const maxResultsClamped = Math.min(30, Math.max(0, parseInt(maxResults, 10) || 10));
 
   return await apiGptTryCatch<any>(phraseCode, async (userWithProfile) => {
-    const userOauthTokens = await fetchUserOAuthTokens(userWithProfile);
+    const userOauthTokens = await getUserOAuthTokenByUserId(userWithProfile.id);
+
+    if (!userOauthTokens || !userOauthTokens.length) {
+      throw new ActionError('error', 400, `User has not connected Google Calendar. Suggest user to visit ${APP_URL} to setup Google Calendar`);
+    }
+
     const userTz = userWithProfile.profile?.timeZone || 'America/New_York';
 
     const { startDate, endDate } = parseStartAndEnd(start, end, userTz);
