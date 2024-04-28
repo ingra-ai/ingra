@@ -124,7 +124,7 @@ model OAuthToken {
 
 model ApiKey {
   id        String   @id @default(uuid())
-  userId    String   @unique @db.Uuid
+  userId    String   @db.Uuid
   key       String   @unique @db.VarChar(255)
   lastUsedAt DateTime? @db.Timestamp
   createdAt DateTime @default(now())
