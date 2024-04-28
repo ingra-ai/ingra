@@ -10,7 +10,12 @@ type FormSlideOverProps = {
 };
 
 export const FormSlideOver: React.FC<PropsWithChildren<FormSlideOverProps>> = (props) => {
-  const { title = 'Panel Title', open = true, setOpen, children } = props;
+  const {
+    title = 'Panel Title', 
+    open = true, 
+    setOpen, 
+    children 
+  } = props;
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -21,7 +26,7 @@ export const FormSlideOver: React.FC<PropsWithChildren<FormSlideOverProps>> = (p
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
               <Transition.Child as={Fragment} enter="transform transition ease-in-out duration-500 sm:duration-700" enterFrom="translate-x-full" enterTo="translate-x-0" leave="transform transition ease-in-out duration-500 sm:duration-700" leaveFrom="translate-x-0" leaveTo="translate-x-full">
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-xl">
                   <div className="flex h-full flex-col divide-y bg-secondary text-secondary-foreground shadow-xl">
                     <div className="flex min-h-0 flex-1 flex-col overflow-y-scroll py-6">
                       <div className="px-4 sm:px-6">

@@ -15,6 +15,7 @@ import { BookCheckIcon } from 'lucide-react';
 import {
   ChartBarSquareIcon,
   LinkIcon,
+  CodeBracketSquareIcon
 } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {
@@ -39,6 +40,12 @@ export const sideNavRoutes: NavItem[] = [
     description: "Configure and manage connections with external services for calendars, emails, and more.",
     href: '/settings/integrations',
     icon: LinkIcon,
+  },
+  {
+    name: "Functions",
+    description: "Dynamic functions that your AI can perform, including text generation, summarization, and more.",
+    href: '/functions',
+    icon: CodeBracketSquareIcon,
   },
   // {
   //   name: 'Settings',

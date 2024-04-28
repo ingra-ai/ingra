@@ -79,6 +79,47 @@ export const getUserByPhraseCode = async (code: string) => {
 };
 
 /**
+ * Retrieves the user profile by username.
+ * @param {string} userName - The username of the user.
+ * @returns A promise that resolves to the user profile object, or null if the username is invalid.
+ */
+export const getProfileByUsername = async (userName: string) => {
+  if ( !userName || typeof userName !== 'string') {
+    return null;
+  }
+
+  return await db.profile.findUnique({
+    where: { 
+      userName, 
+    },
+    select: {
+      id: true,
+      userName: true,
+      firstName: true,
+      lastName: true,
+      timeZone: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          oauthTokens: {
+            select: {
+              scope: true,
+              tokenType: true,
+              service: true,
+              idToken: true,
+              accessToken: true,
+              primaryEmailAddress: true,
+            },
+          },
+        },
+      }
+    }
+  });
+};
+
+/**
  * Retrieves a user by their JWT.
  * This function is used to grab the user, profile and phrasecode.
  *

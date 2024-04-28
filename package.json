@@ -25,6 +25,7 @@
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@hookform/resolvers": "^3.3.4",
+    "@monaco-editor/react": "^4.6.0",
     "@prisma/client": "5.11.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
