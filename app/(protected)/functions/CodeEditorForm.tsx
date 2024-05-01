@@ -11,7 +11,9 @@ import { useCallback, useRef, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import Editor from '@monaco-editor/react';
+import Editor, { type OnMount } from '@monaco-editor/react';
+import { FunctionSchema } from '@/schemas/function';
+import { upsertFunction } from './actions/functions';
 
 const CODE_DEFAULT_TEMPLATE = `
 async function handler(ctx) {
@@ -19,6 +21,7 @@ async function handler(ctx) {
   console.log({ envVars, args });
 
   // Add your code here
+  return 'hello world';
 }
 `;
 
@@ -28,59 +31,75 @@ type CodeEditorFormProps = {
 
 export const CodeEditorForm: React.FC<CodeEditorFormProps> = (props) => {
   const { onSuccess } = props;
-  const editorRef = useRef(null);
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const { handleSubmit, register, formState, setValue, reset } = useForm<z.infer<typeof TaskSchema>>({
-    resolver: zodResolver(TaskSchema),
+  const { handleSubmit, register, formState, setValue, reset } = useForm<z.infer<typeof FunctionSchema>>({
+    resolver: zodResolver(FunctionSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      status: TaskStatus.enum.TODO,
-      priority: TaskPriority.enum.MEDIUM,
+      slug: 'hello-world',
+      code: CODE_DEFAULT_TEMPLATE,
     },
   });
 
-  const onSubmit = useCallback((values: z.infer<typeof TaskSchema>) => {
-    setIsLoading(true);
-    return createTask(values)
-      .then((data) => {
+  const onEditorMount = useCallback<OnMount>((editor, monaco) => {
+    editorRef.current = editor;
+  }, []);
+
+  const onSave = useCallback(async (values: z.infer<typeof FunctionSchema>) => {
+    setIsSaving(true);
+  
+    // save to db and return function
+    const savedFunction = await upsertFunction(values)
+      .then((resp) => {
         toast({
-          title: 'Task created!',
-          description: 'Task has been created successfully.',
+          title: 'Function updated!',
+          description: 'Function has been updated successfully.',
         });
-
-        reset();
-
-        if (typeof onSuccess === 'function') {
-          onSuccess();
-        }
+        return resp.data;
       })
       .catch((error: Error) => {
         toast({
           title: 'Uh oh! Something went wrong.',
-          description: error?.message || 'Failed to perform task operation',
+          description: error?.message || 'Failed to update function!',
         });
 
         Logger.error(error?.message);
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsSaving(false);
       });
+
+    return savedFunction;
   }, []);
 
-  const onEditorMount = useCallback((editor: any, monaco: any) => {
-    editorRef.current = editor;
-  }, []);
+  const onRun = useCallback(() => {
+    setIsRunning(true);
 
-  const handleRun = useCallback(() => {
-    const code = editorRef.current;
+
     console.log('Running code:', editorRef.current);
   }, []);
 
   return (
-    <form className="block space-y-6 mt-5" method="POST" onSubmit={handleSubmit(onSubmit)}>
+    <form className="block space-y-6 mt-5" method="POST" onSubmit={handleSubmit(onSave)}>
+      <div>
+        <label htmlFor="slug" className="block text-sm font-medium leading-6">
+          Slug
+        </label>
+        <input
+          id="slug"
+          {...register('slug')}
+          placeholder="hello-world"
+          autoComplete="function-code-slug"
+          type="text"
+          required
+          autoFocus
+          className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+        />
+        {formState.errors.slug && <p className="text-sm font-medium text-destructive-foreground mt-3">{formState.errors.slug.message}</p>}
+      </div>
       <div>
         <label htmlFor="description" className="block text-sm font-medium leading-6">
           Code &#40;Node.js&#41;
@@ -100,47 +119,20 @@ export const CodeEditorForm: React.FC<CodeEditorFormProps> = (props) => {
       </div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="sm:col-span-2"></div>
-        <div className="sm:col-span-2"></div>
         <div className="sm:col-span-2">
-          <Button variant={'outline'} type="button" onClick={handleRun} disabled={isLoading} className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
+          <Button variant={'outline'} type="button" onClick={onRun} disabled={isRunning} className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
             {
-              isLoading ? 
+              isRunning ? 
                 <CircleDot className="animate-spin inline-block mr-2" /> : 
                 <Bug className="inline-block mr-2" />
               }
-            {isLoading ? 'Running...' : 'Run'}
-          </Button>
-        </div>
-      </div>
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium leading-6">
-          Description
-        </label>
-        <textarea
-          id="description"
-          {...register('description')}
-          placeholder="Enter a description"
-          autoComplete=""
-          required
-          autoFocus
-          className="block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-        />
-        {formState.errors.description && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.description.message}</p>}
-      </div>
-
-      <div className="grid py-8 grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div className="sm:col-span-2"></div>
-        <div className="sm:col-span-2">
-
-        <Button variant={'default'} type="button" disabled={isLoading} className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
-            {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
-            {isLoading ? 'Testing...' : 'Test'}
+            {isRunning ? 'Running...' : 'Run'}
           </Button>
         </div>
         <div className="sm:col-span-2">
-          <Button variant={'default'} type="submit" disabled={isLoading} className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
-            {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
-            {isLoading ? 'Saving...' : 'Save'}
+          <Button variant={'default'} type="submit" disabled={isSaving || isRunning} className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
+            {isSaving && <RefreshCcw className="animate-spin inline-block mr-2" />}
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>

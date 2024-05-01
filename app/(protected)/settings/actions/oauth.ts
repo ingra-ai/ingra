@@ -1,9 +1,7 @@
 'use server';
 
-import * as z from 'zod';
 import { ActionError } from '@lib/api-response';
 import { OAuthToken } from "@prisma/client";
-import { ProfileSchema } from '@/schemas/profile';
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 

@@ -11,7 +11,6 @@ import { AuthSessionResponse } from '@app/auth/session';
 import { type Profile } from '@prisma/client';
 import { ProfileSchema } from '@/schemas/profile';
 import { censorEmail } from '@lib/functions/censorEmail';
-import { APP_URL } from '@lib/constants';
 import { updateProfile } from '@/app/(protected)/settings/actions/profile';
 import { useCallback } from 'react';
 import { Input } from '@components/ui/input';
@@ -90,7 +89,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
               id="firstName"
               {...register('firstName')}
               placeholder="John"
-              type="firstName"
+              type="text"
               autoComplete="firstName"
               required
               autoFocus
@@ -107,7 +106,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
               id="lastName"
               {...register('lastName')}
               placeholder="Doe"
-              type="lastName"
+              type="text"
               autoComplete="lastName"
               required
               autoFocus
