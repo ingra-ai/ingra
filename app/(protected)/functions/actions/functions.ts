@@ -1,92 +1,127 @@
 'use server';
 
 import * as z from 'zod';
-import { ActionError } from '@lib/api-response';
+import { v4 as uuidv4 } from 'uuid';
+import { ActionError, PrismaActionError } from '@lib/api-response';
 import { FunctionMetaSchema, FunctionSchema } from '@/schemas/function';
-import { getAuthSession } from '@app/auth/session';
+import { validateAction } from '@lib/action-helpers';
 import db from '@lib/db';
-
-/**
- * Validates the given values against the provided schema and performs authentication check.
- * 
- * @template T - The type of the schema.
- * @param {T} schema - The schema to validate against.
- * @param {z.infer<T>} values - The values to be validated.
- * @returns {Promise<{ authSession: AuthSession, data: z.infer<T> }>} - The validated data along with the authentication session.
- * @throws {ActionError} - If the fields are invalid or the user is not authenticated.
- */
-const _validate = async <T extends z.ZodType<any, any>>(schema: T, values: z.infer<T>) => {
-  const validatedFields = schema.safeParse(values);
-
-  if (!validatedFields.success) {
-    throw new ActionError('error', 400, 'Invalid fields!');
-  }
-
-  const authSession = await getAuthSession();
-
-  if (!authSession || authSession.expiresAt < new Date()) {
-    throw new ActionError('error', 400, 'User not authenticated!');
-  }
-
-  return {
-    authSession,
-    data: validatedFields.data as z.infer<T>
-  };
-};
+import { Logger } from '@lib/logger';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
-  const validatedValues = await _validate(FunctionSchema, values); 
+  const validatedValues = await validateAction(FunctionSchema, values);
   const { authSession, data } = validatedValues;
 
-  const { slug, code, isPrivate } = data;
-  const dbFunction = await db.function.upsert({
-    where: {
-      ownerUserId: authSession.user.id,
-    },
-    update: {
-      slug,
-      code,
-      isPrivate
-    },
-    create: {
-      slug,
-      code,
-      isPrivate,
-      ownerUserId: authSession.user.id,
-    },
-  });
+  const {
+    id: recordId, slug, code, isPrivate, httpVerb, description, arguments: functionArguments
+  } = data;
 
+  try {
+    const result = await db.$transaction(async (prisma) => {
+      // If recordId exists, that means user is editing.
+      if (recordId) {
+        // Check if the function exists
+        const existingFunction = await prisma.function.findUnique({
+          where: {
+            id: values.id,
+            ownerUserId: authSession.user.id,
+          },
+        });
 
-  if (!dbFunction) {
-    throw new ActionError('error', 400, 'Failed to update function!');
+        if ( !existingFunction ) {
+          throw new Error('Function not found');
+        }
+
+        // Delete existing arguments
+        await prisma.functionArgument.deleteMany({
+          where: { functionId: existingFunction.id },
+        });
+
+        // Update the function
+        await prisma.function.update({
+          where: {
+            id: existingFunction.id,
+            ownerUserId: authSession.user.id,
+          },
+          data: {
+            slug,
+            code,
+            isPrivate,
+            httpVerb,
+            description,
+            updatedAt: new Date()
+          },
+        });
+
+        // Insert new arguments
+        if (functionArguments) {
+          await prisma.functionArgument.createMany({
+            data: functionArguments.map(arg => ({
+              ...arg,
+              functionId: existingFunction.id
+            })),
+          });
+        }
+      } else {
+        // Create new function and arguments
+        const newFunction = await prisma.function.create({
+          data: {
+            slug,
+            code,
+            isPrivate,
+            httpVerb,
+            description,
+            ownerUserId: authSession.user.id
+          },
+        });
+
+        const hasArguments = functionArguments && Array.isArray(functionArguments) && functionArguments.length;
+        if ( hasArguments ) {
+          await prisma.functionArgument.createMany({
+            data: functionArguments.map(arg => ({
+              ...arg,
+              functionId: newFunction.id
+            })),
+          });
+        }
+
+        return newFunction;
+      }
+    });
+
+    return {
+      success: 'Function upserted successfully!',
+      data: result,
+    };
+  } catch (error: any) {
+    Logger.error('Failed to upsert function', error);
+    throw new PrismaActionError(error);
   }
-
-  return {
-    success: 'Function updated!',
-    data: dbFunction,
-  };
 };
 
 export const upsertFunctionMeta = async (values: z.infer<typeof FunctionMetaSchema>) => {
-  const validatedValues = await _validate(FunctionMetaSchema, values); 
-  const { authSession, data } = validatedValues;
+  const validatedValues = await validateAction(FunctionMetaSchema, values); 
+  const { data } = validatedValues;
 
-  const { id, functionId, openApiSpec = {} } = data;
+  const { id, functionId, openApiSpec = {}, responses = {} } = data;
   const dbFunctionMeta = await db.functionMeta.upsert({
     where: {
-      id,
+      id: id || undefined,
       functionId,
     },
     update: {
       openApiSpec,
+      responses
     },
     create: {
       openApiSpec,
+      responses,
       functionId,
     },
   });
 
   if (!dbFunctionMeta) {
+    Logger.error('Failed to upsert function meta');
     throw new ActionError('error', 400, 'Failed to update function meta!');
   }
 

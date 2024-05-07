@@ -41,6 +41,14 @@ export const APP_GOOGLE_OAUTH_CALLBACK_URL = APP_URL + APP_GOOGLE_OAUTH_CALLBACK
 export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + '/settings/integrations';
 
 /**
+ * USERS API
+*/
+// This should reflect the path of the API in the app
+// !! Requires to replace the username and slug,
+// !! -- only use this wherever you have access to user profile and function slug
+export const USERS_API_FUNCTION_URL = [APP_URL, 'api/v1/u', ':username', 'functions', ':slug'].join('/');
+
+/**
  * The version of the app as defined in package.json
  */
 export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';

@@ -2,24 +2,15 @@
 
 import * as z from 'zod';
 import { ActionError } from '@lib/api-response';
+import { validateAction } from '@lib/action-helpers';
 import { ProfileSchema } from '@/schemas/profile';
-import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
-  const validatedFields = ProfileSchema.safeParse(values);
+  const validatedValues = await validateAction(ProfileSchema, values); 
+  const { authSession, data } = validatedValues;
 
-  if (!validatedFields.success) {
-    throw new ActionError('error', 400, 'Invalid fields!');
-  }
-
-  const authSession = await getAuthSession();
-
-  if (!authSession || authSession.expiresAt < new Date()) {
-    throw new ActionError('error', 400, 'User not authenticated!');
-  }
-
-  const { firstName, lastName, userName, timeZone } = validatedFields.data;
+  const { firstName, lastName, userName, timeZone } = data;
 
   const profile = await db.profile.upsert({
     where: {

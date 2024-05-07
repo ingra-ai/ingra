@@ -134,30 +134,56 @@ model ApiKey {
   @@map("api_keys")
 }
 
+enum HttpVerb {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+}
+
 model Function {
-  id           String    @id @default(uuid()) @db.Uuid
-  slug         String    @unique
-  code         String    @db.Text
-  isPrivate    Boolean   @default(true)
-  ownerUserId  String    @unique @db.Uuid
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id               String            @id @default(uuid()) @db.Uuid
+  slug             String            @unique
+  code             String            @db.Text
+  isPrivate        Boolean           @default(true)
+  ownerUserId      String            @db.Uuid
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  httpVerb         HttpVerb          @default(GET)
+  description      String            @db.VarChar(1024) @default("")
+  arguments        FunctionArgument[]
+  originalFunctionId String?         @db.Uuid
 
   // Relations
-  owner        User      @relation(fields: [ownerUserId], references: [id])
-  meta         FunctionMeta?
+  owner            User              @relation(fields: [ownerUserId], references: [id])
+  meta             FunctionMeta?
 
   @@map("functions")
   @@unique([ownerUserId, slug])
 }
 
-model FunctionMeta {
-  id           String    @id @default(uuid())
-  openApiSpec  Json
+model FunctionArgument {
+  id             String     @id @default(uuid())
+  functionId     String     @db.Uuid
+  name           String
+  type           String     // Data type: 'string', 'number', 'boolean', etc.
+  defaultValue   String?    // JSON string to support various default values
+  description    String?    @db.VarChar(1024) @default("")
+  isRequired     Boolean    @default(false)
+  
+  // Relations
+  function       Function   @relation(fields: [functionId], references: [id])
 
-  // Relation
-  functionId  String    @unique @db.Uuid
-  function    Function  @relation(fields: [functionId], references: [id])
+  @@map("function_arguments")
+}
+
+model FunctionMeta {
+  id            String     @id @default(uuid())
+  functionId    String     @unique @db.Uuid
+  function      Function   @relation(fields: [functionId], references: [id])
+  openApiSpec   Json       // Stores the OpenAPI spec for the function
+  responses     Json       // Optional: Detailed response structures
 
   @@map("function_meta")
 }
