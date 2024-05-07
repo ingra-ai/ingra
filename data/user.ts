@@ -142,8 +142,9 @@ export const getUserByJwt = async (jwt: string) => {
           id: true,
           email: true,
           role: true,
-          profile: true,
           phraseCode: true,
+          profile: true,
+          oauthTokens: true
         },
       },
     },

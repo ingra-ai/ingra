@@ -8,7 +8,7 @@ export type ApiGptTryCallbackArg = NonNullable<Awaited<ReturnType<typeof getUser
 
 export type ApiUserTryContextArg = {
   envVars: {
-    oAuthTokens: {
+    oauthTokens: {
       scope: string;
       tokenType: string;
       service: string;
