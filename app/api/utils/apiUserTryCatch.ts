@@ -18,7 +18,7 @@ export async function apiUserTryCatch<T>(username: string, apiKey: string, fn: (
 
     const context: ApiUserTryContextArg = {
       envVars: {
-        oAuthTokens: userProfile.user?.oauthTokens || []
+        oauthTokens: userProfile.user?.oauthTokens || []
       }
     };
 

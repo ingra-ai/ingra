@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 /**
  * @swagger
  * components:
@@ -90,3 +92,37 @@ export type ApiSuccess<T> = {
   message: string;
   data?: T | T[];
 };
+
+
+export class PrismaActionError extends ActionError {
+  constructor(error: Prisma.PrismaClientKnownRequestError | Error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      super('error', PrismaActionError.determineStatusCode(error.code), PrismaActionError.friendlyMessage(error));
+    } else {
+      super('error', 500, 'An unexpected database error occurred');
+    }
+  }
+
+  static determineStatusCode(code: string): number {
+    switch (code) {
+      case 'P2002':
+        return 409; // Conflict
+      case 'P2025':
+        return 404; // Not Found
+      default:
+        return 500; // Internal Server Error
+    }
+  }
+
+  static friendlyMessage(error: Prisma.PrismaClientKnownRequestError): string {
+    switch (error.code) {
+      case 'P2002':
+        const field = (error.meta?.target as any[] || []).join(', ');
+        return `A record with the same ${field} already exists.`;
+      case 'P2025':
+        return 'The requested record could not be found.';
+      default:
+        return 'An unexpected error occurred while interacting with the database.';
+    }
+  }
+}

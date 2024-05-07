@@ -1,0 +1,31 @@
+import { getAuthSession } from "@app/auth/session";
+import { ActionError } from "@lib/api-response";
+import { z } from "zod";
+
+/**
+ * Validates the given values against the provided schema and performs authentication check.
+ * 
+ * @template T - The type of the schema.
+ * @param {T} schema - The schema to validate against.
+ * @param {z.infer<T>} values - The values to be validated.
+ * @returns {Promise<{ authSession: AuthSession, data: z.infer<T> }>} - The validated data along with the authentication session.
+ * @throws {ActionError} - If the fields are invalid or the user is not authenticated.
+ */
+export const validateAction = async <T extends z.ZodType<any, any>>(schema: T, values: z.infer<T>) => {
+  const validatedFields = schema.safeParse(values);
+
+  if (!validatedFields.success) {
+    throw new ActionError('error', 400, 'Invalid fields!');
+  }
+
+  const authSession = await getAuthSession();
+
+  if (!authSession || authSession.expiresAt < new Date()) {
+    throw new ActionError('error', 400, 'User not authenticated!');
+  }
+
+  return {
+    authSession,
+    data: validatedFields.data as z.infer<T>
+  };
+};
