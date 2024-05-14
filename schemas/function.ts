@@ -9,7 +9,7 @@ export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 export const HttpVerbEnum = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
 
 // Database allows 1024 characters for description as per openapi spec.
-export const MAX_FUNCTION_DESCRIPTION_LENGTH = 200;
+export const MAX_FUNCTION_DESCRIPTION_LENGTH = 600;
 
 export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
   'string',
