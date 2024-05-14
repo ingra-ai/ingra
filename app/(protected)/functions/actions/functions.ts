@@ -1,7 +1,6 @@
 'use server';
 
 import * as z from 'zod';
-import { v4 as uuidv4 } from 'uuid';
 import { ActionError, PrismaActionError } from '@lib/api-response';
 import { FunctionMetaSchema, FunctionSchema } from '@/schemas/function';
 import { validateAction } from '@lib/action-helpers';
