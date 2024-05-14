@@ -3,6 +3,7 @@ import { AuthSessionResponse } from '@app/auth/session';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FunctionForm } from './FunctionForm';
 import { Prisma } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 type CodeEditorViewProps = {
   authSession: AuthSessionResponse;
@@ -10,16 +11,23 @@ type CodeEditorViewProps = {
     include: {
       arguments: true
     }
-  }>;
-  onSuccess?: () => void;
+  }>
 };
 
 export const CodeEditorView: React.FC<CodeEditorViewProps> = (props) => {
   const {
     authSession,
-    functionRecord,
-    onSuccess = () => void 0
+    functionRecord
   } = props;
+  const router = useRouter();
+
+  const onSuccess = () => {
+    router.refresh();
+  };
+
+  const onCancel = () => {
+    router.replace('/functions');
+  };
 
   return (
     <Tabs id="code-editor-tabs" defaultValue="function-tab" className="">
@@ -28,7 +36,7 @@ export const CodeEditorView: React.FC<CodeEditorViewProps> = (props) => {
         <TabsTrigger value="metadata-tab">Metadata</TabsTrigger>
       </TabsList>
       <TabsContent value="function-tab">
-        <FunctionForm username={authSession.user.profile?.userName || ''} functionRecord={functionRecord} onSuccess={onSuccess} />
+        <FunctionForm username={authSession.user.profile?.userName || ''} functionRecord={functionRecord} onSuccess={onSuccess} onCancel={onCancel} />
       </TabsContent>
       <TabsContent value="meta-tab">
         Metadata
