@@ -23,6 +23,22 @@ export default async function Page() {
     orderBy: {
       updatedAt: 'desc',
     },
+    select: {
+      id: true,
+      slug: true,
+      description: true,
+      httpVerb: true,
+      isPrivate: true,
+      ownerUserId: true,
+      updatedAt: true,
+      arguments: {
+        select: {
+          id: true,
+          name: true,
+          type: true
+        }
+      }
+    }
   });
 
   const functionListGridClasses = cn({
@@ -33,7 +49,7 @@ export default async function Page() {
     <div className="block" data-testid="functions-view-page">
       <div className="flex items-center px-2">
         <div className="flex-grow">
-          <h1 className="text-base font-semibold leading-10">Functions ({ allFunctions?.length || 0 })</h1>
+          <h1 className="text-base font-semibold leading-10">Functions ({allFunctions?.length || 0})</h1>
         </div>
         <div className="block">
           <div className="flex items-center justify-center">
@@ -41,7 +57,7 @@ export default async function Page() {
         </div>
       </div>
       <div className="mt-4">
-        <div className={ functionListGridClasses }>
+        <div className={functionListGridClasses}>
           {
             allFunctions && (
               <FunctionsList functions={allFunctions} />
