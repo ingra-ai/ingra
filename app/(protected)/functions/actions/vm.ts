@@ -2,6 +2,7 @@
 import { ApiUserTryContextArg } from '@app/api/utils/types';
 import { getAuthSession } from '@app/auth/session';
 import { ActionError } from '@lib/api-response';
+import db from '@lib/db';
 import * as vm from 'vm';
 
 export type SandboxOutput = {
@@ -46,7 +47,11 @@ async function executeCodeSandbox(code: string, ctx: ApiUserTryContextArg) {
   // Execute the function and handle results
   if (sandbox.handler) {
     const result = await sandbox.handler(ctx).catch((err: any) => {
-      throw new ActionError('error', 400, `Error executing function: ${err.message}`);
+      sandbox.outputs.push({
+        type: 'error',
+        message: err.message || 'Failed to execute function',
+      });
+      return void 0;
     });
 
     sandbox.outputs.push({
@@ -63,7 +68,7 @@ async function executeCodeSandbox(code: string, ctx: ApiUserTryContextArg) {
   }
 }
 
-export async function runCodeSandbox(code: string) {
+export async function runCodeSandbox(functionId: string, args: Record<string, any> = {}) {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
@@ -76,5 +81,27 @@ export async function runCodeSandbox(code: string) {
     }
   };
 
-  return await executeCodeSandbox(code, context);
+  if ( typeof args !== 'object' ) {
+    throw new ActionError('error', 400, `Invalid arguments.`);
+  }
+
+  // Spread args into context
+  Object.assign(context, args);
+
+  // Fetch the function code
+  const functionRecord = await db.function.findUnique({
+    where: {
+      id: functionId,
+      ownerUserId: authSession.user.id,
+    },
+    select: {
+      code: true,
+    }
+  });
+
+  if ( !functionRecord ) {
+    throw new ActionError('error', 400, `Function not found.`);
+  }
+
+  return await executeCodeSandbox(functionRecord.code, context);
 }

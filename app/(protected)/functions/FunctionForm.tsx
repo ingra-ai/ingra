@@ -16,7 +16,7 @@ import { USERS_API_FUNCTION_URL } from '@lib/constants';
 import { cn } from '@lib/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
-import FunctionArgumentInput from '@protected/functions/FunctionArgumentInput';
+import FunctionArgumentFormField from '@protected/functions/FunctionArgumentFormField';
 import { Prisma } from '@prisma/client';
 
 type FunctionFormProps = {
@@ -44,6 +44,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const methods = useForm<z.infer<typeof FunctionSchema>>({
+    reValidateMode: 'onSubmit',
     resolver: zodResolver(FunctionSchema),
     defaultValues: {
       id: functionRecord?.id || '',
@@ -65,7 +66,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       httpVerb: functionRecord?.httpVerb || 'GET'
     },
   }),
-    { register, control, handleSubmit, watch, setValue, formState: { errors } } = methods;
+    { register, control, handleSubmit, watch, formState: { errors } } = methods;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -78,6 +79,20 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
 
   const onEditorMount = useCallback<OnMount>((editor, monaco) => {
     editorRef.current = [editor, monaco];
+
+    // Disable the default save (CTRL+S or CMD+S) behavior
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      // No operation (disable save)
+    });
+
+    // Disable other unnecessary commands
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP, () => {
+      // No operation (disable command palette)
+    });
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF, () => {
+      // No operation (disable find)
+    });
   }, []);
 
   const onSave = useCallback(async (values: z.infer<typeof FunctionSchema>) => {
@@ -168,7 +183,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
             </button>
           </div>
           {fields.map((item, idx) => (
-            <FunctionArgumentInput
+            <FunctionArgumentFormField
               key={item.id}
               index={idx}
               item={item}
@@ -177,26 +192,50 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
             />
           ))}
         </div>
-
-
         <div>
           <label className="block text-sm font-medium leading-6">
             Code &#40;Node.js&#41;
           </label>
-          <DynamicCodeEditor
-            height="40vh"
-            defaultLanguage="javascript"
-            theme='vs-dark'
-            keepCurrentModel={false}
-            options={{
-              lineNumbers: 'off',
-              minimap: { enabled: false },
-              fontSize: 12,
-              wordWrap: 'on',
-            }}
-            defaultValue={CODE_DEFAULT_TEMPLATE}
-            onMount={onEditorMount}
+          <Controller
+            control={control}
+            name={'code'}
+            render={({ field: { onChange, value } }) => (
+              <DynamicCodeEditor
+                height="40vh"
+                defaultLanguage="javascript"
+                theme='vs-dark'
+                keepCurrentModel={false}
+                onChange={(newValue) => onChange(newValue || CODE_DEFAULT_TEMPLATE)}
+                options={{
+                  lineNumbers: 'on',
+                  minimap: { enabled: false },
+                  fontSize: 12,
+                  wordWrap: 'on',
+                  scrollBeyondLastLine: false,
+                  smoothScrolling: true,
+                  overviewRulerLanes: 0,
+                  hideCursorInOverviewRuler: true,
+                  renderLineHighlight: 'none',
+                  automaticLayout: true,
+                  folding: false,
+                  contextmenu: false,
+                  links: false,
+                  quickSuggestions: false,
+                  suggestOnTriggerCharacters: false,
+                  tabCompletion: 'off',
+                  acceptSuggestionOnEnter: 'off',
+                  // @ts-ignore
+                  lightbulb: { enabled: 'off' },
+                  codeLens: false,
+                  fixedOverflowWidgets: false,
+                  hover: { enabled: false },
+                }}
+                defaultValue={value || CODE_DEFAULT_TEMPLATE}
+                onMount={onEditorMount}
+              />
+            )}
           />
+          {errors.code && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.code.message}</p>}
         </div>
         <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="sm:col-span-4">
