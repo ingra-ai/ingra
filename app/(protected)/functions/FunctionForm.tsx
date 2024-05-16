@@ -128,7 +128,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
         <form className="grid grid-cols-1 md:grid-cols-12 gap-8" method="POST" onSubmit={handleSubmit(onSave)}>
           <div className="block space-y-6 col-span-1 order-2 lg:order-1 lg:col-span-6 xl:col-span-7 2xl:col-span-8">
             <div className="block">
-              <label className="block text-sm font-medium leading-6">
+              <label className="block text-sm font-medium leading-6 mb-4 text-right">
                 Code &#40;Node.js&#41;
               </label>
               <Controller

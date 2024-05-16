@@ -7,7 +7,7 @@ import { useToast } from '@components/ui/use-toast';
 import { deleteFunction } from '@protected/functions/actions/functions';
 
 interface FunctionsListProps {
-  functions: Function[];
+  functions: Pick<Function, 'id' | 'slug' | 'description' | 'isPrivate' | 'updatedAt'>[];
 }
 
 const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {

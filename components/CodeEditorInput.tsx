@@ -65,6 +65,7 @@ const CodeEditorInput: React.FC<CodeEditorInputProps> = (props) => {
         suggestOnTriggerCharacters: false,
         tabCompletion: 'off',
         acceptSuggestionOnEnter: 'off',
+        padding: { top: 10, bottom: 10 },
         // @ts-ignore
         lightbulb: { enabled: 'off' },
         codeLens: false,

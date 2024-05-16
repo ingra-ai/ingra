@@ -53,7 +53,7 @@ export const sideNavRoutes: NavItem[] = [
         icon: PlusSquare,
       },
       {
-        name: 'View Functions',
+        name: 'Your Functions',
         description: 'Access and manage your collection of functions repository.',
         href: '/functions/list',
         icon: SquareFunction,

@@ -8,6 +8,9 @@ export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 // Define an Enum for HttpVerb
 export const HttpVerbEnum = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
 
+// Maximum code length constraint
+export const MAX_FUNCTION_CODE_LENGTH = 2000;
+
 // Database allows 1024 characters for description as per openapi spec.
 export const MAX_FUNCTION_DESCRIPTION_LENGTH = 600;
 
@@ -60,7 +63,9 @@ export const FunctionSchema = z.object({
   slug: z.string().regex(FUNCTION_SLUG_REGEX, {
     message: "Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.",
   }),
-  code: z.string(),
+  code: z.string().max(MAX_FUNCTION_CODE_LENGTH, {
+    message: `Code must be less than ${MAX_FUNCTION_CODE_LENGTH} characters.`,
+  }),
   isPrivate: z.boolean().default(true),
   ownerUserId: z.string().optional(),
   createdAt: z.date().default(() => new Date()),
