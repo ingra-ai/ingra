@@ -19,9 +19,7 @@ export const FormSlideOver: React.FC<PropsWithChildren<FormSlideOverProps>> = (p
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={setOpen}>
-        <div className="fixed inset-0" />
-
+      <Dialog as="div" className="relative z-50" onClose={setOpen}>
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">

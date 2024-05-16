@@ -11,7 +11,7 @@ import { AuthSessionResponse } from '@app/auth/session';
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { BookCheckIcon } from 'lucide-react';
+import { BookCheckIcon, PlusSquare, SquareFunction } from 'lucide-react';
 import {
   ChartBarSquareIcon,
   LinkIcon,
@@ -44,8 +44,21 @@ export const sideNavRoutes: NavItem[] = [
   {
     name: "Functions",
     description: "Dynamic functions that your AI can perform, including text generation, summarization, and more.",
-    href: '/functions',
     icon: CodeBracketSquareIcon,
+    children: [
+      {
+        name: 'Create',
+        description: 'Create a new function.',
+        href: '/functions/new',
+        icon: PlusSquare,
+      },
+      {
+        name: 'View Functions',
+        description: 'Access and manage your collection of functions repository.',
+        href: '/functions/list',
+        icon: SquareFunction,
+      },
+    ],
   },
   // {
   //   name: 'Settings',
@@ -110,7 +123,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
     <div className="flex grow flex-col gap-y-2 overflow-y-auto border-r border-gray-700 bg-gray-900 px-6 py-2 h-full">
       <div className="flex h-20 shrink-0 items-center">
         <Image src="/static/brand/bakabit-white-logo-only.svg" width={50} height={50} className="h-10 w-auto" alt="Bakabit Logo" />
-        {/* <h1 className="text-white text-lg font-semibold ml-2">Bakabit</h1> */}
+        <h1 className="text-white text-lg font-semibold ml-2">Baka Hub</h1>
       </div>
       <nav className="flex flex-1 flex-col">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -124,7 +137,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                     {isParent ? (
                       <Disclosure as="div" defaultOpen={isCurrentRoute}>
                         {(props) => {
-                          const { open } = props;
+                          let { open } = props;
                           return (
                             <>
                               <Disclosure.Button className={cn(isCurrentRoute ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold')}>

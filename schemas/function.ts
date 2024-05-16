@@ -33,7 +33,7 @@ async function handler(ctx) {
 
   return 'hello world';
 }
-`;
+`.trim();
 
 export const FunctionArgumentSchema = z.object({
   id: z.string().optional(),
