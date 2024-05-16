@@ -6,6 +6,7 @@ import { FunctionMetaSchema, FunctionSchema } from '@/schemas/function';
 import { validateAction } from '@lib/action-helpers';
 import db from '@lib/db';
 import { Logger } from '@lib/logger';
+import { getAuthSession } from '@app/auth/session';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
   const validatedValues = await validateAction(FunctionSchema, values);
@@ -127,5 +128,35 @@ export const upsertFunctionMeta = async (values: z.infer<typeof FunctionMetaSche
   return {
     success: 'Function meta updated!',
     data: dbFunctionMeta,
+  };
+}
+
+export const deleteFunction = async (functionId: string) => {
+  const authSession = await getAuthSession();
+
+  if (!authSession || authSession.expiresAt < new Date()) {
+    throw new ActionError('error', 400, 'User not authenticated!');
+  }
+  
+  const functionRecord = await db.function.findUnique({
+    where: {
+      id: functionId,
+      ownerUserId: authSession.user.id,
+    },
+  });
+
+  if (!functionRecord) {
+    throw new ActionError('error', 404, 'Function not found');
+  }
+
+  await db.function.delete({
+    where: {
+      id: functionId,
+      ownerUserId: authSession.user.id
+    },
+  });
+
+  return {
+    success: 'Function deleted!',
   };
 }

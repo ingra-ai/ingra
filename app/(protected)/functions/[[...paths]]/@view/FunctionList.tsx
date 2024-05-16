@@ -3,6 +3,8 @@ import React from 'react';
 import FunctionItem from './FunctionItem';
 import { type Function } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@components/ui/use-toast';
+import { deleteFunction } from '@protected/functions/actions/functions';
 
 interface FunctionsListProps {
   functions: Function[];
@@ -10,10 +12,10 @@ interface FunctionsListProps {
 
 const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleView = (id: string) => {
-    console.log('View function', id);
-    // Implementation needed here
+  const handleDryRun = (id: string) => {
+    router.push(`/functions/run/${id}`);
   };
 
   const handleEdit = (id: string) => {
@@ -21,22 +23,34 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {
   };
 
   const handleDelete = (id: string) => {
-    console.log('Delete function', id);
-    // Implementation needed here
+    deleteFunction(id).then(() => {
+      toast({
+        title: 'Success!',
+        description: 'Function has been deleted successfully.',
+      });
+      router.replace(`/functions`);
+      router.refresh();
+    }).catch((error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message || 'Failed to delete function!',
+      });
+    });
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <>
       {functions.map(func => (
         <FunctionItem
           key={func.id}
           functionData={func}
-          onView={() => handleView(func.id)}
+          onDryRun={() => handleDryRun(func.id)}
           onEdit={() => handleEdit(func.id)}
           onDelete={() => handleDelete(func.id)}
         />
       ))}
-    </div>
+    </>
   );
 };
 
