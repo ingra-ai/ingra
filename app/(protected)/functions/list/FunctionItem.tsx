@@ -25,7 +25,7 @@ import {
 import Link from 'next/link';
 
 interface FunctionItemProps {
-  functionData: Function;
+  functionData: Pick<Function, 'slug' | 'description' | 'isPrivate' | 'updatedAt'>;
   onEdit: () => void;
   onDelete: () => void;
 }

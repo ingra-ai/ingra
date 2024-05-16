@@ -5,12 +5,12 @@ import { Button } from '@components/ui/button';
 import { CircleDot, PlayCircleIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useToast } from '@components/ui/use-toast';
-import { SandboxOutput, runCodeSandbox } from './actions/vm';
+import { SandboxOutput } from '@protected/functions/actions/vm';
+import { runCodeSandbox } from '@protected/functions/actions/runCodeSandbox';
 import { cn } from '@lib/utils';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import FunctionArgumentInputSwitchField from '@protected/functions/FunctionArgumentInputSwitchField';
 import { Prisma } from '@prisma/client';
-import { useRouter } from 'next/navigation';
 
 type CodeSandboxFormProps = {
   functionRecord: Prisma.FunctionGetPayload<{
@@ -34,7 +34,6 @@ export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
   } = props;
   const { arguments: functionArguments = [] } = functionRecord;
   const { toast } = useToast();
-  const router = useRouter();
   const [runState, setRunState] = useState<RunState>({
     isRunning: false,
     outputs: [],
