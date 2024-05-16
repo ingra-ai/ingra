@@ -7,18 +7,35 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { FUNCTION_ARGUMENT_ALLOWED_TYPES, FunctionArgumentSchema, FunctionSchema, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
 import { Switch } from "@/components/ui/switch"
 import { cn } from '@lib/utils';
+import FunctionArgumentInput from './FunctionArgumentInputSwitchField';
 
-interface FunctionArgumentInputProps {
+interface FunctionArgumentFormFieldProps {
   index: number;
   item: z.infer<typeof FunctionArgumentSchema>;
   remove: (idx: number) => void;
   className?: string;
 }
 
-const FunctionArgumentInput: React.FC<FunctionArgumentInputProps> = ({ index, item, remove, className }) => {
-  const { register, setValue, watch, control, formState: { errors } } = useFormContext<z.infer<typeof FunctionSchema>>(); // useFormContext hook to access the form context
-  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
+const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ index, item, remove, className }) => {
+  const { register, unregister, setValue, watch, control, resetField, formState: { errors } } = useFormContext<z.infer<typeof FunctionSchema>>(); // useFormContext hook to access the form context
+  const onTypeChanged = (value: string) => {
+    setValue(`arguments.${index}.type`, value as any, { shouldValidate: true })
 
+    let defaultValue = '';
+
+    if ( value === 'number' ) {
+      defaultValue = '0';
+    }
+    else if ( value === 'boolean' ) {
+      defaultValue = 'false';
+    }
+
+    resetField(`arguments.${index}.defaultValue`, {
+      defaultValue,
+    });
+  };
+  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
+  // console.log( { errors } );
   return (
     <div key={( item.id || 'new' ) + index} data-testid={`argument-row-${index}`} className={cn("space-y-4", className)}>
       <div className="grid grid-cols-12 gap-4">
@@ -39,6 +56,7 @@ const FunctionArgumentInput: React.FC<FunctionArgumentInputProps> = ({ index, it
                 <Switch
                   checked={ value }
                   onCheckedChange={ onChange }
+                  ref={ ref }
                   id={`arguments.${index}.isRequired`}
                 />
                 <label htmlFor={`arguments.${index}.isRequired`} className="block text-sm font-medium">
@@ -59,7 +77,7 @@ const FunctionArgumentInput: React.FC<FunctionArgumentInputProps> = ({ index, it
       <div className="grid grid-cols-12 gap-4">
         <div className='col-span-3'>
           <Select
-            onValueChange={(value) => setValue(`arguments.${index}.type`, value as any, { shouldValidate: true })}
+            onValueChange={onTypeChanged}
             defaultValue={item.type || 'string'}
           >
             <SelectTrigger>
@@ -74,10 +92,20 @@ const FunctionArgumentInput: React.FC<FunctionArgumentInputProps> = ({ index, it
             </SelectContent>
           </Select>
         </div>
-        <input
-          {...register(`arguments.${index}.defaultValue`)}
-          placeholder="Default Value"
-          className={`col-span-9 ${inputClasses}`}
+        <Controller
+          control={control}
+          name={`arguments.${index}.defaultValue`}
+          render={({ field }) => (
+            <div className='col-span-9'>
+              <FunctionArgumentInput
+                id={`arguments.${index}.type`}
+                type={ watch(`arguments.${index}.type`) as any }
+                className={watch(`arguments.${index}.type`) === 'boolean' ? '' : inputClasses}
+                field={field as any}
+              />
+              {errors.arguments?.[index]?.defaultValue && <p className="text-xs font-medium text-destructive-foreground mt-3">{errors.arguments?.[index]?.defaultValue?.message}</p>}
+            </div>
+          )}
         />
       </div>
       <div className="grid grid-cols-12 mb-3">
@@ -100,4 +128,4 @@ const FunctionArgumentInput: React.FC<FunctionArgumentInputProps> = ({ index, it
   );
 };
 
-export default FunctionArgumentInput;
+export default FunctionArgumentFormField;

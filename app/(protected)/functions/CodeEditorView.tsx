@@ -22,6 +22,7 @@ export const CodeEditorView: React.FC<CodeEditorViewProps> = (props) => {
   const router = useRouter();
 
   const onSuccess = () => {
+    router.replace('/functions');
     router.refresh();
   };
 
@@ -39,7 +40,7 @@ export const CodeEditorView: React.FC<CodeEditorViewProps> = (props) => {
         <FunctionForm username={authSession.user.profile?.userName || ''} functionRecord={functionRecord} onSuccess={onSuccess} onCancel={onCancel} />
       </TabsContent>
       <TabsContent value="meta-tab">
-        Metadata
+        Coming soon
       </TabsContent>
     </Tabs>
   );
