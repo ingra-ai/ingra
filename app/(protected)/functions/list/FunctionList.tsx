@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import FunctionItem from './FunctionItem';
+import { FunctionItem, FunctionItemNew } from './FunctionItem';
 import { type Function } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
@@ -13,10 +13,6 @@ interface FunctionsListProps {
 const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {
   const router = useRouter();
   const { toast } = useToast();
-
-  const handleDryRun = (id: string) => {
-    router.push(`/functions/run/${id}`);
-  };
 
   const handleEdit = (id: string) => {
     router.push(`/functions/edit/${id}`);
@@ -41,11 +37,11 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {
 
   return (
     <>
+      <FunctionItemNew />
       {functions.map(func => (
         <FunctionItem
           key={func.id}
           functionData={func}
-          onDryRun={() => handleDryRun(func.id)}
           onEdit={() => handleEdit(func.id)}
           onDelete={() => handleDelete(func.id)}
         />

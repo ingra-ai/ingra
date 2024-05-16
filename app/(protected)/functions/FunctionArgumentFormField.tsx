@@ -17,7 +17,7 @@ interface FunctionArgumentFormFieldProps {
 }
 
 const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ index, item, remove, className }) => {
-  const { register, unregister, setValue, watch, control, resetField, formState: { errors } } = useFormContext<z.infer<typeof FunctionSchema>>(); // useFormContext hook to access the form context
+  const { register, setValue, watch, control, resetField, formState: { errors } } = useFormContext<z.infer<typeof FunctionSchema>>(); // useFormContext hook to access the form context
   const onTypeChanged = (value: string) => {
     setValue(`arguments.${index}.type`, value as any, { shouldValidate: true })
 
@@ -39,7 +39,7 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
   return (
     <div key={( item.id || 'new' ) + index} data-testid={`argument-row-${index}`} className={cn("space-y-4", className)}>
       <div className="grid grid-cols-12 gap-4">
-        <div className='col-span-8'>
+        <div className='col-span-7'>
           <input
             {...register(`arguments.${index}.name`)}
             placeholder="Name"
@@ -47,7 +47,7 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
           />
           {errors.arguments?.[index]?.name && <p className="text-xs font-medium text-destructive-foreground mt-3">{errors.arguments?.[index]?.name?.message}</p>}
         </div>
-        <div className="col-span-3 items-end">
+        <div className="col-span-4 items-end">
           <Controller
             control={control}
             name={`arguments.${index}.isRequired`}

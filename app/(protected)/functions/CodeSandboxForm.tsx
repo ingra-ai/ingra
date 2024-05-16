@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@components/ui/button';
-import { Bug, CircleDot } from 'lucide-react';
+import { CircleDot, PlayCircleIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { SandboxOutput, runCodeSandbox } from './actions/vm';
@@ -10,6 +10,7 @@ import { cn } from '@lib/utils';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import FunctionArgumentInputSwitchField from '@protected/functions/FunctionArgumentInputSwitchField';
 import { Prisma } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 type CodeSandboxFormProps = {
   functionRecord: Prisma.FunctionGetPayload<{
@@ -17,6 +18,7 @@ type CodeSandboxFormProps = {
       arguments: true
     }
   }>;
+  onClose?: () => void;
 };
 
 type RunState = {
@@ -26,9 +28,13 @@ type RunState = {
 };
 
 export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
-  const { functionRecord } = props;
+  const {
+    functionRecord,
+    onClose = () => void 0
+  } = props;
   const { arguments: functionArguments = [] } = functionRecord;
   const { toast } = useToast();
+  const router = useRouter();
   const [runState, setRunState] = useState<RunState>({
     isRunning: false,
     outputs: [],
@@ -89,7 +95,7 @@ export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
         <div className="block">
           <h4 className="text-sm font-bold text-gray-100 leading-7">Arguments</h4>
         </div>
-        {functionArguments.map((arg) => (
+        {functionArguments.length ? functionArguments.map((arg) => (
           <div key={arg.id} className="grid grid-cols-12 items-start">
             <label htmlFor={arg.name} className="col-span-3 lg:col-span-2 text-sm font-medium text-right px-4 py-3">
               {arg.isRequired ? '*' : ''}&nbsp;{arg.name}
@@ -120,9 +126,13 @@ export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
             <div className='col-span-2 lg:col-span-3'>
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="block">
+            <p className="text-gray-300">No arguments required</p>
+          </div>
+        )}
       </div>
-      <div>
+      <div className="block">
         {
           runState.outputs.length > 0 && (
             <div id="logbox" className="relative w-full max-h-[240px] overflow-y-auto p-2 text-xs font-mono bg-gray-800 text-gray-100 rounded">
@@ -156,18 +166,18 @@ export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
           )
         }
       </div>
-      <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div className="sm:col-span-4"></div>
-        <div className="sm:col-span-2 flex justify-end">
-          <Button variant={'outline'} type="submit" disabled={runState.isRunning} className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
+      <div className="flex w-full justify-end items-center space-x-4">
+        <Button variant={'outline'} type="button" disabled={runState.isRunning} className="flex w-[120px] justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm" onClick={onClose}>
+          Close
+        </Button>
+          <Button variant={'default'} type="submit" disabled={runState.isRunning} className="flex w-[160px] justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
             {
               runState.isRunning ?
                 <CircleDot className="animate-spin inline-block mr-2" /> :
-                <Bug className="inline-block mr-2" />
+                <PlayCircleIcon className="inline-block mr-2" />
             }
             {runState.isRunning ? 'Running...' : 'Run'}
           </Button>
-        </div>
       </div>
     </form>
   );

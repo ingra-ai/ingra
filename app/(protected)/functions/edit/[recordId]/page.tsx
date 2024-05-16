@@ -1,23 +1,19 @@
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
-import { CodeSandboxForm } from '@protected/functions/CodeSandboxForm';
+import { FunctionForm } from '@protected/functions/FunctionForm';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 
-
-export default async function Page({ params }: { params: { paths: string[] } }) {
-  const paths = params.paths || [];
+export default async function Page({ params }: { params: { recordId: string } }) {
   const authSession = await getAuthSession();
+  const recordId = params?.recordId;
 
-  // Function ID from the URL segments of 2;
-  const functionId = paths?.[1];
-
-  if ( !functionId || !authSession ) {
+  if ( !recordId || !authSession ) {
     return notFound();
   }
 
   const functionRecord = await db.function.findUnique({
     where: {
-      id: functionId,
+      id: recordId,
       ownerUserId: authSession.user.id,
     },
     include: {
@@ -30,12 +26,12 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
   }
 
   return (
-    <div className="block px-4" data-testid="functions-edit-page">
+    <div className="block" data-testid="functions-edit-page">
       <div className="mb-4">
-        <h1 className="text-base font-semibold leading-10">Run Function &quot;{ functionRecord.slug }&quot;</h1>
+        <h1 className="text-base font-semibold leading-10">Edit Function</h1>
       </div>
       <div className="block">
-        <CodeSandboxForm functionRecord={functionRecord} /> 
+        <FunctionForm username={authSession.user.profile?.userName || ''} functionRecord={functionRecord} />
       </div>
     </div>
   );
