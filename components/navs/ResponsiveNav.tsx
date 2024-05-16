@@ -65,11 +65,11 @@ export const ResponsiveNav: React.FC<PropsWithChildren<ResponsiveNavProps>> = (p
       </Transition.Root>
 
       {/* Static sidebar for desktop */}
-      <div className="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-72 xl:flex-col">
+      <div className="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-60 xl:flex-col">
         <SideNav {...sideNavProps} />
       </div>
 
-      <div className="xl:pl-72">
+      <div className="xl:pl-60 min-h-screen">
         {/* Sticky search header */}
         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-gray-900 px-4 shadow-sm sm:px-6 lg:px-8">
           <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden" onClick={() => setSidebarOpen(true)}>
