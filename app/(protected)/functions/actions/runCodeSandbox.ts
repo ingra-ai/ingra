@@ -13,8 +13,19 @@ export async function runCodeSandbox(functionId: string, args: Record<string, an
   }
 
   const context: ApiUserTryContextArg = {
-    envVars: {
-      oauthTokens: authSession.user.oauthTokens || []
+    userVars: {
+      oauthTokens: (authSession.user.oauthTokens || []).map((token) => ({
+        scope: token.scope,
+        tokenType: token.tokenType,
+        service: token.service,
+        idToken: token.idToken,
+        accessToken: token.accessToken,
+        primaryEmailAddress: token.primaryEmailAddress
+      })),
+      profile: {
+        userName: authSession.user.profile?.userName || '',
+        timeZone: authSession.user.profile?.timeZone || ''
+      }
     }
   };
 
