@@ -25,7 +25,7 @@ import {
 import Link from 'next/link';
 
 interface FunctionItemProps {
-  functionData: Pick<Function, 'slug' | 'description' | 'isPrivate' | 'updatedAt'>;
+  functionData: Pick<Function, 'slug' | 'description' | 'isPrivate' | 'updatedAt' | 'httpVerb'>;
   onEdit: () => void;
   onDelete: () => void;
 }
@@ -33,9 +33,12 @@ interface FunctionItemProps {
 const FunctionItem: React.FC<FunctionItemProps> = (props) => {
   const { functionData, onEdit, onDelete } = props;
   return (
-    <div className="bg-gray-800 text-white border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px]">
+    <div className="bg-gray-800 text-white border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px] cursor-pointer">
       <div className="flex justify-between items-center py-2">
-        <h2 className="text-xl font-bold text-gray-100">{functionData.slug}</h2>
+        <h2 className="text-xl font-bold text-gray-100">
+          { functionData?.httpVerb && <span className="text-gray-400 text-xs mr-2">{functionData.httpVerb}</span> }
+          {functionData.slug}
+        </h2>
       </div>
       <div className="block">
         <span className={`px-2 py-1 inline-flex text-xs leading-3 font-semibold rounded-full ${functionData.isPrivate ? 'bg-red-700 text-red-200' : 'bg-green-700 text-green-200'}`}>

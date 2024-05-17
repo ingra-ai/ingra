@@ -107,5 +107,19 @@ describe('parseStartAndEnd', () => {
     expect(result.startDate.toISOString()).toBe('2022-01-17T00:00:00.000Z');
     expect(result.endDate.toISOString()).toBe('2022-01-24T00:00:00.000Z');
   });
+
+  it('should parse start and end dates correctly in AEST timezone with natural language input when startInput is "today at 00:00" and endInput is "today at 23:59"', () => {
+    const machineDateNow = new Date('2024-05-17T11:25:28.918Z').getTime();
+    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+
+    const startInput = 'today at 00:00';
+    const endInput = 'today at 23:59';
+    const userTz = 'Australia/Sydney';
+
+    const result = parseStartAndEnd(startInput, endInput, userTz);
+
+    expect(result.startDate.toISOString()).toBe('2024-05-16T14:00:00.000Z');
+    expect(result.endDate.toISOString()).toBe('2024-05-17T13:59:00.000Z');
+  });
   
 });

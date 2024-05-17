@@ -9,7 +9,7 @@ export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 export const HttpVerbEnum = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
 
 // Maximum code length constraint
-export const MAX_FUNCTION_CODE_LENGTH = 2000;
+export const MAX_FUNCTION_CODE_LENGTH = 4000;
 
 // Database allows 1024 characters for description as per openapi spec.
 export const MAX_FUNCTION_DESCRIPTION_LENGTH = 600;
@@ -23,14 +23,22 @@ export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
   // 'array'
 ];
 
+export const RESERVED_ARGUMENT_NAMES = ['userVars'];
+
 export const CODE_DEFAULT_TEMPLATE = `
 async function handler(ctx) {
-  const { envVars, ...args } = ctx;
+  const { userVars, ...args } = ctx;
 
   /**
-   * envVars: object containing environment variables related to the existing user
+   * userVars: object containing user variables related to the existing user
    * args: object containing the arguments passed to the function as part of API request
-  */
+   */
+
+  // VM Context:
+  // - console.log and console.error: For logging
+  // - fetch: For making HTTP requests
+  // - utils.date.parseStartAndEnd: To parse start and end dates with timezone adjustment
+  // - utils.date.parseDate: To parse a single date with timezone adjustment
 
   // Add your code here
 
@@ -43,7 +51,12 @@ export const FunctionArgumentSchema = z.object({
   functionId: z.string(),
   name: z.string().regex(FUNCTION_ARG_NAME_REGEX, {
     message: "Invalid argument name. Names must consist of alphanumeric characters and underscores only, and cannot start with a number.",
-  }),
+  }).refine(
+    ( value ) => RESERVED_ARGUMENT_NAMES.indexOf(value) === -1, 
+    ( value ) => (
+      { message: `The argument name "${ value }" is reserved and cannot be used.` }
+    )
+  ),
   type: z.enum(FUNCTION_ARGUMENT_ALLOWED_TYPES, {
     errorMap: (issue, ctx) => {
       return {
