@@ -15,7 +15,8 @@ export const validateAction = async <T extends z.ZodType<any, any>>(schema: T, v
   const validatedFields = schema.safeParse(values);
 
   if (!validatedFields.success) {
-    throw new ActionError('error', 400, 'Invalid fields!');
+    const errorMessages = validatedFields.error.errors.map(err => err.message).join(', ');
+    throw new ActionError('error', 400, `Invalid fields: ${errorMessages}`);
   }
 
   const authSession = await getAuthSession();

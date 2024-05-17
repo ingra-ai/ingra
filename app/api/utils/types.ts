@@ -7,7 +7,7 @@ export type ApiTryCatchReturnType<T> = NextResponse<ApiError | ApiSuccess<T>> | 
 export type ApiGptTryCallbackArg = NonNullable<Awaited<ReturnType<typeof getUserByPhraseCode>>>;
 
 export type ApiUserTryContextArg = {
-  envVars: {
+  userVars: {
     oauthTokens: {
       scope: string;
       tokenType: string;
@@ -16,6 +16,10 @@ export type ApiUserTryContextArg = {
       accessToken: string;
       primaryEmailAddress: string;
     }[];
+    profile: {
+      userName: string;
+      timeZone: string;
+    };
   };
   [key: string]: any;
 };

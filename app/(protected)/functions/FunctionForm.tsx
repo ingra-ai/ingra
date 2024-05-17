@@ -8,7 +8,7 @@ import { RefreshCcw, BugPlayIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
-import { CODE_DEFAULT_TEMPLATE, FUNCTION_SLUG_REGEX, FunctionSchema, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
+import { CODE_DEFAULT_TEMPLATE, FUNCTION_SLUG_REGEX, FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
 import { upsertFunction } from './actions/functions';
 import { USERS_API_FUNCTION_URL } from '@lib/constants';
 import { cn } from '@lib/utils';
@@ -17,6 +17,7 @@ import { Switch } from "@/components/ui/switch"
 import FunctionArgumentFormField from '@protected/functions/FunctionArgumentFormField';
 import { Prisma } from '@prisma/client';
 import CodeEditorInput from '@/components/CodeEditorInput';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter } from 'next/navigation';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
@@ -121,7 +122,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   }
 
   const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
-
+  
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
@@ -135,7 +136,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                 control={control}
                 name={'code'}
                 render={({ field }) => (
-                  <CodeEditorInput id='code-editor' onChange={field.onChange} />
+                  <CodeEditorInput id='code-editor' onChange={field.onChange} value={field.value} />
                 )}
               />
               {errors.code && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.code.message}</p>}
@@ -168,22 +169,52 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
               }
             </div>
             <TabsContent value="function-tab" className='block space-y-6'>
-              <div className="block">
-                <label htmlFor="slug" className="block text-sm font-medium leading-6">
-                  Slug
-                </label>
-                <input
-                  id="slug"
-                  {...register('slug')}
-                  placeholder="hello-world"
-                  autoComplete="function-code-slug"
-                  type="text"
-                  required
-                  autoFocus
-                  className={inputClasses}
-                />
-                {errors.slug && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.slug.message}</p>}
-                {functionHitUrl && !errors.slug && <p className="text-xs font-medium text-muted-foreground mt-3">{functionHitUrl}</p>}
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-3 block">
+                  <label htmlFor="httpVerb" className="block text-sm font-medium leading-6">
+                    Method
+                  </label>
+                  <Controller
+                    control={control}
+                    name='httpVerb'
+                    render={({ field: { onChange, value, ref } }) => (
+                      <Select
+                        onValueChange={onChange}
+                        defaultValue={value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select method" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {HttpVerbEnum.options.map((verb, idx) => (
+                            <SelectItem key={`http-verb-${idx}`} value={verb}>
+                              { verb }
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                    )}
+                  />
+                  {errors.httpVerb && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.httpVerb.message}</p>}
+                </div>
+                <div className="col-span-9 block">
+                  <label htmlFor="slug" className="block text-sm font-medium leading-6">
+                    Slug
+                  </label>
+                  <input
+                    id="slug"
+                    {...register('slug')}
+                    placeholder="hello-world"
+                    autoComplete="function-code-slug"
+                    type="text"
+                    required
+                    autoFocus
+                    className={inputClasses}
+                  />
+                  {errors.slug && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.slug.message}</p>}
+                  {functionHitUrl && !errors.slug && <p className="text-xs font-medium text-muted-foreground mt-3">{functionHitUrl}</p>}
+                </div>
               </div>
               <div className="block">
                 <textarea
@@ -238,6 +269,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                     className="text-white bg-blue-600 hover:bg-blue-700 p-1 rounded"
                   >
                     <PlusIcon className="h-5 w-5" />
+                    <span className="sr-only">Add a new argument</span>
                   </button>
                 </div>
                 {fields.map((item, idx) => (
