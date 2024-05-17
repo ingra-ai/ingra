@@ -17,8 +17,19 @@ export async function apiUserTryCatch<T>(username: string, apiKey: string, fn: (
     }
 
     const context: ApiUserTryContextArg = {
-      envVars: {
-        oauthTokens: userProfile.user?.oauthTokens || []
+      userVars: {
+        oauthTokens: (userProfile.user.oauthTokens || []).map((token) => ({
+          scope: token.scope,
+          tokenType: token.tokenType,
+          service: token.service,
+          idToken: token.idToken,
+          accessToken: token.accessToken,
+          primaryEmailAddress: token.primaryEmailAddress
+        })),
+        profile: {
+          userName: userProfile?.userName || '',
+          timeZone: userProfile?.timeZone || ''
+        }
       }
     };
 
