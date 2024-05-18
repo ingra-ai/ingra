@@ -1,6 +1,6 @@
 'use server';
 import { cookies } from 'next/headers';
-import { type User, type Profile, type ActiveSession, type PhraseCode, type OAuthToken } from '@prisma/client';
+import { type User, type Profile, type ActiveSession, type OAuthToken } from '@prisma/client';
 import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
 import { getUserByJwt } from '@/data/user';
@@ -8,7 +8,6 @@ import { getUserByJwt } from '@/data/user';
 export type AuthSessionResponse = Pick<ActiveSession, 'expiresAt'> & {
   user: Pick<User, 'email' | 'role' | 'id'> & {
     profile: Profile | null;
-    phraseCode: PhraseCode | null;
     oauthTokens: OAuthToken[];
   };
 };
@@ -31,7 +30,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
       return null; // Or handle this case as needed
     }
 
-    return sessionWithUser satisfies AuthSessionResponse;
+    return sessionWithUser;
   } catch (error) {
     Logger.withTag('AuthSession').error('Error fetching user and session by JWT:', error);
     return null;
