@@ -8,8 +8,6 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
     return notFound();
   }
 
-  console.log({ params })
-
   return (
     <div className="block" data-testid="functions-browse-page">
       <div className="mb-4">
