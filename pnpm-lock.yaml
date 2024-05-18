@@ -137,9 +137,6 @@ dependencies:
   timezones-list:
     specifier: ^3.0.3
     version: 3.0.3
-  uuid:
-    specifier: ^9.0.1
-    version: 9.0.1
   zod:
     specifier: ^3.22.4
     version: 3.22.4
