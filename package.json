@@ -1,6 +1,6 @@
 {
   "name": "bakabit-portal",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "postinstall": "pnpm exec husky init && echo \"pnpm test && pnpm exec lint-staged\" > .husky/pre-commit",
@@ -64,7 +64,6 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "timezones-list": "^3.0.3",
-    "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
