@@ -3,12 +3,12 @@
 import { APP_GOOGLE_OAUTH_CALLBACK_URL } from '@lib/constants';
 import React from 'react';
 
-type GoogleButtonUIProps = {
+type GoogleIntegrationButtonProps = {
   type: 'redirect';
   text?: string;
 };
 
-export const GoogleButtonUI: React.FC<GoogleButtonUIProps> = (props) => {
+export const GoogleIntegrationButton: React.FC<GoogleIntegrationButtonProps> = (props) => {
   const { text = 'Google', type = 'redirect' } = props;
 
   const redirectToGoogleUrl = new URL(APP_GOOGLE_OAUTH_CALLBACK_URL);
