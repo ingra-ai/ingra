@@ -10,10 +10,6 @@ const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
   {
     name: 'API',
     href: '/settings/api',
-  },
-  {
-    name: 'GPT Plugins',
-    href: '/settings/gpt-plugins',
   }
   // {
   //   name: 'Billing',
