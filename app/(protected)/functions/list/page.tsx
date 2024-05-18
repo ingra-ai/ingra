@@ -2,6 +2,7 @@ import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 import FunctionsList from './FunctionList';
 import { cn } from '@lib/utils';
+import { notFound } from 'next/navigation';
 // import {
 //   Pagination,
 //   PaginationContent,
@@ -14,6 +15,10 @@ import { cn } from '@lib/utils';
 
 export default async function Page() {
   const authSession = await getAuthSession();
+  
+  if ( !authSession ) {
+    return notFound();
+  }
 
   // Get all functions
   const allFunctions = authSession && await db.function.findMany({
@@ -46,7 +51,7 @@ export default async function Page() {
   });
 
   return (
-    <div className="block" data-testid="functions-view-page">
+    <div className="block" data-testid="functions-list-page">
       <div className="flex items-center px-2">
         <div className="flex-grow">
           <h1 className="text-base font-semibold leading-10">Functions ({allFunctions?.length || 0})</h1>

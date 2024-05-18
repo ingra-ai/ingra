@@ -77,7 +77,7 @@ const OAuthList: React.FC<OAuthListProps> = (props) => {
   }
 
   return (
-    <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <ul role="list" className="grid grid-cols-1 gap-6 xl:grid-cols-2">
       {oAuthTokens.map((token) => {
         const tokenDetail = getTokenDetail(token);
         const stateClasses = cn(
