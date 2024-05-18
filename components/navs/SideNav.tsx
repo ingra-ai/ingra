@@ -11,7 +11,7 @@ import { AuthSessionResponse } from '@app/auth/session';
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { BookCheckIcon, PlusSquare, SquareFunction } from 'lucide-react';
+import { BookCheckIcon, GlobeIcon, WorkflowIcon, SquareDashedBottomCodeIcon } from 'lucide-react';
 import {
   ChartBarSquareIcon,
   LinkIcon,
@@ -36,28 +36,33 @@ export const sideNavRoutes: NavItem[] = [
     icon: BookCheckIcon,
   },
   {
-    name: "Integrations",
-    description: "Configure and manage connections with external services for calendars, emails, and more.",
-    href: '/settings/integrations',
-    icon: LinkIcon,
-  },
-  {
     name: "Functions",
     description: "Dynamic functions that your AI can perform, including text generation, summarization, and more.",
-    icon: CodeBracketSquareIcon,
     children: [
       {
-        name: 'Create',
-        description: 'Create a new function.',
-        href: '/functions/new',
-        icon: PlusSquare,
+        name: 'Browse',
+        description: 'Browse public functions shared by other users.',
+        href: '/functions/browse',
+        icon: GlobeIcon,
       },
       {
         name: 'Your Functions',
         description: 'Access and manage your collection of functions repository.',
         href: '/functions/list',
-        icon: SquareFunction,
-      },
+        icon: SquareDashedBottomCodeIcon,
+      }
+    ],
+  },
+  {
+    name: "Workflows",
+    description: "Generate workflows for automating tasks, including data processing, notifications, and more.",
+    children: [
+      {
+        name: 'Your Flows',
+        description: 'Access and manage your collection of workflows.',
+        href: '/functions/browse',
+        icon: WorkflowIcon,
+      }
     ],
   },
   // {
