@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getAuthSession } from '@app/auth/session';
-import { UserProfileForm } from '@protected/settings/forms/UserProfileForm';
+import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
 import { notFound } from 'next/navigation';
 import { IntegrationsSection } from './IntegrationsSection';
 

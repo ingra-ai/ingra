@@ -88,7 +88,6 @@ const FunctionItem: React.FC<FunctionItemProps> = (props) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-
         </div>
       </div>
     </div>

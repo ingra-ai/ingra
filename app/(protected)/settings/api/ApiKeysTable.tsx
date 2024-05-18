@@ -3,11 +3,22 @@
 import { useCallback, useState, useTransition } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
-import { Button } from '@/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import { deleteApiKey } from '@protected/settings/actions/apiKey';
 import { useRouter } from 'next/navigation';
 import formatDistance from 'date-fns/formatDistance';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import type { ApiKey } from '@prisma/client';
 
 type ApiKeysTableProps = {
@@ -51,7 +62,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
 
   return (
     <div className="mt-7" data-testid='api-keys-table'>
-      <h2 className="text-base font-semibold leading-7 text-white">Your API Keys</h2>
+      <h2 className="text-base font-semibold leading-7 text-white">Your API Keys ({ apiKeys.length })</h2>
       <table className="mt-4 w-full whitespace-nowrap text-left table-fixed max-w-[1024px]">
         <colgroup>
           <col className="w-8/12" />
@@ -67,7 +78,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
               Last Used At
             </th>
             <th scope="col" className="p-3 pr-5 font-semibold text-right">
-              
+
             </th>
           </tr>
         </thead>
@@ -77,15 +88,25 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
               <td className="p-3 font-normal">{apiKey.key}</td>
               <td className="p-3 font-normal">{apiKey.lastUsedAt ? formatDistance(apiKey.lastUsedAt, Date.now(), { addSuffix: true }) : 'never'}</td>
               <td className="p-3 pr-5 font-normal text-right">
-                <Button
-                  variant={'destructive'}
-                  type="button"
-                  onClick={() => onDeleteKey(apiKey.key)}
-                  disabled={isLoading}
-                >
-                  {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
-                  {isLoading ? 'Deleting...' : 'Delete'}
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button aria-label='Delete' title='Delete' className="p-1 text-red-300 hover:text-red-400">
+                      {isLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TrashIcon className="h-4 w-4" />}
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure to delete this key?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your API key.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => onDeleteKey(apiKey.key)}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </td>
             </tr>
           ))}
