@@ -60,7 +60,7 @@ export const sideNavRoutes: NavItem[] = [
       {
         name: 'Your Flows',
         description: 'Access and manage your collection of workflows.',
-        href: '/functions/browse',
+        href: '/flows',
         icon: WorkflowIcon,
       }
     ],

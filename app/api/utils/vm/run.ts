@@ -1,11 +1,11 @@
 'use server';
-import { ApiUserTryContextArg } from '@app/api/utils/types';
 import { ActionError } from '@lib/api-response';
 import { parseStartAndEnd, parseDate } from "@app/api/utils/chronoUtils";
 import { setTimeout } from 'timers/promises';
 import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
+import type { SandboxOutput } from '@app/api/utils/vm/types';
+import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import * as vm from 'vm';
-import { SandboxOutput } from './types';
 
 const EXECUTION_TIMEOUT_SECONDS = 30;
 
@@ -18,7 +18,7 @@ async function withTimeout(promise: Promise<any>, timeoutSeconds = EXECUTION_TIM
 
 interface Sandbox {
   console: Pick<Console, 'log' | 'error'>;
-  handler: ((ctx: ApiUserTryContextArg) => Promise<any>) | null;
+  handler: ((ctx: VmContextArgs) => Promise<any>) | null;
   fetch: typeof nodeFetch;
   utils: {
     date: {
@@ -30,7 +30,7 @@ interface Sandbox {
 }
 
 // Run the code in a sandbox
-export async function run(code: string, ctx: ApiUserTryContextArg) {
+export async function run(code: string, ctx: VmContextArgs) {
   // Create outputs
   const outputs: SandboxOutput[] = [];
   let apiCallCount = 0;

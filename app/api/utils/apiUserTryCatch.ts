@@ -1,38 +1,30 @@
 
-import type { ApiTryCatchReturnType, ApiUserTryContextArg } from './types';
-import { apiTryCatch } from './apiTryCatch';
-import { getProfileByUsername } from '@/data/user';
+import type { ApiTryCatchReturnType } from './types';
+import { apiTryCatch } from '@app/api/utils/apiTryCatch';
 import { ActionError } from '@lib/api-response';
+import { AuthSessionResponse, getAuthSession } from '@app/auth/session';
+import { VmContextArgs, generateVmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 
-export async function apiUserTryCatch<T>(username: string, apiKey: string, fn: (context: ApiUserTryContextArg) => Promise<ApiTryCatchReturnType<T>>): Promise<ApiTryCatchReturnType<T>> {
+/**
+ * @todo Do additional check instead of using username.
+ * @todo Do not use getAuthSession() since it relies on cookie, use apiKey to get auth session instead.
+ * 
+ */
+export async function apiUserTryCatch<T>(username: string, apiKey: string, fn: (authSession: AuthSessionResponse, vmContext: VmContextArgs) => Promise<ApiTryCatchReturnType<T>>): Promise<ApiTryCatchReturnType<T>> {
   return await apiTryCatch(async () => {
     if ( !username || typeof username !== 'string' ) {
       throw new ActionError('error', 400, `Invalid username.`);
     }
 
-    const userProfile = await getProfileByUsername(username);
+    const authSession = await getAuthSession();
 
-    if (!userProfile) {
-      throw new ActionError('error', 400, `Unable to find profile.`);
+    if ( !authSession ) {
+      throw new ActionError('error', 400, `Invalid session.`);
     }
 
-    const context: ApiUserTryContextArg = {
-      userVars: {
-        oauthTokens: (userProfile.user.oauthTokens || []).map((token) => ({
-          scope: token.scope,
-          tokenType: token.tokenType,
-          service: token.service,
-          idToken: token.idToken,
-          accessToken: token.accessToken,
-          primaryEmailAddress: token.primaryEmailAddress
-        })),
-        profile: {
-          userName: userProfile?.userName || '',
-          timeZone: userProfile?.timeZone || ''
-        }
-      }
-    };
 
-    return await fn(context);
+    const context = generateVmContextArgs(authSession, {});
+
+    return await fn(authSession, context);
   });
 }

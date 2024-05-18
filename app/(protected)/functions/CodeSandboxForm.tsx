@@ -9,8 +9,8 @@ import { runCodeSandbox } from '@protected/functions/actions/runCodeSandbox';
 import { cn } from '@lib/utils';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import FunctionArgumentInputSwitchField from '@protected/functions/FunctionArgumentInputSwitchField';
-import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@protected/functions/actions/types';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
+import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@app/api/utils/vm/types';
 
 type CodeSandboxFormProps = {
   functionRecord: Prisma.FunctionGetPayload<{

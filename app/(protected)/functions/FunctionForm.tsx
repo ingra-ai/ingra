@@ -15,7 +15,7 @@ import { cn } from '@lib/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
 import FunctionArgumentFormField from '@protected/functions/FunctionArgumentFormField';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import CodeEditorInput from '@/components/CodeEditorInput';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
