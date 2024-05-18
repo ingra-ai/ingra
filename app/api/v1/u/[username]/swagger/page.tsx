@@ -1,6 +1,6 @@
 import { getAuthSession } from '@app/auth/session';
 import SwaggerDocs from './SwaggerDocs';
-import { getSwaggerSpec } from './config';
+import { getAuthSwaggerSpec } from './config';
 import { redirect, RedirectType } from 'next/navigation';
 import { APP_AUTH_LOGIN_URL } from '@lib/constants';
 
@@ -13,7 +13,7 @@ export default async function Page() {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 
-  const swaggerSpec = await getSwaggerSpec(authSession.user.profile?.userName);
+  const swaggerSpec = await getAuthSwaggerSpec(authSession);
 
   return (
     <section className="container">

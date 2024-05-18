@@ -1,14 +1,13 @@
+import { Logger } from '@lib/logger';
 import { NextResponse, type NextRequest } from 'next/server';
 
 async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-next-pathname', request.nextUrl.pathname);
+  const pathname = request.nextUrl.pathname;
+  requestHeaders.set('x-next-pathname', pathname);
 
   if (request.nextUrl.pathname.includes('/api/v1')) {
-    console.info({
-      pathname: request.nextUrl.pathname,
-      requestHeaders: { ...requestHeaders }
-    });
+    console.info(`:: [middleware] [api-v1] pathname: ${pathname}`);
   }
 
   return NextResponse.next({

@@ -4,15 +4,18 @@
  * @see https://platform.openai.com/docs/plugins/examples To create your first plugin with OAuth
  */
 
+import { AuthSessionResponse } from '@app/auth/session';
 import { APP_NAME, APP_PACKAGE_VERSION } from '@lib/constants';
 import { createSwaggerSpec } from 'next-swagger-doc';
 
 export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]>;
 
-export const getSwaggerSpec = async (username?: string) => {
-  if ( !username ) {
+export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
+  if ( !authSession ) {
     return null;
   }
+
+  const username = authSession?.user?.profile?.userName || 'N/A';
 
   const swaggerOptions: SwaggerOptions = {
     apiFolder: `app/api/v1/user/${username}`, // define api folder under app folder

@@ -10,3 +10,4 @@ export type MetricSandboxOutput = {
 };
 
 export type SandboxOutput = UserSandboxOutput | MetricSandboxOutput;
+
