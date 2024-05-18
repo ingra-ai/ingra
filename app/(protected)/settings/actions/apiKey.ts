@@ -4,6 +4,7 @@ import { ActionError } from '@lib/api-response';
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 import crypto from 'crypto';
+import { MAX_API_KEYS_PER_USER } from '@/schemas/apiKey';
 
 export const generateApiKey = async () => {
   const authSession = await getAuthSession();
@@ -16,6 +17,17 @@ export const generateApiKey = async () => {
   const length = 42;
   const prefix = 'bb';
   const randomBytes = [prefix, crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length)].join('-');
+
+  // Get the number of api keys this user has
+  const totalUserApiKeys = await db.apiKey.count({
+    where: {
+      userId: authSession.user.id,
+    }
+  });
+
+  if ( totalUserApiKeys >= MAX_API_KEYS_PER_USER ) {
+    throw new ActionError('error', 400, 'You have reached the maximum number of API keys allowed!');
+  }
 
   const apiKey = await db.apiKey.create({
     data: {
