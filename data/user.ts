@@ -35,50 +35,6 @@ export const getOrCreateUserByEmail = async (email: string): Promise<User | null
 };
 
 /**
- * Retrieves a user by their phrase code.
- * This function is used to grab the user ID by using the phrase code.
- *
- * @warning Heavy function calls, being used in almost all API calls;
- * @todo Make this faster.
- *
- * @param code - The phrase code to search for.
- * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
- */
-export const getUserByPhraseCode = async (code: string) => {
-  if (!code) {
-    return null;
-  }
-
-  const phraseCode = await db.phraseCode.findUnique({
-    where: {
-      code,
-    },
-    select: {
-      expiresAt: true,
-      userId: true,
-      isAuthenticated: true,
-      user: {
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          profile: true,
-          oauthTokens: {
-            select: {
-              accessToken: true,
-              refreshToken: true,
-              primaryEmailAddress: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  return phraseCode?.user || null;
-};
-
-/**
  * Retrieves the user profile by username.
  * @param {string} userName - The username of the user.
  * @returns A promise that resolves to the user profile object, or null if the username is invalid.
@@ -121,7 +77,6 @@ export const getProfileByUsername = async (userName: string) => {
 
 /**
  * Retrieves a user by their JWT.
- * This function is used to grab the user, profile and phrasecode.
  *
  * @warning Heavy function calls, being used in almost all API calls;
  * @todo Make this faster.
@@ -142,7 +97,6 @@ export const getUserByJwt = async (jwt: string) => {
           id: true,
           email: true,
           role: true,
-          phraseCode: true,
           profile: true,
           oauthTokens: true
         },
