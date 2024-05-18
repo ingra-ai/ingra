@@ -50,7 +50,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       slug: functionRecord?.slug || '',
       description: functionRecord?.description || '',
       code: functionRecord?.code || CODE_DEFAULT_TEMPLATE,
-      isPrivate: functionRecord?.isPrivate || true,
+      isPrivate: !!functionRecord?.isPrivate,
       arguments: functionRecord?.arguments ? functionRecord.arguments.map(funcArg => {
         return {
           id: funcArg.id || '',
@@ -237,25 +237,27 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                 <Controller
                   control={control}
                   name='isPrivate'
-                  render={({ field: { onChange, value, ref } }) => (
-                    <div className="flex flex-row items-center space-x-3 space-y-0 px-2 py-2">
-                      <div className="flex flex-col w-full space-y-1 leading-none">
-                        <label htmlFor="isPrivate" className="block text-sm font-medium">
-                          Private mode
-                        </label>
-                        <p className="text-xs font-medium text-muted-foreground mt-3">
-                          Unchecking this will share your function with the world.
-                        </p>
+                  render={({ field: { onChange, value, ref } }) => {
+                    return (
+                      <div className="flex flex-row items-center space-x-3 space-y-0 px-2 py-2">
+                        <div className="flex flex-col w-full space-y-1 leading-none">
+                          <label htmlFor="isPrivate" className="block text-sm font-medium">
+                            Private mode
+                          </label>
+                          <p className="text-xs font-medium text-muted-foreground mt-3">
+                            Unchecking this will share your function with the world.
+                          </p>
+                        </div>
+                        <div className="flex justify-end">
+                          <Switch
+                            checked={value}
+                            onCheckedChange={onChange}
+                            id={'isPrivate'}
+                          />
+                        </div>
                       </div>
-                      <div className="flex justify-end">
-                        <Switch
-                          checked={value}
-                          onCheckedChange={onChange}
-                          id={'isPrivate'}
-                        />
-                      </div>
-                    </div>
-                  )}
+                    );
+                  }}
                 />
               </div>
             </TabsContent>
