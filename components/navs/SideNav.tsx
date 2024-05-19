@@ -13,9 +13,7 @@ import { Profile } from '@prisma/client';
 import type { NavItem, NavItemParent } from '@components/navs/types';
 import { BookCheckIcon, GlobeIcon, WorkflowIcon, SquareDashedBottomCodeIcon } from 'lucide-react';
 import {
-  ChartBarSquareIcon,
-  LinkIcon,
-  CodeBracketSquareIcon
+  ChartBarSquareIcon
 } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {

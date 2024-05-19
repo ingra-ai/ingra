@@ -6,7 +6,13 @@ export const FUNCTION_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
 export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
 // Define an Enum for HttpVerb
-export const HttpVerbEnum = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+export const HttpVerbEnum = z.enum([
+  'GET', 
+  'POST', 
+  'PUT', 
+  'PATCH', 
+  'DELETE'
+]);
 
 // Maximum code length constraint
 export const MAX_FUNCTION_CODE_LENGTH = 4000;
