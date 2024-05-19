@@ -21,7 +21,7 @@ export const validateAction = async <T extends z.ZodType<any, any>>(schema: T, v
 
   const authSession = await getAuthSession();
 
-  if (!authSession || authSession.expiresAt < new Date()) {
+  if ( !authSession ) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
 

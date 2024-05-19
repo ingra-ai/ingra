@@ -134,7 +134,7 @@ export const upsertFunctionMeta = async (values: z.infer<typeof FunctionMetaSche
 export const deleteFunction = async (functionId: string) => {
   const authSession = await getAuthSession();
 
-  if (!authSession || authSession.expiresAt < new Date()) {
+  if ( !authSession ) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
   
