@@ -8,8 +8,11 @@ async function handler(ctx) {
   const { userVars, ...args } = ctx;
 
   /**
-   * userVars: object containing user variables related to the existing user
-   * args: object containing the arguments passed to the function as part of API request
+   * userVars:
+   *   - userVars.oauthTokens: array of objects containing the OAuth tokens for the user.
+   *   - userVars.profile: object containing the user profile information
+   *   - userVars.[...envVars]: object containing the environment variables for the user
+   * args: object containing the request arguments passed to the function as part of API request
    */
 
   // VM Context:
