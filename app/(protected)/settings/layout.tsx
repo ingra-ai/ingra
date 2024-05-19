@@ -10,6 +10,10 @@ const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
   {
     name: 'API',
     href: '/settings/api',
+  },
+  {
+    name: 'Environment Variables',
+    href: '/settings/env-vars',
   }
   // {
   //   name: 'Billing',
