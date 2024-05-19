@@ -49,7 +49,8 @@ export const USERS_API_ROOT_URL = [APP_URL, 'api/v1/u', ':username'].join('/');
 // This should reflect the path of the API in the app
 // !! Requires to replace the username and slug,
 // !! -- only use this wherever you have access to user profile and function slug
-export const USERS_API_FUNCTION_URL = [USERS_API_ROOT_URL, 'functions', ':slug'].join('/');
+export const USERS_API_FUNCTION_PATH = ['api/v1/u', ':username', 'functions', ':slug'].join('/');
+export const USERS_API_FUNCTION_URL = [APP_URL, USERS_API_FUNCTION_PATH].join('/');
 
 /**
  * The version of the app as defined in package.json
