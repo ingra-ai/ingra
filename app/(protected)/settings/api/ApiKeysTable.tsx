@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import type { ApiKey } from '@prisma/client';
+import { GenerateApiKeyButton } from './GenerateApiKeyButton';
 
 type ApiKeysTableProps = {
   apiKeys: Required<Pick<ApiKey, 'key' | 'lastUsedAt'>>[];
@@ -61,8 +62,18 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
   }, []);
 
   return (
-    <div className="mt-7" data-testid='api-keys-table'>
-      <h2 className="text-base font-semibold leading-7 text-white">Your API Keys ({ apiKeys.length })</h2>
+    <div className="block" data-testid='api-keys-table'>
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6">Your API Keys ({ apiKeys.length })</h1>
+          <p className="mt-2 text-sm">
+            Generate API keys to authenticate requests with <code>X-API-KEY</code> header
+          </p>
+        </div>
+        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+          <GenerateApiKeyButton />
+        </div>
+      </div>
       <table className="mt-4 w-full whitespace-nowrap text-left table-fixed max-w-[1024px]">
         <colgroup>
           <col className="w-8/12" />
@@ -71,13 +82,13 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
         </colgroup>
         <thead className="border-b border-white/10 text-sm leading-6">
           <tr>
-            <th scope="col" className="p-3 font-semibold">
+            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
               Key
             </th>
-            <th scope="col" className="p-3 font-semibold">
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
               Last Used At
             </th>
-            <th scope="col" className="p-3 pr-5 font-semibold text-right">
+            <th scope="col" className="px-3 py-3.5 text-right text-sm font-semibold">
 
             </th>
           </tr>
@@ -85,9 +96,9 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
         <tbody>
           {apiKeys.map((apiKey) => (
             <tr key={apiKey.key}>
-              <td className="p-3 font-normal">{apiKey.key}</td>
-              <td className="p-3 font-normal">{apiKey.lastUsedAt ? formatDistance(apiKey.lastUsedAt, Date.now(), { addSuffix: true }) : 'never'}</td>
-              <td className="p-3 pr-5 font-normal text-right">
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0">{apiKey.key}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm">{apiKey.lastUsedAt ? formatDistance(apiKey.lastUsedAt, Date.now(), { addSuffix: true }) : 'never'}</td>
+              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <button aria-label='Delete' title='Delete' className="p-1 text-red-300 hover:text-red-400">
