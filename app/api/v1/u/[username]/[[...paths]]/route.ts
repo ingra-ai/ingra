@@ -1,67 +1,128 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiUserTryCatch } from "@app/api/utils/apiUserTryCatch";
-import { ActionError } from "@lib/api-response";
-import db from "@lib/db";
-import { run } from "@app/api/utils/vm/run";
-import type { UserSandboxOutput } from "@app/api/utils/vm/types";
+import { ApiError } from "@lib/api-response";
 import { Logger } from "@lib/logger";
+import * as handlers from "./handlers";
 
 export async function GET(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
   const { username, paths } = params;
+  const { searchParams } = new URL(req.url);
+  const requestArgs = Object.fromEntries(searchParams);
+  const [handlerName, ...restOfPaths] = paths;
 
-  const { searchParams: getParams } = new URL(req.url);
-  const searchParams = Object.fromEntries(getParams);
-
-  return await apiUserTryCatch<any>(username, '', async (authSession, vmContext) => {
-    if ( !Array.isArray(paths) || !paths.length ) {
-      throw new ActionError('error', 400, `Invalid paths.`);
-    }
-
-    const [operation, functionSlug] = paths;
-
-    if ( operation === 'functions' && functionSlug ) {
-      Logger.withTag('functions').info(`[${username}] starts executing function: ${functionSlug}`);
-
-      const functionRecord = await db.function.findUnique({
-        where: {
-          slug: functionSlug,
-          ownerUserId: authSession.user.id,
-        },
-        select: {
-          id: true,
-          code: true,
-        }
-      });
-
-      if ( !functionRecord ) {
-        throw new ActionError('error', 400, `Function not found.`);
+  // Check if the handler exists
+  const handlerFn = ( handlers as any )?.[handlerName];
+  if ( typeof handlerFn !== 'function' ) {
+    return NextResponse.json(
+      {
+        status: 404,
+        code: 'NOT_FOUND',
+        message: 'Unable to complete the request.'
+      } as ApiError,
+      {
+        status: 404
       }
+    );
+  }
 
-      const payload = await run(functionRecord.code, {
-        ...searchParams,
-        ...vmContext
-      });
+  Logger.withTag('GET').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
+  return await handlerFn(requestArgs, username, ...restOfPaths);
+};
 
-      const errors = payload.outputs.filter(output => output.type === 'error') as UserSandboxOutput[];
+export async function POST(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
+  const { username, paths } = params;
+  const requestArgs = await req.json();
+  const [handlerName, ...restOfPaths] = paths;
 
-      if ( errors.length ) {
-        throw new ActionError('error', 400, errors[0].message);
+  // Check if the handler exists
+  const handlerFn = ( handlers as any )?.[handlerName];
+  if ( typeof handlerFn !== 'function' ) {
+    return NextResponse.json(
+      {
+        status: 404,
+        code: 'NOT_FOUND',
+        message: 'Unable to complete the request.'
+      } as ApiError,
+      {
+        status: 404
       }
+    );
+  }
 
-      Logger.withTag('functions').info(`[${username}] finishes executing function: ${functionSlug}`);
+  Logger.withTag('POST').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
+  return await handlerFn(requestArgs, username, ...restOfPaths);
+}
 
-      return NextResponse.json(
-        {
-          status: 'success',
-          message: 'Function executed successfully',
-          data: payload?.result || null,
-        },
-        {
-          status: 200,
-        }
-      );
-    }
-    
-    throw new ActionError('error', 400, `Invalid operation.`);
-  });
+
+export async function PUT(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
+  const { username, paths } = params;
+  const requestArgs = await req.json();
+  const [handlerName, ...restOfPaths] = paths;
+
+  // Check if the handler exists
+  const handlerFn = ( handlers as any )?.[handlerName];
+  if ( typeof handlerFn !== 'function' ) {
+    return NextResponse.json(
+      {
+        status: 404,
+        code: 'NOT_FOUND',
+        message: 'Unable to complete the request.'
+      } as ApiError,
+      {
+        status: 404
+      }
+    );
+  }
+
+  Logger.withTag('PUT').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
+  return await handlerFn(requestArgs, username, ...restOfPaths);
+}
+
+
+export async function PATCH(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
+  const { username, paths } = params;
+  const requestArgs = await req.json();
+  const [handlerName, ...restOfPaths] = paths;
+
+  // Check if the handler exists
+  const handlerFn = ( handlers as any )?.[handlerName];
+  if ( typeof handlerFn !== 'function' ) {
+    return NextResponse.json(
+      {
+        status: 404,
+        code: 'NOT_FOUND',
+        message: 'Unable to complete the request.'
+      } as ApiError,
+      {
+        status: 404
+      }
+    );
+  }
+
+  Logger.withTag('PATCH').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
+  return await handlerFn(requestArgs, username, ...restOfPaths);
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
+  const { username, paths } = params;
+  const { searchParams } = new URL(req.url);
+  const requestArgs = Object.fromEntries(searchParams);
+  const [handlerName, ...restOfPaths] = paths;
+
+  // Check if the handler exists
+  const handlerFn = ( handlers as any )?.[handlerName];
+  if ( typeof handlerFn !== 'function' ) {
+    return NextResponse.json(
+      {
+        status: 404,
+        code: 'NOT_FOUND',
+        message: 'Unable to complete the request.'
+      } as ApiError,
+      {
+        status: 404
+      }
+    );
+  }
+
+  Logger.withTag('DELETE').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
+  return await handlerFn(requestArgs, username, ...restOfPaths);
 };
