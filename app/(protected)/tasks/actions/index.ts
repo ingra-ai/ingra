@@ -15,7 +15,7 @@ export const createTask = async (values: z.infer<typeof TaskSchema>) => {
 
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession || authSession.expiresAt < new Date()) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
 
@@ -50,7 +50,7 @@ export const updateTask = async (id: number, values: z.infer<typeof TaskSchema>)
 
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession || authSession.expiresAt < new Date()) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
 

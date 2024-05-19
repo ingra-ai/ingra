@@ -9,7 +9,7 @@ import { MAX_API_KEYS_PER_USER } from '@/schemas/apiKey';
 export const generateApiKey = async () => {
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession || authSession.expiresAt < new Date()) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
 
@@ -51,7 +51,7 @@ export const generateApiKey = async () => {
 export const deleteApiKey = async (key: string) => {
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession || authSession.expiresAt < new Date()) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
 
