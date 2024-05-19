@@ -70,3 +70,39 @@ export const getUserByJwt = async (jwt: string) => {
     },
   });
 };
+
+export const getUserByApiKey = async (apiKey: string) => {
+  if (!apiKey) {
+    return null;
+  }
+
+  const record = await db.apiKey.findUnique({
+    select: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          profile: true,
+          oauthTokens: true,
+          envVars: true,
+        },
+      },
+    },
+    where: {
+      key: apiKey, // Use the API key to find the session
+    },
+  });
+
+  if ( record ) {
+    // Update api key lastUsedAt
+    db.apiKey.update({
+      where: { key: apiKey },
+      data: { lastUsedAt: new Date() },
+    });
+
+    return record;
+  }
+
+  return null;
+}

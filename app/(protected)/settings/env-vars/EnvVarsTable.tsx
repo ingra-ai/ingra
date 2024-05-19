@@ -30,9 +30,9 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
     <div className="block" data-testid='env-vars-table'>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Environment Variables (${ envVars.length })</h1>
+          <h1 className="text-base font-semibold leading-6">Environment Variables ({ envVars.length })</h1>
           <p className="mt-2 text-sm">
-            Your environment variables will be passed as part of <code>userVars</code> in your functions and flows
+            Your environment variables will be passed as part of <code className="italic">userVars</code> in your functions and flows
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -41,7 +41,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
           </Button>
         </div>
       </div>
-      <table className="w-full divide-y divide-gray-700 mt-6">
+      <table className="mt-4 w-full whitespace-nowrap text-left table-fixed max-w-[1024px]">
         <colgroup>
           <col className="w-3/12" />
           <col className="w-4/12" />
@@ -49,12 +49,12 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
           <col className="w-2/12" />
           <col className="w-1/12" />
         </colgroup>
-        <thead className="">
+        <thead className="border-b border-white/10 text-sm leading-6">
           <tr>
             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
               Key
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold w-full">
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
               Value
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
