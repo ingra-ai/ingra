@@ -9,7 +9,7 @@ import '@css/swagger.scss';
 export default async function Page() {
   const authSession = await getAuthSession();
 
-  if (!authSession || authSession.expiresAt < new Date()) {
+  if ( !authSession ) {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 

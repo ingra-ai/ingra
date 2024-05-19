@@ -5,7 +5,7 @@ import { FunctionForm } from '@protected/functions/FunctionForm';
 export default async function Page() {
   const authSession = await getAuthSession();
 
-  if (!authSession) {
+  if ( !authSession ) {
     return notFound();
   }
 
