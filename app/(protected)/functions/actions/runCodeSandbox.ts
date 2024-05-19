@@ -6,7 +6,7 @@ import { ActionError } from '@lib/api-response';
 export async function runCodeSandbox(functionId: string, args: Record<string, any> = {}) {
   const authSession = await getAuthSession();
 
-  if (!authSession) {
+  if ( !authSession ) {
     throw new ActionError('error', 400, `Invalid session.`);
   }
 
