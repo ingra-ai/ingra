@@ -11,7 +11,7 @@ import { IntegrationsSection } from './IntegrationsSection';
 export default async function Page() {
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession) {
     return notFound();
   }
 

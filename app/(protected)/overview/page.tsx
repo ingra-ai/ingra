@@ -1,11 +1,12 @@
 import { getAuthSession } from '@app/auth/session';
 import { APP_AUTH_LOGIN_URL, APP_PROFILE_URL, USERS_API_ROOT_URL } from '@lib/constants';
+import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession || authSession.expiresAt < new Date()) {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 
