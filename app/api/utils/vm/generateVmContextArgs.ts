@@ -32,7 +32,11 @@ export function generateVmContextArgs( authSession: AuthSessionResponse, otherAr
       profile: {
         userName: authSession.user.profile?.userName || '',
         timeZone: authSession.user.profile?.timeZone || ''
-      }
+      },
+      ...authSession.user.envVars.reduce((acc, envVar) => {
+        acc[envVar.key] = envVar.value;
+        return acc;
+      }, {} as Record<string, string>)
     },
     ...( otherArgs || {} )
   };
