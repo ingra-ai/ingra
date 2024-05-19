@@ -143,7 +143,6 @@ model Function {
 
   // Relations
   owner            User              @relation(fields: [ownerUserId], references: [id])
-  meta             FunctionMeta?
 
   @@map("functions")
   @@unique([ownerUserId, slug])
@@ -162,14 +161,4 @@ model FunctionArgument {
   function       Function   @relation(fields: [functionId], references: [id])
 
   @@map("function_arguments")
-}
-
-model FunctionMeta {
-  id            String     @id @default(uuid())
-  functionId    String     @unique @db.Uuid
-  function      Function   @relation(fields: [functionId], references: [id])
-  openApiSpec   Json       // Stores the OpenAPI spec for the function
-  responses     Json       // Optional: Detailed response structures
-
-  @@map("function_meta")
 }
