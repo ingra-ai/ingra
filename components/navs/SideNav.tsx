@@ -34,8 +34,8 @@ export const sideNavRoutes: NavItem[] = [
     icon: BookCheckIcon,
   },
   {
-    name: "Functions",
-    description: "Dynamic functions that your AI can perform, including text generation, summarization, and more.",
+    name: "Hubs",
+    description: "Dynamic hubs that your AI can perform, including text generation, summarization, and more.",
     children: [
       {
         name: 'Browse',
@@ -44,70 +44,25 @@ export const sideNavRoutes: NavItem[] = [
         icon: GlobeIcon,
       },
       {
-        name: 'Your Functions',
+        name: 'Functions',
         description: 'Access and manage your collection of functions repository.',
         href: '/functions/list',
         icon: SquareDashedBottomCodeIcon,
       }
     ],
   },
-  {
-    name: "Workflows",
-    description: "Generate workflows for automating tasks, including data processing, notifications, and more.",
-    children: [
-      {
-        name: 'Your Flows',
-        description: 'Access and manage your collection of workflows.',
-        href: '/flows',
-        icon: WorkflowIcon,
-      }
-    ],
-  },
   // {
-  //   name: 'Settings',
-  //   description: 'A secure place for writing, organizing, and storing your personal and work notes.',
-  //   icon: LinkIcon,
+  //   name: "Workflows",
+  //   description: "Generate workflows for automating tasks, including data processing, notifications, and more.",
   //   children: [
   //     {
-  //       name: 'My Notes',
-  //       description: 'Access and manage your collection of notes.',
-  //       href: '/notes/my-notes',
-  //       icon: LinkIcon,
-  //     },
+  //       name: 'Your Flows',
+  //       description: 'Access and manage your collection of workflows.',
+  //       href: '/flows',
+  //       icon: WorkflowIcon,
+  //     }
   //   ],
   // },
-  // {
-  //   name: 'Notes',
-  //   description: 'A secure place for writing, organizing, and storing your personal and work notes.',
-  //   children: [
-  //     {
-  //       name: 'My Notes',
-  //       description: 'Access and manage your collection of notes.',
-  //       href: '/notes/my-notes',
-  //     },
-  //     {
-  //       name: 'New Note',
-  //       description: 'Create a new note.',
-  //       href: '/notes/new',
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: 'Projects',
-  //   description: 'Project management tools for tracking progress, collaboration, and resources.',
-  //   children: [
-  //     {
-  //       name: 'Project Dashboard',
-  //       description: 'Overview of current projects including status, timelines, and team members.',
-  //       href: '/projects/dashboard',
-  //     },
-  //     {
-  //       name: 'Create Project',
-  //       description: 'Initiate a new project, defining its scope, team, and milestones.',
-  //       href: '/projects/create',
-  //     },
-  //   ],
-  // }
 ];
 
 const SideNav: React.FC<SideNavProps> = (props) => {
@@ -130,46 +85,53 @@ const SideNav: React.FC<SideNavProps> = (props) => {
       </div>
       <nav className="flex flex-1 flex-col">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
+
           <li>
             <ul role="list" className="-mx-2 space-y-2">
               {sideNavRoutes.map((item) => {
                 const isParent = isNavItemParent(item);
-                const isCurrentRoute = isParent ? (item as NavItemParent).children.some((child) => child.href === pathname) : false;
                 return (
                   <li key={item.name}>
                     {isParent ? (
-                      <Disclosure as="div" defaultOpen={isCurrentRoute}>
-                        {(props) => {
-                          let { open } = props;
-                          return (
-                            <>
-                              <Disclosure.Button className={cn(isCurrentRoute ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold')}>
-                                <ChevronRightIcon className={cn(open ? 'rotate-90 text-gray-500' : 'text-gray-400', 'h-5 w-5 shrink-0')} aria-hidden="true" />
-                                {item.name}
-                              </Disclosure.Button>
-                              <Disclosure.Panel as="ul" className="mt-1 px-2">
-                                {item.children.map((subItem) => {
-                                  return (
-                                    <li key={subItem.name}>
-                                      <Disclosure.Button as={Link} prefetch={true} href={subItem.href} className={cn(subItem.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center')}>
-                                        <subItem.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                        {subItem.name}
-                                      </Disclosure.Button>
-                                    </li>
-                                  );
-                                })}
-                              </Disclosure.Panel>
-                            </>
-                          );
-                        }}
-                      </Disclosure>
+                      <div className="block">
+                        <div className="flex items-center text-xs font-semibold leading-6 text-gray-400">
+                          <span className="truncate">{item.name}</span>
+                          <hr className="flex-1 border-gray-700 ml-3" />
+                        </div>
+                        <ul role="list" className="-mx-2 mt-2 space-y-1">
+                          {
+                            item.children.map((subItem) => (
+                              <li className="" key={subItem.name}>
+                                <Link
+                                  href={subItem.href}
+                                  className={cn(
+                                    subItem.href === pathname ?
+                                    'bg-gray-800 text-white' : 
+                                    'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center'
+                                  )}
+                                >
+                                  <subItem.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                  <span className="truncate">{subItem.name}</span>
+                                </Link>
+                              </li>
+                            ))
+                          }
+                        </ul>
+                      </div>
                     ) : (
-                      <Link href={item.href} prefetch={true} className={cn(item.href === pathname ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center')}>
-                        <>
-                          <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                          {item.name}
-                        </>
-                      </Link>
+                      <div className="text-xs font-semibold leading-6 text-gray-400 -mx-2">
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            item.href === pathname ?
+                            'bg-gray-800 text-white' : 
+                            'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center'
+                          )}
+                        >
+                          <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                          <span className="truncate">{item.name}</span>
+                        </Link>
+                      </div>
                     )}
                   </li>
                 );
@@ -193,7 +155,6 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                   </a>
                 </div>
               </li>
-              <li></li>
             </ul>
           </li>
         </ul>
