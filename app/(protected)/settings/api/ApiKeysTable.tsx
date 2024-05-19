@@ -67,7 +67,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">Your API Keys ({ apiKeys.length })</h1>
           <p className="mt-2 text-sm">
-            Generate API keys to authenticate requests with <code>X-API-KEY</code> header
+            Generate API keys to authenticate requests with <code className="italic">X-API-KEY</code> header
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -83,7 +83,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
         <thead className="border-b border-white/10 text-sm leading-6">
           <tr>
             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
-              Key
+              API Key
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
               Last Used At
