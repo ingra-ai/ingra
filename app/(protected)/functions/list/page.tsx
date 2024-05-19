@@ -34,8 +34,15 @@ export default async function Page() {
       description: true,
       httpVerb: true,
       isPrivate: true,
+      isPublished: true,
       ownerUserId: true,
       updatedAt: true,
+      tags: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
       arguments: {
         select: {
           id: true,

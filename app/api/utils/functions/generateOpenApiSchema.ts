@@ -13,6 +13,7 @@ type FunctionPayload = Prisma.FunctionGetPayload<{
     slug: true,
     description: true,
     arguments: true,
+    tags: true,
   }
 }>;
 
@@ -80,7 +81,7 @@ export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPay
         }
       }
     },
-    tags: []
+    tags: functionRecord.tags.map( tag => tag.name ) || []
   };
 
   switch (functionRecord.httpVerb) {
@@ -114,6 +115,7 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
   const functionRecords = await db.function.findMany({
     where: {
       ownerUserId: authSession.user.id,
+      isPublished: true
     },
     select: {
       id: false,
@@ -123,7 +125,8 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
       httpVerb: true,
       slug: true,
       description: true,
-      arguments: true
+      arguments: true,
+      tags: true,
     }
   });
 

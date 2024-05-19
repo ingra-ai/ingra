@@ -8,9 +8,8 @@ import { RefreshCcw, BugPlayIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
-import { CODE_DEFAULT_TEMPLATE, FUNCTION_SLUG_REGEX, FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
+import { CODE_DEFAULT_TEMPLATE, FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
 import { upsertFunction } from './actions/functions';
-import { USERS_API_FUNCTION_URL } from '@lib/constants';
 import { cn } from '@lib/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
@@ -22,11 +21,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter } from 'next/navigation';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { CodeSandboxForm } from './CodeSandboxForm';
+import { TagField } from '@components/TagField';
+import { Input } from '@components/ui/input';
 
 type FunctionFormProps = {
   username: string;
   functionRecord?: Prisma.FunctionGetPayload<{
     include: {
+      tags: true,
       arguments: true
     }
   }>;
@@ -51,6 +53,14 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       description: functionRecord?.description || '',
       code: functionRecord?.code || CODE_DEFAULT_TEMPLATE,
       isPrivate: !!functionRecord?.isPrivate,
+      isPublished: !!functionRecord?.isPublished,
+      tags: functionRecord?.tags ? functionRecord.tags.map(tag => {
+        return {
+          id: tag.id || '',
+          functionId: tag.functionId || '',
+          name: tag.name || ''
+        }
+      }) : [],
       arguments: functionRecord?.arguments ? functionRecord.arguments.map(funcArg => {
         return {
           id: funcArg.id || '',
@@ -67,14 +77,15 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   }),
     { register, control, handleSubmit, watch, formState: { errors } } = methods;
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: argFields, append: argAppend, remove: argRemove } = useFieldArray({
     control,
     name: 'arguments',
   });
 
-  // watch values of slug
-  const slug = watch('slug');
-  const isSlugValid = FUNCTION_SLUG_REGEX.test(slug);
+  const { fields: tagFields, append: handleAddTag, remove: handleRemoveTag } = useFieldArray({
+    control,
+    name: 'tags',
+  });
 
   const onCancel = useCallback(() => {
     router.replace('/functions/list');
@@ -113,13 +124,6 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
 
     return savedFunction;
   }, [isEditMode]);
-
-  let functionHitUrl = '';
-  if (username && slug && isSlugValid) {
-    functionHitUrl = USERS_API_FUNCTION_URL
-      .replace(':username', username)
-      .replace(':slug', slug);
-  }
 
   const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
   
@@ -169,7 +173,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
               }
             </div>
             <TabsContent value="function-tab" className='block space-y-6'>
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-12 gap-x-4 gap-y-1">
                 <div className="col-span-3 block">
                   <label htmlFor="httpVerb" className="block text-sm font-medium leading-6">
                     Method
@@ -188,7 +192,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                         <SelectContent>
                           {HttpVerbEnum.options.map((verb, idx) => (
                             <SelectItem key={`http-verb-${idx}`} value={verb}>
-                              { verb }
+                              {verb}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -202,7 +206,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                   <label htmlFor="slug" className="block text-sm font-medium leading-6">
                     Slug
                   </label>
-                  <input
+                  <Input
                     id="slug"
                     {...register('slug')}
                     placeholder="hello-world"
@@ -210,13 +214,15 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                     type="text"
                     required
                     autoFocus
-                    className={inputClasses}
                   />
                   {errors.slug && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.slug.message}</p>}
-                  {functionHitUrl && !errors.slug && <p className="text-xs font-medium text-muted-foreground mt-3">{functionHitUrl}</p>}
+                  
                 </div>
               </div>
               <div className="block">
+                <label htmlFor="description" className="block text-sm font-medium leading-6">
+                  Description
+                </label>
                 <textarea
                   {...register(`description`)}
                   placeholder="A function to output 'hello world!' text."
@@ -233,7 +239,49 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                 </div>
               </div>
 
-              <div className="block space-x-3 space-y-0 rounded-md shadow bg-black/10">
+              <div className="block">
+                <label htmlFor="tags" className="block text-sm font-medium leading-6">
+                  Tags
+                </label>
+                <TagField
+                  id='tags'
+                  tags={ tagFields.map(tag => tag.name) }
+                  addTag={ (tag) => handleAddTag({ functionId: '', name: tag }) }
+                  removeTag={ (tag, idx) => handleRemoveTag(idx) }
+                  maxTags={ 5 }
+                />
+                {errors.tags?.[0]?.name && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.tags?.[0]?.name.message}</p>}
+              </div>
+
+              <div className="block">
+                <Controller
+                  control={control}
+                  name='isPublished'
+                  render={({ field: { onChange, value, ref } }) => {
+                    return (
+                      <div className="flex flex-row items-center space-x-3 space-y-0 px-2 py-2">
+                        <div className="flex flex-col w-full space-y-1 leading-none">
+                          <label htmlFor="isPublished" className="block text-sm font-medium">
+                            Publish
+                          </label>
+                          <p className="text-xs font-medium text-muted-foreground mt-3">
+                            Toggle this option to publish or unpublish the function. Published functions are available for use, while unpublished functions remain in draft mode and are not accessible.
+                          </p>
+                        </div>
+                        <div className="flex justify-end">
+                          <Switch
+                            checked={value}
+                            onCheckedChange={onChange}
+                            id={'isPublished'}
+                          />
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+
+              <div className="block">
                 <Controller
                   control={control}
                   name='isPrivate'
@@ -262,24 +310,24 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
               </div>
             </TabsContent>
             <TabsContent value="arguments-tab" className='block space-y-6'>
-              <div className="block w-full rounded-md border p-4 shadow bg-black/10">
+              <div className="block w-full rounded-md border p-4">
                 <div className="flex justify-between items-center">
                   <label className="text-white text-sm font-medium">Arguments</label>
                   <button
                     type="button"
-                    onClick={() => append({ functionId: '', name: '', type: 'string', defaultValue: '', description: '', isRequired: false })}
+                    onClick={() => argAppend({ functionId: '', name: '', type: 'string', defaultValue: '', description: '', isRequired: false })}
                     className="text-white bg-blue-600 hover:bg-blue-700 p-1 rounded"
                   >
                     <PlusIcon className="h-5 w-5" />
                     <span className="sr-only">Add a new argument</span>
                   </button>
                 </div>
-                {fields.map((item, idx) => (
+                {argFields.map((item, idx) => (
                   <FunctionArgumentFormField
                     key={item.id}
                     index={idx}
                     item={item}
-                    remove={() => remove(idx)}
+                    remove={() => argRemove(idx)}
                     className='mt-4'
                   />
                 ))}

@@ -17,6 +17,7 @@ export default async function Page({ params }: { params: { recordId: string } })
       ownerUserId: authSession.user.id,
     },
     include: {
+      tags: true,
       arguments: true
     },
   });
