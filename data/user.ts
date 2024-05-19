@@ -57,7 +57,8 @@ export const getUserByJwt = async (jwt: string) => {
           email: true,
           role: true,
           profile: true,
-          oauthTokens: true
+          oauthTokens: true,
+          envVars: true,
         },
       },
     },

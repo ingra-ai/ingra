@@ -1,6 +1,6 @@
 'use server';
 import { cookies } from 'next/headers';
-import { type User, type Profile, type ActiveSession, type OAuthToken } from '@prisma/client';
+import { type User, type Profile, type ActiveSession, type OAuthToken, type EnvVars } from '@prisma/client';
 import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
 import { getUserByJwt } from '@/data/user';
@@ -9,6 +9,7 @@ export type AuthSessionResponse = Pick<ActiveSession, 'expiresAt'> & {
   user: Pick<User, 'email' | 'role' | 'id'> & {
     profile: Profile | null;
     oauthTokens: OAuthToken[];
+    envVars: EnvVars[];
   };
 };
 
