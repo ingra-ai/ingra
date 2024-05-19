@@ -1,36 +1,8 @@
 import { z } from 'zod';
 
-export const FUNCTION_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
-
-// Names must consist of alphanumeric characters and underscores only, and cannot start with a number.
-export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
-
-// Define an Enum for HttpVerb
-export const HttpVerbEnum = z.enum([
-  'GET', 
-  'POST', 
-  'PUT', 
-  'PATCH', 
-  'DELETE'
-]);
-
-// Maximum code length constraint
-export const MAX_FUNCTION_CODE_LENGTH = 4000;
-
-// Database allows 1024 characters for description as per openapi spec.
-export const MAX_FUNCTION_DESCRIPTION_LENGTH = 600;
-
-export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
-  'string',
-  'number',
-  'boolean',
-  // Not supported at the moment.
-  // 'object',
-  // 'array'
-];
-
-export const RESERVED_ARGUMENT_NAMES = ['userVars'];
-
+/**
+ * The default template for the function code.
+ */
 export const CODE_DEFAULT_TEMPLATE = `
 async function handler(ctx) {
   const { userVars, ...args } = ctx;
@@ -52,21 +24,101 @@ async function handler(ctx) {
 }
 `.trim();
 
+/**
+ * Regular expression pattern for validating function slugs.
+ * Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.
+ */
+export const FUNCTION_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
+
+/**
+ * Enum for HTTP verbs.
+ * Valid values are 'GET', 'POST', 'PUT', 'PATCH', and 'DELETE'.
+ */
+export const HttpVerbEnum = z.enum([
+  'GET', 
+  'POST', 
+  'PUT', 
+  'PATCH', 
+  'DELETE'
+]);
+
+/**
+ * Maximum length constraint for function code.
+ */
+export const MAX_FUNCTION_CODE_LENGTH = 4000;
+
+/**
+ * Maximum length constraint for function description.
+ */
+export const MAX_FUNCTION_DESCRIPTION_LENGTH = 600;
+
+/**
+ * Regular expression pattern for validating function argument names.
+ * Names must consist of alphanumeric characters and underscores only, and cannot start with a number.
+ */
+export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+
+/**
+ * Regular expression pattern for validating function tag names.
+ * 
+ * The tag name must start with a letter, followed by any combination of letters, numbers, and underscores.
+ * 
+ * @remarks
+ * This regular expression is used to enforce naming conventions for function tags.
+ */
+export const FUNCTION_TAG_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-\s]*$/;
+
+/**
+ * Maximum length constraint for function argument names.
+ */
+export const MAX_FUNCTION_ARG_NAME_LENGTH = 50;
+
+/**
+ * Maximum length constraint for function argument names.
+ */
+export const MAX_FUNCTION_TAG_NAME_LENGTH = 50;
+
+/**
+ * Reserved argument names that cannot be used.
+ */
+export const RESERVED_ARGUMENT_NAMES = ['userVars'];
+
+/**
+ * Allowed types for function arguments.
+ * Valid values are 'string', 'number', and 'boolean'.
+ */
+export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
+  'string',
+  'number',
+  'boolean',
+  // Not supported at the moment.
+  // 'object',
+  // 'array'
+];
+
+/**
+ * Schema definition for function arguments.
+ */
 export const FunctionArgumentSchema = z.object({
   id: z.string().optional(),
   functionId: z.string(),
-  name: z.string().regex(FUNCTION_ARG_NAME_REGEX, {
+  name: z.string()
+  .max(MAX_FUNCTION_ARG_NAME_LENGTH, {
+    message: `Argument name must be less than ${MAX_FUNCTION_ARG_NAME_LENGTH} characters.`
+  })
+  .regex(FUNCTION_ARG_NAME_REGEX, {
     message: "Invalid argument name. Names must consist of alphanumeric characters and underscores only, and cannot start with a number.",
-  }).refine(
-    ( value ) => RESERVED_ARGUMENT_NAMES.indexOf(value) === -1, 
-    ( value ) => (
-      { message: `The argument name "${ value }" is reserved and cannot be used.` }
+  })
+  .refine(
+    (value) => RESERVED_ARGUMENT_NAMES.indexOf(value) === -1, 
+    (value) => (
+      { message: `The argument name "${value}" is reserved and cannot be used.` }
     )
   ),
   type: z.enum(FUNCTION_ARGUMENT_ALLOWED_TYPES, {
     errorMap: (issue, ctx) => {
       return {
-        message: `Invalid argument type '${ issue }'. Must be one of: ${ FUNCTION_ARGUMENT_ALLOWED_TYPES.join(', ') }.`
+        message: `Invalid argument type '${issue}'. Must be one of: ${FUNCTION_ARGUMENT_ALLOWED_TYPES.join(', ')}.`
       };
     },
   }).default('string'),
@@ -77,6 +129,24 @@ export const FunctionArgumentSchema = z.object({
   isRequired: z.boolean().default(false)
 });
 
+/**
+ * Schema definition for function tags.
+ */
+export const FunctionTagsSchema = z.object({
+  id: z.string().optional(),
+  functionId: z.string(),
+  name: z.string()
+    .max(MAX_FUNCTION_TAG_NAME_LENGTH, {
+      message: `Tag name must be less than ${MAX_FUNCTION_TAG_NAME_LENGTH} characters.`
+    })
+    .regex(FUNCTION_TAG_NAME_REGEX, {
+      message: "Invalid tag name. Names must start with a letter, followed by any combination of letters, numbers, and underscores."
+    })
+});
+
+/**
+ * Schema definition for functions.
+ */
 export const FunctionSchema = z.object({
   id: z.string().optional(),
   slug: z.string().regex(FUNCTION_SLUG_REGEX, {
@@ -86,6 +156,7 @@ export const FunctionSchema = z.object({
     message: `Code must be less than ${MAX_FUNCTION_CODE_LENGTH} characters.`,
   }),
   isPrivate: z.boolean().default(true),
+  isPublished: z.boolean().default(false),
   ownerUserId: z.string().optional(),
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.date().default(() => new Date()),
@@ -93,13 +164,19 @@ export const FunctionSchema = z.object({
   description: z.string().max(MAX_FUNCTION_DESCRIPTION_LENGTH, {
     message: `Description must be less than ${MAX_FUNCTION_DESCRIPTION_LENGTH} characters.`,
   }).default(""),
-  arguments: z.array(FunctionArgumentSchema).optional(),
+  arguments: z.array(FunctionArgumentSchema).optional().refine((args) => {
+    if (!args || !args.length) return true; // If args are not provided, skip the check
+    const uniqueArgs = new Set(args.map(arg => arg.name.trim().toLowerCase()));
+    return uniqueArgs.size === args.length;
+  }, {
+    message: 'Duplicate arguments are not allowed'
+  }),
+  tags: z.array(FunctionTagsSchema).optional().refine((tags) => {
+    if (!tags || !tags.length) return true; // If tags are not provided, skip the check
+    const uniqueTags = new Set(tags.map(tag => tag.name.trim().toLowerCase()));
+    return uniqueTags.size === tags.length;
+  }, {
+    message: 'Duplicate tags are not allowed'
+  }),
   originalFunctionId: z.string().optional()
-});
-
-export const FunctionMetaSchema = z.object({
-  id: z.string().optional(),
-  functionId: z.string(),
-  openApiSpec: z.any().optional(),  // Customize according to what 'openApiSpec' will contain
-  responses: z.any().optional()  // Customize as needed, can be further defined if structure is known
 });

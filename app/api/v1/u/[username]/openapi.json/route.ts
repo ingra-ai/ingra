@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: { username: st
   const { username } = params;
   const authSession = await getAuthSession();
 
-  if (!authSession || authSession.expiresAt < new Date()) {
+  if ( !authSession ) {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 

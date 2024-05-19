@@ -19,6 +19,7 @@ model User {
   oauthTokens     OAuthToken[]
   profile         Profile?
   apiKeys         ApiKey[]
+  envVars         EnvVars[]
   functions       Function[]
 }
 
@@ -26,7 +27,7 @@ model Profile {
   id        Int      @id @default(autoincrement())
   userId    String   @unique @db.Uuid
   userName  String   @unique @db.VarChar(255)
-  timeZone      String   @db.VarChar(128) @default("America/New_York")
+  timeZone  String   @default("America/New_York") @db.VarChar(128)
   firstName String   @db.VarChar(255)
   lastName  String   @db.VarChar(255)
   createdAt DateTime @default(now())
@@ -62,15 +63,15 @@ enum UserRole {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(255)
+  id          Int          @id @default(autoincrement())
+  title       String       @db.VarChar(255)
   description String?
   status      TaskStatus
   priority    TaskPriority
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId    String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  userId      String       @db.Uuid
+  user        User         @relation(fields: [userId], references: [id])
 
   @@map("tasks")
 }
@@ -88,34 +89,34 @@ enum TaskPriority {
 }
 
 model OAuthToken {
-  id            String   @id @default(uuid())
-  userId        String   @db.Uuid
-  primaryEmailAddress String @db.VarChar(255)
-  service       String   // e.g., "google", "microsoft", to identify the OAuth service
-  accessToken   String
-  refreshToken  String?
-  idToken       String?
-  scope         String
-  tokenType     String   @db.VarChar(64) @default("Bearer")
-  expiryDate    DateTime
-  lastRefreshedAt DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                  String    @id @default(uuid())
+  userId              String    @db.Uuid
+  primaryEmailAddress String    @db.VarChar(255)
+  service             String // e.g., "google", "microsoft", to identify the OAuth service
+  accessToken         String
+  refreshToken        String?
+  idToken             String?
+  scope               String
+  tokenType           String    @default("Bearer") @db.VarChar(64)
+  expiryDate          DateTime
+  lastRefreshedAt     DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
-  user    User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, primaryEmailAddress])
   @@map("oauth_tokens")
 }
 
 model ApiKey {
-  id        String   @id @default(uuid())
-  userId    String   @db.Uuid
-  key       String   @unique @db.VarChar(255)
+  id         String    @id @default(uuid())
+  userId     String    @db.Uuid
+  key        String    @unique @db.VarChar(255)
   lastUsedAt DateTime? @db.Timestamp
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id])
 
   @@map("api_keys")
 }
@@ -129,36 +130,62 @@ enum HttpVerb {
 }
 
 model Function {
-  id               String            @id @default(uuid()) @db.Uuid
-  slug             String            @unique
-  code             String            @db.Text
-  isPrivate        Boolean           @default(true)
-  ownerUserId      String            @db.Uuid
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  httpVerb         HttpVerb          @default(GET)
-  description      String            @db.VarChar(1024) @default("")
-  arguments        FunctionArgument[]
-  originalFunctionId String?         @db.Uuid
+  id                 String             @id @default(uuid()) @db.Uuid
+  slug               String             @unique
+  code               String             @db.Text
+  isPrivate          Boolean            @default(true)
+  isPublished        Boolean            @default(false)
+  ownerUserId        String             @db.Uuid
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  httpVerb           HttpVerb           @default(GET)
+  description        String             @default("") @db.VarChar(1024)
+  arguments          FunctionArgument[]
+  tags               FunctionTag[]
+  originalFunctionId String?            @db.Uuid
 
   // Relations
-  owner            User              @relation(fields: [ownerUserId], references: [id])
+  owner User @relation(fields: [ownerUserId], references: [id])
 
-  @@map("functions")
   @@unique([ownerUserId, slug])
+  @@map("functions")
 }
 
 model FunctionArgument {
-  id             String     @id @default(uuid())
-  functionId     String     @db.Uuid
-  name           String
-  type           String     // Data type: 'string', 'number', 'boolean', etc.
-  defaultValue   String?    // JSON string to support various default values
-  description    String?    @db.VarChar(1024) @default("")
-  isRequired     Boolean    @default(false)
-  
+  id           String  @id @default(uuid())
+  functionId   String  @db.Uuid
+  name         String
+  type         String // Data type: 'string', 'number', 'boolean', etc.
+  defaultValue String? // JSON string to support various default values
+  description  String? @default("") @db.VarChar(1024)
+  isRequired   Boolean @default(false)
+
   // Relations
-  function       Function   @relation(fields: [functionId], references: [id])
+  function Function @relation(fields: [functionId], references: [id])
 
   @@map("function_arguments")
+}
+
+model FunctionTag {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(64)
+  functionId String   @db.Uuid
+  function   Function @relation(fields: [functionId], references: [id])
+
+  @@map("function_tags")
+}
+
+model EnvVars {
+  id          Int      @id @default(autoincrement())
+  ownerUserId String   @db.Uuid
+  key         String   @unique @db.VarChar(64)
+  value       String   @default("") @db.VarChar(512)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  // Relations
+  owner User @relation(fields: [ownerUserId], references: [id])
+
+  @@unique([ownerUserId, key])
+  @@map("env_vars")
 }
