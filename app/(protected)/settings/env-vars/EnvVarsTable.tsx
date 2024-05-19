@@ -30,7 +30,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
     <div className="block" data-testid='env-vars-table'>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Environment Variables</h1>
+          <h1 className="text-base font-semibold leading-6">Environment Variables (${ envVars.length })</h1>
           <p className="mt-2 text-sm">
             Your environment variables will be passed as part of <code>userVars</code> in your functions and flows
           </p>
@@ -71,7 +71,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
         <tbody>
           {envVars.map((envVar) => (
             <tr key={envVar.id}>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0">
                 {envVar.key}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm">{envVar.value}</td>

@@ -3,6 +3,7 @@ import db from '@lib/db';
 import FunctionsList from './FunctionList';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
+import { FunctionListGetPayload } from './types';
 // import {
 //   Pagination,
 //   PaginationContent,
@@ -21,7 +22,7 @@ export default async function Page() {
   }
 
   // Get all functions
-  const allFunctions = authSession && await db.function.findMany({
+  const allFunctions = await db.function.findMany({
     where: {
       ownerUserId: authSession.user.id,
     },
@@ -31,23 +32,30 @@ export default async function Page() {
     select: {
       id: true,
       slug: true,
+      code: false,
       description: true,
       httpVerb: true,
       isPrivate: true,
       isPublished: true,
       ownerUserId: true,
+      createdAt: false,
       updatedAt: true,
       tags: {
         select: {
           id: true,
-          name: true
+          name: true,
+          functionId: false,
+          function: false,
         }
       },
       arguments: {
         select: {
           id: true,
           name: true,
-          type: true
+          description: false,
+          type: true,
+          defaultValue: false,
+          isRequired: false,
         }
       }
     }
@@ -59,13 +67,14 @@ export default async function Page() {
 
   return (
     <div className="block" data-testid="functions-list-page">
-      <div className="flex items-center px-2">
-        <div className="flex-grow">
-          <h1 className="text-base font-semibold leading-10">Functions ({allFunctions?.length || 0})</h1>
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6">Functions ({ allFunctions.length })</h1>
+          <p className="mt-2 text-sm">
+            &nbsp;
+          </p>
         </div>
-        <div className="block">
-          <div className="flex items-center justify-center">
-          </div>
+        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         </div>
       </div>
       <div className="mt-4">
