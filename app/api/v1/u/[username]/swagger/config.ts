@@ -4,6 +4,7 @@
  * @see https://platform.openai.com/docs/plugins/examples To create your first plugin with OAuth
  */
 
+import { generateOpenApiSchema } from '@app/api/utils/functions/generateOpenApiSchema';
 import { AuthSessionResponse } from '@app/auth/session';
 import { APP_NAME, APP_PACKAGE_VERSION } from '@lib/constants';
 import { createSwaggerSpec } from 'next-swagger-doc';
@@ -17,15 +18,20 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const username = authSession?.user?.profile?.userName || 'N/A';
 
+  const userFunctionsPaths = await generateOpenApiSchema(authSession);
+
   const swaggerOptions: SwaggerOptions = {
-    apiFolder: `app/api/v1/user/${username}`, // define api folder under app folder
+    apiFolder: `app/api/v1/u/${username}`, // define api folder under app folder
     apis: ['schemas/**/*.ts', 'lib/**/*.ts'],
     definition: {
       openapi: '3.0.0',
       info: {
         title: `${APP_NAME} Plugin API v1 for ${ username }`,
         version: APP_PACKAGE_VERSION,
-        description: `Bakabit is a highly personalized virtual assistant, capable of managing an array of tasks for each individual user, including to-dos/tasks, calendars, sending emails, and expanding into more personalized utilities as needed.`,
+        description: `Bakabit is a highly personalized virtual assistant, capable of managing an array of curated functions for each individual user, and expanding into more personalized utilities as needed.`,
+      },
+      paths: {
+        ...userFunctionsPaths,
       },
       // servers: {
       //   url: APP_URL,
