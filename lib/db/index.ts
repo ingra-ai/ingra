@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { redisExtension } from './extensions/redis';
+import { redisExtension } from '@lib/db/extensions/redis';
 
 declare global {
   var prisma: PrismaClient | undefined;
