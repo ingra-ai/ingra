@@ -9,7 +9,7 @@ const ProtectedLayout: React.FC<PropsWithChildren> = async (props) => {
   const { children } = props;
   const authSession = await getAuthSession();
 
-  if (!authSession || authSession.expiresAt < new Date()) {
+  if ( !authSession ) {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 

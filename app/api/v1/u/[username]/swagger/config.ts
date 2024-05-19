@@ -26,7 +26,7 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
     definition: {
       openapi: '3.0.0',
       info: {
-        title: `${APP_NAME} Plugin API v1 for ${ username }`,
+        title: `${ username } | ${APP_NAME} Plugin API v1`,
         version: APP_PACKAGE_VERSION,
         description: `Bakabit is a highly personalized virtual assistant, capable of managing an array of curated functions for each individual user, and expanding into more personalized utilities as needed.`,
       },

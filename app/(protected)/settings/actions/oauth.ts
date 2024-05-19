@@ -8,7 +8,7 @@ import db from '@lib/db';
 export const revokeOAuth = async (token: OAuthToken) => {
   const authSession = await getAuthSession();
 
-  if (!authSession || authSession.expiresAt < new Date()) {
+  if ( !authSession ) {
     throw new ActionError('error', 400, 'User not authenticated!');
   }
 

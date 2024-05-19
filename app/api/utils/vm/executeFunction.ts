@@ -6,7 +6,7 @@ import db from '@lib/db';
 import { generateVmContextArgs } from './generateVmContextArgs';
 
 export async function executeFunction(authSession: AuthSessionResponse, functionId: string, args: Record<string, any> = {}) {
-  if (!authSession) {
+  if ( !authSession ) {
     throw new ActionError('error', 403, `Forbidden`);
   }
 
