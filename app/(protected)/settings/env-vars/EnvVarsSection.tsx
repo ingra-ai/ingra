@@ -6,7 +6,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { EnvVars } from '@prisma/client';
 import { EnvVarsTable } from './EnvVarsTable';
-import { deleteEnvVar } from './actions';
+import { deleteEnvVar } from '@protected/settings/actions/envVars';
 import { useToast } from '@components/ui/use-toast';
 
 type EnvVarsSectionProps = {

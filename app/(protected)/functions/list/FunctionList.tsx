@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
 import { FunctionItem, FunctionItemNew } from './FunctionItem';
-import { type Function } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { deleteFunction } from '@protected/functions/actions/functions';
+import { FunctionListGetPayload } from './types';
 
 interface FunctionsListProps {
-  functions: Pick<Function, 'id' | 'slug' | 'description' | 'isPrivate' | 'updatedAt' | 'httpVerb'>[];
+  functions: FunctionListGetPayload[];
 }
 
 const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {

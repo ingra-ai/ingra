@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 import { PencilIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { PlusIcon } from 'lucide-react';
-import { type Function } from '@prisma/client';
 import formatDistance from 'date-fns/formatDistance';
 import format from 'date-fns/format';
 import {
@@ -22,21 +22,24 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Link from 'next/link';
+import { FunctionListGetPayload } from './types';
+import { Badge } from '@components/ui/badge';
 
 interface FunctionItemProps {
-  functionData: Pick<Function, 'slug' | 'description' | 'isPrivate' | 'updatedAt' | 'httpVerb'>;
+  functionData: FunctionListGetPayload;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 const FunctionItem: React.FC<FunctionItemProps> = (props) => {
   const { functionData, onEdit, onDelete } = props;
+  const subtext = [functionData.httpVerb, functionData.isPublished ? 'Published' : 'Unpublished'].filter(Boolean).join(' - ');
+  const description = (functionData.description || '~').slice(0, 200);
   return (
-    <div className="bg-gray-800 text-white border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px] cursor-pointer">
-      <div className="flex justify-between items-center py-2">
-        <h2 className="text-xl font-bold text-gray-100">
-          { functionData?.httpVerb && <span className="text-gray-400 text-xs mr-2">{functionData.httpVerb}</span> }
+    <div className="bg-secondary border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px] cursor-pointer">
+      <div className="py-2">
+        <p className="text-gray-400 text-xs">{subtext}</p>
+        <h2 className="text-lg font-bold text-gray-100 truncate min-w-0" title={functionData.slug}>
           {functionData.slug}
         </h2>
       </div>
@@ -44,9 +47,12 @@ const FunctionItem: React.FC<FunctionItemProps> = (props) => {
         <span className={`px-2 py-1 inline-flex text-xs leading-3 font-semibold rounded-full ${functionData.isPrivate ? 'bg-red-700 text-red-200' : 'bg-green-700 text-green-200'}`}>
           {functionData.isPrivate ? 'Private' : 'Public'}
         </span>
+        {functionData.tags.map(tag => (
+          <Badge key={tag.id} variant="accent" className="mr-1 text-xs">{tag.name}</Badge>
+        ))}
       </div>
       <div className="block min-h-[175px] py-4">
-        <p className="text-gray-300 text-sm font-medium">{(functionData.description || '~').slice(0, 200)}</p>
+        <p className="text-gray-300 text-sm font-medium" title={description}>{description}</p>
       </div>
       <div className="mt-auto grid grid-cols-12">
         <div className="col-span-8 flex justify-start items-center">
@@ -59,7 +65,7 @@ const FunctionItem: React.FC<FunctionItemProps> = (props) => {
                 </p>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Last update on { format(functionData.updatedAt, 'PPpp') } </p>
+                <p className="truncate min-w-0">Last update on {format(functionData.updatedAt, 'PPpp')} </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -99,7 +105,7 @@ interface FunctionItemNewProps {
 
 const FunctionItemNew: React.FC<FunctionItemNewProps> = (props) => {
   return (
-    <Link 
+    <Link
       href="/functions/new"
       className="flex flex-col justify-center items-center text-gray-500 hover:text-gray-300 border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px]">
       <PlusIcon className="h-12 w-12" />
@@ -108,7 +114,7 @@ const FunctionItemNew: React.FC<FunctionItemNewProps> = (props) => {
   );
 };
 
-export { 
+export {
   FunctionItem,
   FunctionItemNew
 };
