@@ -1,4 +1,5 @@
 import { AuthSessionResponse } from "@app/auth/session";
+import { FunctionArgument } from "@prisma/client";
 
 export type VmContextArgs = {
   userVars: {
@@ -18,7 +19,18 @@ export type VmContextArgs = {
   [key: string]: any;
 };
 
-export function generateVmContextArgs( authSession: AuthSessionResponse, otherArgs?: Record<string, any>) {
+export function generateVmContextArgs( authSession: AuthSessionResponse, functionArguments: FunctionArgument[], requestArgs: Record<string, any> = {}) {
+  // Fill requestArgs with default values if not provided.
+  if (functionArguments) {
+    for (const arg of functionArguments) {
+      if ( requestArgs?.[arg.name] === undefined || requestArgs?.[arg.name] === '' || requestArgs?.[arg.name] === null ) {
+        if ( ( typeof arg.defaultValue === 'string' && arg.defaultValue.length ) || ( typeof arg.defaultValue === 'number' && !isNaN(arg.defaultValue) ) ) {
+          requestArgs[arg.name] = arg.defaultValue
+        }
+      }
+    }
+  }
+
   const context: VmContextArgs = {
     userVars: {
       oauthTokens: (authSession.user.oauthTokens || []).map((token) => ({
@@ -38,7 +50,7 @@ export function generateVmContextArgs( authSession: AuthSessionResponse, otherAr
         return acc;
       }, {} as Record<string, string>)
     },
-    ...( otherArgs || {} )
+    ...( requestArgs || {} )
   };
 
   return context;
