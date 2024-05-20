@@ -14,6 +14,11 @@ async function handler(ctx) {
    *   - userVars.[...envVars]: object containing the environment variables for the user
    * args: object containing the request arguments passed to the function as part of API request
    */
+  const {
+    oauthTokens = [],
+    profile: { userName, timeZone },
+    ...envVars
+  } = userVars;
 
   // VM Context:
   // - console.log and console.error: For logging
@@ -22,7 +27,6 @@ async function handler(ctx) {
   // - utils.date.parseDate: To parse a single date with timezone adjustment
 
   // Add your code here
-
   return 'hello world';
 }
 `.trim();
