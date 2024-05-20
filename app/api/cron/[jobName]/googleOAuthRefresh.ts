@@ -1,4 +1,4 @@
-import { ApiSuccess } from '@lib/api-response';
+import { ApiSuccess } from '@v1/types/api-response';
 import { APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET } from '@lib/constants';
 import db from '@lib/db';
 import { google } from 'googleapis';

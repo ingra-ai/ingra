@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthSwaggerSpec } from '../swagger/config';
 import { APP_AUTH_LOGIN_URL, APP_URL } from '@lib/constants';
-import { ActionError } from '@lib/api-response';
+import { ActionError } from '@v1/types/api-response';
 import { getAuthSession } from '@app/auth/session';
 import { RedirectType, redirect } from 'next/navigation';
 
 /**
- * Returns OpenAPI yaml file when in production
  * Returns OpenAPI json file when in development
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
@@ -20,7 +19,7 @@ export async function GET(req: NextRequest) {
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
 
   if ( !swaggerSpec ) {
-    throw new ActionError('error', 400, `No Swagger Spec Found`);
+    throw new ActionError('error', 400, `No specifications found.`);
   }
 
   /**

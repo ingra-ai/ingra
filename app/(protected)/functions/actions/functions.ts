@@ -1,7 +1,7 @@
 'use server';
 
 import * as z from 'zod';
-import { ActionError, PrismaActionError } from '@lib/api-response';
+import { ActionError, PrismaActionError } from '@v1/types/api-response';
 import { FunctionSchema } from '@/schemas/function';
 import { validateAction } from '@lib/action-helpers';
 import db from '@lib/db';

@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { ActionError, ApiError, ApiSuccess } from '@lib/api-response';
+import { ActionError, ApiError, ApiSuccess } from '@v1/types/api-response';
 import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from '@lib/constants';
 import { google } from 'googleapis';
 import { RedirectType, redirect } from 'next/navigation';

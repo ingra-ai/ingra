@@ -1,7 +1,7 @@
 
 import type { ApiTryCatchReturnType } from './types';
 import { apiTryCatch } from '@app/api/utils/apiTryCatch';
-import { ActionError } from '@lib/api-response';
+import { ActionError } from '@v1/types/api-response';
 import { AuthSessionResponse, getAuthSession } from '@app/auth/session';
 
 export async function apiAuthTryCatch<T>(fn: (authSession: AuthSessionResponse) => Promise<ApiTryCatchReturnType<T>>): Promise<ApiTryCatchReturnType<T>> {
