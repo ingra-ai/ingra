@@ -27,6 +27,7 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Privacy Controls**: Provide users with granular privacy controls to manage their data and interactions, ensuring transparency and trust.
 - [x] **Integration to OpenAI ChatGPT Plugin**: Provide seamless experience to integrate personal curated functions to ChatGPT Plugin
 - [ ] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
+- [ ] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
 - [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
 - [ ] **Advanced Security Features**: Implement advanced security measures such as encryption, secure access controls, and more to protect user data and function integrity.
