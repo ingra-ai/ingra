@@ -16,8 +16,11 @@ const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths:
 
       const functionRecord = await db.function.findUnique({
         where: {
-          slug: functionSlug,
-          ownerUserId: authSession.user.id,
+          ownerUserId_slug: {
+            ownerUserId: authSession.user.id,
+            slug: functionSlug,
+          },
+          isPublished: true,
         },
         select: {
           id: true,

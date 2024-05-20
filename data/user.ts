@@ -78,35 +78,32 @@ export const getUserByApiKey = async (apiKey: string) => {
     return null;
   }
 
-  const record = await db.apiKey.findUnique({
-    select: {
-      id: true,
-      userId: true,
-      user: {
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          profile: true,
-          oauthTokens: true,
-          envVars: true,
+  const [record] = await Promise.all([
+    db.apiKey.findUnique({
+      select: {
+        id: true,
+        userId: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            profile: true,
+            oauthTokens: true,
+            envVars: true,
+          },
         },
       },
-    },
-    where: {
-      key: apiKey, // Use the API key to find the session
-    },
-  });
+      where: {
+        key: apiKey, // Use the API key to find the session
+      },
+    }),
 
-  if ( record ) {
-    // Update api key lastUsedAt
     db.apiKey.update({
       where: { key: apiKey },
       data: { lastUsedAt: new Date() },
-    });
+    })
+  ]);
 
-    return record;
-  }
-
-  return null;
+  return record;
 }
