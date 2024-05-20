@@ -41,7 +41,13 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
       title={functionData.description}
     >
       <div className="block space-y-2 py-2 h-full">
-        <p className="text-gray-400 text-xs">{functionData.httpVerb}</p>
+        <div className="flex justify-between">
+          <p className="text-gray-400 text-xs">{functionData.httpVerb}</p>
+          <p className="text-xs">
+            <GitForkIcon className="h-4 w-4 inline-flex mr-1" />
+            { functionData._count.forksTo }
+          </p>
+        </div>
         <h2 className="text-lg font-bold text-gray-100 truncate min-w-0" title={functionData.slug}>
           {functionData.slug}
         </h2>
@@ -57,7 +63,7 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
           totalArguments > 0 && (
             <div className="block">
               <p className="text-xs text-gray-400">
-                +{totalArguments} argument{totalArguments > 1 ? 's' : ''}
+                {totalArguments} argument{totalArguments > 1 ? 's' : ''}
               </p>
             </div>
           )

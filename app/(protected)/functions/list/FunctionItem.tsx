@@ -62,7 +62,7 @@ const FunctionItem: React.FC<FunctionItemProps> = (props) => {
           totalArguments > 0 && (
             <div className="block">
               <p className="text-xs text-gray-400">
-                +{totalArguments} argument{totalArguments > 1 ? 's' : ''}
+                {totalArguments} argument{totalArguments > 1 ? 's' : ''}
               </p>
             </div>
           )

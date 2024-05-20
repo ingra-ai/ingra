@@ -105,38 +105,23 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => 
             isPublished,
             httpVerb,
             description,
+            arguments: {
+              create: (functionArguments || []).map(arg => ({
+                name: arg.name,
+                type: arg.type,
+                isRequired: arg.isRequired,
+                defaultValue: arg.defaultValue,
+                description: arg.description,
+              })),
+            },
+            tags: {
+              create: (functionTags || []).map(tag => ({
+                name: tag.name,
+              })),
+            },
             ownerUserId: authSession.user.id
           },
         });
-
-        // Insert new arguments and tags
-        const insertArgAndTagPromises = [];
-
-        const hasArguments = functionArguments && Array.isArray(functionArguments) && functionArguments.length;
-        if ( hasArguments ) {
-          insertArgAndTagPromises.push(
-            prisma.functionArgument.createMany({
-              data: functionArguments.map(arg => ({
-                ...arg,
-                functionId: newFunction.id
-              })),
-            })
-          );
-        }
-
-        const hasTags = functionTags && Array.isArray(functionTags) && functionTags.length;
-        if ( hasTags ) {
-          insertArgAndTagPromises.push(
-            prisma.functionTag.createMany({
-              data: functionTags.map(tag => ({
-                ...tag,
-                functionId: newFunction.id
-              })),
-            })
-          );
-        }
-
-        await Promise.all(insertArgAndTagPromises);
 
         return newFunction;
       }
@@ -170,20 +155,37 @@ export const deleteFunction = async (functionId: string) => {
     throw new ActionError('error', 404, 'Function not found');
   }
 
-  // Delete function arguments
-  await db.functionArgument.deleteMany({
-    where: {
-      functionId,
-    },
-  });
+  const relationshipRemovePromises = [
+    // Delete function arguments
+    db.functionArgument.deleteMany({
+      where: {
+        functionId,
+      },
+    }),
 
-  // Delete function tags
-  await db.functionTag.deleteMany({
-    where: {
-      functionId,
-    },
-  });
+    // Delete function tags
+    db.functionTag.deleteMany({
+      where: {
+        functionId,
+      },
+    }),
 
+    // Delete associated function forks where this function is the original function
+    db.functionFork.deleteMany({
+      where: {
+        originalFunctionId: functionId,
+      },
+    }),
+
+    // Delete associated function forks where this function is the forked function
+    db.functionFork.deleteMany({
+      where: {
+        forkedFunctionId: functionId,
+      },
+    }),
+  ];
+
+  await Promise.all(relationshipRemovePromises);
   await db.function.delete({
     where: {
       id: functionId,
@@ -193,5 +195,81 @@ export const deleteFunction = async (functionId: string) => {
 
   return {
     success: 'Function deleted!',
+  };
+}
+
+export const forkFunction = async (functionId: string) => {
+  const authSession = await getAuthSession();
+
+  if (!authSession) {
+    throw new ActionError('error', 401, `Unauthorized session.`);
+  }
+
+  const functionRecord = await db.function.findUnique({
+    where: {
+      id: functionId,
+      isPublished: true,
+      isPrivate: false,
+    },
+    include: {
+      arguments: true,
+      tags: true,
+    },
+  });
+
+  if (!functionRecord) {
+    throw new ActionError('error', 404, 'Function not found');
+  }
+
+  // Check if the new slug is already taken by the current user
+  const existingFunction = await db.function.findFirst({
+    where: {
+      ownerUserId: authSession.user.id,
+      slug: functionRecord.slug,
+    },
+  });
+
+  if ( existingFunction ) {
+    throw new ActionError('error', 400, 'Function with the same slug already exists');
+  }
+
+  const newFunction = await db.function.create({
+    data: {
+      slug: functionRecord.slug,
+      code: functionRecord.code,
+      isPrivate: true,
+      isPublished: false,
+      httpVerb: functionRecord.httpVerb,
+      description: functionRecord.description,
+      ownerUserId: authSession.user.id,
+      arguments: {
+        create: functionRecord.arguments.map(arg => ({
+          name: arg.name,
+          type: arg.type,
+          isRequired: arg.isRequired,
+          defaultValue: arg.defaultValue,
+          description: arg.description,
+        })),
+      },
+      tags: {
+        create: functionRecord.tags.map(tag => ({
+          name: tag.name,
+        })),
+      },
+    },
+  });
+
+  // Create a record in FunctionFork
+  await db.functionFork.create({
+    data: {
+      originalFunctionId: functionRecord.id,
+      forkedFunctionId: newFunction.id,
+      createdAt: new Date(),
+    },
+  });
+
+  return {
+    success: 'Function forked!',
+    data: newFunction,
   };
 }
