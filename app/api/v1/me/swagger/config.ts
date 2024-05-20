@@ -16,12 +16,12 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
     return null;
   }
 
-  const username = authSession?.user?.profile?.userName || 'N/A';
+  const username = authSession?.user?.profile?.userName || authSession.user.email;
 
   const userFunctionsPaths = await generateOpenApiSchema(authSession);
 
   const swaggerOptions: SwaggerOptions = {
-    apiFolder: `app/api/v1/u/${username}`, // define api folder under app folder
+    apiFolder: `app/api/v1/me`, // define api folder under app folder
     apis: ['schemas/**/*.ts', 'lib/**/*.ts'],
     definition: {
       openapi: '3.0.0',

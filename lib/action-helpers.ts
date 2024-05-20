@@ -22,7 +22,7 @@ export const validateAction = async <T extends z.ZodType<any, any>>(schema: T, v
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   return {

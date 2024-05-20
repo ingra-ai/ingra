@@ -1,4 +1,4 @@
-import { ActionError, type ApiError, type ApiSuccess } from '@lib/api-response';
+import { ActionError, type ApiError } from '@lib/api-response';
 import { Logger } from '@lib/logger';
 import { NextResponse } from 'next/server';
 import type { ApiTryCatchReturnType } from './types';
@@ -8,7 +8,7 @@ export const apiTryCatch = async <T>( fn: () => Promise<ApiTryCatchReturnType<T>
     return await fn();
   }
   catch ( error: any ) {
-    Logger.error( '[apiTryCatch]', 'Error:', error );
+    Logger.withTag('apiTryCatch').error( error?.message || 'Something went wrong.' );
 
     if ( error instanceof ActionError ) {
       return NextResponse.json( error.toJson(),

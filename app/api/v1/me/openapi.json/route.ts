@@ -10,8 +10,7 @@ import { RedirectType, redirect } from 'next/navigation';
  * Returns OpenAPI json file when in development
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
-export async function GET(req: NextRequest, { params }: { params: { username: string } }) {
-  const { username } = params;
+export async function GET(req: NextRequest) {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {

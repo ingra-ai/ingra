@@ -95,7 +95,7 @@ export const deleteEnvVar = async (id: number) => {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   const record = await db.envVars.delete({

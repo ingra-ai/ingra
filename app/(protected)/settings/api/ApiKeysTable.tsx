@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import type { ApiKey } from '@prisma/client';
 import { GenerateApiKeyButton } from './GenerateApiKeyButton';
+import { APP_SESSION_API_KEY_NAME } from '@lib/constants';
 
 type ApiKeysTableProps = {
   apiKeys: Required<Pick<ApiKey, 'key' | 'lastUsedAt'>>[];
@@ -67,7 +68,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">Your API Keys ({ apiKeys.length })</h1>
           <p className="mt-2 text-sm">
-            Generate API keys to authenticate requests with <code className="italic">X-API-KEY</code> header
+            Generate API keys to authenticate requests with <code className="italic uppercase">{ APP_SESSION_API_KEY_NAME }</code> header
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
