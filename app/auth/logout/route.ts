@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { APP_AUTH_LOGIN_URL } from '@lib/constants';
 import { RedirectType, redirect } from 'next/navigation';
 import db from '@lib/db';
+import { kv } from '@vercel/kv';
+import { Logger } from '@lib/logger';
 
 export async function GET() {
   const cookieStore = cookies();
@@ -20,7 +22,11 @@ export async function GET() {
       },
     });
 
-    // Remove  session cookies
+    // Remove from redis
+    kv.del('activeSession:' + jwtCookie.value);
+    Logger.withTag('kv').info('Session removed due to logout', { jwt: jwtCookie.value });
+
+    // Remove session cookies
     cookieStore.delete(APP_SESSION_COOKIE_NAME);
   }
 

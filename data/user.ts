@@ -50,7 +50,9 @@ export const getUserByJwt = async (jwt: string) => {
 
   return await db.activeSession.findUnique({
     select: {
+      id: true,
       expiresAt: true,
+      userId: true,
       user: {
         select: {
           id: true,
@@ -78,6 +80,8 @@ export const getUserByApiKey = async (apiKey: string) => {
 
   const record = await db.apiKey.findUnique({
     select: {
+      id: true,
+      userId: true,
       user: {
         select: {
           id: true,
