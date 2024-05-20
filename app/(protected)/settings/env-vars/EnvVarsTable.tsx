@@ -27,7 +27,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
   const { envVars, onCreate, onEdit, onDelete } = props;
 
   return (
-    <div className="block" data-testid='env-vars-table'>
+    <div className="block max-w-[1600px]" data-testid='env-vars-table'>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">Environment Variables ({ envVars.length })</h1>
@@ -41,7 +41,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
           </Button>
         </div>
       </div>
-      <table className="mt-4 w-full whitespace-nowrap text-left table-fixed max-w-[1024px]">
+      <table className="mt-4 w-full whitespace-nowrap text-left table-fixed">
         <colgroup>
           <col className="w-3/12" />
           <col className="w-4/12" />
@@ -54,7 +54,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
               Key
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold w-full">
               Value
             </th>
             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
@@ -74,7 +74,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0">
                 {envVar.key}
               </td>
-              <td className="whitespace-nowrap px-3 py-4 text-sm">{envVar.value}</td>
+              <td className="whitespace-nowrap px-3 py-4 text-sm truncate">{envVar.value}</td>
               <td className="whitespace-nowrap px-3 py-4 text-sm">{formatDistance(envVar.createdAt, Date.now(), { addSuffix: true })}</td>
               <td className="whitespace-nowrap px-3 py-4 text-sm">{formatDistance(envVar.updatedAt, Date.now(), { addSuffix: true })}</td>
               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
