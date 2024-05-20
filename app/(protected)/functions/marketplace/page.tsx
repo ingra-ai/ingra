@@ -1,6 +1,6 @@
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
-import FunctionsList from './FunctionList';
+import MarketplaceFunctionList from './MarketplaceFunctionList';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
 // import {
@@ -21,9 +21,13 @@ export default async function Page() {
   }
 
   // Get all functions
-  const allFunctions = await db.function.findMany({
+  const allRecords = await db.function.findMany({
     where: {
-      ownerUserId: authSession.user.id,
+      NOT: {
+        ownerUserId: authSession.user.id,
+      },
+      isPublished: true,
+      isPrivate: false,
     },
     orderBy: {
       updatedAt: 'desc',
@@ -39,6 +43,15 @@ export default async function Page() {
       ownerUserId: true,
       createdAt: false,
       updatedAt: true,
+      owner: {
+        select: {
+          profile: {
+            select: {
+              userName: true,
+            }
+          }
+        }
+      },
       tags: {
         select: {
           id: true,
@@ -68,7 +81,7 @@ export default async function Page() {
     <div className="block" data-testid="functions-list-page">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Functions ({ allFunctions.length })</h1>
+          <h1 className="text-base font-semibold leading-6">Marketplace Functions ({ allRecords.length })</h1>
           <p className="mt-2 text-sm">
             &nbsp;
           </p>
@@ -79,8 +92,8 @@ export default async function Page() {
       <div className="mt-4">
         <div className={functionListGridClasses}>
           {
-            allFunctions && (
-              <FunctionsList functions={allFunctions} />
+            allRecords && (
+              <MarketplaceFunctionList functions={allRecords} />
             )
           }
         </div>

@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { PencilIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/outline';
-import { PlusIcon } from 'lucide-react';
+import { GitForkIcon } from 'lucide-react';
 import formatDistance from 'date-fns/formatDistance';
 import format from 'date-fns/format';
 import {
@@ -22,37 +22,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { FunctionListGetPayload } from './types';
+import { FunctionMarketListGetPayload } from './types';
 import { Badge } from '@components/ui/badge';
 
-interface FunctionItemProps {
-  functionData: FunctionListGetPayload;
-  onEdit: () => void;
-  onDelete: () => void;
+interface MarketplaceFunctionItemProps {
+  functionData: FunctionMarketListGetPayload;
+  onFork: () => void;
 }
 
-const FunctionItem: React.FC<FunctionItemProps> = (props) => {
-  const { functionData, onEdit, onDelete } = props;
-  const subtext = [functionData.httpVerb, functionData.isPublished ? 'Published' : 'Unpublished'].filter(Boolean).join(' - ');
+const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) => {
+  const { functionData, onFork } = props;
+  const authorName = functionData?.owner?.profile?.userName || 'Anonymous';
+  const subtext = [functionData.httpVerb, `by ${ authorName }`].filter(Boolean).join(' - ');
   const totalArguments = functionData.arguments.length;
   return (
     <div 
       className="flex flex-col bg-secondary border border-gray-500 hover:border-gray-300 shadow-md rounded-sm px-4 py-2 w-full min-h-[200px] cursor-pointer"
       title={functionData.description}
     >
-      <div className="block space-y-2 py-2 h-full"
-        role='button'
-        tabIndex={0}
-        aria-pressed='false'
-        onClick={onEdit}
-      >
-        <p className="text-gray-400 text-xs">{subtext}</p>
+      <div className="block space-y-2 py-2 h-full">
+        <p className="text-gray-400 text-xs">{functionData.httpVerb}</p>
         <h2 className="text-lg font-bold text-gray-100 truncate min-w-0" title={functionData.slug}>
           {functionData.slug}
         </h2>
         <div className="block">
-          <span className={`px-2 py-1 inline-flex text-xs leading-3 font-semibold rounded-full ${functionData.isPrivate ? 'bg-red-700 text-red-200' : 'bg-green-700 text-green-200'}`}>
-            {functionData.isPrivate ? 'Private' : 'Public'}
+          <span className={`px-2 py-1 inline-flex text-xs leading-3 font-semibold rounded-full bg-green-700 text-green-200`}>
+            { authorName }
           </span>
           {functionData.tags.map(tag => (
             <Badge key={tag.id} variant="accent" className="mr-1 text-xs">{tag.name}</Badge>
@@ -86,25 +81,22 @@ const FunctionItem: React.FC<FunctionItemProps> = (props) => {
 
         </div>
         <div className="col-span-4 flex justify-end items-center">
-          <button onClick={onEdit} aria-label='Edit' title='Edit' className="p-1 mr-2 text-zinc-300 hover:text-zinc-400">
-            <PencilIcon className="h-4 w-4" />
-          </button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <button aria-label='Delete' title='Delete' className="p-1 text-red-300 hover:text-red-400">
-                <TrashIcon className="h-4 w-4" />
+              <button aria-label='Fork' title='Fork' className="p-1 text-green-300 hover:text-green-400">
+                <GitForkIcon className="h-5 w-5" />
               </button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure to delete &quot;{functionData.slug}&quot;?</AlertDialogTitle>
+                <AlertDialogTitle>Are you sure to fork &quot;{functionData.slug}&quot; from { authorName }?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete your function.
+                  You will be redirected to edit function once the fork is successful.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+                <AlertDialogAction onClick={onFork}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -114,21 +106,4 @@ const FunctionItem: React.FC<FunctionItemProps> = (props) => {
   );
 };
 
-interface FunctionItemNewProps {
-}
-
-const FunctionItemNew: React.FC<FunctionItemNewProps> = (props) => {
-  return (
-    <Link
-      href="/functions/new"
-      className="flex flex-col justify-center items-center text-gray-500 hover:text-gray-300 border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px]">
-      <PlusIcon className="h-12 w-12" />
-      New Function
-    </Link>
-  );
-};
-
-export {
-  FunctionItem,
-  FunctionItemNew
-};
+export default MarketplaceFunctionItem;

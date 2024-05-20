@@ -36,13 +36,13 @@ export const sideNavRoutes: NavItem[] = [
     description: "Dynamic hubs that your AI can perform, including text generation, summarization, and more.",
     children: [
       {
-        name: 'Browse',
+        name: 'Marketplace',
         description: 'Browse public functions shared by other users.',
-        href: '/functions/browse',
+        href: '/functions/marketplace',
         icon: GlobeIcon,
       },
       {
-        name: 'Functions',
+        name: 'My Functions',
         description: 'Access and manage your collection of functions repository.',
         href: '/functions/list',
         icon: SquareDashedBottomCodeIcon,
