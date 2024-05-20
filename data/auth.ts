@@ -103,7 +103,7 @@ export const expireMagicLinkByToken = async (token: string) => {
  * @param expiresSeconds - The number of seconds until the session expires. Default is 86400 seconds (24 hours).
  * @returns A promise that resolves to the upserted active session, or null if the operation fails.
  */
-export const createActiveSession = async (user: Pick<User, 'id' | 'email'>, expiresSeconds = 86400): Promise<ActiveSession | null> => {
+export const createActiveSession = async (user: Pick<User, 'id' | 'email'>, expiresSeconds = 86400 * 7): Promise<ActiveSession | null> => {
   const expiresTs = Date.now() + expiresSeconds * 1000;
   const expiresAt = new Date(expiresTs);
   const token = generateToken({ id: user.id, email: user.email, _expiresTs: expiresTs }, expiresSeconds);

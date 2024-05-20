@@ -5,6 +5,7 @@ import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 import crypto from 'crypto';
 import { MAX_API_KEYS_PER_USER } from '@/schemas/apiKey';
+import { deleteAllUserCaches } from '@lib/db/extensions/redis';
 
 export const generateApiKey = async () => {
   const authSession = await getAuthSession();
@@ -40,6 +41,9 @@ export const generateApiKey = async () => {
     throw new ActionError('error', 400, 'Failed to generate api key!');
   }
 
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
+
   return {
     success: 'New API key generated!',
     data: {
@@ -71,6 +75,9 @@ export const deleteApiKey = async (key: string) => {
       key,
     },
   });
+
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
 
   return {
     success: 'API key deleted!',
