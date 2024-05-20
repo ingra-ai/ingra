@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { useForm, useFieldArray, FormProvider, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@components/ui/button';
-import { RefreshCcw, BugPlayIcon } from 'lucide-react';
+import { RefreshCcw, BugPlayIcon, CopyPlusIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
@@ -54,6 +54,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       code: functionRecord?.code || CODE_DEFAULT_TEMPLATE,
       isPrivate: !!functionRecord?.isPrivate,
       isPublished: !!functionRecord?.isPublished,
+      originalFunctionId: functionRecord?.originalFunctionId || '',
       tags: functionRecord?.tags ? functionRecord.tags.map(tag => {
         return {
           id: tag.id || '',
@@ -125,17 +126,83 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
     return savedFunction;
   }, [isEditMode]);
 
+  const onClone = useCallback(async () => {
+    if (!isEditMode) return;
+
+    setIsSaving(true);
+
+    const existingValues = methods.getValues();
+
+    // save to db and return function
+    const savedFunction = await upsertFunction({
+      ...existingValues,
+      id: '',
+      originalFunctionId: '',
+      slug: 'cloned-' + existingValues.slug,
+      isPublished: false,
+      isPrivate: true,
+      arguments: (existingValues.arguments || []).map(arg => {
+        return {
+          ...arg,
+          id: ''
+        };
+      }),
+      tags: (existingValues.tags || []).map(tag => {
+        return {
+          ...tag,
+          id: ''
+        };
+      })
+    })
+      .then((resp) => {
+        toast({
+          title: 'Function cloned!',
+          description: 'Your function has been cloned.',
+        });
+
+        if (resp?.data?.id) {
+          router.replace(`/functions/edit/${resp.data.id}`);
+        }
+        else {
+          router.refresh();
+        }
+      })
+      .catch((error: Error) => {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to perform operation!',
+        });
+
+        Logger.error(error?.message);
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
+
+    return savedFunction;
+  }, [isEditMode]);
+
   const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
-  
+
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
         <form className="grid grid-cols-1 md:grid-cols-12 gap-8" method="POST" onSubmit={handleSubmit(onSave)}>
           <div className="block space-y-6 col-span-1 order-2 lg:order-1 lg:col-span-6 xl:col-span-7 2xl:col-span-8">
             <div className="block">
-              <label className="block text-sm font-medium leading-6 mb-4 text-right">
-                Code &#40;Node.js&#41;
-              </label>
+              <div className="flex mb-3 leading-6 justify-between">
+                <label className="block text-sm font-medium">
+                  Code &#40;Node.js&#41;
+                </label>
+                {
+                  isEditMode && (
+                    <button type='button' onClick={onClone} title='Clone this function' className="hover:text-teal-500">
+                      <CopyPlusIcon className="h-5 w-5 ml-2" />
+                    </button>
+                  )
+                }
+              </div>
               <Controller
                 control={control}
                 name={'code'}
@@ -216,7 +283,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                     autoFocus
                   />
                   {errors.slug && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.slug.message}</p>}
-                  
+
                 </div>
               </div>
               <div className="block">
@@ -245,10 +312,10 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                 </label>
                 <TagField
                   id='tags'
-                  tags={ tagFields.map(tag => tag.name) }
-                  addTag={ (tag) => handleAddTag({ functionId: '', name: tag }) }
-                  removeTag={ (tag, idx) => handleRemoveTag(idx) }
-                  maxTags={ 5 }
+                  tags={tagFields.map(tag => tag.name)}
+                  addTag={(tag) => handleAddTag({ functionId: '', name: tag })}
+                  removeTag={(tag, idx) => handleRemoveTag(idx)}
+                  maxTags={5}
                 />
                 {errors.tags?.[0]?.name && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.tags?.[0]?.name.message}</p>}
               </div>
