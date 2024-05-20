@@ -1,6 +1,6 @@
 'use server';
 
-import { ActionError } from '@lib/api-response';
+import { ActionError } from '@v1/types/api-response';
 import { OAuthToken } from "@prisma/client";
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';

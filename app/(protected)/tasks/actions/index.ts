@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { TaskSchema } from '@/schemas/task';
-import { ActionError } from '@lib/api-response';
+import { ActionError } from '@v1/types/api-response';
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 
