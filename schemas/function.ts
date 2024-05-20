@@ -48,7 +48,7 @@ export const HttpVerbEnum = z.enum([
 /**
  * Maximum length constraint for function code.
  */
-export const MAX_FUNCTION_CODE_LENGTH = 4000;
+export const MAX_FUNCTION_CODE_LENGTH = 8000;
 
 /**
  * Maximum length constraint for function description.
