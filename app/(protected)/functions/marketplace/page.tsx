@@ -1,3 +1,4 @@
+'use server';
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 import MarketplaceFunctionList from './MarketplaceFunctionList';
@@ -68,6 +69,11 @@ export default async function Page() {
           type: true,
           defaultValue: false,
           isRequired: false,
+        }
+      },
+      _count: {
+        select: {
+          forksTo: true
         }
       }
     }
