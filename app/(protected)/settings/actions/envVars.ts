@@ -6,6 +6,7 @@ import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 import { EnvVarsSchema } from '@/schemas/envVars';
 import { validateAction } from '@lib/action-helpers';
+import { deleteAllUserCaches } from '@lib/db/extensions/redis';
 
 export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
   const validatedValues = await validateAction(EnvVarsSchema, values);
@@ -32,6 +33,9 @@ export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
     },
   });
 
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
+
   return {
     success: 'Environment variable operation successful!',
     data: record,
@@ -56,6 +60,9 @@ export const createEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
   if (!record) {
     throw new ActionError('error', 400, 'Failed to create environment variable!');
   }
+
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
 
   return {
     success: 'Environment variable created!',
@@ -85,6 +92,9 @@ export const updateEnvVar = async (id: number, values: z.infer<typeof EnvVarsSch
     throw new ActionError('error', 400, 'Failed to update Environment variable!');
   }
 
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
+
   return {
     success: 'Environment variable updated!',
     data: record,
@@ -108,6 +118,9 @@ export const deleteEnvVar = async (id: number) => {
   if (!record) {
     throw new ActionError('error', 400, 'Failed to delete Environment variable!');
   }
+
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
 
   return {
     success: 'Environment variable deleted!',

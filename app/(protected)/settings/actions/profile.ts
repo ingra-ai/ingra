@@ -5,6 +5,7 @@ import { ActionError } from '@v1/types/api-response';
 import { validateAction } from '@lib/action-helpers';
 import { ProfileSchema } from '@/schemas/profile';
 import db from '@lib/db';
+import { deleteAllUserCaches } from '@lib/db/extensions/redis';
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const validatedValues = await validateAction(ProfileSchema, values); 
@@ -34,6 +35,9 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   if (!profile) {
     throw new ActionError('error', 400, 'Failed to update profile!');
   }
+
+  // Delete kv caches for this user
+  deleteAllUserCaches(authSession.user.id);
 
   return {
     success: 'Profile updated!',
