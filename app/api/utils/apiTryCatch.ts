@@ -1,4 +1,4 @@
-import { ActionError, type ApiError } from '@lib/api-response';
+import { ActionError, type ApiError } from '@v1/types/api-response';
 import { Logger } from '@lib/logger';
 import { NextResponse } from 'next/server';
 import type { ApiTryCatchReturnType } from './types';

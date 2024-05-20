@@ -1,7 +1,7 @@
 'use server';
 
 import * as z from 'zod';
-import { ActionError } from '@lib/api-response';
+import { ActionError } from '@v1/types/api-response';
 import { validateAction } from '@lib/action-helpers';
 import { ProfileSchema } from '@/schemas/profile';
 import db from '@lib/db';

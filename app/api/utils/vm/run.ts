@@ -1,5 +1,5 @@
 'use server';
-import { ActionError } from '@lib/api-response';
+import { ActionError } from '@v1/types/api-response';
 import { parseStartAndEnd, parseDate } from "@app/api/utils/chronoUtils";
 import { setTimeout } from 'timers/promises';
 import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
-import { ActionError } from "@lib/api-response";
+import { ActionError } from '@v1/types/api-response';
 import db from "@lib/db";
 import { Logger } from "@lib/logger";
 import { run } from "@app/api/utils/vm/run";

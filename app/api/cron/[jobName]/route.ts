@@ -1,6 +1,6 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { ApiError } from '@lib/api-response';
+import { ApiError } from '@v1/types/api-response';
 import { apiTryCatch } from '@app/api/utils/apiTryCatch';
 import { googleOAuthRefresh } from './googleOAuthRefresh';
 

@@ -1,5 +1,5 @@
 import { getAuthSession } from "@app/auth/session";
-import { ActionError } from "@lib/api-response";
+import { ActionError } from '@v1/types/api-response';
 import { z } from "zod";
 
 /**

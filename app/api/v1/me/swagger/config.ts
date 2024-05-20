@@ -21,29 +21,19 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
   const userFunctionsPaths = await generateOpenApiSchema(authSession);
 
   const swaggerOptions: SwaggerOptions = {
-    apiFolder: `app/api/v1/me`, // define api folder under app folder
-    apis: ['schemas/**/*.ts', 'lib/**/*.ts'],
+    apiFolder: `app/api`, // define api folder under app folder
+    apis: ['app/api/v1/**/*.ts'],
     definition: {
       openapi: '3.0.0',
       info: {
         title: `${ username } | ${APP_NAME} Plugin API v1`,
         version: APP_PACKAGE_VERSION,
-        description: `Bakabit is a highly personalized virtual assistant, capable of managing an array of curated functions for each individual user, and expanding into more personalized utilities as needed.`,
+        description: `Bakabit is a highly personalized virtual assistant, capable of managing an array of curated functions and workflows for each individual user, and expanding into more personalized utilities as needed.`,
       },
       paths: {
         ...userFunctionsPaths,
       },
-      // servers: {
-      //   url: APP_URL,
-      // },
       components: {
-        // securitySchemes: {
-        //   BearerAuth: {
-        //     type: 'http',
-        //     scheme: 'bearer',
-        //     bearerFormat: 'JWT',
-        //   },
-        // },
       },
       security: [],
     },
