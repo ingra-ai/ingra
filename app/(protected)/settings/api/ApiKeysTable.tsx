@@ -63,7 +63,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
   }, []);
 
   return (
-    <div className="block" data-testid='api-keys-table'>
+    <div className="block max-w-[1600px]" data-testid='api-keys-table'>
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">Your API Keys ({ apiKeys.length })</h1>
@@ -75,7 +75,7 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
           <GenerateApiKeyButton />
         </div>
       </div>
-      <table className="mt-4 w-full whitespace-nowrap text-left table-fixed max-w-[1024px]">
+      <table className="mt-4 w-full whitespace-nowrap text-left table-fixed">
         <colgroup>
           <col className="w-8/12" />
           <col className="w-2/12" />
