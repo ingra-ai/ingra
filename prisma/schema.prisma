@@ -142,7 +142,7 @@ model Function {
   description        String             @default("") @db.VarChar(1024)
   arguments          FunctionArgument[]
   tags               FunctionTag[]
-  originalFunctionId String?            @db.Uuid
+  originalFunctionId String?            @db.VarChar(64)
 
   // Relations
   owner User @relation(fields: [ownerUserId], references: [id])
