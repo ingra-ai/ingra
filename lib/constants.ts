@@ -15,6 +15,7 @@ export const APP_LANDING_PAGE_URL = APP_URL + APP_LANDING_PAGE_URI;
 
 export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@bakabit.com';
 export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'BAKA_SESSION';
+export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 
 export const APP_PROFILE_URL = [APP_URL, 'settings/profile'].join('/');
 
@@ -45,12 +46,12 @@ export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_PROFILE_URL;
 /**
  * USERS API
 */
-export const USERS_API_ROOT_URL = [APP_URL, 'api/v1/u', ':username'].join('/');
+export const USERS_API_ROOT_PATH = '/api/v1/me';
+export const USERS_API_ROOT_URL = APP_URL + USERS_API_ROOT_PATH;
 // This should reflect the path of the API in the app
 // !! Requires to replace the username and slug,
 // !! -- only use this wherever you have access to user profile and function slug
-export const USERS_API_FUNCTION_PATH = ['api/v1/u', ':username', 'functions', ':slug'].join('/');
-export const USERS_API_FUNCTION_URL = [APP_URL, USERS_API_FUNCTION_PATH].join('/');
+export const USERS_API_FUNCTION_PATH = [USERS_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
  * The version of the app as defined in package.json

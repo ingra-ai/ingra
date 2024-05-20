@@ -3,8 +3,8 @@ import { ApiError } from "@lib/api-response";
 import { Logger } from "@lib/logger";
 import * as handlers from "./handlers";
 
-export async function GET(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
-  const { username, paths } = params;
+export async function GET(req: NextRequest, { params }: { params: { paths: string[] } }) {
+  const { paths } = params;
   const { searchParams } = new URL(req.url);
   const requestArgs = Object.fromEntries(searchParams);
   const [handlerName, ...restOfPaths] = paths;
@@ -24,12 +24,12 @@ export async function GET(req: NextRequest, { params }: { params: { username: st
     );
   }
 
-  Logger.withTag('GET').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
-  return await handlerFn(requestArgs, username, ...restOfPaths);
+  Logger.withTag('user-api').withTag('GET').info(`handler ${ handlerName } invoked.`);
+  return await handlerFn(requestArgs, ...restOfPaths);
 };
 
-export async function POST(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
-  const { username, paths } = params;
+export async function POST(req: NextRequest, { params }: { params: { paths: string[] } }) {
+  const { paths } = params;
   const requestArgs = await req.json();
   const [handlerName, ...restOfPaths] = paths;
 
@@ -48,13 +48,13 @@ export async function POST(req: NextRequest, { params }: { params: { username: s
     );
   }
 
-  Logger.withTag('POST').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
-  return await handlerFn(requestArgs, username, ...restOfPaths);
+  Logger.withTag('user-api').withTag('POST').info(`handler ${ handlerName } invoked.`);
+  return await handlerFn(requestArgs, ...restOfPaths);
 }
 
 
-export async function PUT(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
-  const { username, paths } = params;
+export async function PUT(req: NextRequest, { params }: { params: { paths: string[] } }) {
+  const { paths } = params;
   const requestArgs = await req.json();
   const [handlerName, ...restOfPaths] = paths;
 
@@ -73,13 +73,13 @@ export async function PUT(req: NextRequest, { params }: { params: { username: st
     );
   }
 
-  Logger.withTag('PUT').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
-  return await handlerFn(requestArgs, username, ...restOfPaths);
+  Logger.withTag('user-api').withTag('PUT').info(`handler ${ handlerName } invoked.`);
+  return await handlerFn(requestArgs, ...restOfPaths);
 }
 
 
-export async function PATCH(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
-  const { username, paths } = params;
+export async function PATCH(req: NextRequest, { params }: { params: { paths: string[] } }) {
+  const { paths } = params;
   const requestArgs = await req.json();
   const [handlerName, ...restOfPaths] = paths;
 
@@ -98,12 +98,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { username: 
     );
   }
 
-  Logger.withTag('PATCH').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
-  return await handlerFn(requestArgs, username, ...restOfPaths);
+  Logger.withTag('user-api').withTag('PATCH').info(`handler ${ handlerName } invoked.`);
+  return await handlerFn(requestArgs, ...restOfPaths);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { username: string; paths: string[] } }) {
-  const { username, paths } = params;
+export async function DELETE(req: NextRequest, { params }: { params: { paths: string[] } }) {
+  const { paths } = params;
   const { searchParams } = new URL(req.url);
   const requestArgs = Object.fromEntries(searchParams);
   const [handlerName, ...restOfPaths] = paths;
@@ -123,6 +123,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { username:
     );
   }
 
-  Logger.withTag('DELETE').withTag('user-api').info(`[${username}] invokes ${ handlerName } handler.`);
-  return await handlerFn(requestArgs, username, ...restOfPaths);
+  Logger.withTag('user-api').withTag('DELETE').info(`handler ${ handlerName } invoked.`);
+  return await handlerFn(requestArgs, ...restOfPaths);
 };

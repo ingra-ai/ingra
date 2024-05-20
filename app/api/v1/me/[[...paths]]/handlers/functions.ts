@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { apiUserTryCatch } from "@app/api/utils/apiUserTryCatch";
+import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { ActionError } from "@lib/api-response";
 import db from "@lib/db";
 import { Logger } from "@lib/logger";
@@ -7,12 +7,12 @@ import { run } from "@app/api/utils/vm/run";
 import type { UserSandboxOutput } from "@app/api/utils/vm/types";
 import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
 
-export default async ( requestArgs: Record<string, any> = {}, username: string, ...restOfPaths: string[] ) => {
-  return await apiUserTryCatch<any>('', async (authSession) => {
+const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths: string[] ) => {
+  return await apiAuthTryCatch<any>(async (authSession) => {
     const [functionSlug] = restOfPaths;
 
     if ( functionSlug ) {
-      Logger.withTag('functions').info(`[${username}] starts executing function: ${functionSlug} with args: ${JSON.stringify(requestArgs)}`);
+      Logger.withTag('functions').withTag(authSession.user.id).info(`starts executing function: ${functionSlug} - with args: ${JSON.stringify(requestArgs)}`);
 
       const functionRecord = await db.function.findUnique({
         where: {
@@ -38,7 +38,7 @@ export default async ( requestArgs: Record<string, any> = {}, username: string, 
         throw new ActionError('error', 400, errors[0].message);
       }
 
-      Logger.withTag('functions').info(`[${username}] finishes executing function: ${functionSlug}`);
+      Logger.withTag('functions').withTag(authSession.user.id).info(`finishes executing function: ${functionSlug}`);
 
       return NextResponse.json(
         {
@@ -52,6 +52,8 @@ export default async ( requestArgs: Record<string, any> = {}, username: string, 
       );
     }
     
-    throw new ActionError('error', 400, `Invalid operation.`);
+    throw new ActionError('error', 400, `Handler is unable to fulfill this request.`);
   });
 }
+
+export default handlerFn;

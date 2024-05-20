@@ -7,7 +7,7 @@ import { generateVmContextArgs } from './generateVmContextArgs';
 
 export async function executeFunction(authSession: AuthSessionResponse, functionId: string, args: Record<string, any> = {}) {
   if ( !authSession ) {
-    throw new ActionError('error', 403, `Forbidden`);
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   const context = generateVmContextArgs(authSession, args);

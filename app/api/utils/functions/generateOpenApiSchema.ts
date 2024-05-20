@@ -50,9 +50,7 @@ export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPay
 
   let functionHitUrl = '';
   if (username && functionRecord.slug) {
-    functionHitUrl = USERS_API_FUNCTION_PATH
-      .replace(':username', username)
-      .replace(':slug', functionRecord.slug);
+    functionHitUrl = USERS_API_FUNCTION_PATH.replace(':slug', functionRecord.slug);
   }
 
   const pathItem: Record<string, any> = {
@@ -101,7 +99,7 @@ export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPay
   }
 
   return {
-    [`/${functionHitUrl}`]: {
+    [functionHitUrl]: {
       [functionRecord.httpVerb.toLowerCase()]: pathItem
     }
   };

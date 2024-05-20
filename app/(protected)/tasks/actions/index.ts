@@ -16,7 +16,7 @@ export const createTask = async (values: z.infer<typeof TaskSchema>) => {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   const { title, description, status, priority } = validatedFields.data;
@@ -51,7 +51,7 @@ export const updateTask = async (id: number, values: z.infer<typeof TaskSchema>)
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   const { title, description, status, priority } = validatedFields.data;

@@ -10,7 +10,7 @@ export const generateApiKey = async () => {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   // Generate random string with 32 characters
@@ -52,7 +52,7 @@ export const deleteApiKey = async (key: string) => {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   const apiKey = await db.apiKey.findUnique({
