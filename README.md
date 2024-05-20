@@ -1,6 +1,6 @@
 # Bakabit Portal
 
-Bakabit Portal is a comprehensive user management platform designed to facilitate task management, calendar scheduling, and personal productivity enhancements. Built with the latest technology stack, this portal aims to provide a seamless experience for managing todos, calendars, and integrating GPT function calls for enhanced user interactions.
+Bakabit Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.
 
 ## Tech Stack
 
@@ -16,26 +16,26 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - **Deployment**: [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
 - **Email Service**: AWS SES
 - **Authentication**: Custom implementation for enhanced security
-- **Additional Libraries**: date-fns for date handling, jsonwebtoken for JWT based auth, uuid for generating unique identifiers, zod
+- **Additional Libraries**: date-fns for date handling, jsonwebtoken for JWT based auth, uuid for generating unique identifiers, zod for forms validation, chrono-node for natural date-time parsing.
 
 
 ## Features
 
-- [x] **User Management**: Manual authentication system for better security and privacy.
-- [x] **Task Management**: Intuitive interface to manage your tasks efficiently.
-- [ ] **Calendar Scheduling**: Integrated calendar for easy scheduling and event management, powered by Google Calendar API.
-- [x] **GPT Integration**: Leverage GPT function calls for enhanced productivity tools.
-- [ ] **Email Integration**: Manage and send emails directly through the platform, utilizing the Gmail API.
-- [ ] **Contacts Management**: Access and manage your contacts, leveraging Google Contacts API for seamless integration.
-- [ ] **File Management**: Store, access, and manage files with Google Drive API integration, ensuring secure and organized file handling.
-- [ ] **Data Analysis and Reporting**: Utilize Google Sheets API for advanced data analysis and reporting capabilities within your workflows.
-- [ ] **Rich Communication Features**: Enhance user engagement with personalized email and notification services through Gmail API.
-- [ ] **Comprehensive Contact Insights**: Gain deeper insights into your contacts, improve networking and relationships using the People API.
-- [ ] **Advanced Task Automation**: Implement sophisticated task management and automation using GPT integration combined with Google Tasks.
-- [ ] **Enhanced Search Capabilities**: Future integration with a Postgres vector database will provide advanced search features, making it easier to retrieve relevant information and documents quickly.
-- [ ] **Intelligent Data Embedding**: Utilize the Postgres vector database for embedding data intelligently, enabling more efficient data retrieval and analysis.
-- [ ] **Personalized Content Recommendations**: With GPT integration and Postgres vector database, offer personalized content and task recommendations based on user behavior and preferences.
-- [ ] **Semantic Search in Emails and Documents**: Implement semantic search across emails and documents stored in Google Drive, enhancing the ability to find relevant information effortlessly.
+- [x] **Functions Hub**: Curate a variety of functions that can be integrated into your personal assistant suite. The hub serves as a central repository for all available functions.
+- [x] **Auto-Generated OpenAPI and Swagger Specs**: Automatically generate OpenAPI and Swagger specifications for your curated functions, ensuring standardized documentation and ease of use.
+- [x] **Virtual Machine Execution**: All functions run in a secure virtual machine environment, providing isolation and security.
+- [x] **Privacy Controls**: Provide users with granular privacy controls to manage their data and interactions, ensuring transparency and trust.
+- [x] **Integration to OpenAI ChatGPT Plugin**: Provide seamless experience to integrate personal curated functions to ChatGPT Plugin
+- [ ] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
+- [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
+- [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
+- [ ] **Advanced Security Features**: Implement advanced security measures such as encryption, secure access controls, and more to protect user data and function integrity.
+- [ ] **Collaboration Tools**: Develop tools to facilitate collaboration among users and developers, such as version control, code reviews, and more.
+- [ ] **Personalization Options**: Offer advanced personalization options to tailor the assistant’s behavior and responses to individual preferences.
+- [ ] **AI and Machine Learning Integration**: Incorporate AI and ML models to enhance the capabilities of your personal assistant, allowing for more intelligent and responsive interactions.
+- [ ] **AI Agent Creation**: Incorporate AI Agent creation for specific comprehensive task.
+- [ ] **Cron Features**: Integrate scheduled run for certain function, that will feed to users. Either by web, email or to their own AI Agent.
+- [ ] **Natural Language Processing**: Improve interaction with natural language understanding and processing, making the assistant more intuitive and user-friendly.
 
 
 ## Getting Started
