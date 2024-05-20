@@ -139,15 +139,15 @@ const SideNav: React.FC<SideNavProps> = (props) => {
           <li className="-mx-6 mt-auto">
             <ul role="list" className="space-y-1">
               <li>
-                <div className="flex items-center">
-                  <div className="flex-grow">
-                    <Link href="/settings/profile" prefetch={true} className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-400 hover:text-white hover:bg-black/50" title="Profile">
+                <div className="flex justify-between items-center max-w-full px-2 py-4">
+                  <div className="">
+                    <Link href="/settings/profile" prefetch={true} className="flex items-center gap-x-4 text-sm font-semibold leading-4" title="Profile">
                       <Image src={`https://ui-avatars.com/api?size=32&name=${censoredUser}`} width={32} height={32} className="h-8 w-8 rounded-full bg-gray-50" alt="user avatar" />
                       <span className="sr-only">Your profile</span>
-                      <span aria-hidden="true">{userProfile?.userName || censoredEmail}</span>
+                      <span className="truncate" aria-hidden="true">{userProfile?.userName || censoredEmail}</span>
                     </Link>
                   </div>
-                  <a href="/auth/logout" className="flex items-center text-sm font-semibold leading-6 h-10 px-3 max-w-16 hover:bg-destructive/10 hover:text-destructive-foreground" title="Logout">
+                  <a href="/auth/logout" className=" flex items-center text-sm font-semibold leading-6 h-10 px-3" title="Logout">
                     <LogOutIcon size={21} style={{ transform: 'rotate(180deg)' }} />
                     <span className="sr-only">Logout</span>
                   </a>

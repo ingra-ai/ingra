@@ -12,9 +12,12 @@ import { type Profile } from '@prisma/client';
 import { ProfileSchema } from '@/schemas/profile';
 import { censorEmail } from '@lib/functions/censorEmail';
 import { updateProfile } from '@/app/(protected)/settings/actions/profile';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Input } from '@components/ui/input';
 import timezones from 'timezones-list';
+import { RefreshCcw } from 'lucide-react';
+import { Button } from '@components/ui/button';
+import { useRouter } from 'next/navigation';
 
 type UserProfileFormProps = {
   authSession: AuthSessionResponse;
@@ -24,9 +27,11 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
   const { authSession } = props;
   const userProfile: Profile | null = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user.email || 'unknown@unknown.com');
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
-  const { handleSubmit, register, formState, setValue, reset } = useForm<z.infer<typeof ProfileSchema>>({
+  const { handleSubmit, register, formState, setValue } = useForm<z.infer<typeof ProfileSchema>>({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
       firstName: userProfile?.firstName || '',
@@ -37,6 +42,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
   });
 
   const onSubmit = useCallback((values: z.infer<typeof ProfileSchema>) => {
+    setIsSaving(true);
     updateProfile(values)
       .then((data) => {
         toast({
@@ -44,7 +50,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
           description: 'Profile has been updated successfully.',
         });
 
-        reset();
+        router.refresh();
       })
       .catch((error: Error) => {
         toast({
@@ -53,6 +59,9 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
         });
 
         Logger.error(error?.message);
+      })
+      .finally(() => {
+        setIsSaving(false);
       });
   }, []);
 
@@ -162,9 +171,10 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
       </div>
 
       <div className="mt-8 flex">
-        <button type="submit" className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-          Save
-        </button>
+        <Button variant={'default'} type="submit" disabled={isSaving} className="flex w-[120px] justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+          {isSaving && <RefreshCcw className="animate-spin inline-block mr-2" />}
+          {isSaving ? 'Saving...' : 'Save'}
+        </Button>
       </div>
     </form>
   );
