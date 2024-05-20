@@ -25,7 +25,6 @@ import { TagField } from '@components/TagField';
 import { Input } from '@components/ui/input';
 
 type FunctionFormProps = {
-  username: string;
   functionRecord?: Prisma.FunctionGetPayload<{
     include: {
       tags: true,
@@ -36,7 +35,6 @@ type FunctionFormProps = {
 
 export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   const {
-    username,
     functionRecord
   } = props;
   const isEditMode = !!functionRecord;
@@ -54,7 +52,6 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       code: functionRecord?.code || CODE_DEFAULT_TEMPLATE,
       isPrivate: !!functionRecord?.isPrivate,
       isPublished: !!functionRecord?.isPublished,
-      originalFunctionId: functionRecord?.originalFunctionId || '',
       tags: functionRecord?.tags ? functionRecord.tags.map(tag => {
         return {
           id: tag.id || '',
@@ -137,7 +134,6 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
     const savedFunction = await upsertFunction({
       ...existingValues,
       id: '',
-      originalFunctionId: '',
       slug: 'cloned-' + existingValues.slug,
       isPublished: false,
       isPrivate: true,
