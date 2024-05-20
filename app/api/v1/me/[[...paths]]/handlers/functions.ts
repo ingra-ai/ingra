@@ -22,6 +22,7 @@ const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths:
         select: {
           id: true,
           code: true,
+          arguments: true
         }
       });
 
@@ -29,7 +30,8 @@ const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths:
         throw new ActionError('error', 400, `Function not found.`);
       }
 
-      const vmContext = generateVmContextArgs(authSession, requestArgs);
+      const vmContext = generateVmContextArgs(authSession, functionRecord.arguments, requestArgs);
+
       const vmOutput = await run(functionRecord.code, vmContext);
 
       const errors = vmOutput.outputs.filter(output => output.type === 'error') as UserSandboxOutput[];
