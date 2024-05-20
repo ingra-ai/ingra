@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email           String           @unique @db.VarChar(255)
-  role            UserRole         @default(FREE)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  activeSessions  ActiveSession[]
-  magicLinkTokens MagicLinkToken[]
-  tasks           Task[]
-  oauthTokens     OAuthToken[]
-  profile         Profile?
-  apiKeys         ApiKey[]
-  envVars         EnvVars[]
-  functions       Function[]
+  id                      String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                   String           @unique @db.VarChar(255)
+  role                    UserRole         @default(FREE)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  activeSessions          ActiveSession[]
+  magicLinkTokens         MagicLinkToken[]
+  tasks                   Task[]
+  oauthTokens             OAuthToken[]
+  profile                 Profile?
+  apiKeys                 ApiKey[]
+  envVars                 EnvVars[]
+  functions               Function[]
+  functionReactions       FunctionReaction[]
 }
 
 model Profile {
@@ -142,13 +143,51 @@ model Function {
   description        String             @default("") @db.VarChar(1024)
   arguments          FunctionArgument[]
   tags               FunctionTag[]
-  originalFunctionId String?            @db.VarChar(64)
+  originalFunctionId String?            @db.Uuid
 
   // Relations
   owner User @relation(fields: [ownerUserId], references: [id])
+  forksFrom FunctionFork[] @relation("ForkedFunctions")
+  forksTo FunctionFork[] @relation("OriginalFunctions")
+  reactions  FunctionReaction[]
+
 
   @@unique([ownerUserId, slug])
   @@map("functions")
+}
+
+model FunctionFork {
+  id                 String      @id @default(uuid()) @db.Uuid
+  originalFunctionId String      @db.Uuid
+  forkedFunctionId   String      @db.Uuid
+  createdAt          DateTime    @default(now())
+
+  // Relations
+  originalFunction Function @relation("OriginalFunctions", fields: [originalFunctionId], references: [id])
+  forkedFunction   Function @relation("ForkedFunctions", fields: [forkedFunctionId], references: [id])
+
+  @@unique([originalFunctionId, forkedFunctionId])
+  @@map("function_forks")
+}
+
+model FunctionReaction {
+  id         String   @id @default(uuid()) @db.Uuid
+  functionId String   @db.Uuid
+  userId     String   @db.Uuid
+  type       ReactionType
+  createdAt  DateTime @default(now())
+
+  // Relations
+  function Function @relation(fields: [functionId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([functionId, userId, type])
+  @@map("function_reactions")
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
 }
 
 model FunctionArgument {

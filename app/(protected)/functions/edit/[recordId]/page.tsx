@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: { recordId: string } })
         <h1 className="text-base font-semibold leading-10">Edit Function</h1>
       </div>
       <div className="block">
-        <FunctionForm username={authSession.user.profile?.userName || ''} functionRecord={functionRecord} />
+        <FunctionForm functionRecord={functionRecord} />
       </div>
     </div>
   );

@@ -20,7 +20,6 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => 
     isPublished,
     httpVerb,
     description,
-    originalFunctionId,
     arguments: functionArguments,
     tags: functionTags,
   } = data;
@@ -64,7 +63,6 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => 
             isPublished,
             httpVerb,
             description,
-            originalFunctionId,
             updatedAt: new Date()
           },
         });
@@ -107,7 +105,6 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => 
             isPublished,
             httpVerb,
             description,
-            originalFunctionId,
             ownerUserId: authSession.user.id
           },
         });
