@@ -4,6 +4,7 @@ import db from '@lib/db';
 import { google } from 'googleapis';
 import { NextResponse } from 'next/server';
 import { Logger } from '@lib/logger';
+import { deleteAllUserCaches } from '@lib/db/extensions/redis';
 
 export async function googleOAuthRefresh() {
   const _startMs = Date.now();
@@ -59,6 +60,9 @@ export async function googleOAuthRefresh() {
     });
 
     if (credentials.access_token) {
+      // Delete kv caches for this user
+      deleteAllUserCaches(oauthToken.userId);
+
       return db.oAuthToken.update({
         where: {
           id: recordId,
