@@ -7,7 +7,7 @@ import { redirect, RedirectType } from 'next/navigation';
 export default async function AuthLogin() {
   const authSession = await getAuthSession();
 
-  if (authSession && authSession.expiresAt > new Date()) {
+  if ( authSession ) {
     redirect(APP_LANDING_PAGE_URL, RedirectType.replace);
   }
 

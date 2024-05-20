@@ -156,7 +156,7 @@ export const deleteFunction = async (functionId: string) => {
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, 'User not authenticated!');
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
   
   const functionRecord = await db.function.findUnique({

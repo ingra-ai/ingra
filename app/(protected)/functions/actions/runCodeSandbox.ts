@@ -7,7 +7,7 @@ export async function runCodeSandbox(functionId: string, args: Record<string, an
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
-    throw new ActionError('error', 400, `Invalid session.`);
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
   return await executeFunction(authSession, functionId, args);

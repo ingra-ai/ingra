@@ -1,7 +1,7 @@
 'use server';
 import { cookies, headers } from 'next/headers';
-import { type User, type Profile, type ActiveSession, type OAuthToken, type EnvVars } from '@prisma/client';
-import { APP_SESSION_COOKIE_NAME } from '@lib/constants';
+import { type User, type Profile, type OAuthToken, type EnvVars } from '@prisma/client';
+import { APP_SESSION_API_KEY_NAME, APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
 import { getUserByApiKey, getUserByJwt } from '@/data/user';
 
@@ -15,15 +15,15 @@ export type AuthSessionResponse = {
   };
 };
 
+/**
+ * Retrieves the authentication session for the current user.
+ * @returns A Promise that resolves to an AuthSessionResponse object if a session is found, or null if not found or expired.
+ */
 export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
   const cookieStore = cookies();
-  const headersList = headers()
+  const headersList = headers();
   const jwtCookie = cookieStore.get(APP_SESSION_COOKIE_NAME);
-  const xApiKey = headersList.get('X-API-KEY')
-
-  if (!jwtCookie || !jwtCookie.value) {
-    return null;
-  }
+  const xApiKey = headersList.get(APP_SESSION_API_KEY_NAME);
 
   try {
     let sessionWithUser: AuthSessionResponse | null = null;
