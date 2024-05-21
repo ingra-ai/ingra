@@ -18,22 +18,31 @@ export const deleteAllUserCaches = async (userId: string) => {
   // Get the list of cache keys for this user
   const userCacheList = await kv.get<string[]>( userCacheListKey );
 
-  // Delete everything in this list
-  const deletePromises = [];
-  if ( userCacheList ) {
-    for ( const cacheKey of userCacheList ) {
-      deletePromises.push(kv.del( cacheKey ));
+  // Delete everything in userCachesList
+  const totalUserCaches = userCacheList?.length || 0;
+  if ( totalUserCaches > 0 ) {
+    const deletePromises = [];
+
+    for ( let i = 0; i < totalUserCaches; i++ ) {
+      const cacheKey = userCacheList?.[i];
+
+      if ( cacheKey ) {
+        deletePromises.push(kv.del( cacheKey ));
+      }
     }
+
+    Logger.withTag('kv').withTag('redisExtension').info('Deleted user caches', { userCacheListKey, totalUserCaches });
+
+    // Delete this key
+    await Promise.all(deletePromises).finally(async () => {
+      await kv.del( userCacheListKey );
+    });
+
+    return totalUserCaches;
   }
 
-  Logger.withTag('kv').withTag('redisExtension').info('Deleting user caches', { userCacheListKey, length: ( userCacheList || [] ).length });
 
-  // Delete this key
-  await Promise.all(deletePromises).finally(() => {
-    kv.del( userCacheListKey );
-  });
-
-  return true;
+  return false;
 };
 
 export const redisExtension = Prisma.defineExtension({
