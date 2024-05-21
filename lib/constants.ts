@@ -1,6 +1,7 @@
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Bakabit';
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Bakabit Utility App';
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://portal.bakabit.com';
+export const PARENT_APP_URL = process.env.NEXT_PUBLIC_PARENT_APP_URL || 'https://bakabit.com';
 
 export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI || '/auth/callback';
 export const APP_AUTH_LOGIN_URI = process.env.NEXT_PUBLIC_AUTH_LOGIN_URI || '/auth/login';
@@ -30,9 +31,8 @@ export const APP_X_API_KEY = process.env.X_API_KEY || '';
 export const APP_OPENAI_VERIFICATION_TOKEN = process.env.NEXT_PUBLIC_OPENAI_VERIFICATION || '';
 export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = 'BakabitVirtualAssistant';
 export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Bakabit Assistant';
-export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL =
-  'Bakabit is a personalized virtual assistant designed to manage todos/tasks, calendars, and emails with expansion capabilities for personalized utilities. It uses a code phrase for secure user authentication. Bakabit integrates with various APIs, focusing on privacy and tailored assistance. It supports managing to-dos, scheduling, and personalized tasks. For optimal interaction, specify tasks clearly and provide the necessary authentication code phrase when requested. Bakabit is designed to adapt and expand based on user needs, making it a versatile tool for personal management.';
-export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = 'Bakabit is a secure and personalized virtual assistant for managing tasks, calendars, and emails.';
+export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = "A portal to curate and manage personal assistant functions and workflows, providing a community-driven approach to personal assistant development."
+export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = "Bakabit Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
 
 /**
  * Google Plugins
@@ -42,6 +42,13 @@ export const APP_GOOGLE_OAUTH_CLIENT_SECRET = process.env.GOOG_OAUTH_CLIENT_SECR
 export const APP_GOOGLE_OAUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_GOOG_OAUTH_CALLBACK_URI || '/auth/google/callback';
 export const APP_GOOGLE_OAUTH_CALLBACK_URL = APP_URL + APP_GOOGLE_OAUTH_CALLBACK_URI;
 export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_PROFILE_URL;
+
+/**
+ * MARKETPLACE API
+ */
+export const MARKETPLACE_API_ROOT_PATH = '/api/v1/marketplace';
+export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
+export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, ':username', 'functions', ':slug'].join('/');
 
 /**
  * USERS API
