@@ -1,6 +1,9 @@
 import { getAuthSession } from '@app/auth/session';
 import { APP_AUTH_LOGIN_URL, USERS_API_ROOT_URL } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
+import { SuggestionsList } from './SuggestionsList';
+import db from '@lib/db';
+import { ApiLinkCard } from './ApiLinkCard';
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();
@@ -9,34 +12,35 @@ export default async function Dashboard() {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 
+  const { user: { id, profile, oauthTokens } } = authSession;
+  const totalApiKeys = await db.apiKey.count({
+    where: {
+      userId: id,
+    },
+  });
+
   const userOpenApiUrl = USERS_API_ROOT_URL + '/openapi.json';
   const userSwaggerUrl = USERS_API_ROOT_URL + '/swagger';
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-lg mb-6">Setting up</h1>
-      <table className="min-w-full divide-y divide-gray-700">
-        <tr>
-          <td>
-            <p className="font-medium">
-              OpenAPI URL
-            </p>
-          </td>
-          <td>
-            <a href={userOpenApiUrl} target="_blank" className="underline"> {userOpenApiUrl} </a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p className="font-medium">
-              Swagger URL
-            </p>
-          </td>
-          <td>
-            <a href={userSwaggerUrl} target="_blank" className="underline"> {userSwaggerUrl} </a>
-          </td>
-        </tr>
-      </table>
+      <h1 className="text-lg mb-6">Overview</h1>
+      <SuggestionsList className="mb-6" authSession={authSession} totalApiKeys={totalApiKeys} />
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <ApiLinkCard
+          url={ userOpenApiUrl }
+          title="OpenAPI Spec"
+          description="Online"
+          body="The functions schema that you can pass to your GPT"
+        />
+        <ApiLinkCard
+          url={ userSwaggerUrl }
+          title="Swagger URL"
+          description="Online"
+          body="The playground where you can test your functions"
+        />
+      </div>
     </div>
   );
 }
