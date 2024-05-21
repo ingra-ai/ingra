@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import MarketplaceFunctionItem from './MarketplaceFunctionItem';
+import { PencilIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from '@components/ui/use-toast';
@@ -30,7 +31,9 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
         title: 'Success!',
         description: 'Function has been forked successfully.',
         action: result?.data?.id ? (
-          <ToastAction altText="Edit Function" onClick={ () => redirectToEdit(result.data)}>Undo</ToastAction>
+          <ToastAction altText="Edit Function" onClick={ () => redirectToEdit(result.data)}>
+            <PencilIcon className="w-3 h-3 mr-3" /> Edit Function
+          </ToastAction>
         ) : undefined,
       });
 

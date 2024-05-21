@@ -235,4 +235,6 @@ model AuditLog {
   type      String   @db.VarChar(32)
   level     Int
   tag       String?  @db.VarChar(255)
+
+  @@unique([date, args])
 }
