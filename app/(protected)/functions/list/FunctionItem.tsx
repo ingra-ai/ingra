@@ -33,8 +33,14 @@ interface FunctionItemProps {
 
 const FunctionItem: React.FC<FunctionItemProps> = (props) => {
   const { functionData, onEdit, onDelete } = props;
-  const subtext = [functionData.httpVerb, functionData.isPublished ? 'Published' : 'Unpublished'].filter(Boolean).join(' - ');
   const totalArguments = functionData.arguments.length;
+  const totalForks = functionData._count.forksTo;
+  const subtext = [
+    functionData.httpVerb,
+    functionData.isPublished ? 'Published' : 'Unpublished',
+    totalForks > 0 ? `${totalForks} fork${totalForks > 1 ? 's' : ''}` : null,
+  ].filter(Boolean).join(' - ');
+
   return (
     <div 
       className="flex flex-col bg-secondary border border-gray-500 hover:border-gray-300 shadow-md rounded-sm px-4 py-2 w-full min-h-[200px] cursor-pointer"

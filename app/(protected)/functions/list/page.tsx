@@ -56,6 +56,11 @@ export default async function Page() {
           defaultValue: false,
           isRequired: false,
         }
+      },
+      _count: {
+        select: {
+          forksTo: true
+        }
       }
     }
   });

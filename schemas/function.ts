@@ -56,8 +56,9 @@ export const MAX_FUNCTION_CODE_LENGTH = 8000;
 
 /**
  * Maximum length constraint for function description.
+ * @note OpenAI only allows 300 length.
  */
-export const MAX_FUNCTION_DESCRIPTION_LENGTH = 600;
+export const MAX_FUNCTION_DESCRIPTION_LENGTH = 300;
 
 /**
  * Regular expression pattern for validating function argument names.
