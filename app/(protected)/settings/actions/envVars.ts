@@ -35,7 +35,7 @@ export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
     });
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',
@@ -66,7 +66,7 @@ export const createEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
     }
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',
@@ -99,7 +99,7 @@ export const updateEnvVar = async (id: number, values: z.infer<typeof EnvVarsSch
     }
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',
@@ -123,7 +123,7 @@ export const deleteEnvVar = async (id: number) => {
     }
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',

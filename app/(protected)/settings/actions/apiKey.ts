@@ -37,7 +37,7 @@ export const generateApiKey = async () => {
     }
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',
@@ -69,7 +69,7 @@ export const deleteApiKey = async (key: string) => {
     });
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',

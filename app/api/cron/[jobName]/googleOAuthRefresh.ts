@@ -61,7 +61,7 @@ export async function googleOAuthRefresh() {
 
     if (credentials.access_token) {
       // Delete kv caches for this user
-      deleteAllUserCaches(oauthToken.userId);
+      await deleteAllUserCaches(oauthToken.userId);
 
       return db.oAuthToken.update({
         where: {

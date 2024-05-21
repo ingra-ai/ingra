@@ -38,7 +38,7 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
     }
   
     // Delete kv caches for this user
-    deleteAllUserCaches(authSession.user.id);
+    await deleteAllUserCaches(authSession.user.id);
   
     return {
       status: 'ok',
