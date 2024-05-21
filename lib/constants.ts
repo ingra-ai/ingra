@@ -18,7 +18,9 @@ export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 
 export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'BAKA_SESSION';
 export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 
-export const APP_PROFILE_URL = [APP_URL, 'settings/profile'].join('/');
+export const APP_SETTINGS_PROFILE_URI = '/settings/profile';
+export const APP_SETTINGS_API_URI = '/settings/api';
+export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
 
 /**
  * API Security
@@ -41,7 +43,7 @@ export const APP_GOOGLE_OAUTH_CLIENT_ID = process.env.GOOG_OAUTH_CLIENT_ID || ''
 export const APP_GOOGLE_OAUTH_CLIENT_SECRET = process.env.GOOG_OAUTH_CLIENT_SECRET || '';
 export const APP_GOOGLE_OAUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_GOOG_OAUTH_CALLBACK_URI || '/auth/google/callback';
 export const APP_GOOGLE_OAUTH_CALLBACK_URL = APP_URL + APP_GOOGLE_OAUTH_CALLBACK_URI;
-export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_PROFILE_URL;
+export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_PROFILE_URI;
 
 /**
  * MARKETPLACE API
