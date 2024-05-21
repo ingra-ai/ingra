@@ -1,4 +1,5 @@
 import { VmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
+import { Logger } from "@lib/logger";
 import { FunctionArgument } from "@prisma/client";
 
 export function generateMarketplaceVmArgs( functionArguments: FunctionArgument[], requestArgs: Record<string, any> = {}) {
@@ -13,6 +14,8 @@ export function generateMarketplaceVmArgs( functionArguments: FunctionArgument[]
       }
     }
   }
+
+  Logger.withTag('marketplace-vm').info('Generating VM context args', requestArgs);
 
   const context: VmContextArgs = {
     userVars: {

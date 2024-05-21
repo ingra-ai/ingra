@@ -38,16 +38,16 @@ export async function GET(request: NextRequest) {
         'https://mail.google.com/',
 
         // Manage drafts and send emails when you interact with the add-on
-        'https://www.googleapis.com/auth/gmail.addons.current.action.compose',
+        // 'https://www.googleapis.com/auth/gmail.addons.current.action.compose',
 
         // View your email messages when you interact with the add-on
-        'https://www.googleapis.com/auth/gmail.addons.current.message.action',
+        // 'https://www.googleapis.com/auth/gmail.addons.current.message.action',
 
         // View your email message metadata when the add-on is running
-        'https://www.googleapis.com/auth/gmail.addons.current.message.metadata',
+        // 'https://www.googleapis.com/auth/gmail.addons.current.message.metadata',
 
         // View your email messages when the add-on is running
-        'https://www.googleapis.com/auth/gmail.addons.current.message.readonly',
+        // 'https://www.googleapis.com/auth/gmail.addons.current.message.readonly',
 
         // Manage drafts and send emails
         'https://www.googleapis.com/auth/gmail.compose',
@@ -59,7 +59,8 @@ export async function GET(request: NextRequest) {
         'https://www.googleapis.com/auth/gmail.labels',
 
         // View your email message metadata such as labels and headers, but not the email body
-        'https://www.googleapis.com/auth/gmail.metadata',
+        // Be careful with https://stackoverflow.com/questions/48698070/gmail-api-metadata-scope-does-not-support-q-parameter
+        // 'https://www.googleapis.com/auth/gmail.metadata',
 
         // Read, compose, and send emails from your Gmail account
         'https://www.googleapis.com/auth/gmail.modify',
@@ -74,7 +75,7 @@ export async function GET(request: NextRequest) {
         'https://www.googleapis.com/auth/gmail.settings.basic',
 
         // Manage your sensitive mail settings, including who can manage your mail
-        'https://www.googleapis.com/auth/gmail.settings.sharing',
+        // 'https://www.googleapis.com/auth/gmail.settings.sharing',
 
         // Full access to Google Drive, to view, edit, and organize drive files
         'https://www.googleapis.com/auth/drive',
