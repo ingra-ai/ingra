@@ -11,7 +11,10 @@ const Logger = createConsola({
         else {
           // Push to audit log
           console.log('<💀>', JSON.stringify(logObj));
-          pushToAuditTable(logObj);
+
+          if (typeof window === 'undefined') {
+            pushToAuditTable(logObj);
+          }
         }
       },
     },

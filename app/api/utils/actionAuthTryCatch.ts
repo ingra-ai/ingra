@@ -4,7 +4,7 @@ import { getAuthSession, type AuthSessionResponse } from '@app/auth/session';
 import { actionTryCatch } from './actionTryCatch';
 
 export const actionAuthTryCatch = async <T>( fn: (authSession: AuthSessionResponse) => Promise<ActionTryCatchReturnType<T>> ) => {
-  return await actionTryCatch(async () => {
+  return await actionTryCatch<T>(async () => {
     const authSession = await getAuthSession();
 
     if ( !authSession ) {
