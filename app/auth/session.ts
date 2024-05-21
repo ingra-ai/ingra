@@ -45,7 +45,22 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
     }
 
     if ( sessionWithUser && (sessionWithUser.user?.oauthTokens || [])?.length > 0 ) {
-      await Promise.all( sessionWithUser.user.oauthTokens.map( refreshOauthToken ) );
+      const oauthRefreshes = await Promise.all( sessionWithUser.user.oauthTokens.map( refreshOauthToken ) );
+
+      for ( let i = 0, len = oauthRefreshes.length; i < len; i++ ) {
+        const [currentOAuth, newOAuth] = [
+          sessionWithUser.user.oauthTokens?.[i],
+          oauthRefreshes?.[i]
+        ];
+
+        if ( currentOAuth && newOAuth && ( currentOAuth.accessToken !== newOAuth.accessToken ) ) {
+          // Update the existing OAuth
+          currentOAuth.accessToken = newOAuth.accessToken;
+
+          // Update lastRefreshedAt
+          currentOAuth.lastRefreshedAt = newOAuth.lastRefreshedAt;
+        }
+      }
     }
 
     return sessionWithUser;
@@ -95,7 +110,7 @@ export const refreshOauthToken = async (oauthToken: OAuthToken) => {
       const newExpiryDate = new Date(credentials.expiry_date || Date.now()),
         lastRefreshedAt = currentDate;
   
-      await db.oAuthToken.update({
+      const updatedOAuth = await db.oAuthToken.update({
         where: {
           id: recordId,
         },
@@ -106,10 +121,7 @@ export const refreshOauthToken = async (oauthToken: OAuthToken) => {
         },
       });
   
-      return {
-        newExpiryDate,
-        lastRefreshedAt
-      };
+      return updatedOAuth;
     }
   }
 
