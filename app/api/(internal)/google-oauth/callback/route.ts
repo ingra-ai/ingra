@@ -34,44 +34,68 @@ export async function GET(request: NextRequest) {
         // Access to Google Contacts, to view and manage contacts
         'https://www.googleapis.com/auth/contacts',
     
-        // Full access to Gmail, to view and send emails, manage mail settings
+        // Read, compose, send, and permanently delete all your email from Gmail
+        'https://mail.google.com/',
+
+        // Manage drafts and send emails when you interact with the add-on
+        'https://www.googleapis.com/auth/gmail.addons.current.action.compose',
+
+        // View your email messages when you interact with the add-on
+        'https://www.googleapis.com/auth/gmail.addons.current.message.action',
+
+        // View your email message metadata when the add-on is running
+        'https://www.googleapis.com/auth/gmail.addons.current.message.metadata',
+
+        // View your email messages when the add-on is running
+        'https://www.googleapis.com/auth/gmail.addons.current.message.readonly',
+
+        // Manage drafts and send emails
+        'https://www.googleapis.com/auth/gmail.compose',
+
+        // Add emails into your Gmail mailbox
+        'https://www.googleapis.com/auth/gmail.insert',
+
+        // See and edit your email labels
+        'https://www.googleapis.com/auth/gmail.labels',
+
+        // View your email message metadata such as labels and headers, but not the email body
+        'https://www.googleapis.com/auth/gmail.metadata',
+
+        // Read, compose, and send emails from your Gmail account
         'https://www.googleapis.com/auth/gmail.modify',
-    
-        // View your emails and settings
-        // 'https://www.googleapis.com/auth/gmail.readonly',
-    
-        // Send emails
-        // 'https://www.googleapis.com/auth/gmail.send',
-    
-        // Manage your basic mail settings
-        // 'https://www.googleapis.com/auth/gmail.settings.basic',
-    
-        // Manage your sensitive mail settings, including forwarding rules and aliases
-        // 'https://www.googleapis.com/auth/gmail.settings.sharing',
-    
+
+        // View your email messages and settings
+        'https://www.googleapis.com/auth/gmail.readonly',
+
+        // Send email on your behalf
+        'https://www.googleapis.com/auth/gmail.send',
+
+        // See, edit, create, or change your email settings and filters in Gmail
+        'https://www.googleapis.com/auth/gmail.settings.basic',
+
+        // Manage your sensitive mail settings, including who can manage your mail
+        'https://www.googleapis.com/auth/gmail.settings.sharing',
+
         // Full access to Google Drive, to view, edit, and organize drive files
         'https://www.googleapis.com/auth/drive',
     
         // View and manage Google Drive files and folders that you have opened or created with this app
-        // 'https://www.googleapis.com/auth/drive.file',
+        'https://www.googleapis.com/auth/drive.file',
     
         // View Google Drive files and folders that are shared with you
-        // 'https://www.googleapis.com/auth/drive.readonly',
+        'https://www.googleapis.com/auth/drive.readonly',
     
         // Access to Google Sheets, to view and manage sheets
         'https://www.googleapis.com/auth/spreadsheets',
     
         // Read-only access to Google Sheets
-        // 'https://www.googleapis.com/auth/spreadsheets.readonly',
+        'https://www.googleapis.com/auth/spreadsheets.readonly',
     
         // Access to user's contacts via the People API, to view and manage the contacts
         'https://www.googleapis.com/auth/contacts',
     
         // Access to view your contacts, their photos, and the people most important to you
-        // 'https://www.googleapis.com/auth/contacts.readonly',
-    
-        // Access to view information about your Google account
-        // 'https://www.googleapis.com/auth/plus.login',
+        'https://www.googleapis.com/auth/contacts.readonly'
       ],
     });
 
