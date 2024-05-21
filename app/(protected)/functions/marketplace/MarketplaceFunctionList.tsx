@@ -2,9 +2,11 @@
 import React from 'react';
 import MarketplaceFunctionItem from './MarketplaceFunctionItem';
 import { useRouter } from 'next/navigation';
+import { ToastAction } from "@/components/ui/toast"
 import { useToast } from '@components/ui/use-toast';
 import { forkFunction } from '@protected/functions/actions/functions';
 import { FunctionMarketListGetPayload } from './types';
+import { Function } from '@prisma/client';
 
 interface MarketplaceFunctionListProps {
   functions: FunctionMarketListGetPayload[];
@@ -13,6 +15,10 @@ interface MarketplaceFunctionListProps {
 const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ functions }) => {
   const router = useRouter();
   const { toast } = useToast();
+
+  const redirectToEdit = (payload: Partial<Function>)  => {
+    router.push(`/functions/edit/${payload?.id}`);
+  }
 
   const handleFork = (id: string) => {
     forkFunction(id).then((result) => {
@@ -23,9 +29,11 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
       toast({
         title: 'Success!',
         description: 'Function has been forked successfully.',
+        action: result?.data?.id ? (
+          <ToastAction altText="Edit Function" onClick={ () => redirectToEdit(result.data)}>Undo</ToastAction>
+        ) : undefined,
       });
 
-      router.push(`/functions/edit/${result?.data?.id}`);
     }).catch((error) => {
       toast({
         variant: 'destructive',
