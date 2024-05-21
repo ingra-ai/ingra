@@ -26,6 +26,7 @@ interface Sandbox {
       parseDate: typeof parseDate,
     }
   },
+  Buffer: typeof Buffer;
   URLSearchParams: typeof URLSearchParams;
 }
 
@@ -61,6 +62,7 @@ export async function run(code: string, ctx: VmContextArgs) {
         parseDate,
       }
     },
+    Buffer,
     URLSearchParams,
     handler: null,
   };
