@@ -26,6 +26,8 @@ export const deleteAllUserCaches = async (userId: string) => {
     }
   }
 
+  Logger.withTag('kv').withTag('redisExtension').info('Deleting user caches', { userCacheListKey, length: ( userCacheList || [] ).length });
+
   // Delete this key
   await Promise.all(deletePromises).finally(() => {
     kv.del( userCacheListKey );
@@ -49,7 +51,7 @@ export const redisExtension = Prisma.defineExtension({
           const cachedRecord = await kv.get<ActiveSession>( cacheKey );
 
           if ( cachedRecord ) {
-            Logger.withTag('kv').withTag('redisExtension').info('Cache hit for activeSession', { activeSessionId: cachedRecord.id });
+            Logger.withTag('kv').withTag('redisExtension').log('Cache hit for activeSession', { activeSessionId: cachedRecord.id });
 
             // Extend the token expiry time in Redis and update the expiresAt field
             const newExpiryDate = new Date();
@@ -66,7 +68,7 @@ export const redisExtension = Prisma.defineExtension({
         const result = await query(args);
 
         if ( cacheKey ) {
-          Logger.withTag('kv').withTag('redisExtension').info('Cache miss for activeSession. Setting it now;', { activeSessionId: result?.id });
+          Logger.withTag('kv').withTag('redisExtension').log('Cache miss for activeSession. Setting it now;', { activeSessionId: result?.id });
 
           kv.set( cacheKey, JSON.stringify(result), {
             ex: AUTH_SESSION_REDIS_EXPIRY,
@@ -101,7 +103,7 @@ export const redisExtension = Prisma.defineExtension({
           const cachedRecord = await kv.get<ApiKey>( cacheKey );
 
           if ( cachedRecord ) {
-            Logger.withTag('kv').withTag('redisExtension').info('Cache hit for apiKey', { apiKeyId: cachedRecord.id });
+            Logger.withTag('kv').withTag('redisExtension').log('Cache hit for apiKey', { apiKeyId: cachedRecord.id });
       
             // Extend the token expiry time in Redis
             kv.expire(cacheKey, AUTH_SESSION_REDIS_EXPIRY);
@@ -112,7 +114,7 @@ export const redisExtension = Prisma.defineExtension({
         const result = await query(args);
 
         if ( cacheKey ) {
-          Logger.withTag('kv').withTag('redisExtension').info('Cache miss for apiKey. Setting it now;', { apiKeyId: result?.id });
+          Logger.withTag('kv').withTag('redisExtension').log('Cache miss for apiKey. Setting it now;', { apiKeyId: result?.id });
 
           kv.set( cacheKey, JSON.stringify(result), {
             ex: AUTH_SESSION_REDIS_EXPIRY,
