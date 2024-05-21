@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useState, useTransition } from 'react';
-import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { RefreshCcw } from 'lucide-react';
 import { TrashIcon } from '@heroicons/react/24/outline';
@@ -38,11 +37,16 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
     setIsLoading(true);
 
     return deleteApiKey(key)
-      .then(() => {
+      .then((result) => {
+        if ( result.status !== 'ok' ) {
+          throw new Error(result.message);
+        }
+
         toast({
           title: 'API key deleted!',
           description: 'API key has been deleted successfully.',
         });
+
         startTransition(() => {
           // Refresh the current route and fetch new data from the server without
           // losing client-side browser or React state.
@@ -54,8 +58,6 @@ export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
           title: 'Uh oh! Something went wrong.',
           description: error?.message || 'Failed to delete API key!',
         });
-
-        Logger.error(error?.message);
       })
       .finally(() => {
         setIsLoading(false);

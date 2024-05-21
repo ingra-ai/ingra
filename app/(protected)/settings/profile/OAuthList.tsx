@@ -54,11 +54,16 @@ const OAuthList: React.FC<OAuthListProps> = (props) => {
 
   function onRevoke(token: OAuthToken) {
     setIsLoading(true);
-    revokeOAuth(token).then(() => {
+    revokeOAuth(token).then((result) => {
+      if (result.status !== 'ok') {
+        throw new Error(result.message);
+      }
+
       toast({
         title: 'Token has been revoked!',
         description: 'Access token has been successfully revoked.',
       });
+      
       startTransition(() => {
         // Refresh the current route and fetch new data from the server without
         // losing client-side browser or React state.

@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { magicLoginEmail } from '@app/auth/actions/login';
 import { useState } from 'react';
-import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { Button } from '@components/ui/button';
 import { RefreshCcw } from 'lucide-react';
@@ -40,13 +39,21 @@ export const MagicLoginForm: React.FC<MagicLoginFormProps> = (props) => {
     }
 
     return magicLoginEmail(values)
-      .then((data) => {
-        if (!hasOtp && hasEmail && data?.success) {
+      .then((result) => {
+        if ( result.status !== 'ok' ) {
+          throw new Error(result.message);
+        }
+
+        if (!hasOtp && hasEmail) {
           setFormView('otp');
           return;
         }
       })
       .catch((error: Error) => {
+        if ( error?.message === 'NEXT_REDIRECT' ) {
+          return;
+        }
+        
         toast({
           title: 'Uh oh! Something went wrong.',
           description: error?.message || 'Please try again!',
@@ -54,7 +61,6 @@ export const MagicLoginForm: React.FC<MagicLoginFormProps> = (props) => {
 
         setFormView('email');
         reset();
-        Logger.error(error?.message);
       })
       .finally(() => {
         setIsLoading(false);

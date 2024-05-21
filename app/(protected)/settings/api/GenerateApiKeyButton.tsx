@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useState, useTransition } from 'react';
-import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
@@ -22,7 +21,11 @@ export const GenerateApiKeyButton: React.FC<GenerateApiKeyButtonProps> = (props)
     setIsLoading(true);
 
     return generateApiKey()
-      .then(({ data }) => {
+      .then((result) => {
+        if (result.status !== 'ok') {
+          throw new Error(result.message);
+        }
+
         toast({
           title: 'New API key generated!',
           description: 'A new API key has been generated successfully.',
@@ -39,8 +42,6 @@ export const GenerateApiKeyButton: React.FC<GenerateApiKeyButtonProps> = (props)
           title: 'Uh oh! Something went wrong.',
           description: error?.message || 'Failed to generate API key!',
         });
-
-        Logger.error(error?.message);
       })
       .finally(() => {
         setIsLoading(false);

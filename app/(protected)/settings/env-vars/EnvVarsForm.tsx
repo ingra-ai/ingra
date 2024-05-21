@@ -47,6 +47,10 @@ export const EnvVarForm: React.FC<EnvVarFormProps> = (props) => {
     setIsLoading(true);
     return upsertEnvVar(values)
       .then((result) => {
+        if ( result.status !== 'ok' ) {
+          throw new Error(result.message);
+        }
+
         toast({
           title: 'Environment variable created!',
           description: 'Environment variable has been created successfully.',

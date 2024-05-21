@@ -40,11 +40,16 @@ export const EnvVarsSection: React.FC<EnvVarsSectionProps> = (props) => {
   }
 
   function onDelete(record: EnvVars) {
-    deleteEnvVar(record.id).then(() => {
+    deleteEnvVar(record.id).then((result) => {
+      if ( result.status !== 'ok' ) {
+        throw new Error(result.message);
+      }
+
       toast({
         title: 'Success!',
         description: 'Environment variable has been deleted successfully.',
       });
+      
       startTransition(() => {
         // Refresh the current route and fetch new data from the server without
         // losing client-side browser or React state.

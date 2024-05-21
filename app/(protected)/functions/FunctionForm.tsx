@@ -150,14 +150,18 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
         };
       })
     })
-      .then((resp) => {
+      .then((result) => {
+        if ( result.status !== 'ok' ) {
+          throw new Error(result.message);
+        }
+        
         toast({
           title: 'Function cloned!',
           description: 'Your function has been cloned.',
         });
 
-        if (resp?.data?.id) {
-          router.replace(`/functions/edit/${resp.data.id}`);
+        if (result?.data?.id) {
+          router.replace(`/functions/edit/${result.data.id}`);
         }
         else {
           router.refresh();
