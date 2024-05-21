@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { useForm, useFieldArray, FormProvider, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@components/ui/button';
-import { RefreshCcw, BugPlayIcon, CopyPlusIcon } from 'lucide-react';
+import { RefreshCcw, BugPlayIcon, CopyPlusIcon, ListChecksIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
@@ -23,6 +23,7 @@ import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { CodeSandboxForm } from './CodeSandboxForm';
 import { TagField } from '@components/TagField';
 import { Input } from '@components/ui/input';
+import { ToastAction } from "@/components/ui/toast"
 
 type FunctionFormProps = {
   functionRecord?: Prisma.FunctionGetPayload<{
@@ -95,17 +96,22 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
     // save to db and return function
     const savedFunction = await upsertFunction(values)
       .then((resp) => {
-        toast({
+        const toastProps = {
           title: isEditMode ? 'Function updated!' : 'Function created!',
           description: isEditMode ? 'Your function has been updated.' : 'Your function has been created.',
-        });
+          action: <></> as JSX.Element
+        };
 
         if (!isEditMode && resp?.data?.id) {
-          router.replace(`/functions/edit/${resp.data.id}`);
+          toastProps.action = (
+            <ToastAction altText="My Functions" onClick={ () => router.replace(`/functions/list`)}>
+              <ListChecksIcon className="w-3 h-3 mr-3" /> My Functions
+            </ToastAction>
+          );
         }
-        else {
-          router.refresh();
-        }
+
+        toast(toastProps);
+        router.refresh();
       })
       .catch((error: Error) => {
         toast({
@@ -154,18 +160,22 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
         if ( result.status !== 'ok' ) {
           throw new Error(result.message);
         }
-        
-        toast({
+        const toastProps = {
           title: 'Function cloned!',
           description: 'Your function has been cloned.',
-        });
+          action: <></> as JSX.Element
+        };
 
         if (result?.data?.id) {
-          router.replace(`/functions/edit/${result.data.id}`);
+          toastProps.action = (
+            <ToastAction altText="Cloned Function" onClick={ () => router.replace(`/functions/edit/${result.data.id}`)}>
+              <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
+            </ToastAction>
+          );
         }
-        else {
-          router.refresh();
-        }
+        
+        toast(toastProps);
+        router.refresh();
       })
       .catch((error: Error) => {
         toast({
