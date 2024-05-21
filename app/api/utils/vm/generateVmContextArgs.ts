@@ -1,4 +1,5 @@
 import { AuthSessionResponse } from "@app/auth/session";
+import { Logger } from "@lib/logger";
 import { FunctionArgument } from "@prisma/client";
 
 export type VmContextArgs = {
@@ -30,6 +31,8 @@ export function generateVmContextArgs( authSession: AuthSessionResponse, functio
       }
     }
   }
+
+  Logger.withTag('vm').info('Generating VM context args', requestArgs);
 
   const context: VmContextArgs = {
     userVars: {
