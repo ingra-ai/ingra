@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: { paths: strin
     );
   }
 
-  Logger.withTag('user-api').withTag('GET').info(`handler ${ handlerName } invoked.`);
+  Logger.withTag('marketplace-api').withTag('GET').info(`handler ${ handlerName } invoked.`);
   return await handlerFn(requestArgs, username, ...restOfPaths);
 };
 
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: { paths: stri
     );
   }
 
-  Logger.withTag('user-api').withTag('POST').info(`handler ${ handlerName } invoked.`);
+  Logger.withTag('marketplace-api').withTag('POST').info(`handler ${ handlerName } invoked.`);
   return await handlerFn(requestArgs, username, ...restOfPaths);
 }
 
@@ -73,7 +73,7 @@ export async function PUT(req: NextRequest, { params }: { params: { paths: strin
     );
   }
 
-  Logger.withTag('user-api').withTag('PUT').info(`handler ${ handlerName } invoked.`);
+  Logger.withTag('marketplace-api').withTag('PUT').info(`handler ${ handlerName } invoked.`);
   return await handlerFn(requestArgs, username, ...restOfPaths);
 }
 
@@ -98,7 +98,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { paths: str
     );
   }
 
-  Logger.withTag('user-api').withTag('PATCH').info(`handler ${ handlerName } invoked.`);
+  Logger.withTag('marketplace-api').withTag('PATCH').info(`handler ${ handlerName } invoked.`);
   return await handlerFn(requestArgs, username, ...restOfPaths);
 }
 
@@ -123,6 +123,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { paths: st
     );
   }
 
-  Logger.withTag('user-api').withTag('DELETE').info(`handler ${ handlerName } invoked.`);
+  Logger.withTag('marketplace-api').withTag('DELETE').info(`handler ${ handlerName } invoked.`);
   return await handlerFn(requestArgs, username, ...restOfPaths);
 };

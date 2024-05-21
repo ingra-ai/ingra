@@ -227,3 +227,12 @@ model EnvVars {
   @@unique([ownerUserId, key])
   @@map("env_vars")
 }
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @default(now())
+  args      Json
+  type      String   @db.VarChar(32)
+  level     Int
+  tag       String?  @db.VarChar(255)
+}
