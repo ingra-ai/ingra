@@ -17,7 +17,7 @@ type FunctionPayload = Prisma.FunctionGetPayload<{
   }
 }>;
 
-export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, username: string) {
+function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload) {
   const parameters = functionRecord.arguments.map(arg => ({
     name: arg.name,
     in: 'query',
@@ -49,7 +49,7 @@ export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPay
   };
 
   let functionHitUrl = '';
-  if (username && functionRecord.slug) {
+  if (functionRecord.slug) {
     functionHitUrl = USERS_API_FUNCTION_PATH.replace(':slug', functionRecord.slug);
   }
 
@@ -128,10 +128,8 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
     }
   });
 
-  const username = authSession?.user?.profile?.userName || '';
-
   const openApiSchema = functionRecords.reduce((acc, functionRecord) => {
-    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, username);
+    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any);
     return { ...acc, ...functionSchema };
   }, {});
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_OPENAI_MANIFEST_DESC_FOR_MODEL, APP_OPENAI_MANIFEST_NAME_FOR_HUMAN, APP_OPENAI_MANIFEST_NAME_FOR_MODEL, APP_OPENAI_VERIFICATION_TOKEN, APP_SUPPORT_MAILTO, APP_URL } from '../../../lib/constants';
+import { APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_OPENAI_MANIFEST_DESC_FOR_MODEL, APP_OPENAI_MANIFEST_NAME_FOR_HUMAN, APP_OPENAI_MANIFEST_NAME_FOR_MODEL, PARENT_APP_URL, APP_SUPPORT_MAILTO, APP_URL } from '../../../lib/constants';
 
 export async function GET(request: NextRequest) {
   return NextResponse.json(
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       },
       logo_url: `${APP_URL}/static/brand/bakabit-white-logo-only-png`,
       contact_email: APP_SUPPORT_MAILTO,
-      legal_info_url: `${APP_URL}/legal`,
+      legal_info_url: `${PARENT_APP_URL}/legal`,
     },
     {
       status: 200,

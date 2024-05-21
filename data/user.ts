@@ -14,6 +14,21 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
   });
 };
 
+export const getUserIdByProfileName = async (profileName: string): Promise<string | undefined> => {
+  const user = await db.user.findFirst({
+    where: {
+      profile: {
+        userName: profileName,
+      },
+    },
+    select: {
+      id: true
+    },
+  });
+
+  return user?.id;
+};
+
 /**
  * Retrieves an existing user by email or creates a new user if none exists.
  *
