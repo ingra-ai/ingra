@@ -2,6 +2,12 @@
 
 Bakabit Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.
 
+Basically;
+1. Login and go to /marketplace and find some useful curated functions for you.
+2. At /overview, you can find links to your openapi.json or swagger to test it on the web.
+3. Generate API key for `x-api-key` header on your chatgpt actions
+3. Paste JSON to your own chatgpt plugins actions
+
 ## Tech Stack
 
 The project leverages a modern tech stack for optimal performance and scalability:
@@ -26,7 +32,8 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Virtual Machine Execution**: All functions run in a secure virtual machine environment, providing isolation and security.
 - [x] **Privacy Controls**: Provide users with granular privacy controls to manage their data and interactions, ensuring transparency and trust.
 - [x] **Integration to OpenAI ChatGPT Plugin**: Provide seamless experience to integrate personal curated functions to ChatGPT Plugin
-- [ ] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
+- [x] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
+   - Screw it, good enough for now - ill be back later.
 - [ ] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
 - [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.

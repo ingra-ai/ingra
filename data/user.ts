@@ -63,29 +63,33 @@ export const getUserByJwt = async (jwt: string) => {
     return null;
   }
 
-  return await db.activeSession.findUnique({
-    select: {
-      id: true,
-      expiresAt: true,
-      userId: true,
-      user: {
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          profile: true,
-          oauthTokens: true,
-          envVars: true,
+  const [activeSession] = await Promise.all([
+    db.activeSession.findUnique({
+      select: {
+        id: true,
+        expiresAt: true,
+        userId: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            profile: true,
+            oauthTokens: true,
+            envVars: true,
+          },
         },
       },
-    },
-    where: {
-      jwt: jwt, // Use the JWT to find the session
-      expiresAt: {
-        gte: new Date(),
+      where: {
+        jwt: jwt, // Use the JWT to find the session
+        expiresAt: {
+          gte: new Date(),
+        },
       },
-    },
-  });
+    }),
+  ]);
+
+  return activeSession;
 };
 
 export const getUserByApiKey = async (apiKey: string) => {
@@ -114,6 +118,7 @@ export const getUserByApiKey = async (apiKey: string) => {
       },
     }),
 
+    // update api key last updatedAt
     db.apiKey.update({
       where: { key: apiKey },
       data: { lastUsedAt: new Date() },
