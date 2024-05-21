@@ -19,11 +19,16 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ functions }) => {
   };
 
   const handleDelete = (id: string) => {
-    deleteFunction(id).then(() => {
+    deleteFunction(id).then((result) => {
+      if ( result.status !== 'ok' ) {
+        throw new Error(result.message);
+      }
+
       toast({
         title: 'Success!',
         description: 'Function has been deleted successfully.',
       });
+      
       router.replace(`/functions`);
       router.refresh();
     }).catch((error) => {

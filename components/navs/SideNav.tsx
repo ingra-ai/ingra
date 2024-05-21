@@ -25,12 +25,12 @@ export const sideNavRoutes: NavItem[] = [
     href: '/overview',
     icon: ChartBarSquareIcon,
   },
-  {
-    name: 'Tasks',
-    description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
-    href: '/tasks',
-    icon: BookCheckIcon,
-  },
+  // {
+  //   name: 'Tasks',
+  //   description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
+  //   href: '/tasks',
+  //   icon: BookCheckIcon,
+  // },
   {
     name: "Hubs",
     description: "Dynamic hubs that your AI can perform, including text generation, summarization, and more.",

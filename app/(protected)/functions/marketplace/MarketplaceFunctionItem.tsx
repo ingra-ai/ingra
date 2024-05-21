@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
-import Link from 'next/link';
-import { PencilIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ClockIcon } from '@heroicons/react/24/outline';
 import { GitForkIcon } from 'lucide-react';
 import formatDistance from 'date-fns/formatDistance';
 import format from 'date-fns/format';
@@ -33,7 +32,6 @@ interface MarketplaceFunctionItemProps {
 const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) => {
   const { functionData, onFork } = props;
   const authorName = functionData?.owner?.profile?.userName || 'Anonymous';
-  const subtext = [functionData.httpVerb, `by ${ authorName }`].filter(Boolean).join(' - ');
   const totalArguments = functionData.arguments.length;
   return (
     <div 

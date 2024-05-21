@@ -7,123 +7,128 @@ import db from '@lib/db';
 import { EnvVarsSchema } from '@/schemas/envVars';
 import { validateAction } from '@lib/action-helpers';
 import { deleteAllUserCaches } from '@lib/db/extensions/redis';
+import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
 
 export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
   const validatedValues = await validateAction(EnvVarsSchema, values);
-  const { authSession, data } = validatedValues;
-
+  const { data } = validatedValues;
   const { id: recordId, key, value } = data;
 
-  const record = await db.envVars.upsert({
-    where: {
-      ownerUserId_key: {
-        ownerUserId: authSession.user.id,
-        key,
+  return await actionAuthTryCatch(async (authSession) => {
+    const record = await db.envVars.upsert({
+      where: {
+        ownerUserId_key: {
+          ownerUserId: authSession.user.id,
+          key,
+        },
       },
-    },
-    create: {
-      key,
-      value,
-      updatedAt: new Date(),
-      ownerUserId: authSession.user.id,
-    },
-    update: {
-      value,
-      updatedAt: new Date(),
-    },
+      create: {
+        key,
+        value,
+        updatedAt: new Date(),
+        ownerUserId: authSession.user.id,
+      },
+      update: {
+        value,
+        updatedAt: new Date(),
+      },
+    });
+  
+    // Delete kv caches for this user
+    deleteAllUserCaches(authSession.user.id);
+  
+    return {
+      status: 'ok',
+      message: 'Environment variable operation successful!',
+      data: record,
+    };
   });
 
-  // Delete kv caches for this user
-  deleteAllUserCaches(authSession.user.id);
-
-  return {
-    success: 'Environment variable operation successful!',
-    data: record,
-  };
 }
 
 export const createEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
   const validatedValues = await validateAction(EnvVarsSchema, values);
-  const { authSession, data } = validatedValues;
-
+  const { data } = validatedValues;
   const { key, value } = data;
 
-  const record = await db.envVars.create({
-    data: {
-      key,
-      value,
-      updatedAt: new Date(),
-      ownerUserId: authSession.user.id,
-    },
+  return await actionAuthTryCatch(async (authSession) => {
+    const record = await db.envVars.create({
+      data: {
+        key,
+        value,
+        updatedAt: new Date(),
+        ownerUserId: authSession.user.id,
+      },
+    });
+  
+    if (!record) {
+      throw new ActionError('error', 400, 'Failed to create environment variable!');
+    }
+  
+    // Delete kv caches for this user
+    deleteAllUserCaches(authSession.user.id);
+  
+    return {
+      status: 'ok',
+      message: 'Environment variable created!',
+      data: record,
+    };
   });
-
-  if (!record) {
-    throw new ActionError('error', 400, 'Failed to create environment variable!');
-  }
-
-  // Delete kv caches for this user
-  deleteAllUserCaches(authSession.user.id);
-
-  return {
-    success: 'Environment variable created!',
-    data: record,
-  };
 };
 
 export const updateEnvVar = async (id: number, values: z.infer<typeof EnvVarsSchema>) => {
   const validatedValues = await validateAction(EnvVarsSchema, values);
-  const { authSession, data } = validatedValues;
-
+  const { data } = validatedValues;
   const { key, value } = data;
 
-  const record = await db.envVars.update({
-    where: {
-      id,
-      ownerUserId: authSession.user.id,
-    },
-    data: {
-      key,
-      value,
-      updatedAt: new Date(),
-    },
+  return await actionAuthTryCatch(async (authSession) => {
+    const record = await db.envVars.update({
+      where: {
+        id,
+        ownerUserId: authSession.user.id,
+      },
+      data: {
+        key,
+        value,
+        updatedAt: new Date(),
+      },
+    });
+  
+    if (!record) {
+      throw new ActionError('error', 400, 'Failed to update Environment variable!');
+    }
+  
+    // Delete kv caches for this user
+    deleteAllUserCaches(authSession.user.id);
+  
+    return {
+      status: 'ok',
+      message: 'Environment variable updated!',
+      data: record,
+    };
   });
-
-  if (!record) {
-    throw new ActionError('error', 400, 'Failed to update Environment variable!');
-  }
-
-  // Delete kv caches for this user
-  deleteAllUserCaches(authSession.user.id);
-
-  return {
-    success: 'Environment variable updated!',
-    data: record,
-  };
 };
 
 export const deleteEnvVar = async (id: number) => {
-  const authSession = await getAuthSession();
-
-  if ( !authSession ) {
-    throw new ActionError('error', 401, `Unauthorized session.`);
-  }
-
-  const record = await db.envVars.delete({
-    where: {
-      id,
-      ownerUserId: authSession.user.id,
-    },
+  return await actionAuthTryCatch(async (authSession) => {
+    const record = await db.envVars.delete({
+      where: {
+        id,
+        ownerUserId: authSession.user.id,
+      },
+    });
+  
+    if (!record) {
+      throw new ActionError('error', 400, 'Failed to delete Environment variable!');
+    }
+  
+    // Delete kv caches for this user
+    deleteAllUserCaches(authSession.user.id);
+  
+    return {
+      status: 'ok',
+      message: 'Environment variable deleted!',
+      data: null,
+    };
   });
-
-  if (!record) {
-    throw new ActionError('error', 400, 'Failed to delete Environment variable!');
-  }
-
-  // Delete kv caches for this user
-  deleteAllUserCaches(authSession.user.id);
-
-  return {
-    success: 'Environment variable deleted!',
-    data: null,
-  };
 }

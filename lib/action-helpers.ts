@@ -1,4 +1,3 @@
-import { getAuthSession } from "@app/auth/session";
 import { ActionError } from '@v1/types/api-response';
 import { z } from "zod";
 
@@ -19,14 +18,7 @@ export const validateAction = async <T extends z.ZodType<any, any>>(schema: T, v
     throw new ActionError('error', 400, `Invalid fields: ${errorMessages}`);
   }
 
-  const authSession = await getAuthSession();
-
-  if ( !authSession ) {
-    throw new ActionError('error', 401, `Unauthorized session.`);
-  }
-
   return {
-    authSession,
     data: validatedFields.data as z.infer<T>
   };
 };

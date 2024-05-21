@@ -29,10 +29,10 @@ export async function sendEmailHtml(from: string | null | undefined, to: string,
   try {
     const sendEmailCommand = new SendEmailCommand(params);
     const result = await ses.send(sendEmailCommand);
-    Logger.withTag('📧').info('📧 Email sent successfully to:', to);
+    Logger.withTag('📧').info('Email sent successfully to:', to);
     return result;
   } catch (error) {
-    Logger.withTag('📧').error('📧 Error sending email:', error);
+    Logger.withTag('📧').error('Error sending email:', error);
     return null;
   }
 }

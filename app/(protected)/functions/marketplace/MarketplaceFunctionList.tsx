@@ -15,12 +15,17 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
   const { toast } = useToast();
 
   const handleFork = (id: string) => {
-    forkFunction(id).then(({ data }) => {
+    forkFunction(id).then((result) => {
+      if ( result.status !== 'ok' ) {
+        throw new Error(result.message);
+      }
+
       toast({
         title: 'Success!',
         description: 'Function has been forked successfully.',
       });
-      router.push(`/functions/edit/${data.id}`);
+
+      router.push(`/functions/edit/${result?.data?.id}`);
     }).catch((error) => {
       toast({
         variant: 'destructive',

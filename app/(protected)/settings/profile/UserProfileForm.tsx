@@ -12,7 +12,7 @@ import { type Profile } from '@prisma/client';
 import { ProfileSchema } from '@/schemas/profile';
 import { censorEmail } from '@lib/functions/censorEmail';
 import { updateProfile } from '@/app/(protected)/settings/actions/profile';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useTransition } from 'react';
 import { Input } from '@components/ui/input';
 import timezones from 'timezones-list';
 import { RefreshCcw } from 'lucide-react';
@@ -30,6 +30,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const { handleSubmit, register, formState, setValue } = useForm<z.infer<typeof ProfileSchema>>({
     resolver: zodResolver(ProfileSchema),
@@ -44,21 +45,27 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
   const onSubmit = useCallback((values: z.infer<typeof ProfileSchema>) => {
     setIsSaving(true);
     updateProfile(values)
-      .then((data) => {
+      .then((result) => {
+        if (result.status !== 'ok') {
+          throw new Error(result.message);
+        }
+
         toast({
           title: 'Profile updated!',
           description: 'Profile has been updated successfully.',
         });
 
-        router.refresh();
+        startTransition(() => {
+          // Refresh the current route and fetch new data from the server without
+          // losing client-side browser or React state.
+          router.refresh();
+        });
       })
       .catch((error: Error) => {
         toast({
           title: 'Uh oh! Something went wrong.',
           description: error?.message || 'Failed to update profile!',
         });
-
-        Logger.error(error?.message);
       })
       .finally(() => {
         setIsSaving(false);
