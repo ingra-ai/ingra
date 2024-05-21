@@ -1,4 +1,4 @@
-import { ActionError, type ApiError } from '@v1/types/api-response';
+import { ActionError, PrismaActionError, type ApiError } from '@v1/types/api-response';
 import { Logger } from '@lib/logger';
 import { NextResponse } from 'next/server';
 import type { ApiTryCatchReturnType } from './types';
@@ -10,10 +10,21 @@ export const apiTryCatch = async <T>( fn: () => Promise<ApiTryCatchReturnType<T>
   catch ( error: any ) {
     Logger.withTag('apiTryCatch').error( error?.message || 'Something went wrong.' );
 
-    if ( error instanceof ActionError ) {
-      return NextResponse.json( error.toJson(),
+    if ( error instanceof PrismaActionError ) {
+      const apiError = error.toJson();
+
+      return NextResponse.json( apiError,
         {
-          status: error.status || 500
+          status: apiError.status || 500
+        }
+      );
+    }
+    else if ( error instanceof ActionError ) {
+      const apiError = error.toJson();
+
+      return NextResponse.json( apiError,
+        {
+          status: apiError.status || 500
         }
       );
     }
