@@ -1,8 +1,4 @@
 {
   "crons": [
-    {
-      "path": "/api/cron/google-oauth-refresh",
-      "schedule": "*/30 * * * *"
-    }
   ]
 }
