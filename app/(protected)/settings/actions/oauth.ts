@@ -3,8 +3,8 @@
 import { ActionError } from '@v1/types/api-response';
 import { OAuthToken } from "@prisma/client";
 import db from '@lib/db';
-import { deleteAllUserCaches } from '@lib/db/extensions/redis';
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
+import { clearAuthCaches } from '@app/auth/session/caches';
 
 export const revokeOAuth = async (token: OAuthToken) => {
   return await actionAuthTryCatch(async (authSession) => {
@@ -19,7 +19,7 @@ export const revokeOAuth = async (token: OAuthToken) => {
     }
   
     // Delete kv caches for this user
-    await deleteAllUserCaches(authSession.user.id);
+    await clearAuthCaches(authSession.user.id);
   
     return {
       status: 'ok',

@@ -1,28 +1,39 @@
+'use server';
 import db from "@lib/db";
+import type { Credentials } from "@lib/google-oauth/client";
 
-export async function getUserOAuthTokenByUserId(userId: string) {
-  if ( !userId || typeof userId !== 'string') {
-    return [];
+export async function upsertOAuthToken( userId: string, primaryEmailAddress: string, credentials: Credentials ) {
+  if ( !userId || !primaryEmailAddress || !credentials?.access_token ) {
+    return null;
   }
 
-  const userOauthTokens = await db.oAuthToken.findMany({
+  const oauthToken = await db.oAuthToken.upsert({
     where: {
-      userId,
-      service: 'google-oauth',
-    },
-    select: {
-      accessToken: true,
-      refreshToken: true,
-      primaryEmailAddress: true,
-      user: {
-        select: {
-          email: true,
-          profile: true,
-        },
+      userId_primaryEmailAddress: {
+        userId,
+        primaryEmailAddress,
       },
     },
-    take: 3,
+    create: {
+      userId: userId,
+      primaryEmailAddress: primaryEmailAddress || '',
+      service: 'google-oauth',
+      accessToken: credentials.access_token || '',
+      refreshToken: credentials.refresh_token || '',
+      idToken: credentials.id_token || '',
+      scope: credentials.scope || '',
+      tokenType: credentials.token_type || '',
+      expiryDate: new Date(credentials.expiry_date || 0),
+    },
+    update: {
+      idToken: credentials.id_token || '',
+      accessToken: credentials.access_token || '',
+      scope: credentials.scope || '',
+      tokenType: credentials.token_type || '',
+      expiryDate: new Date(credentials.expiry_date || 0),
+      updatedAt: new Date(),
+    },
   });
 
-  return userOauthTokens;
+  return oauthToken;
 }

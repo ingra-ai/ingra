@@ -1,12 +1,11 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { ActionError, ApiError, ApiSuccess } from '@v1/types/api-response';
+import { ActionError, ApiError } from '@v1/types/api-response';
 import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from '@lib/constants';
 import { google } from 'googleapis';
 import { RedirectType, redirect } from 'next/navigation';
-import db from '@lib/db';
-import { getAuthSession } from '@app/auth/session';
-import { apiTryCatch } from '@app/api/utils/apiTryCatch';
+import { upsertOAuthToken } from '@/data/oauthToken';
+import { apiAuthTryCatch } from '@app/api/utils/apiAuthTryCatch';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -101,14 +100,10 @@ export async function GET(request: NextRequest) {
     });
 
     return redirect(authUrl, RedirectType.push);
-  } else if (code && scope) {
-
-    return await apiTryCatch<any>(async () => {
-      const [authSession, tokenResponse] = await Promise.all([getAuthSession(), oauth2Client.getToken(code)]);
-
-      if (authSession === null) {
-        throw new ActionError('error', 404, 'User session not found');
-      }
+  }
+  else if (code && scope) {
+    return await apiAuthTryCatch<any>(async (authSession) => {
+      const tokenResponse = await oauth2Client.getToken(code);
 
       if (tokenResponse === null) {
         throw new ActionError('error', 400, 'Invalid token response');
@@ -116,16 +111,8 @@ export async function GET(request: NextRequest) {
 
       const { tokens } = tokenResponse;
 
-      const credentials: Partial<typeof tokens> = {
-        access_token: tokens.access_token,
-      };
-
-      if (tokens.refresh_token) {
-        credentials.refresh_token = tokens.refresh_token;
-      }
-
-      oauth2Client.setCredentials(credentials);
-
+      // Grab email address to form user profile.
+      oauth2Client.setCredentials(tokens);
       const peopleService = google.people({ version: 'v1', auth: oauth2Client }),
         profile = await peopleService.people.get({
           resourceName: 'people/me',
@@ -146,39 +133,7 @@ export async function GET(request: NextRequest) {
         throw new ActionError('error', 400, 'Invalid token response');
       }
 
-      const updateData: Record<string, any> = {
-        accessToken: tokens.access_token || '',
-        scope: tokens.scope || '',
-        tokenType: tokens.token_type || '',
-        expiryDate: new Date(tokens.expiry_date || 0),
-      };
-
-      // Only add refreshToken to updateData if tokens.refresh_token is not empty
-      if (tokens.refresh_token) {
-        updateData.refreshToken = tokens.refresh_token;
-      }
-
-      const oauthToken = await db.oAuthToken.upsert({
-        where: {
-          userId_primaryEmailAddress: {
-            userId: authSession.user.id,
-            primaryEmailAddress: primaryEmailAddress.value,
-          },
-        },
-        create: {
-          userId: authSession.user.id,
-          primaryEmailAddress: primaryEmailAddress.value || '',
-          service: 'google-oauth',
-          accessToken: tokens.access_token || '',
-          refreshToken: tokens.refresh_token || '',
-          idToken: tokens.id_token || '',
-          scope: tokens.scope || '',
-          tokenType: tokens.token_type || '',
-          expiryDate: new Date(tokens.expiry_date || 0),
-        },
-        update: updateData,
-      });
-
+      const oauthToken = await upsertOAuthToken(authSession.user.id, primaryEmailAddress.value, tokens);
       const redirectUrl = new URL(APP_GOOGLE_OAUTH_REDIRECT_URL);
       redirectUrl.searchParams.append('ref', oauthToken.id);
 
