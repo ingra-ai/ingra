@@ -38,7 +38,11 @@ export const deleteAllUserCaches = async (userId: string) => {
       await kv.del( userCacheListKey );
     });
 
-    return totalUserCaches;
+    return {
+      totalUserCaches,
+      userCacheListKey,
+      userCacheList
+    };
   }
 
 
