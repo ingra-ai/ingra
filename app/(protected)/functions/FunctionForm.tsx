@@ -5,7 +5,7 @@ import { useForm, useFieldArray, FormProvider, Controller } from 'react-hook-for
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@components/ui/button';
 import { RefreshCcw, BugPlayIcon, CopyPlusIcon, ListChecksIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { startTransition, useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { CODE_DEFAULT_TEMPLATE, FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
@@ -96,22 +96,40 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
     // save to db and return function
     const savedFunction = await upsertFunction(values)
       .then((resp) => {
-        const toastProps = {
-          title: isEditMode ? 'Function updated!' : 'Function created!',
-          description: isEditMode ? 'Your function has been updated.' : 'Your function has been created.',
-          action: <></> as JSX.Element
-        };
+        let redirectUrl = '';
 
-        if (!isEditMode && resp?.data?.id) {
-          toastProps.action = (
-            <ToastAction altText="My Functions" onClick={ () => router.replace(`/functions/list`)}>
-              <ListChecksIcon className="w-3 h-3 mr-3" /> My Functions
-            </ToastAction>
-          );
+        if (resp?.data?.id) {
+          if (isEditMode) {
+            // If user is editing, stay on the same page but gives option to go back to functions list.
+            toast({
+              title: 'Function updated!',
+              description: 'Your function has been updated.',
+              action: (
+                <ToastAction altText="My Functions" onClick={() => router.replace(`/functions/list`)}>
+                  <ListChecksIcon className="w-3 h-3 mr-3" /> My Functions
+                </ToastAction>
+              )
+            });
+          }
+          else {
+            toast({
+              title: 'Function created!',
+              description: 'Your function has been created.'
+            });
+
+            // Go to the created functions
+            redirectUrl = `/functions/edit/${resp.data.id}`;
+          }
         }
-
-        toast(toastProps);
-        router.refresh();
+        
+        startTransition(() => {
+          if ( redirectUrl ) {
+            router.push(redirectUrl);
+          }
+          else {
+            router.refresh();
+          }
+        });
       })
       .catch((error: Error) => {
         toast({
@@ -157,7 +175,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       })
     })
       .then((result) => {
-        if ( result.status !== 'ok' ) {
+        if (result.status !== 'ok') {
           throw new Error(result.message);
         }
         const toastProps = {
@@ -168,12 +186,12 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
 
         if (result?.data?.id) {
           toastProps.action = (
-            <ToastAction altText="Cloned Function" onClick={ () => router.replace(`/functions/edit/${result.data.id}`)}>
+            <ToastAction altText="Cloned Function" onClick={() => router.replace(`/functions/edit/${result.data.id}`)}>
               <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
             </ToastAction>
           );
         }
-        
+
         toast(toastProps);
         router.refresh();
       })
@@ -287,7 +305,8 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                     id="slug"
                     {...register('slug')}
                     placeholder="hello-world"
-                    autoComplete="function-code-slug"
+                    aria-autocomplete='none'
+                    autoComplete="false"
                     type="text"
                     required
                     autoFocus
@@ -370,7 +389,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                             Private mode
                           </label>
                           <p className="text-xs font-medium text-muted-foreground mt-3">
-                            Unchecking this will share your function with the world.
+                            Unchecking this will share your function to Marketplace. Only works for published functions.
                           </p>
                         </div>
                         <div className="flex justify-end">
