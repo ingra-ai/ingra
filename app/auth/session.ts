@@ -71,11 +71,18 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
 };
 
 export const refreshOauthToken = async (oauthToken: OAuthToken) => {
-  const currentDate = new Date();
+  const currentDateWithOffset = new Date(Date.now() - 20e3); // now - 20seconds
 
-  if ( oauthToken.expiryDate && currentDate > oauthToken.expiryDate ) {
+  /**
+   * e.g. So, currentDate is more than expiryDate
+    currentDate: 2024-05-22T04:33:24.296Z,
+    expiryDate: 2024-05-21T05:07:31.768Z
+
+   */
+  if ( oauthToken.expiryDate && currentDateWithOffset > oauthToken.expiryDate ) {
     Logger.withTag('refreshOauthToken').info('Refresh is necessary for token:', {
       oauthTokenId: oauthToken.id,
+      currentDateWithOffset,
       expiryDate: oauthToken.expiryDate
     });
 
@@ -93,7 +100,7 @@ export const refreshOauthToken = async (oauthToken: OAuthToken) => {
   
     const [{ credentials }] = await Promise.all([
       oauth2Client.refreshAccessToken().catch((err) => {
-        Logger.withTag('refreshOauthToken').error('Error refreshing token: ' + err);
+        Logger.withTag('refreshOauthToken').error('Error refreshing token', { err } );
         return {
           credentials: {
             access_token: null,
@@ -108,7 +115,7 @@ export const refreshOauthToken = async (oauthToken: OAuthToken) => {
   
     if (credentials.access_token) {
       const newExpiryDate = new Date(credentials.expiry_date || Date.now()),
-        lastRefreshedAt = currentDate;
+        lastRefreshedAt = new Date();
   
       const updatedOAuth = await db.oAuthToken.update({
         where: {

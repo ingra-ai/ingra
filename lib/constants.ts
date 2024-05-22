@@ -1,3 +1,5 @@
+export const IS_PROD = process.env.NODE_ENV === 'production';
+
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Bakabit';
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Bakabit Utility App';
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://portal.bakabit.com';

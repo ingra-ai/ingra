@@ -73,7 +73,20 @@ export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) 
       await expireMagicLinkByToken(magicLinkWithUser.token);
 
       // Redirect to the app
-      redirect(APP_LANDING_PAGE_URI);
+      try {
+        redirect(APP_LANDING_PAGE_URI);
+      }
+      catch( error: any ) {
+        if ( error?.message === 'NEXT_REDIRECT' ) {
+          return {
+            status: 'ok',
+            message: 'I think all is well',
+            data: null,
+          };
+        }
+
+        throw error;
+      }
     }
 
     return {
