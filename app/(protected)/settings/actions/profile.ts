@@ -5,8 +5,8 @@ import { ActionError } from '@v1/types/api-response';
 import { validateAction } from '@lib/action-helpers';
 import { ProfileSchema } from '@/schemas/profile';
 import db from '@lib/db';
-import { deleteAllUserCaches } from '@lib/db/extensions/redis';
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
+import { clearAuthCaches } from '@app/auth/session/caches';
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const validatedValues = await validateAction(ProfileSchema, values); 
@@ -38,7 +38,7 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
     }
   
     // Delete kv caches for this user
-    await deleteAllUserCaches(authSession.user.id);
+    await clearAuthCaches(authSession.user.id);
   
     return {
       status: 'ok',
