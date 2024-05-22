@@ -15,7 +15,6 @@ model User {
   updatedAt               DateTime         @updatedAt
   activeSessions          ActiveSession[]
   magicLinkTokens         MagicLinkToken[]
-  tasks                   Task[]
   oauthTokens             OAuthToken[]
   profile                 Profile?
   apiKeys                 ApiKey[]
@@ -63,32 +62,6 @@ enum UserRole {
   ULTRA_PREMIUM
 }
 
-model Task {
-  id          Int          @id @default(autoincrement())
-  title       String       @db.VarChar(255)
-  description String?
-  status      TaskStatus
-  priority    TaskPriority
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  userId      String       @db.Uuid
-  user        User         @relation(fields: [userId], references: [id])
-
-  @@map("tasks")
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  DONE
-}
-
-enum TaskPriority {
-  LOW
-  MEDIUM
-  HIGH
-}
-
 model OAuthToken {
   id                  String    @id @default(uuid())
   userId              String    @db.Uuid
@@ -100,13 +73,13 @@ model OAuthToken {
   scope               String
   tokenType           String    @default("Bearer") @db.VarChar(64)
   expiryDate          DateTime
-  lastRefreshedAt     DateTime?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id])
 
   @@unique([userId, primaryEmailAddress])
+  @@unique([userId, refreshToken])
   @@map("oauth_tokens")
 }
 
@@ -235,6 +208,4 @@ model AuditLog {
   type      String   @db.VarChar(32)
   level     Int
   tag       String?  @db.VarChar(255)
-
-  @@unique([date, args])
 }
