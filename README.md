@@ -53,6 +53,11 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - pnpm, npm or yarn
 - PostgreSQL database
 
+#### Prerequisites, but will be made optional
+- (optional) AWS SES Key - to send authentication email for signing in
+- (optional) Google OAuth - Some functions require Google access token to run
+- (optional) [Vercel KV](https://vercel.com/docs/storage/vercel-kv) - For faster auth session interactions
+
 ### Installation
 
 1. **Clone the repository:**
