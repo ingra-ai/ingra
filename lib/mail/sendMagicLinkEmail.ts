@@ -1,6 +1,6 @@
 import { MagicLinkToken } from '@prisma/client';
 import { sendEmailHtml } from './ses';
-import { APP_AUTH_CALLBACK_URL, APP_SUPPORT_MAILTO } from '@lib/constants';
+import { APP_AUTH_CALLBACK_URL, APP_SUPPORT_MAILTO, IS_PROD } from '@lib/constants';
 import { Logger } from '@lib/logger';
 
 /**
@@ -150,6 +150,11 @@ const generateHtmlTemplateGPT = (magicLink: MagicLinkToken) => {
 };
 
 export const sendMagicLinkEmail = async (recipientEmail: string, magicLink: MagicLinkToken, purpose: 'gpt' | 'web') => {
+  if ( !IS_PROD ) {
+    Logger.withTag('dev-only').log(`Your OTP Code is ${ magicLink.otpCode }`);
+    return true;
+  }
+
   let htmlTemplate = '';
 
   if (purpose === 'gpt') {
