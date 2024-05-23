@@ -3,6 +3,7 @@ import { APP_NAME, APP_PACKAGE_VERSION, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } fro
 import swaggerJsdoc from 'swagger-jsdoc';
 
 import testSwagger from './__SWAGGERJSDOC/lib';
+import { convertGlobPaths } from './__SWAGGERJSDOC/utils';
 
 
 
