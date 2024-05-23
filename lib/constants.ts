@@ -52,7 +52,7 @@ export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_PROFILE_URI;
  */
 export const MARKETPLACE_API_ROOT_PATH = '/api/v1/marketplace';
 export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
-export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, ':username', 'functions', ':slug'].join('/');
+export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
  * USERS API
