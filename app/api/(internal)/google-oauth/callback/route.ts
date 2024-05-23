@@ -134,6 +134,11 @@ export async function GET(request: NextRequest) {
       }
 
       const oauthToken = await upsertOAuthToken(authSession.user.id, primaryEmailAddress.value, tokens);
+
+      if ( !oauthToken ) {
+        throw new ActionError('error', 400, 'Failed to create OAuth token');
+      }
+
       const redirectUrl = new URL(APP_GOOGLE_OAUTH_REDIRECT_URL);
       redirectUrl.searchParams.append('ref', oauthToken.id);
 

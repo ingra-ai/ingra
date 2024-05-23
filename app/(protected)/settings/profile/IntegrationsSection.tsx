@@ -1,5 +1,5 @@
 'use server';
-import { AuthSessionResponse } from '@app/auth/session';
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { OAuthToken } from '@prisma/client';
 import db from '@lib/db';
 import { GoogleIntegrationButton } from '@components/GoogleIntegrationButton';

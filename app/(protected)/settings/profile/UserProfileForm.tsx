@@ -7,8 +7,7 @@ import Image from 'next/image';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { AuthSessionResponse } from '@app/auth/session';
-import { type Profile } from '@prisma/client';
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { ProfileSchema } from '@/schemas/profile';
 import { censorEmail } from '@lib/functions/censorEmail';
 import { updateProfile } from '@/app/(protected)/settings/actions/profile';
@@ -25,7 +24,7 @@ type UserProfileFormProps = {
 
 export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
   const { authSession } = props;
-  const userProfile: Profile | null = authSession.user.profile;
+  const userProfile = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user.email || 'unknown@unknown.com');
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();

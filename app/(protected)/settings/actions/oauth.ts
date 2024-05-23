@@ -19,7 +19,7 @@ export const revokeOAuth = async (token: OAuthToken) => {
     }
   
     // Delete kv caches for this user
-    await clearAuthCaches(authSession.user.id);
+    await clearAuthCaches(authSession);
   
     return {
       status: 'ok',

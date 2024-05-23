@@ -1,6 +1,6 @@
 'use server';
 import { run } from '@app/api/utils/vm/run';
-import { AuthSessionResponse } from '@app/auth/session';
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { ActionError } from '@v1/types/api-response';
 import db from '@lib/db';
 import { generateVmContextArgs } from './generateVmContextArgs';

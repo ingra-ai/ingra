@@ -88,7 +88,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
     }
     
     // Trigger caches
-    if ( shouldClearCache ) {
+    if ( shouldClearCache && sessionWithUser ) {
       await clearAuthCaches(sessionWithUser);
     }
 
