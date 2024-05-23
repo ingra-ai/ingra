@@ -1,14 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getMarketplaceSwaggerSpec } from '@v1/marketplace/swagger/config';
-import { APP_URL } from '@lib/constants';
+import { APP_AUTH_LOGIN_URL, APP_URL } from '@lib/constants';
 import { ActionError } from '@v1/types/api-response';
+import { getAuthSession } from '@app/auth/session';
+import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
+import { redirect, RedirectType } from 'next/navigation';
 
 /**
  * Returns OpenAPI json file when in development
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
 export async function GET(req: NextRequest) {
-  const swaggerSpec = await getMarketplaceSwaggerSpec();
+  const authSession = await getAuthSession();
+
+  if ( !authSession ) {
+    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+  }
+
+  const swaggerSpec = await getAuthSwaggerSpec(authSession);
+
+  // const swaggerSpec = await getMarketplaceSwaggerSpec();
 
   if ( !swaggerSpec ) {
     throw new ActionError('error', 400, `No specifications found.`);
