@@ -17,11 +17,9 @@ export type SwaggerExtraProps = {
 
 export const getSwaggerSpec = ( extraProps?: SwaggerExtraProps ) => {
   const swaggerOptions: SwaggerOptions = {
-    apiFolder: 'app/api', // define api folder under app folder
+    apiFolder: 'app/api/v1', // define api folder under app folder
     apis: [
-      'schemas/**/*.ts',
-      'lib/**/*.ts',
-      'app/**/*.ts'
+      'app/api/v1/**/*.ts'
     ],
     definition: {
       openapi: '3.0.0',
