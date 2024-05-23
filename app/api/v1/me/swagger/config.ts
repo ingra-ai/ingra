@@ -22,7 +22,7 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const swaggerOptions: SwaggerOptions = {
     apiFolder: `app/api/v1`, // define api folder under app folder
-    apis: [],
+    apis: ['app/api/v1/**/*.ts'],
     definition: {
       openapi: '3.0.0',
       info: {
