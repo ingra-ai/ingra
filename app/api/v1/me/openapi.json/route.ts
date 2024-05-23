@@ -34,9 +34,7 @@ export async function GET(req: NextRequest) {
     ],
   });
 
-  return NextResponse.json({
-    data: test
-  }, {
+  return NextResponse.json(swaggerSpec, {
     status: 200,
   });
 }
