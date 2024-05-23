@@ -13,12 +13,17 @@ const config: Config = {
   moduleNameMapper: {
     consola: "<rootDir>/__tests__/__mocks__/mockConsola.js",
     '^@/(.*)$': '<rootDir>/$1',
+    "@protected/(.*)$": "<rootDir>/app/(protected)/$1",
+    "@v1/(.*)$": "<rootDir>/app/api/v1/$1",
+    "@components/(.*)$": "<rootDir>/components/$1",
+    "@lib/(.*)$": "<rootDir>/lib/$1",
+    "@app/(.*)$": "<rootDir>/app/$1"
   },
   testMatch: [
     "**/__tests__/**/*.test.ts",
     "**/__tests__/**/*.test.tsx",
     "**/__tests__/**/*.test.js",
-    "**/__tests__/**/*.test.jsx",
+    "**/__tests__/**/*.test.jsx"
   ],
   // Add more setup options before each test is run
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
