@@ -4,6 +4,7 @@ import { APP_AUTH_LOGIN_URL, APP_URL } from '@lib/constants';
 import { ActionError } from '@v1/types/api-response';
 import { getAuthSession } from '@app/auth/session';
 import { RedirectType, redirect } from 'next/navigation';
+import { getSwaggerSpec2 } from '@app/api/(internal)/swagger/config2';
 
 /**
  * Returns OpenAPI json file when in development
@@ -16,6 +17,9 @@ export async function GET(req: NextRequest) {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 
+  const test = getSwaggerSpec2();
+
+  /*
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
 
   if ( !swaggerSpec ) {
@@ -26,6 +30,7 @@ export async function GET(req: NextRequest) {
    * Extras for swaggerSpec that if I add in the swagger/config, it will throw an error and the swagger UI won't load
    * @todo find a way to add these in the swagger/config
    */
+  /*
   Object.assign(swaggerSpec, {
     servers: [
       {
@@ -33,6 +38,7 @@ export async function GET(req: NextRequest) {
       },
     ],
   });
+  */
 
   return NextResponse.json({
     data: test
