@@ -15,19 +15,13 @@ export type SwaggerExtraProps = {
   extraPaths: SwaggerOptions['definition']['paths'];
 };
 
-
-
 export const getSwaggerSpec = async ( extraProps?: SwaggerExtraProps ) => {
-  const rootPath = process.cwd();
-
-  console.log('getSwaggerSpec', { rootPath })
-  
   const swaggerOptions: SwaggerOptions = {
     apiFolder: 'app/api', // define api folder under app folder
     apis: [
-      rootPath + '/schemas/**/*.ts',
-      rootPath + '/lib/**/*.ts',
-      rootPath + '/app/**/*.ts'
+      'schemas/**/*.ts',
+      'lib/**/*.ts',
+      'app/**/*.ts'
     ],
     definition: {
       openapi: '3.0.0',
