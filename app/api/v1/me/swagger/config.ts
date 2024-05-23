@@ -10,7 +10,7 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const username = authSession?.user?.profile?.userName || authSession.user.email;
 
-  const userFunctionsPaths = {} //await generateOpenApiSchema(authSession);
+  const userFunctionsPaths = await generateOpenApiSchema(authSession);
 
   return getSwaggerSpec({
     title: `${ username } | ${APP_NAME} Plugin API`,
