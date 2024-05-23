@@ -5,7 +5,7 @@
  */
 
 import { generateOpenApiSchema } from '@app/api/utils/functions/generateOpenApiSchema';
-import { AuthSessionResponse } from '@app/auth/session';
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_PACKAGE_VERSION } from '@lib/constants';
 import { createSwaggerSpec } from 'next-swagger-doc';
 

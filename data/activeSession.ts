@@ -4,7 +4,6 @@ import { Prisma } from "@prisma/client";
 
 export type GetActiveSessionByJwtReturnType = Prisma.ActiveSessionGetPayload<{
   select: {
-    id: true;
     userId: true;
     user: {
       include: {
@@ -15,7 +14,7 @@ export type GetActiveSessionByJwtReturnType = Prisma.ActiveSessionGetPayload<{
       }
     };
   };
-}> | null;
+}>;
 
 /**
  * Retrieves a user by their JWT.
@@ -26,7 +25,7 @@ export type GetActiveSessionByJwtReturnType = Prisma.ActiveSessionGetPayload<{
  * @param code - The phrase code to search for.
  * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
  */
-export const getActiveSessionByJwt = async (jwt: string): Promise<GetActiveSessionByJwtReturnType> => {
+export const getActiveSessionByJwt = async (jwt: string): Promise<GetActiveSessionByJwtReturnType | null> => {
   if (!jwt) {
     return null;
   }
