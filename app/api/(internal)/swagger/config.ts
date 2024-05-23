@@ -18,7 +18,7 @@ type GetSwaggerSpecProps = {
   };
 };
 
-export const getSwaggerSpec = ( extraOptions: GetSwaggerSpecProps ) => {
+export const getSwaggerSpec = ( extraOptions?: GetSwaggerSpecProps ) => {
   const swaggerOptions: SwaggerOptions = {
     apiFolder: 'app/api/v1', // define api folder under app folder
     apis: [
