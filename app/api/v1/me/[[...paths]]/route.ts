@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiError } from '@v1/types/api-response';
 import { Logger } from "@lib/logger";
 import * as handlers from "./handlers";
+import { WHITELIST_GET_ROUTES, WHITELIST_POST_ROUTES, WHITELIST_PUT_ROUTES, WHITELIST_PATCH_ROUTES, WHITELIST_DELETE_ROUTES } from "./handlerWhitelists";
 
 export async function GET(req: NextRequest, { params }: { params: { paths: string[] } }) {
   const { paths } = params;
@@ -9,17 +10,31 @@ export async function GET(req: NextRequest, { params }: { params: { paths: strin
   const requestArgs = Object.fromEntries(searchParams);
   const [handlerName, ...restOfPaths] = paths;
 
-  // Check if the handler exists
+  // Check whitelist
+  if ( WHITELIST_GET_ROUTES.indexOf(handlerName) === -1 ) {
+    return NextResponse.json(
+      {
+        status: 403,
+        code: 'FORBIDDEN',
+        message: 'You are not allowed to access this route.'
+      } as ApiError,
+      {
+        status: 403
+      }
+    );
+  }
+
+  // Check if the handler function exists
   const handlerFn = ( handlers as any )?.[handlerName];
   if ( typeof handlerFn !== 'function' ) {
     return NextResponse.json(
       {
-        status: 404,
-        code: 'NOT_FOUND',
-        message: 'Unable to complete the request.'
+        status: 400,
+        code: 'BAD_REQUEST',
+        message: 'Unable to understand the request.'
       } as ApiError,
       {
-        status: 404
+        status: 400
       }
     );
   }
@@ -33,17 +48,31 @@ export async function POST(req: NextRequest, { params }: { params: { paths: stri
   const requestArgs = await req.json();
   const [handlerName, ...restOfPaths] = paths;
 
-  // Check if the handler exists
+  // Check whitelist
+  if ( WHITELIST_POST_ROUTES.indexOf(handlerName) === -1 ) {
+    return NextResponse.json(
+      {
+        status: 403,
+        code: 'FORBIDDEN',
+        message: 'You are not allowed to access this route.'
+      } as ApiError,
+      {
+        status: 403
+      }
+    );
+  }
+
+  // Check if the handler function exists
   const handlerFn = ( handlers as any )?.[handlerName];
   if ( typeof handlerFn !== 'function' ) {
     return NextResponse.json(
       {
-        status: 404,
-        code: 'NOT_FOUND',
-        message: 'Unable to complete the request.'
+        status: 400,
+        code: 'BAD_REQUEST',
+        message: 'Unable to understand the request.'
       } as ApiError,
       {
-        status: 404
+        status: 400
       }
     );
   }
@@ -58,17 +87,31 @@ export async function PUT(req: NextRequest, { params }: { params: { paths: strin
   const requestArgs = await req.json();
   const [handlerName, ...restOfPaths] = paths;
 
-  // Check if the handler exists
+  // Check whitelist
+  if ( WHITELIST_PUT_ROUTES.indexOf(handlerName) === -1 ) {
+    return NextResponse.json(
+      {
+        status: 403,
+        code: 'FORBIDDEN',
+        message: 'You are not allowed to access this route.'
+      } as ApiError,
+      {
+        status: 403
+      }
+    );
+  }
+
+  // Check if the handler function exists
   const handlerFn = ( handlers as any )?.[handlerName];
   if ( typeof handlerFn !== 'function' ) {
     return NextResponse.json(
       {
-        status: 404,
-        code: 'NOT_FOUND',
-        message: 'Unable to complete the request.'
+        status: 400,
+        code: 'BAD_REQUEST',
+        message: 'Unable to understand the request.'
       } as ApiError,
       {
-        status: 404
+        status: 400
       }
     );
   }
@@ -83,17 +126,31 @@ export async function PATCH(req: NextRequest, { params }: { params: { paths: str
   const requestArgs = await req.json();
   const [handlerName, ...restOfPaths] = paths;
 
-  // Check if the handler exists
+  // Check whitelist
+  if ( WHITELIST_PATCH_ROUTES.indexOf(handlerName) === -1 ) {
+    return NextResponse.json(
+      {
+        status: 403,
+        code: 'FORBIDDEN',
+        message: 'You are not allowed to access this route.'
+      } as ApiError,
+      {
+        status: 403
+      }
+    );
+  }
+
+  // Check if the handler function exists
   const handlerFn = ( handlers as any )?.[handlerName];
   if ( typeof handlerFn !== 'function' ) {
     return NextResponse.json(
       {
-        status: 404,
-        code: 'NOT_FOUND',
-        message: 'Unable to complete the request.'
+        status: 400,
+        code: 'BAD_REQUEST',
+        message: 'Unable to understand the request.'
       } as ApiError,
       {
-        status: 404
+        status: 400
       }
     );
   }
@@ -108,17 +165,31 @@ export async function DELETE(req: NextRequest, { params }: { params: { paths: st
   const requestArgs = Object.fromEntries(searchParams);
   const [handlerName, ...restOfPaths] = paths;
 
-  // Check if the handler exists
+  // Check whitelist
+  if ( WHITELIST_DELETE_ROUTES.indexOf(handlerName) === -1 ) {
+    return NextResponse.json(
+      {
+        status: 403,
+        code: 'FORBIDDEN',
+        message: 'You are not allowed to access this route.'
+      } as ApiError,
+      {
+        status: 403
+      }
+    );
+  }
+
+  // Check if the handler function exists
   const handlerFn = ( handlers as any )?.[handlerName];
   if ( typeof handlerFn !== 'function' ) {
     return NextResponse.json(
       {
-        status: 404,
-        code: 'NOT_FOUND',
-        message: 'Unable to complete the request.'
+        status: 400,
+        code: 'BAD_REQUEST',
+        message: 'Unable to understand the request.'
       } as ApiError,
       {
-        status: 404
+        status: 400
       }
     );
   }
