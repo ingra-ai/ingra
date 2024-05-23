@@ -2,19 +2,13 @@
 import db from "@lib/db";
 import type { Credentials } from "@lib/google-oauth/client";
 
-export async function upsertOAuthToken( userId: string, primaryEmailAddress: string, credentials: Credentials ) {
+export async function createOAuthToken( userId: string, primaryEmailAddress: string, credentials: Credentials ) {
   if ( !userId || !primaryEmailAddress || !credentials?.access_token ) {
     return null;
   }
 
-  const oauthToken = await db.oAuthToken.upsert({
-    where: {
-      userId_primaryEmailAddress: {
-        userId,
-        primaryEmailAddress,
-      },
-    },
-    create: {
+  const oauthToken = await db.oAuthToken.create({
+    data: {
       userId: userId,
       primaryEmailAddress: primaryEmailAddress || '',
       service: 'google-oauth',
@@ -25,7 +19,24 @@ export async function upsertOAuthToken( userId: string, primaryEmailAddress: str
       tokenType: credentials.token_type || '',
       expiryDate: new Date(credentials.expiry_date || 0),
     },
-    update: {
+  });
+
+  return oauthToken;
+};
+
+export async function updateOAuthToken( userId: string, primaryEmailAddress: string, credentials: Credentials ) {
+  if ( !userId || !primaryEmailAddress || !credentials?.access_token ) {
+    return null;
+  }
+
+  const oauthToken = await db.oAuthToken.update({
+    where: {
+      userId_primaryEmailAddress: {
+        userId,
+        primaryEmailAddress,
+      },
+    },
+    data: {
       idToken: credentials.id_token || '',
       accessToken: credentials.access_token || '',
       scope: credentials.scope || '',

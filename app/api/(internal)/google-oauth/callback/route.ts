@@ -4,7 +4,7 @@ import { ActionError, ApiError } from '@v1/types/api-response';
 import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from '@lib/constants';
 import { google } from 'googleapis';
 import { RedirectType, redirect } from 'next/navigation';
-import { upsertOAuthToken } from '@/data/oauthToken';
+import { createOAuthToken } from '@/data/oauthToken';
 import { apiAuthTryCatch } from '@app/api/utils/apiAuthTryCatch';
 
 export async function GET(request: NextRequest) {
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
         throw new ActionError('error', 400, 'Invalid token response');
       }
 
-      const oauthToken = await upsertOAuthToken(authSession.user.id, primaryEmailAddress.value, tokens);
+      const oauthToken = await createOAuthToken(authSession.user.id, primaryEmailAddress.value, tokens);
 
       if ( !oauthToken ) {
         throw new ActionError('error', 400, 'Failed to create OAuth token');

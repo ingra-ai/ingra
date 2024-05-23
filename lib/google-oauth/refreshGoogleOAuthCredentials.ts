@@ -7,6 +7,7 @@ import { formatDistance, differenceInSeconds } from "date-fns";
 type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
   select: {
     userId: true;
+    primaryEmailAddress: true;
     accessToken: true;
     idToken: true;
     refreshToken: true;
@@ -24,6 +25,7 @@ type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
 export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps) => {
   const {
     userId = 'N/A',
+    primaryEmailAddress = '',
     accessToken: access_token,
     refreshToken: refresh_token,
     idToken: id_token,
@@ -32,6 +34,13 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
 
   // Check if the required properties are present
   if (!access_token || !refresh_token) {
+    Logger.withTag('renewGoogleOAuthCredentials').withTag(userId).error('Missing either "access_token" or "refresh_token".');
+    return null;
+  }
+
+  // Check if userId and primaryEmailAddress are present
+  if (!userId || !primaryEmailAddress) {
+    Logger.withTag('renewGoogleOAuthCredentials').withTag(userId).error('Missing either "userId" or "primaryEmailAddress".');
     return null;
   }
 
@@ -71,5 +80,13 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
     return null;
   });
 
-  return newTokenResponse;
+  if ( !newTokenResponse?.credentials ) {
+    return null;
+  }
+
+  return {
+    userId,
+    primaryEmailAddress,
+    credentials: newTokenResponse.credentials
+  };
 }
