@@ -2,6 +2,8 @@
 import { APP_NAME, APP_PACKAGE_VERSION, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } from '@lib/constants';
 import swaggerJsdoc from 'swagger-jsdoc';
 
+import testSwagger from './__SWAGGERJSDOC/lib';
+
 
 
 export const getSwaggerSpec2 = ( extraProps?: any ) => {
@@ -28,6 +30,7 @@ export const getSwaggerSpec2 = ( extraProps?: any ) => {
     },
   };
 
-  const openapiSpecification = swaggerJsdoc(swaggerOptions);
+  // @ts-ignore
+  const openapiSpecification = testSwagger(swaggerOptions);
   return openapiSpecification;
 };
