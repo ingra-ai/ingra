@@ -1,19 +1,10 @@
-import { getAuthSession } from '@app/auth/session';
 import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
-import { getAuthSwaggerSpec } from './config';
-import { redirect, RedirectType } from 'next/navigation';
-import { APP_AUTH_LOGIN_URL } from '@lib/constants';
+import { getMarketplaceSwaggerSpec } from './config';
 
 import '@css/swagger.scss';
 
 export default async function Page() {
-  const authSession = await getAuthSession();
-
-  if ( !authSession ) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
-  }
-
-  const swaggerSpec = await getAuthSwaggerSpec(authSession);
+  const swaggerSpec = await getMarketplaceSwaggerSpec();
 
   return (
     <section className="container">
