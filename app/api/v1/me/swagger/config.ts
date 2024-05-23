@@ -2,7 +2,6 @@ import { getSwaggerSpec } from '@app/api/(internal)/swagger/config';
 import { generateOpenApiSchema } from '@app/api/utils/functions/generateOpenApiSchema';
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } from '@lib/constants';
-import * as stuff from '@app/api/v1/types/api-response';
 
 export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
   if ( !authSession ) {
@@ -11,7 +10,7 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const username = authSession?.user?.profile?.userName || authSession.user.email;
 
-  const userFunctionsPaths = await generateOpenApiSchema(authSession);
+  const userFunctionsPaths = {} //await generateOpenApiSchema(authSession);
 
   return getSwaggerSpec({
     title: `${ username } | ${APP_NAME} Plugin API`,
