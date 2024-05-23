@@ -5,16 +5,14 @@ import db from "@lib/db";
 import { Logger } from "@lib/logger";
 import { run } from "@app/api/utils/vm/run";
 import type { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";
-import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
+import { generateMarketplaceVmArgs } from "@v1/marketplace/functions/generateMarketplaceVmArgs";
 
-const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths: string[] ) => {
+const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any> = {} ) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
-    const [functionSlug] = restOfPaths;
-
-    if ( functionSlug ) {
+    if ( typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id;
 
-      Logger.withTag('functions').withTag(userId).info(`starts executing function: ${functionSlug}`, requestArgs);
+      Logger.withTag('functions').withTag(userId).info(`Starts executing function: ${functionSlug}`, requestArgs);
 
       const functionRecord = await db.function.findUnique({
         where: {
@@ -35,7 +33,7 @@ const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths:
         throw new ActionError('error', 400, `Function not found.`);
       }
 
-      const vmContext = generateVmContextArgs(authSession, functionRecord.arguments, requestArgs);
+      const vmContext = generateMarketplaceVmArgs(functionRecord.arguments, requestArgs);
 
       const vmOutput = await run(functionRecord.code, vmContext);
       const errors = vmOutput.outputs.filter(output => output.type === 'error') as UserSandboxOutput[],
@@ -47,11 +45,11 @@ const handlerFn = async ( requestArgs: Record<string, any> = {}, ...restOfPaths:
 
       if ( errors.length ) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
-        Logger.withTag('marketplace-functions').withTag(userId).error(`finishes executing function: ${functionSlug}`);
-        throw new ActionError('error', 400, errors[0].message);
+        Logger.withTag('marketplace-functions').withTag(userId).error(`Errored executing function: ${errorMessage}`);
+        throw new ActionError('error', 400, errorMessage);
       }
 
-      Logger.withTag('functions').withTag(authSession.user.id).info(`finishes executing function: ${functionSlug}`, metrics);
+      Logger.withTag('functions').withTag(authSession.user.id).info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {

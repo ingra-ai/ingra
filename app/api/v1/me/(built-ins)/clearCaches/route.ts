@@ -1,4 +1,7 @@
-export { default as functions } from './functions';
+import { NextRequest, NextResponse } from "next/server";
+import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
+import { Logger } from "@lib/logger";
+import { clearAuthCaches } from "@app/auth/session/caches";
 
 /**
  * @swagger
@@ -23,4 +26,22 @@ export { default as functions } from './functions';
  *     tags:
  *       - Built-ins Internal
  */
-export { default as clearCaches } from './clearCaches';
+export async function DELETE(req: NextRequest) {
+  return await apiAuthTryCatch<any>(async (authSession) => {
+    const deletedCaches = await clearAuthCaches(authSession);
+    
+    Logger.withTag('me-builtins').withTag('clearCaches').withTag(authSession.user.id).info('Clearing caches for current session');
+
+    return NextResponse.json(
+      {
+        status: 'success',
+        message: 'Caches has been deleted',
+        data: deletedCaches,
+      },
+      {
+        status: 200,
+      }
+    );
+  });
+}
+
