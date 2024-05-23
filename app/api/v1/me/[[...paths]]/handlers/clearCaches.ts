@@ -7,7 +7,7 @@ const handlerFn = async (requestArgs: Record<string, any> = {}, ...restOfPaths: 
   return await apiAuthTryCatch<any>(async (authSession) => {
     const deletedCaches = await clearAuthCaches(authSession);
     
-    Logger.withTag('deleteCache').withTag(authSession.user.id).info('Deleted caches for user');
+    Logger.withTag('api-builtins').withTag('clearCaches').withTag(authSession.user.id).info('Clearing caches for current session');
 
     return NextResponse.json(
       {
