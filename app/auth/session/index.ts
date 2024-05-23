@@ -5,7 +5,7 @@ import { Logger } from '@lib/logger';
 import { AuthSessionResponse } from '@app/auth/session/types';
 import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
 import { refreshGoogleOAuthCredentials } from '@lib/google-oauth/refreshGoogleOAuthCredentials';
-import { upsertOAuthToken } from '@/data/oauthToken';
+import { updateOAuthToken } from '@/data/oauthToken';
 
 /**
  * Retrieves the authentication session for the current user.
@@ -49,7 +49,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
               /**
                * 2. After refreshing credentials, always update the OAuth token in the database.
                */
-              const updatedOAuthRecord = upsertOAuthToken(user.id, user.email, newOAuth.credentials).then( (updatedOAuth) => {
+              const updatedOAuthRecord = updateOAuthToken(newOAuth.userId, newOAuth.primaryEmailAddress, newOAuth.credentials).then( (updatedOAuth) => {
                 if ( updatedOAuth ) {
                   Logger.withTag('getAuthSession').withTag( user.id ).info('Refreshed OAuth tokens:', { 
                     oauthId: updatedOAuth?.id,
