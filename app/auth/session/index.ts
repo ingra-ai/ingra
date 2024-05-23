@@ -40,7 +40,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
          * 1. Refresh google OAuth credentials if necessary.
          */
         const newOAuthCredentials = await Promise.all(user.oauthTokens.map(refreshGoogleOAuthCredentials)).then(async (oauthRefreshes) => {
-          const upsertPromises: ReturnType<typeof upsertOAuthToken>[] = [];
+          const updateOAuthPromises: ReturnType<typeof updateOAuthToken>[] = [];
 
           for (let i = 0, len = oauthRefreshes?.length; i < len; i++) {
             const newOAuth = oauthRefreshes?.[i];
@@ -61,11 +61,11 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
               });
 
               // Push to upsertPromises array
-              upsertPromises.push(updatedOAuthRecord);
+              updateOAuthPromises.push(updatedOAuthRecord);
             }
           }
 
-          await Promise.all(upsertPromises).then( (updateOAuthRes) => {
+          await Promise.all(updateOAuthPromises).then( (updateOAuthRes) => {
             for (let i = 0, len = updateOAuthRes?.length; i < len; i++) {
               /**
                * 3. Update the user's oauth references with the new OAuth record.
