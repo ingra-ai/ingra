@@ -5,6 +5,7 @@ import { ActionError } from '@v1/types/api-response';
 import { getAuthSession } from '@app/auth/session';
 import { RedirectType, redirect } from 'next/navigation';
 import { getSwaggerSpec2 } from '@app/api/(internal)/swagger/config2';
+import { convertGlobPaths } from '@app/api/(internal)/swagger/__SWAGGERJSDOC/utils';
 
 /**
  * Returns OpenAPI json file when in development
@@ -18,7 +19,11 @@ export async function GET(req: NextRequest) {
   }
 
   const test = getSwaggerSpec2();
-
+  const tests = convertGlobPaths ([
+    'schemas/**/*.ts',
+    'lib/**/*.ts',
+    'app/**/*.ts'
+  ]);
   /*
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
 
@@ -41,7 +46,8 @@ export async function GET(req: NextRequest) {
   */
 
   return NextResponse.json({
-    data: test
+    data: test,
+    tests
   }, {
     status: 200,
   });
