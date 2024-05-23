@@ -5,7 +5,7 @@ import db from "@lib/db";
 import { Logger } from "@lib/logger";
 import { run } from "@app/api/utils/vm/run";
 import type { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";
-import { generateMarketplaceVmArgs } from "@v1/marketplace/functions/generateMarketplaceVmArgs";
+import { generateMarketplaceVmArgs } from "./generateMarketplaceVmArgs";
 
 const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any> = {} ) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
