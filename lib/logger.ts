@@ -1,7 +1,8 @@
-import { createConsola } from 'consola';
+import { createConsola, consola } from 'consola';
 import { pushToAuditTable } from '@/data/auditLog';
+import { IS_PROD } from './constants';
 
-const Logger = createConsola({
+const consolaWithReporters = createConsola({
   reporters: [
     {
       log: (logObj) => {
@@ -20,6 +21,8 @@ const Logger = createConsola({
     },
   ],
 });
+
+const Logger = IS_PROD ? consolaWithReporters : consola;
 
 export {
   Logger
