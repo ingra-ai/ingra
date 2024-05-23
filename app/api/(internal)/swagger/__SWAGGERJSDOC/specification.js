@@ -193,8 +193,8 @@ function build(options) {
   const yamlDocsErrors = [];
   const yamlDocsReady = [];
 
+  console.warn({ options: JSON.stringify(options) })
   for (const filePath of convertGlobPaths(options.apis)) {
-    console.log({ filePath })
     const {
       yaml: yamlAnnotations,
       jsdoc: jsdocAnnotations,
