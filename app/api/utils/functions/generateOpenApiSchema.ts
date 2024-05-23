@@ -1,4 +1,4 @@
-import { AuthSessionResponse } from "@app/auth/session";
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { USERS_API_FUNCTION_PATH } from "@lib/constants";
 import db from "@lib/db";
 import { Prisma } from "@prisma/client";

@@ -4,30 +4,24 @@ import { Prisma } from "@prisma/client";
 
 export type GetSessionByApiKeyReturnType = Prisma.ApiKeyGetPayload<{
   select: {
-    id: true;
     userId: true;
     user: {
       include: {
-        profile: {
-          select: {
-            userName: true;
-            timeZone: true;
-          };
-        };
+        profile: true;
         oauthTokens: true;
         envVars: true;
         apiKeys: true;
       };
     };
   };
-}> | null;
+}>;
 
 /**
  * Retrieves a session by their API key.
  * @param {string} apiKey - The API key used to find the user.
  * @returns A Promise that resolves to the user record, or null if the API key is not provided.
  */
-export const getSessionByApiKey = async (apiKey: string): Promise<GetSessionByApiKeyReturnType> => {
+export const getSessionByApiKey = async (apiKey: string): Promise<GetSessionByApiKeyReturnType | null> => {
   if (!apiKey) {
     return null;
   }
@@ -38,12 +32,7 @@ export const getSessionByApiKey = async (apiKey: string): Promise<GetSessionByAp
       userId: true,
       user: {
         include: {
-          profile: {
-            select: {
-              userName: true,
-              timeZone: true,
-            }
-          },
+          profile: true,
           oauthTokens: true,
           envVars: true,
           apiKeys: true,

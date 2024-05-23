@@ -1,4 +1,3 @@
-import { AuthSessionResponse } from "@app/auth/session";
 import { CogIcon } from 'lucide-react';
 import {
   Alert,
@@ -8,6 +7,7 @@ import {
 import Link from "next/link";
 import { APP_SETTINGS_PROFILE_URI, APP_SETTINGS_API_URI, APP_SETTINGS_ENV_VARS_URI } from "@lib/constants";
 import { cn } from "@lib/utils";
+import { AuthSessionResponse } from '@app/auth/session/types';
 
 type SuggestionsListProps = {
   authSession: AuthSessionResponse;
@@ -17,7 +17,11 @@ type SuggestionsListProps = {
 
 export const SuggestionsList: React.FC<SuggestionsListProps> = (props) => {
   const { authSession, totalApiKeys = 0, className } = props;
-  const { user: { profile, oauthTokens, envVars } } = authSession;
+  const {
+    profile,
+    oauthTokens = [],
+    envVars = []
+  } = authSession.user || {};
 
   const allConcerns = [];
 

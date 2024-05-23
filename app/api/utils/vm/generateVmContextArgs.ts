@@ -1,4 +1,4 @@
-import { AuthSessionResponse } from "@app/auth/session";
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { Logger } from "@lib/logger";
 import { FunctionArgument } from "@prisma/client";
 

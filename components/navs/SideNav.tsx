@@ -5,7 +5,7 @@ import { cn } from '@lib/utils';
 import { censorEmail } from '@lib/functions/censorEmail';
 import { useCallback } from 'react';
 import Link from 'next/link';
-import { AuthSessionResponse } from '@app/auth/session';
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
 import type { NavItem, NavItemParent } from '@components/navs/types';
