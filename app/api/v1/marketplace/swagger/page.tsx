@@ -2,15 +2,9 @@ import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
 import { getMarketplaceSwaggerSpec } from './config';
 
 import '@css/swagger.scss';
-import { getAuthSession } from '@app/auth/session';
 
 export default async function Page() {
-  const authSession = await getAuthSession();
-  if ( !authSession ) {
-    return (<></>);
-  }
-
-  const swaggerSpec = await getMarketplaceSwaggerSpec(authSession);
+  const swaggerSpec = await getMarketplaceSwaggerSpec();
 
   return (
     <section className="container">
