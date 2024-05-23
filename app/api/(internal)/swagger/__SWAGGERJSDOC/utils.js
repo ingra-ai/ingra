@@ -9,8 +9,13 @@ const mergeWith = require('lodash.mergewith');
  * @return {array} Array of fully-qualified paths
  */
 function convertGlobPaths(globs) {
+  console.warn({ globs })
   return globs
-    .map((globString) => glob.sync(globString))
+    .map((globString) => {
+      const globSyncres = glob.sync(globString);
+      console.warn({ globSyncres })
+      return globSyncres;
+    })
     .reduce((previous, current) => previous.concat(current), []);
 }
 

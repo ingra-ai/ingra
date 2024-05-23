@@ -20,9 +20,9 @@ export async function GET(req: NextRequest) {
 
   const test = getSwaggerSpec2();
   const tests = convertGlobPaths ([
-    'schemas/**/*.ts',
-    'lib/**/*.ts',
-    'app/**/*.ts'
+    process.cwd() + '/schemas/**/*.ts',
+    process.cwd() + '/lib/**/*.ts',
+    process.cwd() + '/app/**/*.ts'
   ]);
   /*
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
