@@ -15,7 +15,7 @@ export type SwaggerExtraProps = {
   extraPaths: SwaggerOptions['definition']['paths'];
 };
 
-export const getSwaggerSpec = async ( extraProps: SwaggerExtraProps ) => {
+export const getSwaggerSpec = async ( extraProps?: SwaggerExtraProps ) => {
   const swaggerOptions: SwaggerOptions = {
     apiFolder: 'app/api', // define api folder under app folder
     apis: ['schemas/**/*.ts', 'lib/**/*.ts', 'app/**/*.ts'],
