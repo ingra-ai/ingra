@@ -1,19 +1,21 @@
-import { getAuthSession } from '@app/auth/session';
 import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
 import { getAuthSwaggerSpec } from './config';
-import { redirect, RedirectType } from 'next/navigation';
-import { APP_AUTH_LOGIN_URL } from '@lib/constants';
+import {  APP_SESSION_COOKIE_NAME } from '@lib/constants';
 
 import '@css/swagger.scss';
+import { getWebAuthSession } from '@app/auth/session/caches';
+import { cookies } from 'next/headers';
 
 export default async function Page() {
-  const authSession = await getAuthSession();
+  const cookieStore = cookies();
+  const jwt = cookieStore.get(APP_SESSION_COOKIE_NAME)?.value;
+  const sessionWithUser = await getWebAuthSession(jwt || '');
 
-  if ( !authSession ) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+  if ( !sessionWithUser ) {
+    return <></>;
   }
 
-  const swaggerSpec = await getAuthSwaggerSpec(authSession);
+  const swaggerSpec = await getAuthSwaggerSpec(sessionWithUser);
 
   return (
     <section className="container">
