@@ -1,5 +1,5 @@
 import { getSwaggerSpec } from '@app/api/(internal)/swagger/config';
-import type { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@app/auth/session/types";
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } from '@lib/constants';
 import { generateOpenApiSchema } from '@v1/me/swagger/generateOpenApiSchema';
 
