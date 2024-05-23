@@ -9,13 +9,16 @@ import { createSwaggerSpec } from 'next-swagger-doc';
 
 export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]>;
 
-export type SwaggerExtraProps = {
-  title: string;
-  description: string;
-  extraPaths: SwaggerOptions['definition']['paths'];
+type GetSwaggerSpecProps = {
+  title?: string;
+  description?: string;
+  definition?: {
+    paths: SwaggerOptions['definition']['paths'];
+    components: SwaggerOptions['definition']['components'];
+  };
 };
 
-export const getSwaggerSpec = ( extraProps?: SwaggerExtraProps ) => {
+export const getSwaggerSpec = ( extraOptions: GetSwaggerSpecProps ) => {
   const swaggerOptions: SwaggerOptions = {
     apiFolder: 'app/api/v1', // define api folder under app folder
     apis: [
@@ -24,14 +27,15 @@ export const getSwaggerSpec = ( extraProps?: SwaggerExtraProps ) => {
     definition: {
       openapi: '3.0.0',
       info: {
-        title: extraProps?.title || `${APP_NAME} Plugin API`,
+        title: extraOptions?.title || `${APP_NAME} Plugin API`,
         version: APP_PACKAGE_VERSION,
-        description: extraProps?.description || APP_OPENAI_MANIFEST_DESC_FOR_HUMAN,
+        description: extraOptions?.description || APP_OPENAI_MANIFEST_DESC_FOR_HUMAN,
       },
       paths: {
-        ...( extraProps?.extraPaths || {} ),
+        ...( extraOptions?.definition?.paths || {} ),
       },
       components: {
+        ...( extraOptions?.definition?.components || {} ),
       },
       security: [],
     },
