@@ -6,6 +6,8 @@ import { APP_AUTH_LOGIN_URL } from '@lib/constants';
 
 import '@css/swagger.scss';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const authSession = await getAuthSession();
 
