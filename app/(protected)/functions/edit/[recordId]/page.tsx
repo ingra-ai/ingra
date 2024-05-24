@@ -26,13 +26,20 @@ export default async function Page({ params }: { params: { recordId: string } })
     return redirect('/functions', RedirectType.replace);
   }
 
+  const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
+    id: envVar.id,
+    ownerUserId: envVar.ownerUserId,
+    key: envVar.key,
+    value: envVar.value,
+  }));
+
   return (
     <div className="block" data-testid="functions-edit-page">
       <div className="mb-4">
         <h1 className="text-base font-semibold leading-10">Edit Function</h1>
       </div>
       <div className="block">
-        <FunctionForm functionRecord={functionRecord} />
+        <FunctionForm functionRecord={functionRecord} envVars={ optionalEnvVars } />
       </div>
     </div>
   );
