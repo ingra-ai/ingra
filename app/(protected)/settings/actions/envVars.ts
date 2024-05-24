@@ -42,71 +42,7 @@ export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
       data: record,
     };
   });
-
 }
-
-export const createEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
-  const validatedValues = await validateAction(EnvVarsSchema, values);
-  const { data } = validatedValues;
-  const { key, value } = data;
-
-  return await actionAuthTryCatch(async (authSession) => {
-    const record = await db.envVars.create({
-      data: {
-        key,
-        value,
-        updatedAt: new Date(),
-        ownerUserId: authSession.user.id,
-      },
-    });
-  
-    if (!record) {
-      throw new ActionError('error', 400, 'Failed to create environment variable!');
-    }
-  
-    // Delete kv caches for this user
-    await clearAuthCaches(authSession);
-  
-    return {
-      status: 'ok',
-      message: 'Environment variable created!',
-      data: record,
-    };
-  });
-};
-
-export const updateEnvVar = async (id: number, values: z.infer<typeof EnvVarsSchema>) => {
-  const validatedValues = await validateAction(EnvVarsSchema, values);
-  const { data } = validatedValues;
-  const { key, value } = data;
-
-  return await actionAuthTryCatch(async (authSession) => {
-    const record = await db.envVars.update({
-      where: {
-        id,
-        ownerUserId: authSession.user.id,
-      },
-      data: {
-        key,
-        value,
-        updatedAt: new Date(),
-      },
-    });
-  
-    if (!record) {
-      throw new ActionError('error', 400, 'Failed to update Environment variable!');
-    }
-  
-    // Delete kv caches for this user
-    await clearAuthCaches(authSession);
-  
-    return {
-      status: 'ok',
-      message: 'Environment variable updated!',
-      data: record,
-    };
-  });
-};
 
 export const deleteEnvVar = async (id: number) => {
   return await actionAuthTryCatch(async (authSession) => {

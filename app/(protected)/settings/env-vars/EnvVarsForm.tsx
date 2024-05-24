@@ -10,26 +10,16 @@ import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { EnvVarsSchema } from '@/schemas/envVars';
 import { upsertEnvVar } from '@protected/settings/actions/envVars';
-import type { Prisma } from '@prisma/client';
-import { useRouter } from 'next/navigation';
 import { Input } from '@components/ui/input';
+import { EnvVarsOptionalPayload } from './types';
 
 type EnvVarFormProps = {
   onSuccess?: () => void;
-  envVarRecord?: Prisma.EnvVarsGetPayload<{
-    select: {
-      id: true;
-      key: true;
-      value: true;
-      updatedAt: true;
-      createdAt: true;
-    };
-  }>;
+  envVarRecord?: EnvVarsOptionalPayload;
 };
 
 export const EnvVarForm: React.FC<EnvVarFormProps> = (props) => {
   const { onSuccess, envVarRecord } = props;
-  const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!envVarRecord;
