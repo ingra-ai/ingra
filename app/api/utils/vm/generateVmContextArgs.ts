@@ -1,22 +1,9 @@
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { Logger } from "@lib/logger";
 import { FunctionArgument } from "@prisma/client";
+import { generateUserVars } from "./generateUserVars";
 
 export type VmContextArgs = {
-  userVars: {
-    oauthTokens: {
-      scope: string;
-      tokenType: string;
-      service: string;
-      idToken: string | null;
-      accessToken: string;
-      primaryEmailAddress: string;
-    }[];
-    profile: {
-      userName: string;
-      timeZone: string;
-    };
-  };
   [key: string]: any;
 };
 
@@ -32,27 +19,16 @@ export function generateVmContextArgs( authSession: AuthSessionResponse, functio
     }
   }
 
-  Logger.withTag('vm').info('Generating VM context args', requestArgs);
+  Logger.withTag('vm').info('Generating VM context request arguments:', requestArgs);
 
   const context: VmContextArgs = {
-    userVars: {
-      oauthTokens: (authSession.user.oauthTokens || []).map((token) => ({
-        scope: token.scope,
-        tokenType: token.tokenType,
-        service: token.service,
-        idToken: token.idToken,
-        accessToken: token.accessToken,
-        primaryEmailAddress: token.primaryEmailAddress
-      })),
-      profile: {
-        userName: authSession.user.profile?.userName || '',
-        timeZone: authSession.user.profile?.timeZone || ''
-      },
-      ...authSession.user.envVars.reduce((acc, envVar) => {
-        acc[envVar.key] = envVar.value;
-        return acc;
-      }, {} as Record<string, string>)
-    },
+    ...generateUserVars(authSession),
+
+    ...authSession.user.envVars.reduce((acc, envVar) => {
+      acc[envVar.key] = envVar.value;
+      return acc;
+    }, {} as Record<string, string>),
+
     ...( requestArgs || {} )
   };
 

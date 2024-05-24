@@ -12,7 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import type { EnvVars } from '@prisma/client';
 import { formatDistance } from 'date-fns';
 import { Button } from '@components/ui/button';
 import { EnvVarsOptionalPayload } from './types';
@@ -35,7 +34,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">Environment Variables ({envVars.length})</h1>
           <p className="mt-2 text-sm">
-            Your environment variables will be passed as part of <code className="italic">userVars</code> in your functions and flows
+            Your environment variables will be passed as part of <code className="italic">global</code> in your functions and flows
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">

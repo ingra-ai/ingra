@@ -16,40 +16,8 @@ VM Context:
 */
 
 async function handler(ctx) {
-  const { userVars, ...args } = ctx;
-
-  /*
-    userVars:
-      - userVars.oauthTokens: array of objects containing the Google OAuth Credentials tokens for the user.
-      - userVars.profile: object containing the owner user profile information
-      - userVars.[...envVars]: object containing the environment variables for the user
-    args: object containing the HTTP request arguments passed to the function as part of API request
-  */
-  const {
-    oauthTokens = [],
-    profile: {
-      userName, // e.g. 'john.doe'
-      timeZone // e.g. 'America/New_York'
-    },
-    ...envVars
-  } = userVars;
-
-  /*
-   * Example usage of using Google OAuth token:
-   */
-  const firstOauthToken = oauthTokens[0];
-
-  if (!firstOauthToken) {
-    throw new Error('Invalid OAuth token.');
-  }
-
-  const GOOGLE_OAUTH_ACCESS_TOKEN = firstOauthToken.accessToken;
-
-  // Example usage of args, any arguments you pass in the API request will be available here.
-  const { q = '' } = args;
-
-  // Example usage of envVars, can expand...
-  const { PRODUCTIVE_API_KEY = '' } = envVars;
+  // View all your environment variables, user variables and arguments by logging them to the console
+  console.log({ ctx });
 
   // Add your code here below this line.
   return 'hello world';

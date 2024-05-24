@@ -2,6 +2,7 @@ import { ActionError, PrismaActionError, type ApiError } from '@v1/types/api-res
 import { Logger } from '@lib/logger';
 import { NextResponse } from 'next/server';
 import type { ApiTryCatchReturnType } from './types';
+import { Prisma } from '@prisma/client';
 
 export const apiTryCatch = async <T>( fn: () => Promise<ApiTryCatchReturnType<T>> ): Promise<ApiTryCatchReturnType<T>> => {
   try {
@@ -10,8 +11,10 @@ export const apiTryCatch = async <T>( fn: () => Promise<ApiTryCatchReturnType<T>
   catch ( error: any ) {
     Logger.withTag('apiTryCatch').error( error?.message || 'Something went wrong.' );
 
-    if ( error instanceof PrismaActionError ) {
-      const apiError = error.toJson();
+    if ( error instanceof Prisma.PrismaClientKnownRequestError ) {
+      const prismaError = new PrismaActionError( error );
+      
+      const apiError = prismaError.toJson();
 
       return NextResponse.json( apiError,
         {

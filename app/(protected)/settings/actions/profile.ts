@@ -13,7 +13,7 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const { data } = validatedValues;
 
   return await actionAuthTryCatch(async (authSession) => {
-    const profile = await dataUpdateProfile( data, authSession.user.id )
+    const profile = await dataUpdateProfile( data, authSession.user.id );
   
     if (!profile) {
       throw new ActionError('error', 400, 'Failed to update profile!');
