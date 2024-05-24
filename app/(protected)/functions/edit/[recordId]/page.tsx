@@ -1,3 +1,4 @@
+import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
 import { FunctionForm } from '@protected/functions/FunctionForm';
@@ -32,6 +33,8 @@ export default async function Page({ params }: { params: { recordId: string } })
     key: envVar.key,
     value: envVar.value,
   }));
+  
+  const userVarsRecord = generateUserVars(authSession);
 
   return (
     <div className="block" data-testid="functions-edit-page">
@@ -39,7 +42,7 @@ export default async function Page({ params }: { params: { recordId: string } })
         <h1 className="text-base font-semibold leading-10">Edit Function</h1>
       </div>
       <div className="block">
-        <FunctionForm functionRecord={functionRecord} envVars={ optionalEnvVars } />
+        <FunctionForm functionRecord={functionRecord} envVars={ optionalEnvVars } userVars={ userVarsRecord } />
       </div>
     </div>
   );

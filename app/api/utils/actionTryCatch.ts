@@ -1,6 +1,7 @@
 import { ActionError, PrismaActionError } from '@v1/types/api-response';
 import { Logger } from '@lib/logger';
 import type { ActionTryCatchReturnType } from './types';
+import { Prisma } from '@prisma/client';
 
 export const actionTryCatch = async <T>( fn: () => Promise<ActionTryCatchReturnType<T>> ) => {
   try {
@@ -15,8 +16,9 @@ export const actionTryCatch = async <T>( fn: () => Promise<ActionTryCatchReturnT
       data: null
     };
 
-    if ( error instanceof PrismaActionError ) {
-      const apiError = error.toJson();
+    if ( error instanceof Prisma.PrismaClientKnownRequestError ) {
+      const prismaError = new PrismaActionError( error );
+      const apiError = prismaError.toJson();
       actionError.message = apiError.message;
     }
 

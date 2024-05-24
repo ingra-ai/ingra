@@ -26,8 +26,10 @@ import { Input } from '@components/ui/input';
 import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
+import { UserVarsTable } from './UserVarsTable';
 
 type FunctionFormProps = {
+  userVars: Record<string, any>;
   envVars: EnvVarsOptionalPayload[];
   functionRecord?: Prisma.FunctionGetPayload<{
     include: {
@@ -37,9 +39,19 @@ type FunctionFormProps = {
   }>;
 };
 
+function generateCodeDefaultTemplate(allUserAndEnvKeys: string[]) {
+  if ( !allUserAndEnvKeys.length ) return CODE_DEFAULT_TEMPLATE;
+  
+  return CODE_DEFAULT_TEMPLATE
+    .replace("console.log({ ctx });", `
+       const { ${ allUserAndEnvKeys.join(', ')}, ...requestArgs } = ctx;
+    `.trim());
+}
+
 export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   const {
-    envVars,
+    userVars = {},
+    envVars = [],
     functionRecord
   } = props;
   const isEditMode = !!functionRecord;
@@ -47,6 +59,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [isSandboxOpen, setSandboxOpen] = useState(false);
+  const allUserAndEnvKeys = Object.keys(userVars).concat(envVars.map(envVar => envVar.key));
   const methods = useForm<z.infer<typeof FunctionSchema>>({
     reValidateMode: 'onSubmit',
     resolver: zodResolver(FunctionSchema),
@@ -54,7 +67,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       id: functionRecord?.id || '',
       slug: functionRecord?.slug || '',
       description: functionRecord?.description || '',
-      code: functionRecord?.code || CODE_DEFAULT_TEMPLATE,
+      code: functionRecord?.code || generateCodeDefaultTemplate(allUserAndEnvKeys),
       isPrivate: !!functionRecord?.isPrivate,
       isPublished: !!functionRecord?.isPublished,
       tags: functionRecord?.tags ? functionRecord.tags.map(tag => {
@@ -125,9 +138,9 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
             redirectUrl = `/functions/edit/${resp.data.id}`;
           }
         }
-        
+
         startTransition(() => {
-          if ( redirectUrl ) {
+          if (redirectUrl) {
             router.push(redirectUrl);
           }
           else {
@@ -261,6 +274,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                 <TabsTrigger value="function-tab">Function</TabsTrigger>
                 <TabsTrigger value="arguments-tab">Arguments</TabsTrigger>
                 <TabsTrigger value="env-vars-tab">Environment Variables</TabsTrigger>
+                <TabsTrigger value="user-vars-tab">User Variables</TabsTrigger>
               </TabsList>
               {
                 functionRecord && (
@@ -436,6 +450,9 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
             </TabsContent>
             <TabsContent value="env-vars-tab" className='block space-y-6'>
               <EnvVarsSection envVars={envVars || []} />
+            </TabsContent>
+            <TabsContent value="user-vars-tab" className='block space-y-6'>
+              <UserVarsTable userVarsRecord={userVars} />
             </TabsContent>
           </Tabs>
         </form>

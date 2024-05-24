@@ -1,6 +1,7 @@
 import { getAuthSession } from '@app/auth/session';
 import { notFound } from 'next/navigation';
 import { FunctionForm } from '@protected/functions/FunctionForm';
+import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
 
 export default async function Page() {
   const authSession = await getAuthSession();
@@ -16,6 +17,8 @@ export default async function Page() {
     value: envVar.value,
   }));
 
+  const userVarsRecord = generateUserVars(authSession);
+
   return (
     <div className="block" data-testid="functions-new-page">
       <div className="block">
@@ -23,7 +26,7 @@ export default async function Page() {
           <h1 className="text-base font-semibold leading-10">Add New Function</h1>
         </div>
         <div className="block">
-          <FunctionForm envVars={optionalEnvVars} />
+          <FunctionForm envVars={optionalEnvVars} userVars={ userVarsRecord } />
         </div>
       </div>
     </div>
