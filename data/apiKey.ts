@@ -83,16 +83,13 @@ export const upsertApiKey = async (userId: string, key: string) => {
       userId,
     },
   });
-
-  // Delete caches
 };
 
-export const deleteApiKey = async (key: string) => {
+export const deleteApiKey = async ( key: string, userId: string ) => {
   return await db.apiKey.delete({
     where: {
       key,
+      userId,
     },
   });
-
-  // Delete caches
 };

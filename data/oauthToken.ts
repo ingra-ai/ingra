@@ -48,3 +48,12 @@ export async function updateOAuthToken( userId: string, primaryEmailAddress: str
 
   return oauthToken;
 }
+
+export async function deleteOAuthToken( recordId: string, userId: string ) {
+  return await db.oAuthToken.delete({
+    where: {
+      id: recordId,
+      userId,
+    },
+  });
+}
