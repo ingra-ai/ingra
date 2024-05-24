@@ -20,6 +20,69 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
         ...( userFunctionsPaths || {} )
       },
       components: {
+        /**
+         * @todo These schemas should be auto-generated from app/api/v1/types, but providing the path in `apis` is not working
+         */
+        schemas: {
+          ApiError: {
+            type: "object",
+            required: [
+              "message"
+            ],
+            properties: {
+              status: {
+                type: "integer",
+                format: "int32",
+                description: "An optional error code representing the error type. For example, 400 for Bad Request, 401 for Unauthorized, 403 for Forbidden, 404 for Not Found, 500 for Internal Server Error."
+              },
+              code: {
+                type: "string",
+                nullable: true,
+                description: "A brief description of the error message."
+              },
+              message: {
+                type: "string",
+                description: "A detailed message describing the error message."
+              }
+            }
+          },
+          ApiSuccess: {
+            type: "object",
+            required: [
+              "status",
+              "message"
+            ],
+            properties: {
+              status: {
+                type: "string",
+                description: "A brief description of the successful operation.",
+                example: "OK"
+              },
+              message: {
+                type: "string",
+                description: "A brief message of the successful operation.",
+                example: "Operation successful."
+              },
+              data: {
+                oneOf: [
+                  {
+                    type: "object",
+                    additionalProperties: true,
+                    description: "An arbitrary object returned by the operation."
+                  },
+                  {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      additionalProperties: true
+                    },
+                    description: "An array of arbitrary objects returned by the operation."
+                  }
+                ]
+              }
+            }
+          }
+        }
       },
     },
   });

@@ -9,7 +9,6 @@ import { RedirectType, redirect } from 'next/navigation';
  * Returns OpenAPI json file when in development
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
-export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   const authSession = await getAuthSession();
 
