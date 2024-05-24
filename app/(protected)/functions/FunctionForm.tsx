@@ -24,8 +24,11 @@ import { CodeSandboxForm } from './CodeSandboxForm';
 import { TagField } from '@components/TagField';
 import { Input } from '@components/ui/input';
 import { ToastAction } from "@/components/ui/toast"
+import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
+import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 
 type FunctionFormProps = {
+  envVars: EnvVarsOptionalPayload[];
   functionRecord?: Prisma.FunctionGetPayload<{
     include: {
       tags: true,
@@ -36,6 +39,7 @@ type FunctionFormProps = {
 
 export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   const {
+    envVars,
     functionRecord
   } = props;
   const isEditMode = !!functionRecord;
@@ -256,6 +260,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
               <TabsList className="">
                 <TabsTrigger value="function-tab">Function</TabsTrigger>
                 <TabsTrigger value="arguments-tab">Arguments</TabsTrigger>
+                <TabsTrigger value="env-vars-tab">Environment Variables</TabsTrigger>
               </TabsList>
               {
                 functionRecord && (
@@ -428,6 +433,9 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                   />
                 ))}
               </div>
+            </TabsContent>
+            <TabsContent value="env-vars-tab" className='block space-y-6'>
+              <EnvVarsSection envVars={envVars || []} />
             </TabsContent>
           </Tabs>
         </form>

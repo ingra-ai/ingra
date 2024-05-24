@@ -9,6 +9,13 @@ export default async function Page() {
     return notFound();
   }
 
+  const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
+    id: envVar.id,
+    ownerUserId: envVar.ownerUserId,
+    key: envVar.key,
+    value: envVar.value,
+  }));
+
   return (
     <div className="block" data-testid="functions-new-page">
       <div className="block">
@@ -16,7 +23,7 @@ export default async function Page() {
           <h1 className="text-base font-semibold leading-10">Add New Function</h1>
         </div>
         <div className="block">
-          <FunctionForm />
+          <FunctionForm envVars={optionalEnvVars} />
         </div>
       </div>
     </div>

@@ -4,13 +4,13 @@ import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { EnvVarForm } from './EnvVarsForm';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { EnvVars } from '@prisma/client';
 import { EnvVarsTable } from './EnvVarsTable';
 import { deleteEnvVar } from '@protected/settings/actions/envVars';
 import { useToast } from '@components/ui/use-toast';
+import { EnvVarsOptionalPayload } from './types';
 
 type EnvVarsSectionProps = {
-  envVars: EnvVars[];
+  envVars: EnvVarsOptionalPayload[];
 };
 
 export const EnvVarsSection: React.FC<EnvVarsSectionProps> = (props) => {
@@ -18,7 +18,7 @@ export const EnvVarsSection: React.FC<EnvVarsSectionProps> = (props) => {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
-  const [record, setRecord] = useState<EnvVars | undefined>(undefined);
+  const [record, setRecord] = useState<EnvVarsOptionalPayload | undefined>(undefined);
 
   function onFormSuccess() {
     setOpen(false);
@@ -34,12 +34,12 @@ export const EnvVarsSection: React.FC<EnvVarsSectionProps> = (props) => {
     setOpen(true);
   }
 
-  function onEdit(record: EnvVars) {
+  function onEdit(record: EnvVarsOptionalPayload) {
     setRecord(record);
     setOpen(true);
   }
 
-  function onDelete(record: EnvVars) {
+  function onDelete(record: EnvVarsOptionalPayload) {
     deleteEnvVar(record.id).then((result) => {
       if ( result.status !== 'ok' ) {
         throw new Error(result.message);

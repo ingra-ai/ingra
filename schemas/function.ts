@@ -4,29 +4,54 @@ import { z } from 'zod';
  * The default template for the function code.
  */
 export const CODE_DEFAULT_TEMPLATE = `
+/*
+VM Context:
+- 'console.log' and 'console.error'
+- 'fetch'
+- 'Buffer'
+- 'utils.date.parseStartAndEnd': To parse start and end dates with natural language and timezone adjustment
+  e.g. utils.date.parseStartAndEnd('today at 23:59', 'tomorrow at 12:00', 'America/New_York'))
+- 'utils.date.parseDate': To parse a single date with natural language and timezone adjustment
+  e.g. utils.date.parseDate('today at 23:59', 'America/New_York'))
+*/
+
 async function handler(ctx) {
   const { userVars, ...args } = ctx;
 
-  /**
-   * userVars:
-   *   - userVars.oauthTokens: array of objects containing the OAuth tokens for the user.
-   *   - userVars.profile: object containing the user profile information
-   *   - userVars.[...envVars]: object containing the environment variables for the user
-   * args: object containing the request arguments passed to the function as part of API request
-   */
+  /*
+    userVars:
+      - userVars.oauthTokens: array of objects containing the Google OAuth Credentials tokens for the user.
+      - userVars.profile: object containing the owner user profile information
+      - userVars.[...envVars]: object containing the environment variables for the user
+    args: object containing the HTTP request arguments passed to the function as part of API request
+  */
   const {
     oauthTokens = [],
-    profile: { userName, timeZone },
+    profile: {
+      userName, // e.g. 'john.doe'
+      timeZone // e.g. 'America/New_York'
+    },
     ...envVars
   } = userVars;
 
-  // VM Context:
-  // - console.log and console.error: For logging
-  // - fetch: For making HTTP requests
-  // - utils.date.parseStartAndEnd: To parse start and end dates with timezone adjustment
-  // - utils.date.parseDate: To parse a single date with timezone adjustment
+  /*
+   * Example usage of using Google OAuth token:
+   */
+  const firstOauthToken = oauthTokens[0];
 
-  // Add your code here
+  if (!firstOauthToken) {
+    throw new Error('Invalid OAuth token.');
+  }
+
+  const GOOGLE_OAUTH_ACCESS_TOKEN = firstOauthToken.accessToken;
+
+  // Example usage of args, any arguments you pass in the API request will be available here.
+  const { q = '' } = args;
+
+  // Example usage of envVars, can expand...
+  const { PRODUCTIVE_API_KEY = '' } = envVars;
+
+  // Add your code here below this line.
   return 'hello world';
 }
 `.trim();
@@ -52,7 +77,7 @@ export const HttpVerbEnum = z.enum([
 /**
  * Maximum length constraint for function code.
  */
-export const MAX_FUNCTION_CODE_LENGTH = 8000;
+export const MAX_FUNCTION_CODE_LENGTH = 12000;
 
 /**
  * Maximum length constraint for function description.
