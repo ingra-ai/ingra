@@ -22,7 +22,7 @@ export async function upsertEnvVar( key: string, value: string, ownerUserId: str
   });
 
   return record;
-};
+}
 
 export async function deleteEnvVar( id: number, ownerUserId: string ) {
   const record = await db.envVars.delete({
@@ -33,4 +33,5 @@ export async function deleteEnvVar( id: number, ownerUserId: string ) {
   });
 
   return record;
-};
+}
+
