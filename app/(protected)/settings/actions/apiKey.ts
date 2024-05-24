@@ -43,18 +43,11 @@ export const generateApiKey = async () => {
 
 export const deleteApiKey = async (key: string) => {
   return await actionAuthTryCatch(async (authSession) => {
-    const apiKey = await db.apiKey.findUnique({
-      where: {
-        userId: authSession.user.id,
-        key,
-      },
-    });
-  
-    if (!apiKey || apiKey.userId !== authSession.user.id) {
-      throw new ActionError('error', 400, 'Invalid API key!');
-    }
+    const record = await dataDeleteApiKey( key, authSession.user.id )
 
-    await dataDeleteApiKey(apiKey?.key || key);
+    if (!record) {
+      throw new ActionError('error', 400, 'Failed to delete API key!');
+    }
   
     return {
       status: 'ok',

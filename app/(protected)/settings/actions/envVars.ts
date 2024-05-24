@@ -2,11 +2,11 @@
 
 import * as z from 'zod';
 import { ActionError } from '@v1/types/api-response';
-import db from '@lib/db';
 import { EnvVarsSchema } from '@/schemas/envVars';
 import { validateAction } from '@lib/action-helpers';
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
 import { clearAuthCaches } from '@app/auth/session/caches';
+import { upsertEnvVar as dataUpsertEnvVar, deleteEnvVar as dataDeleteEnvVar } from '@/data/envVars';
 
 export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
   const validatedValues = await validateAction(EnvVarsSchema, values);
@@ -14,24 +14,7 @@ export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
   const { id: recordId, key, value } = data;
 
   return await actionAuthTryCatch(async (authSession) => {
-    const record = await db.envVars.upsert({
-      where: {
-        ownerUserId_key: {
-          ownerUserId: authSession.user.id,
-          key,
-        },
-      },
-      create: {
-        key,
-        value,
-        updatedAt: new Date(),
-        ownerUserId: authSession.user.id,
-      },
-      update: {
-        value,
-        updatedAt: new Date(),
-      },
-    });
+    const record = await dataUpsertEnvVar( key, value, authSession.user.id );
   
     // Delete kv caches for this user
     await clearAuthCaches(authSession);
@@ -42,16 +25,11 @@ export const upsertEnvVar = async (values: z.infer<typeof EnvVarsSchema>) => {
       data: record,
     };
   });
-}
+};
 
 export const deleteEnvVar = async (id: number) => {
   return await actionAuthTryCatch(async (authSession) => {
-    const record = await db.envVars.delete({
-      where: {
-        id,
-        ownerUserId: authSession.user.id,
-      },
-    });
+    const record = await dataDeleteEnvVar( id, authSession.user.id );
   
     if (!record) {
       throw new ActionError('error', 400, 'Failed to delete Environment variable!');
@@ -66,4 +44,4 @@ export const deleteEnvVar = async (id: number) => {
       data: null,
     };
   });
-}
+};
