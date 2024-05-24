@@ -41,7 +41,7 @@ type FunctionFormProps = {
 
 function generateCodeDefaultTemplate(allUserAndEnvKeys: string[]) {
   if ( !allUserAndEnvKeys.length ) return CODE_DEFAULT_TEMPLATE;
-  
+
   return CODE_DEFAULT_TEMPLATE
     .replace("console.log({ ctx });", `
        const { ${ allUserAndEnvKeys.join(', ')}, ...requestArgs } = ctx;
@@ -273,8 +273,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
               <TabsList className="">
                 <TabsTrigger value="function-tab">Function</TabsTrigger>
                 <TabsTrigger value="arguments-tab">Arguments</TabsTrigger>
-                <TabsTrigger value="env-vars-tab">Environment Variables</TabsTrigger>
-                <TabsTrigger value="user-vars-tab">User Variables</TabsTrigger>
+                <TabsTrigger value="vars-tab">Variables</TabsTrigger>
               </TabsList>
               {
                 functionRecord && (
@@ -448,10 +447,8 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
                 ))}
               </div>
             </TabsContent>
-            <TabsContent value="env-vars-tab" className='block space-y-6'>
+            <TabsContent value="vars-tab" className='block space-y-6'>
               <EnvVarsSection envVars={envVars || []} />
-            </TabsContent>
-            <TabsContent value="user-vars-tab" className='block space-y-6'>
               <UserVarsTable userVarsRecord={userVars} />
             </TabsContent>
           </Tabs>

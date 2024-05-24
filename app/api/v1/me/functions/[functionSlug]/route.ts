@@ -24,7 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: { functionSlug
 
   Logger.withTag('user-api').withTag('GET').info(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
-};
+}
 
 export async function POST(req: NextRequest, { params }: { params: { functionSlug: string } }) {
   const requestArgs = await req.json();
@@ -115,4 +115,4 @@ export async function DELETE(req: NextRequest, { params }: { params: { functionS
 
   Logger.withTag('user-api').withTag('DELETE').info(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
-};
+}
