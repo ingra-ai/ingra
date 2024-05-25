@@ -4,7 +4,7 @@ import { Logger } from "@lib/logger";
 import { OpenAI, type ClientOptions } from "openai";
 
 /**
- * @swagger
+ * @ swagger - Disabled for now - but this is working example
  * /api/v1/me/assistants:
  *   get:
  *     summary: Get a streaming response from OpenAI
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
     const ENV_OPENAI_API = authSession.user.envVars.find((envVar) => envVar.key === "OPENAI_API_KEY"),
       ENV_OPENAI_API_KEY = ENV_OPENAI_API?.value;
 
-    if ( !ENV_OPENAI_API_KEY ) {
+    if (!ENV_OPENAI_API_KEY) {
       throw new Error("OpenAI API Key is not set in the environment variables. Please set it in your profile settings.");
     }
 
