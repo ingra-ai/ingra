@@ -55,7 +55,19 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: `default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests`
+            value: `
+              default-src 'self'; 
+              base-uri 'self'; 
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; 
+              style-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; 
+              img-src 'self' https://cdn.jsdelivr.net; 
+              connect-src 'self' https://cdn.jsdelivr.net; 
+              font-src 'self' https://cdn.jsdelivr.net; 
+              frame-ancestors 'none'; 
+              form-action 'self'; 
+              upgrade-insecure-requests;
+              worker-src 'self' blob:;
+            `.replace(/\s+/g, ' ').replace(/\n/g, ' ').trim()
           }
         ]
       }

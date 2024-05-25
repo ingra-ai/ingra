@@ -35,24 +35,33 @@ const PaginationItem = React.forwardRef<
 PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
-  isActive?: boolean
+  isActive?: boolean;
+  disabled?: boolean;
+  prefetch?: boolean;
 } & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+  React.ComponentProps<typeof Link>
 
 const PaginationLink = ({
   className,
   isActive,
+  disabled = false,
+  prefetch = false,
   size = "icon",
   href,
   ...props
 }: PaginationLinkProps) => (
   <Link
     aria-current={isActive ? "page" : undefined}
+    aria-disabled={disabled}
+    prefetch={prefetch}
     className={cn(
       buttonVariants({
         variant: isActive ? "outline" : "ghost",
         size,
       }),
+      {
+        'pointer-events-none cursor-not-allowed': disabled
+      },
       className
     )}
     href={href || '/'}
@@ -72,7 +81,7 @@ const PaginationPrevious = ({
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
+    <span className="sr-only">Previous</span>
   </PaginationLink>
 )
 PaginationPrevious.displayName = "PaginationPrevious"
@@ -87,7 +96,7 @@ const PaginationNext = ({
     className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
-    <span>Next</span>
+    <span className="sr-only">Next</span>
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
 )

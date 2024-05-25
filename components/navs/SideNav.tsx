@@ -102,7 +102,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                               <li className="" key={subItem.name}>
                                 <Link
                                   href={subItem.href}
-                                  prefetch={true}
+                                  prefetch={false}
                                   className={cn(
                                     subItem.href === pathname ?
                                     'bg-gray-800 text-white' : 
@@ -121,7 +121,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                       <div className="text-xs font-semibold leading-6 text-gray-400 -mx-2">
                         <Link
                           href={item.href}
-                          prefetch={true}
+                          prefetch={false}
                           className={cn(
                             item.href === pathname ?
                             'bg-gray-800 text-white' : 
