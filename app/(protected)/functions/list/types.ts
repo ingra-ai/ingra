@@ -1,3 +1,4 @@
+import type { BakaPaginationType } from "@components/BakaPagination";
 import { Prisma } from "@prisma/client";
 
 export type FunctionListGetPayload = Prisma.FunctionGetPayload<{
@@ -37,3 +38,7 @@ export type FunctionListGetPayload = Prisma.FunctionGetPayload<{
     }
   }
 }>;
+
+export type FetchFunctionListPaginationType = BakaPaginationType & {
+  records: FunctionListGetPayload[];
+};
