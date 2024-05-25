@@ -22,7 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { FunctionListGetPayload } from './types';
+import type { FunctionListGetPayload } from '@protected/functions/list/types';
 import { Badge } from '@components/ui/badge';
 
 interface FunctionItemProps {

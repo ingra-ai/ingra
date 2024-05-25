@@ -8,7 +8,7 @@ export type ActionTryCatchReturnType<T> = {
 } | {
   status: 'error';
   message: string;
-  data?: any;
+  data?: null;
 };
 
 export type ApiTryCatchReturnType<T> = NextResponse<ApiError | ApiSuccess<T>> | NextResponse<unknown>;
