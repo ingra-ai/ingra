@@ -1,3 +1,5 @@
+import React from 'react';
+
 type NavItemBase = {
   name: string;
   description?: string;

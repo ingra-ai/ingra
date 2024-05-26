@@ -4,9 +4,10 @@ import { Logger } from "@lib/logger";
 import { clearAuthCaches } from "@app/auth/session/caches";
 
 /**
- * @swagger
- * /api/v1/me/curateFunctions/list:
- *   get:
+ * Disabling Swagger intentionally for this route.
+ * @ swagger
+ * /api/v1/me/clearCaches:
+ *   delete:
  *     summary: Clear caches for the current session
  *     operationId: clearCaches
  *     description: Clear all caches for the current session. This may fix some issues for OAuth credentials being expired, with a trade-off of next request will be slower.
@@ -26,14 +27,11 @@ import { clearAuthCaches } from "@app/auth/session/caches";
  *     tags:
  *       - Built-ins Internal
  */
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const requestArgs = Object.fromEntries(searchParams);
-
+export async function DELETE(req: NextRequest) {
   return await apiAuthTryCatch<any>(async (authSession) => {
     const deletedCaches = await clearAuthCaches(authSession);
     
-    Logger.withTag('me-builtins').withTag('curateFunctions-list').withTag(`user:${ authSession.user.id }`).info('Clearing caches for current session');
+    Logger.withTag('me-builtins').withTag('clearCaches').withTag(`user:${ authSession.user.id }`).info('Clearing caches for current session');
 
     return NextResponse.json(
       {

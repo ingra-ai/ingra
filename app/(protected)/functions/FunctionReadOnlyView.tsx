@@ -1,9 +1,8 @@
 'use client';
-
+import type { FC } from 'react';
 import { Button } from '@components/ui/button';
 import { BugPlayIcon } from 'lucide-react';
-import { startTransition, useCallback, useState } from 'react';
-import { useToast } from '@components/ui/use-toast';
+import { useCallback, useState } from 'react';
 import type { Prisma } from '@prisma/client';
 import CodeEditorInput from '@/components/CodeEditorInput';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -26,13 +25,12 @@ type FunctionReadOnlyViewProps = {
   }>;
 };
 
-export const FunctionReadOnlyView: React.FC<FunctionReadOnlyViewProps> = (props) => {
+export const FunctionReadOnlyView: FC<FunctionReadOnlyViewProps> = (props) => {
   const {
     userVars = {},
     envVars = [],
     functionRecord
   } = props;
-  const { toast } = useToast();
   const router = useRouter();
   const [isSandboxOpen, setSandboxOpen] = useState(false);
 

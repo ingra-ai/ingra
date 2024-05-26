@@ -1,11 +1,12 @@
 'use client';
+import type { FC } from 'react';
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
 };
 
-const ErrorPage: React.FC<ErrorPageProps> = (props) => {
+const ErrorPage: FC<ErrorPageProps> = (props) => {
   const { error, reset } = props;
 
   return (

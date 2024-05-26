@@ -1,4 +1,5 @@
 'use server';
+import type { FC } from 'react';
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { OAuthToken } from '@prisma/client';
 import db from '@lib/db';
@@ -9,7 +10,7 @@ type IntegrationsSectionProps = {
   authSession: AuthSessionResponse;
 };
 
-export const IntegrationsSection: React.FC<IntegrationsSectionProps> = async (props) => {
+export const IntegrationsSection: FC<IntegrationsSectionProps> = async (props) => {
   const { authSession } = props;
   
   const oAuthTokens: OAuthToken[] = authSession

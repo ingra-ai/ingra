@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren, FC } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
@@ -9,7 +9,7 @@ type FormSlideOverProps = {
   setOpen: (value: boolean) => void;
 };
 
-export const FormSlideOver: React.FC<PropsWithChildren<FormSlideOverProps>> = (props) => {
+export const FormSlideOver: FC<PropsWithChildren<FormSlideOverProps>> = (props) => {
   const {
     title = 'Panel Title', 
     open = true, 

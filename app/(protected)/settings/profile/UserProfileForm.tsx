@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC, ChangeEvent } from 'react';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,7 +22,7 @@ type UserProfileFormProps = {
   authSession: AuthSessionResponse;
 };
 
-export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
+export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
   const { authSession } = props;
   const userProfile = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user.email || 'unknown@unknown.com');
@@ -70,7 +71,7 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = (props) => {
       });
   }, []);
 
-  function onTimezoneChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+  function onTimezoneChanged(e: ChangeEvent<HTMLSelectElement>) {
     setValue('timeZone', e.target.value);
   }
 

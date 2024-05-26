@@ -1,3 +1,4 @@
+import type { FC } from 'react';
 import { getAuthSession } from '@/app/auth/session';
 import { APP_AUTH_LOGIN_URL } from '@lib/constants';
 import { cn } from '@lib/utils';
@@ -5,7 +6,7 @@ import { redirect, RedirectType } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { ResponsiveNav } from '@components/navs/ResponsiveNav';
 
-const ProtectedLayout: React.FC<PropsWithChildren> = async (props) => {
+const ProtectedLayout: FC<PropsWithChildren> = async (props) => {
   const { children } = props;
   const authSession = await getAuthSession();
 

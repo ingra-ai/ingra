@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, PropsWithChildren, useState } from 'react'
+import { Fragment, type PropsWithChildren, useState, type FC } from 'react'
 import SideNav, { type SideNavProps } from "./SideNav";
 import { Dialog, Transition } from '@headlessui/react'
 import {
@@ -9,7 +9,7 @@ import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 type ResponsiveNavProps = SideNavProps & {};
 
-export const ResponsiveNav: React.FC<PropsWithChildren<ResponsiveNavProps>> = (props) => {
+export const ResponsiveNav: FC<PropsWithChildren<ResponsiveNavProps>> = (props) => {
   const { children, ...sideNavProps } = props;
   const [sidebarOpen, setSidebarOpen] = useState(false)
 

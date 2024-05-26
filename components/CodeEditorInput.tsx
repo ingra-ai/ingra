@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, type FC } from "react";
 import dynamic from "next/dynamic";
 import type { OnMount } from '@monaco-editor/react';
 import { CODE_DEFAULT_TEMPLATE } from "@/schemas/function";
@@ -16,7 +16,7 @@ type CodeEditorInputProps = {
   readOnly?: boolean;
 };
 
-const CodeEditorInput: React.FC<CodeEditorInputProps> = (props) => {
+const CodeEditorInput: FC<CodeEditorInputProps> = (props) => {
   const {
     id,
     className,

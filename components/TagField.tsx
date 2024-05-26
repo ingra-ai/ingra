@@ -1,4 +1,5 @@
 'use client';
+import type { FC, KeyboardEvent } from 'react';
 import { useState, ChangeEvent } from "react";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
@@ -12,7 +13,7 @@ type TagFieldProps = {
   maxTags: number;
 }
 
-export const TagField: React.FC<TagFieldProps> = ( props ) => {
+export const TagField: FC<TagFieldProps> = ( props ) => {
   const {
     id,
     className,
@@ -33,7 +34,7 @@ export const TagField: React.FC<TagFieldProps> = ( props ) => {
 
   // handle Enter key press
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent form submission or new line creation
 
