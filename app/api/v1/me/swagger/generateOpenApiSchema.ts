@@ -1,5 +1,5 @@
 import { AuthSessionResponse } from "@app/auth/session/types";
-import { USERS_API_FUNCTION_PATH } from "@lib/constants";
+import { USERS_API_FUNCTION_PATH, USERS_API_FUNCTION_SUBSCRIPTIONS_PATH } from "@lib/constants";
 import db from "@lib/db";
 import { Prisma } from "@prisma/client";
 
@@ -17,7 +17,7 @@ type FunctionPayload = Prisma.FunctionGetPayload<{
   }
 }>;
 
-function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload) {
+function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, isSubscription = false) {
   const parameters = functionRecord.arguments.map(arg => ({
     name: arg.name,
     in: 'query',
@@ -50,7 +50,12 @@ function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload) {
 
   let functionHitUrl = '';
   if (functionRecord.slug) {
-    functionHitUrl = USERS_API_FUNCTION_PATH.replace(':slug', functionRecord.slug);
+    if ( isSubscription ) {
+      functionHitUrl = USERS_API_FUNCTION_SUBSCRIPTIONS_PATH.replace(':slug', functionRecord.slug);
+    }
+    else {
+      functionHitUrl = USERS_API_FUNCTION_PATH.replace(':slug', functionRecord.slug);
+    }
   }
 
   const pathItem: Record<string, any> = {
@@ -106,32 +111,67 @@ function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload) {
 }
 
 export async function generateOpenApiSchema( authSession: AuthSessionResponse ) {
-  if ( !authSession ) {
+  if ( !authSession || !authSession.user.id ) {
     return null;
   }
 
-  const functionRecords = await db.function.findMany({
-    where: {
-      ownerUserId: authSession.user.id,
-      isPublished: true
-    },
-    select: {
-      id: false,
-      code: false,
-      isPrivate: false,
-      ownerUserId: false,
-      httpVerb: true,
-      slug: true,
-      description: true,
-      arguments: true,
-      tags: true,
-    }
-  });
+  const [functionRecords, subscribedFunctionRecords] = await Promise.all([
+    // 1. Fetch all functions from user's own repository.
+    db.function.findMany({
+      where: {
+        ownerUserId: authSession.user.id,
+        isPublished: true
+      },
+      select: {
+        id: false,
+        code: false,
+        isPrivate: false,
+        ownerUserId: false,
+        httpVerb: true,
+        slug: true,
+        description: true,
+        arguments: true,
+        tags: true,
+      }
+    }),
 
-  const openApiSchema = functionRecords.reduce((acc, functionRecord) => {
+    // 2. Fetch all function subscriptions that user has subscribed to.
+    db.function.findMany({
+      where: {
+        subscribers: {
+          some: {
+            userId: authSession.user.id
+          }
+        },
+        isPublished: true,
+        isPrivate: false
+      },
+      select: {
+        id: false,
+        code: false,
+        isPrivate: false,
+        ownerUserId: false,
+        httpVerb: true,
+        slug: true,
+        description: true,
+        arguments: true,
+        tags: true,
+      }
+    })
+  ]);
+
+  const usersFunctionsOpenApiSchema = functionRecords.reduce((acc, functionRecord) => {
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any);
     return { ...acc, ...functionSchema };
   }, {});
 
-  return openApiSchema;
+  const usersSubscribedFunctionsOpenApiSchema = subscribedFunctionRecords.reduce((acc, functionRecord) => {
+    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, true);
+    return { ...acc, ...functionSchema };
+  }, {});
+
+  return {
+    ...usersSubscribedFunctionsOpenApiSchema,
+    ...usersFunctionsOpenApiSchema
+  };
 }

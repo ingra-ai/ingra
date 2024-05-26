@@ -7,20 +7,31 @@ import { run } from "@app/api/utils/vm/run";
 import type { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";
 import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
 
-const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any> = {} ) => {
+const handlerFn = async (functionSlug: string, requestArgs: Record<string, any> = {}) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
-    if ( typeof functionSlug === 'string' && functionSlug.length) {
+    if (typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id;
 
-      Logger.withTag('me-functions').withTag(userId).info(`Starts executing function: ${functionSlug}`, requestArgs);
+      Logger.withTag('me-functions-subscriptions').withTag(userId).info(`Starts executing function: ${functionSlug}`, requestArgs);
 
-      const functionRecord = await db.function.findUnique({
+      const functionRecord = await db.function.findFirst({
         where: {
-          ownerUserId_slug: {
-            ownerUserId: userId,
-            slug: functionSlug,
-          },
-          isPublished: true,
+          AND: [
+            {
+              subscribers: {
+                some: {
+                  userId: userId
+                }
+              }
+            },
+            {
+              slug: functionSlug
+            },
+            {
+              isPublished: true,
+              isPrivate: false
+            }
+          ]
         },
         select: {
           id: true,
@@ -29,7 +40,7 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
         }
       });
 
-      if ( !functionRecord ) {
+      if (!functionRecord) {
         throw new ActionError('error', 400, `Function not found.`);
       }
 
@@ -37,19 +48,19 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
 
       const vmOutput = await run(functionRecord.code, vmContext);
       const errors = vmOutput.outputs.filter(output => output.type === 'error') as UserSandboxOutput[],
-        metrics = (( vmOutput.outputs || [] ).filter(output => output.type === 'metric') as MetricSandboxOutput[] ).map((metric) => {
+        metrics = ((vmOutput.outputs || []).filter(output => output.type === 'metric') as MetricSandboxOutput[]).map((metric) => {
           return {
             [metric.metric]: metric.value,
           };
         });
 
-      if ( errors.length ) {
+      if (errors.length) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
-        Logger.withTag('me-functions').withTag(userId).error(`Errored executing function: ${errorMessage}`);
+        Logger.withTag('me-functions-subscriptions').withTag(userId).error(`Errored executing function: ${errorMessage}`);
         throw new ActionError('error', 400, errorMessage);
       }
 
-      Logger.withTag('me-functions').withTag(authSession.user.id).info(`Finished executing function: ${functionSlug}`, metrics);
+      Logger.withTag('me-functions-subscriptions').withTag(authSession.user.id).info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {
@@ -62,7 +73,7 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
         }
       );
     }
-    
+
     throw new ActionError('error', 400, `Handler is unable to fulfill this request.`);
   });
 }

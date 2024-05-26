@@ -37,7 +37,7 @@ export async function executeFunction(authSession: AuthSessionResponse, function
   Object.assign(context, requestArgs);
 
   // Log the actions
-  Logger.withTag('executeFunction').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId, requestArgs, context });
+  Logger.withTag('executeFunction').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId });
 
   return await run(functionToExecute.code, context);
 }
