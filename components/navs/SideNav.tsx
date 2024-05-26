@@ -9,7 +9,7 @@ import { AuthSessionResponse } from "@app/auth/session/types";
 import { usePathname } from 'next/navigation';
 import { Profile } from '@prisma/client';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { BookCheckIcon, GlobeIcon, WorkflowIcon, SquareDashedBottomCodeIcon } from 'lucide-react';
+import { BookCheckIcon, GlobeIcon, WorkflowIcon, SquareDashedBottomCodeIcon, RssIcon } from 'lucide-react';
 import {
   ChartBarSquareIcon
 } from '@heroicons/react/24/outline'
@@ -32,8 +32,8 @@ export const sideNavRoutes: NavItem[] = [
   //   icon: BookCheckIcon,
   // },
   {
-    name: "Hubs",
-    description: "Dynamic hubs that your AI can perform, including text generation, summarization, and more.",
+    name: "Functions Hub",
+    description: "Dynamic hubs that your AI can utilize, including functions, workflows, assistants and more.",
     children: [
       {
         name: 'Marketplace',
@@ -44,8 +44,14 @@ export const sideNavRoutes: NavItem[] = [
       {
         name: 'My Functions',
         description: 'Access and manage your collection of functions repository.',
-        href: '/functions/list',
+        href: '/functions/mine',
         icon: SquareDashedBottomCodeIcon,
+      },
+      {
+        name: 'Subscriptions',
+        description: 'Manage your subscriptions to other users\' functions.',
+        href: '/functions/subscriptions',
+        icon: RssIcon,
       }
     ],
   },

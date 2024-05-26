@@ -234,3 +234,77 @@ export const forkFunction = async (functionId: string, userId: string) => {
 
   return forkedFunction;
 };
+
+export const subscribeToggleFunction = async (functionId: string, userId: string) => {
+  const functionRecord = await db.function.findUnique({
+    where: {
+      id: functionId,
+      isPublished: true,
+    },
+  });
+
+  if (!functionRecord) {
+    throw new Error('Function not found');
+  }
+
+  // Check if function with the same slug exists on user's functions
+  const existingFunction = await db.function.findFirst({
+    where: {
+      ownerUserId: userId,
+      slug: functionRecord.slug,
+    },
+  });
+
+  if ( existingFunction ) {
+    throw new Error('Function with the same slug already exists');
+  }
+
+  // Check if the user is already subscribed to the function
+  const existingSubscription = await db.functionSubscription.findFirst({
+    where: {
+      functionId,
+      userId,
+    },
+    include: {
+      function: {
+        select: {
+          slug: true,
+        },
+      }
+    }
+  });
+
+  // Toggle subscription
+  if ( existingSubscription ) {
+    await db.functionSubscription.delete({
+      where: {
+        id: existingSubscription.id,
+      },
+    });
+
+    return {
+      functionSlug: existingSubscription.function.slug,
+      isSubscribed: false,
+    };
+  }
+  else {
+    const subscription = await db.functionSubscription.create({
+      data: {
+        functionId,
+        userId,
+      },
+      include: {
+        function: {
+          select: {
+            slug: true,
+          },
+        }
+      }
+    });
+
+    return {
+      functionSlug: subscription.function.slug,
+      isSubscribed: true,
+    };
+  }
+}

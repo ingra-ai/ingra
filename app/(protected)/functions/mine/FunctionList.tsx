@@ -4,7 +4,7 @@ import { FunctionItem, FunctionItemNew } from './FunctionItem';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { deleteFunction } from '@protected/functions/actions/functions';
-import type { FunctionListGetPayload } from '@protected/functions/list/types';
+import type { FunctionListGetPayload } from '@protected/functions/mine/types';
 
 interface FunctionsListProps {
   functions: FunctionListGetPayload[];

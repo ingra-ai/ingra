@@ -2,7 +2,7 @@ import { getAuthSession } from '@app/auth/session';
 import FunctionsList from './FunctionList';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
-import type { FetchFunctionListPaginationType } from '@protected/functions/list/types';
+import type { FetchFunctionSubscriptionListPaginationType } from '@protected/functions/subscriptions/types';
 import { BakaPagination } from '@components/BakaPagination';
 import clamp from 'lodash/clamp';
 import db from '@lib/db';
@@ -19,50 +19,53 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
   // Calculate skip value based on page and pageSize
   const skip = clamp(pageInt - 1, 0, 1e3) * pageSizeInt;
 
-  const [totalCount, allFunctions] = await Promise.all([
+  const [totalCount, allFunctionSubscriptions] = await Promise.all([
     // Fetch the total count of functions
-    db.function.count({
+    db.functionSubscription.count({
       where: {
-        ownerUserId: userId,
+        userId,
       },
     }),
 
-    // Fetch paginated functions
-    db.function.findMany({
+    // Fetch all functions that the user has subscribed to
+    db.functionSubscription.findMany({
       where: {
-        ownerUserId: userId,
+        userId: userId,
       },
-      orderBy: {
-        updatedAt: 'desc',
-      },
-      select: {
-        id: true,
-        slug: true,
-        code: false,
-        description: true,
-        httpVerb: true,
-        isPrivate: true,
-        isPublished: true,
-        ownerUserId: true,
-        updatedAt: true,
-        tags: {
+      include: {
+        function: {
           select: {
             id: true,
-            name: true,
-          },
-        },
-        arguments: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-          },
-        },
-        _count: {
-          select: {
-            forksTo: true,
-          },
-        },
+            slug: true,
+            code: false,
+            description: true,
+            httpVerb: true,
+            isPrivate: true,
+            isPublished: true,
+            ownerUserId: true,
+            createdAt: false,
+            updatedAt: true,
+            tags: {
+              select: {
+                id: true,
+                name: true,
+                functionId: false,
+                function: false,
+              }
+            },
+            owner: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    id: true,
+                    userName: true,
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       skip,
       take: pageSizeInt,
@@ -75,8 +78,8 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
   const hasNext = (skip + pageSizeInt) < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchFunctionListPaginationType = {
-    records: allFunctions,
+  const result: FetchFunctionSubscriptionListPaginationType = {
+    records: allFunctionSubscriptions,
     page: pageInt,
     pageSize: pageSizeInt,
     totalRecords,
@@ -94,10 +97,11 @@ export default async function Page(
   }
 ) {
   const authSession = await getAuthSession();
-  
-  if ( !authSession ) {
+
+  if (!authSession) {
     return notFound();
   }
+
 
   const paginationData = await fetchPaginationData(searchParams, authSession.user.id),
     { records, ...paginationProps } = paginationData;
@@ -107,10 +111,10 @@ export default async function Page(
   });
 
   return (
-    <div className="block" data-testid="functions-list-page">
+    <div className="block" data-testid="functions-subscriptions-page">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Functions</h1>
+          <h1 className="text-base font-semibold leading-6">Subscriptions</h1>
           <p className="text-xs text-gray-500 font-sans mt-1">
             # records: <strong>{paginationProps.totalRecords.toLocaleString(undefined, { minimumFractionDigits: 0 })}</strong>
           </p>
@@ -119,11 +123,11 @@ export default async function Page(
         </div>
       </div>
       <div className="mt-4">
-        <BakaPagination className="mb-4" { ...paginationProps } />
+        <BakaPagination className="mb-4" {...paginationProps} />
         <div className={functionListGridClasses}>
           {
             records.length > 0 && (
-              <FunctionsList functions={records} />
+              <FunctionsList functionSubscriptions={records} />
             )
           }
         </div>
