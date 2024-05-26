@@ -11,12 +11,19 @@ const DynamicCodeEditor = dynamic(() => import('@monaco-editor/react'), { ssr: f
 type CodeEditorInputProps = {
   id?: string;
   className?: string;
-  onChange: (value?: string) => void;
+  onChange?: (value?: string) => void;
   value?: string;
+  readOnly?: boolean;
 };
 
 const CodeEditorInput: React.FC<CodeEditorInputProps> = (props) => {
-  const { id, className, onChange, value = CODE_DEFAULT_TEMPLATE } = props;
+  const {
+    id,
+    className,
+    onChange = () => void 0,
+    value = CODE_DEFAULT_TEMPLATE,
+    readOnly = false
+  } = props;
   const editorRef = useRef<Parameters<OnMount> | null>(null);
   const classes = cn(className);
 
@@ -48,6 +55,7 @@ const CodeEditorInput: React.FC<CodeEditorInputProps> = (props) => {
       className={ classes }
       onChange={ onChange }
       options={{
+        readOnly,
         lineNumbers: 'on',
         minimap: { enabled: false },
         fontSize: 12,

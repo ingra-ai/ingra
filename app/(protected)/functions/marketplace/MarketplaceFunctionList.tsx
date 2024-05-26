@@ -1,25 +1,31 @@
 'use client';
-import React from 'react';
+import React, { useTransition } from 'react';
 import MarketplaceFunctionItem from './MarketplaceFunctionItem';
 import { PencilIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from '@components/ui/use-toast';
-import { forkFunction } from '@protected/functions/actions/functions';
-import { FunctionMarketListGetPayload } from './types';
+import { forkFunction, subscribeToggleFunction } from '@protected/functions/actions/functions';
+import type { FunctionMarketListGetPayload, FunctionSubscriptionMarketplaceListGetPayload } from '@protected/functions/marketplace/types';
 import { Function } from '@prisma/client';
 
 interface MarketplaceFunctionListProps {
   functions: FunctionMarketListGetPayload[];
+  subscribedFunctions: FunctionSubscriptionMarketplaceListGetPayload[];
 }
 
-const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ functions }) => {
+const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ functions, subscribedFunctions }) => {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   const redirectToEdit = (payload: Partial<Function>)  => {
     router.push(`/functions/edit/${payload?.id}`);
   }
+
+  const handleView = (id: string) => {
+    router.push(`/functions/marketplace/view/${id}`);
+  };
 
   const handleFork = (id: string) => {
     forkFunction(id).then((result) => {
@@ -29,13 +35,15 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
 
       toast({
         title: 'Success!',
-        description: 'Function has been forked successfully.',
+        description: result?.message || 'Function has been forked successfully.',
         action: result?.data?.id ? (
           <ToastAction altText="Edit Function" onClick={ () => redirectToEdit(result.data)}>
             <PencilIcon className="w-3 h-3 mr-3" /> Edit Function
           </ToastAction>
         ) : undefined,
       });
+
+      startTransition(router.refresh);
 
     }).catch((error) => {
       toast({
@@ -46,13 +54,41 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
     });
   }
 
-  return functions.map(func => (
-    <MarketplaceFunctionItem
-      key={func.id}
-      functionData={func}
-      onFork={() => handleFork(func.id)}
-    />
-  ));
+  const handleSubscribeToggle = (id: string) => {
+    subscribeToggleFunction(id).then((result) => {
+      if ( result.status !== 'ok' ) {
+        throw new Error(result.message);
+      }
+
+      toast({
+        title: 'Success!',
+        description: result?.message || 'Function has been subscribed successfully.'
+      });
+
+      startTransition(router.refresh);
+
+    }).catch((error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message || 'Failed to handle subscription!',
+      });
+    });
+  }
+
+  return functions.map(func => {
+    const isSubscribed = subscribedFunctions.some(subscribedFunc => subscribedFunc.functionId === func.id);
+    return (
+      <MarketplaceFunctionItem
+        key={func.id}
+        functionData={func}
+        isSubscribed={isSubscribed}
+        onFork={() => handleFork(func.id)}
+        onSubscribeToggle={() => handleSubscribeToggle(func.id)}
+        onView={() => handleView(func.id)}
+      />
+    );
+  });
 };
 
 export default MarketplaceFunctionList;

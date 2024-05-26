@@ -47,6 +47,13 @@ export type FunctionMarketListGetPayload = Prisma.FunctionGetPayload<{
     }
   }
 }>;
+
+export type FunctionSubscriptionMarketplaceListGetPayload = Prisma.FunctionSubscriptionGetPayload<{
+  select: {
+    functionId: true;
+  }
+}>;
+
 export type FetchFunctionMarketplacePaginationType = BakaPaginationType & {
   records: FunctionMarketListGetPayload[];
 };
