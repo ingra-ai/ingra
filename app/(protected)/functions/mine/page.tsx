@@ -122,9 +122,7 @@ export default async function Page(
         <BakaPagination className="mb-4" { ...paginationProps } />
         <div className={functionListGridClasses}>
           {
-            records.length > 0 && (
-              <FunctionsList functions={records} />
-            )
+            <FunctionsList functions={records} />
           }
         </div>
       </div>
