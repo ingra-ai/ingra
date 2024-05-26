@@ -12,7 +12,7 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
     if ( typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id;
 
-      Logger.withTag('me-functions').withTag(userId).info(`Starts executing function: ${functionSlug}`, requestArgs);
+      Logger.withTag('me-functions').withTag(`user:${ userId }`).info(`Starts executing function: ${functionSlug}`, requestArgs);
 
       const functionRecord = await db.function.findUnique({
         where: {
@@ -45,11 +45,11 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
 
       if ( errors.length ) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
-        Logger.withTag('me-functions').withTag(userId).error(`Errored executing function: ${errorMessage}`);
+        Logger.withTag('me-functions').withTag(`user:${ userId }`).error(`Errored executing function: ${errorMessage}`);
         throw new ActionError('error', 400, errorMessage);
       }
 
-      Logger.withTag('me-functions').withTag(authSession.user.id).info(`Finished executing function: ${functionSlug}`, metrics);
+      Logger.withTag('me-functions').withTag(`user:${ authSession.user.id }`).info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {

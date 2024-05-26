@@ -30,7 +30,7 @@ import { OpenAI, type ClientOptions } from "openai";
  */
 export async function GET(req: NextRequest) {
   return await apiAuthTryCatch<any>(async (authSession) => {
-    Logger.withTag('me-assistants').withTag(authSession.user.id).info('Called assistants');
+    Logger.withTag('me-assistants').withTag(`user:${ authSession.user.id }`).info('Called assistants');
 
     const ENV_OPENAI_API = authSession.user.envVars.find((envVar) => envVar.key === "OPENAI_API_KEY"),
       ENV_OPENAI_API_KEY = ENV_OPENAI_API?.value;
