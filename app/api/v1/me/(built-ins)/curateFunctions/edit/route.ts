@@ -3,16 +3,18 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db";
 import { validateAction } from "@lib/action-helpers";
-import { FunctionSchema } from "@/schemas/function";
+import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from "@/schemas/function";
+import cloneDeep from 'lodash/cloneDeep';
 import {
   upsertFunction as dataUpsertFunctions
 } from '@/data/functions';
+import { z } from "zod";
 
 /**
  * @swagger
  * /api/v1/me/curateFunctions/edit:
  *   patch:
- *     summary: Edits an existing function after knowing the function ID.
+ *     summary: Edits or updates an existing function after knowing the function ID.
  *     operationId: editFunction
  *     requestBody:
  *       required: true
@@ -48,7 +50,7 @@ import {
  *     tags:
  *       - Built-ins Internal
  */
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   const requestArgs = await req.json();
   const { function: functionRecord = {}, confirm = false } = requestArgs;
 
@@ -76,7 +78,42 @@ export async function POST(req: NextRequest) {
       throw new Error('Function not found or you do not have permission to edit the function.');
     }
 
-    const { data } = await validateAction(FunctionSchema, functionRecord);
+    // Create a safe function record to be edited
+    const safeFunctionRecord = cloneDeep(existingFunction as z.infer<typeof FunctionSchema>);
+
+    // 1. Fill any provided Function values to the safe function record
+    safeFunctionRecord.slug = functionRecord?.slug || safeFunctionRecord.slug;
+    safeFunctionRecord.code = functionRecord?.code || safeFunctionRecord.code;
+    safeFunctionRecord.isPrivate = typeof functionRecord?.isPrivate === 'boolean' ? functionRecord.isPrivate : safeFunctionRecord.isPrivate;
+    safeFunctionRecord.isPublished = typeof functionRecord?.isPublished === 'boolean' ? functionRecord.isPublished : safeFunctionRecord.isPublished;
+    safeFunctionRecord.httpVerb = functionRecord?.httpVerb || safeFunctionRecord.httpVerb;
+    safeFunctionRecord.description = functionRecord?.description || safeFunctionRecord.description;
+
+    // 2. Fill any provided Arguments values to the safe function record
+    safeFunctionRecord.arguments = ( functionRecord?.arguments || [] ).map( (elem: any) => {
+      const newArgument: z.infer<typeof FunctionArgumentSchema> = {
+        functionId: '',
+        name: elem.name,
+        type: elem.type,
+        defaultValue: elem.defaultValue,
+        description: elem.description,
+        isRequired: elem.isRequired,
+      };
+
+      return newArgument;
+    } ).filter( (elem: any) => elem.name.trim() );
+
+    // 3. Fill any provided Tags values to the safe function record
+    safeFunctionRecord.tags = ( functionRecord?.tags || [] ).map( (elem: any) => {
+      const newTag: z.infer<typeof FunctionTagsSchema> = {
+        functionId: '',
+        name: elem.name,
+      };
+
+      return newTag;
+    } ).filter( (elem: any) => elem.name.trim() );
+
+    const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
 
     if (!confirm) {
       return NextResponse.json(

@@ -276,8 +276,8 @@ export const FunctionSchema = z.object({
   isPrivate: z.boolean().default(true),
   isPublished: z.boolean().default(false),
   ownerUserId: z.string().optional(),
-  createdAt: z.date().default(() => new Date()),
-  updatedAt: z.date().default(() => new Date()),
+  createdAt: z.date().optional().default(() => new Date()),
+  updatedAt: z.date().optional().default(() => new Date()),
   httpVerb: HttpVerbEnum.default('GET'),
   description: z.string().max(MAX_FUNCTION_DESCRIPTION_LENGTH, {
     message: `Description must be less than ${MAX_FUNCTION_DESCRIPTION_LENGTH} characters.`,
