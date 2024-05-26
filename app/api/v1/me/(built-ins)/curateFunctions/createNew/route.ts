@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
         {
           status: 'error',
           message: 'Function schema is empty or invalid. Consider searching some functions first for your reference. Or use this as a reference to create a new function.',
-          data: safeFunctionRecord,
+          data: JSON.stringify(safeFunctionRecord),
         },
         {
           status: 400,
@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
       {
         status: 'success',
         message: `New function has been created with the slug ${ result.slug } and ID of ${ result.id }.`,
-        data: result,
+        data: JSON.stringify(result),
       },
       {
         status: 200,
