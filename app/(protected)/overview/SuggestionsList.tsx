@@ -1,3 +1,4 @@
+import type { FC } from 'react';
 import { CogIcon } from 'lucide-react';
 import {
   Alert,
@@ -15,7 +16,7 @@ type SuggestionsListProps = {
   className?: string;
 }
 
-export const SuggestionsList: React.FC<SuggestionsListProps> = (props) => {
+export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
   const { authSession, totalApiKeys = 0, className } = props;
   const {
     profile,

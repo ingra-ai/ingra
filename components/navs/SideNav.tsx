@@ -1,4 +1,5 @@
 'use client';
+import type { FC } from 'react';
 import { LogOutIcon } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@lib/utils';
@@ -69,7 +70,7 @@ export const sideNavRoutes: NavItem[] = [
   // },
 ];
 
-const SideNav: React.FC<SideNavProps> = (props) => {
+const SideNav: FC<SideNavProps> = (props) => {
   const { authSession } = props;
   const userProfile: Profile | null = authSession.user.profile;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');

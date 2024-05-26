@@ -1,12 +1,13 @@
 'use client';
 
+import type { FC } from 'react';
 import { ValueToggler } from "@components/ValueToggler";
 
 type UserVarsTableProps = {
   userVarsRecord: Record<string, any>;
 };
 
-export const UserVarsTable: React.FC<UserVarsTableProps> = (props) => {
+export const UserVarsTable: FC<UserVarsTableProps> = (props) => {
   const { userVarsRecord = {} } = props;
   const userVarsEntries = Object.entries(userVarsRecord);
 

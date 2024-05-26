@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import dynamic from 'next/dynamic';
 
 const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'), {
@@ -11,7 +12,7 @@ type ReactSwaggerProps = {
   spec: Record<string, any>;
 };
 
-const ReactSwagger: React.FC<ReactSwaggerProps> = (props) => {
+const ReactSwagger: FC<ReactSwaggerProps> = (props) => {
   const { spec } = props;
   return <DynamicSwaggerUI spec={spec} />;
 };

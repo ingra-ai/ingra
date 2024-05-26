@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import { useCallback, useState, useTransition } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { RefreshCcw } from 'lucide-react';
@@ -26,7 +27,7 @@ type ApiKeysTableProps = {
   apiKeys: Required<Pick<ApiKey, 'key' | 'lastUsedAt'>>[];
 };
 
-export const ApiKeysTable: React.FC<ApiKeysTableProps> = (props) => {
+export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
   const { apiKeys } = props;
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);

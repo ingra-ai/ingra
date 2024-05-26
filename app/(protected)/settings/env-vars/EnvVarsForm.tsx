@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +19,7 @@ type EnvVarFormProps = {
   envVarRecord?: EnvVarsOptionalPayload;
 };
 
-export const EnvVarForm: React.FC<EnvVarFormProps> = (props) => {
+export const EnvVarForm: FC<EnvVarFormProps> = (props) => {
   const { onSuccess, envVarRecord } = props;
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);

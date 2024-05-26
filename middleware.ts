@@ -1,4 +1,3 @@
-import { Logger } from '@lib/logger';
 import { NextResponse, type NextRequest } from 'next/server';
 
 async function middleware(request: NextRequest) {
