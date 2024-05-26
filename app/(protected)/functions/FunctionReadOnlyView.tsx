@@ -139,7 +139,7 @@ export const FunctionReadOnlyView: React.FC<FunctionReadOnlyViewProps> = (props)
         {
           functionRecord && (
             <FormSlideOver title="Sandbox" open={isSandboxOpen} setOpen={setSandboxOpen}>
-              <CodeSandboxForm functionRecord={functionRecord} onClose={() => setSandboxOpen(false)} />
+              <CodeSandboxForm functionRecord={functionRecord} onClose={() => setSandboxOpen(false)} isMarketplace={ true } />
             </FormSlideOver>
           )
         }
