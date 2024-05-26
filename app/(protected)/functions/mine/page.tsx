@@ -1,12 +1,11 @@
-'use server';
 import { getAuthSession } from '@app/auth/session';
-import db from '@lib/db';
-import MarketplaceFunctionList from './MarketplaceFunctionList';
+import FunctionsList from './FunctionList';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
-import clamp from 'lodash/clamp';
+import type { FetchFunctionListPaginationType } from '@protected/functions/mine/types';
 import { BakaPagination } from '@components/BakaPagination';
-import type { FetchFunctionMarketplacePaginationType } from '@protected/functions/marketplace/types';
+import clamp from 'lodash/clamp';
+import db from '@lib/db';
 
 const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
   // Parse the query parameteres
@@ -24,22 +23,14 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
     // Fetch the total count of functions
     db.function.count({
       where: {
-        NOT: {
-          ownerUserId: userId,
-        },
-        isPublished: true,
-        isPrivate: false,
+        ownerUserId: userId,
       },
     }),
 
     // Fetch paginated functions
     db.function.findMany({
       where: {
-        NOT: {
-          ownerUserId: userId,
-        },
-        isPublished: true,
-        isPrivate: false,
+        ownerUserId: userId,
       },
       orderBy: {
         updatedAt: 'desc',
@@ -53,40 +44,25 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
         isPrivate: true,
         isPublished: true,
         ownerUserId: true,
-        createdAt: false,
         updatedAt: true,
-        owner: {
-          select: {
-            profile: {
-              select: {
-                userName: true,
-              }
-            }
-          }
-        },
         tags: {
           select: {
             id: true,
             name: true,
-            functionId: false,
-            function: false,
-          }
+          },
         },
         arguments: {
           select: {
             id: true,
             name: true,
-            description: false,
             type: true,
-            defaultValue: false,
-            isRequired: false,
-          }
+          },
         },
         _count: {
           select: {
-            forksTo: true
-          }
-        }
+            forksTo: true,
+          },
+        },
       },
       skip,
       take: pageSizeInt,
@@ -99,7 +75,7 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
   const hasNext = (skip + pageSizeInt) < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchFunctionMarketplacePaginationType = {
+  const result: FetchFunctionListPaginationType = {
     records: allFunctions,
     page: pageInt,
     pageSize: pageSizeInt,
@@ -118,24 +94,12 @@ export default async function Page(
   }
 ) {
   const authSession = await getAuthSession();
-
-  if (!authSession) {
+  
+  if ( !authSession ) {
     return notFound();
   }
 
-  const [paginationData, subscribedFunctions] = await Promise.all([
-      fetchPaginationData(searchParams, authSession.user.id),
-
-      // Fetch all functions that the user has subscribed to
-      db.functionSubscription.findMany({
-        where: {
-          userId: authSession.user.id,
-        },
-        select: {
-          functionId: true,
-        },
-      })
-    ]),
+  const paginationData = await fetchPaginationData(searchParams, authSession.user.id),
     { records, ...paginationProps } = paginationData;
 
   const functionListGridClasses = cn({
@@ -146,7 +110,7 @@ export default async function Page(
     <div className="block" data-testid="functions-list-page">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Marketplace</h1>
+          <h1 className="text-base font-semibold leading-6">Functions</h1>
           <p className="text-xs text-gray-500 font-sans mt-1">
             # records: <strong>{paginationProps.totalRecords.toLocaleString(undefined, { minimumFractionDigits: 0 })}</strong>
           </p>
@@ -155,11 +119,11 @@ export default async function Page(
         </div>
       </div>
       <div className="mt-4">
-        <BakaPagination className="mb-4" {...paginationProps} />
+        <BakaPagination className="mb-4" { ...paginationProps } />
         <div className={functionListGridClasses}>
           {
-            records && (
-              <MarketplaceFunctionList functions={records} subscribedFunctions={subscribedFunctions} />
+            records.length > 0 && (
+              <FunctionsList functions={records} />
             )
           }
         </div>

@@ -10,6 +10,7 @@ import {
   upsertFunction as dataUpsertFunctions,
   deleteFunction as dataDeleteFunctions,
   forkFunction as dataForkFunctions,
+  subscribeToggleFunction as dataSubscribeToggleFunction,
 } from '@/data/functions';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
@@ -58,6 +59,18 @@ export const forkFunction = async (functionId: string) => {
       status: 'ok',
       message: `Function "${forkedFunction.slug}" has been forked!`,
       data: forkedFunction
+    };
+  });
+}
+
+export const subscribeToggleFunction = async (functionId: string) => {
+  return await actionAuthTryCatch(async (authSession) => {
+    const subscribedFunction = await dataSubscribeToggleFunction(functionId, authSession.user.id);
+
+    return {
+      status: 'ok',
+      message: subscribedFunction.isSubscribed ? `Function "${subscribedFunction.functionSlug}" has been subscribed!` : `Function "${subscribedFunction.functionSlug}" has been unsubscribed!`,
+      data: subscribedFunction
     };
   });
 }

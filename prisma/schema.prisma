@@ -21,6 +21,7 @@ model User {
   envVars                 EnvVars[]
   functions               Function[]
   functionReactions       FunctionReaction[]
+  functionSubscriptions   FunctionSubscription[]
 }
 
 model Profile {
@@ -102,6 +103,9 @@ enum HttpVerb {
   DELETE
 }
 
+// Be careful after this line ----------------------------------------------
+// The following models are not meant to be redis cached by getAuthSession() method
+
 model Function {
   id                 String             @id @default(uuid()) @db.Uuid
   slug               String             @db.VarChar(64)
@@ -121,10 +125,25 @@ model Function {
   forksFrom FunctionFork[] @relation("ForkedFunctions")
   forksTo FunctionFork[] @relation("OriginalFunctions")
   reactions  FunctionReaction[]
+  subscribers FunctionSubscription[]
 
 
   @@unique([ownerUserId, slug])
   @@map("functions")
+}
+
+model FunctionSubscription {
+  id         String   @id @default(uuid()) @db.Uuid
+  functionId String   @db.Uuid
+  userId     String   @db.Uuid
+  createdAt  DateTime @default(now())
+
+  // Relations
+  function Function @relation(fields: [functionId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([functionId, userId])
+  @@map("function_subscriptions")
 }
 
 model FunctionFork {

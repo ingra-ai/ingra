@@ -16,6 +16,7 @@ import { formatDistance } from 'date-fns';
 import { Button } from '@components/ui/button';
 import { EnvVarsOptionalPayload } from './types';
 import { cn } from '@lib/utils';
+import { ValueToggler } from '@components/ValueToggler';
 
 type EnvVarsTableProps = {
   envVars: EnvVarsOptionalPayload[];
@@ -34,7 +35,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">Environment Variables ({envVars.length})</h1>
           <p className="mt-2 text-sm">
-            Your environment variables will be passed as part of <code className="italic">global</code> in your functions and flows
+            Your environment variables will be passed as part of <code className="text-orange-500 italic font-semibold">ctx</code> in your functions
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -46,7 +47,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
       <table className="mt-4 w-full whitespace-nowrap text-left table-fixed">
         <colgroup>
           <col className={ cn( { "w-3/12": !withoutDateColumns, "w-4/12": withoutDateColumns }) } />
-          <col className={ cn( { "w-4/12": !withoutDateColumns, "w-6/12": withoutDateColumns }) } />
+          <col className={ cn( { "w-4/12": !withoutDateColumns, "w-7/12": withoutDateColumns }) } />
           {
             !withoutDateColumns && (
               <>
@@ -55,29 +56,29 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
               </>
             )
           }
-          <col className={ cn( { "w-1/12": !withoutDateColumns, "w-2/12": withoutDateColumns }) } />
+          <col className={ cn( 'w-1/12' ) } />
         </colgroup>
         <thead className="border-b border-white/10 text-sm leading-6">
           <tr>
             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
               Key
             </th>
-            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold w-full">
+            <th scope="col" className="pl-3 py-3.5 text-left text-sm font-semibold w-full">
               Value
             </th>
             {
               !withoutDateColumns && (
                 <>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold truncate">
                     Created At
                   </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold truncate">
                     Updated At
                   </th>
                 </>
               )
             }
-            <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+            <th scope="col" className="relative py-3.5 pr-4 sm:pr-0">
               <span className="sr-only">Edit</span>
             </th>
           </tr>
@@ -87,18 +88,20 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
             return (
               <tr key={envVar.id}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0 truncate" title={envVar.key}>
-                  {envVar.key}
+                  <code className='text-orange-500 italic font-semibold'>{envVar.key}</code>
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm truncate" title={envVar.value}>{envVar.value}</td>
+                <td className="whitespace-nowrap px-3 py-4 text-sm">
+                  <ValueToggler>{envVar.value}</ValueToggler>
+                  </td>
                 {
                   !withoutDateColumns && (
                     <>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
+                      <td className="whitespace-nowrap px-3 py-4 text-sm truncate">
                         {
                           envVar?.createdAt ? formatDistance(envVar.createdAt, Date.now(), { addSuffix: true }) : false
                         }
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
+                      <td className="whitespace-nowrap px-3 py-4 text-sm truncate">
                         {
                           envVar?.updatedAt ? formatDistance(envVar.updatedAt, Date.now(), { addSuffix: true }) : false
                         }
@@ -106,7 +109,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
                     </>
                   )
                 }
-                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                <td className="relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-0">
                   <button onClick={() => onEdit(envVar)} aria-label='Edit' title='Edit' className="p-1 mr-2 text-zinc-300 hover:text-zinc-400">
                     <PencilIcon className="h-4 w-4" />
                   </button>

@@ -104,7 +104,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   });
 
   const onCancel = useCallback(() => {
-    router.replace('/functions/list');
+    router.replace('/functions/mine');
   }, []);
 
   const onSave = useCallback(async (values: z.infer<typeof FunctionSchema>) => {
@@ -122,7 +122,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
               title: 'Function updated!',
               description: 'Your function has been updated.',
               action: (
-                <ToastAction altText="My Functions" onClick={() => router.replace(`/functions/list`)}>
+                <ToastAction altText="My Functions" onClick={() => router.replace(`/functions/mine`)}>
                   <ListChecksIcon className="w-3 h-3 mr-3" /> My Functions
                 </ToastAction>
               )
@@ -233,8 +233,8 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
-        <form className="grid grid-cols-1 md:grid-cols-12 gap-8" method="POST" onSubmit={handleSubmit(onSave)}>
-          <div className="block space-y-6 col-span-1 order-2 lg:order-1 lg:col-span-6 xl:col-span-7 2xl:col-span-8">
+        <form className="grid grid-cols-1 lg:grid-cols-12 gap-8" method="POST" onSubmit={handleSubmit(onSave)}>
+          <div className="block space-y-6 col-span-1 order-2 lg:order-1 md:col-span-6 xl:col-span-7 2xl:col-span-8">
             <div className="block">
               <div className="flex mb-3 leading-6 justify-between">
                 <label className="block text-sm font-medium">
@@ -268,7 +268,7 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
             </div>
           </div>
 
-          <Tabs id="function-form-tabs" defaultValue="function-tab" className="col-span-1 order-1 lg:order-2 lg:col-span-6 xl:col-span-5 2xl:col-span-4">
+          <Tabs id="function-form-tabs" defaultValue="function-tab" className="block col-span-1 order-1 lg:order-2 lg:col-span-6 xl:col-span-5 2xl:col-span-4">
             <div className="flex justify-between mb-4">
               <TabsList className="">
                 <TabsTrigger value="function-tab">Function</TabsTrigger>
