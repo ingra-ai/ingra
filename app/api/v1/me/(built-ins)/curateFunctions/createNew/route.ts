@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { validateAction } from "@lib/action-helpers";
-import { FunctionSchema } from "@/schemas/function";
+import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from "@/schemas/function";
 import {
   upsertFunction as dataUpsertFunctions
 } from '@/data/functions';
@@ -54,32 +54,32 @@ export async function POST(req: NextRequest) {
   const { function: functionRecord = {}, confirm = false } = requestArgs;
 
   return await apiAuthTryCatch<any>(async (authSession) => {
+    const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
+        id: envVar.id,
+        ownerUserId: envVar.ownerUserId,
+        key: envVar.key,
+        value: envVar.value,
+      })),
+      userVarsRecord = generateUserVars(authSession),
+      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map(envVar => envVar.key));
+
+    const safeFunctionRecord = {
+      slug: 'exampleFunction',
+      code: generateCodeDefaultTemplate(allUserAndEnvKeys),
+      isPrivate: true,
+      isPublished: true,
+      httpVerb: 'GET',
+      description: 'A brief description of what the function does',
+      arguments: [] as z.infer<typeof FunctionArgumentSchema>[],
+      tags: [] as z.infer<typeof FunctionTagsSchema>[],
+    } as z.infer<typeof FunctionSchema>;
+
     if ( !functionRecord || typeof functionRecord !== 'object' || Object.keys(functionRecord).length === 0  ) {
-      const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
-          id: envVar.id,
-          ownerUserId: envVar.ownerUserId,
-          key: envVar.key,
-          value: envVar.value,
-        })),
-        userVarsRecord = generateUserVars(authSession),
-        allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map(envVar => envVar.key));
-
-      const exampleFunction: Partial<z.infer<typeof FunctionSchema>> = {
-        slug: 'exampleFunction',
-        code: generateCodeDefaultTemplate(allUserAndEnvKeys),
-        isPrivate: true,
-        isPublished: true,
-        httpVerb: 'GET',
-        description: 'A brief description of what the function does',
-        arguments: [],
-        tags: [],
-      };
-
       return NextResponse.json(
         {
           status: 'error',
           message: 'Function schema is empty or invalid. Consider searching some functions first for your reference. Or use this as a reference to create a new function.',
-          data: exampleFunction,
+          data: safeFunctionRecord,
         },
         {
           status: 400,
@@ -91,7 +91,39 @@ export async function POST(req: NextRequest) {
       throw new Error('Creating new function doesn\'t require an ID. Please remove the ID from the function schema.');
     }
 
-    const { data } = await validateAction(FunctionSchema, functionRecord);
+    // 1. Fill any provided Function values to the safe function record
+    safeFunctionRecord.slug = functionRecord?.slug || safeFunctionRecord.slug;
+    safeFunctionRecord.code = functionRecord?.code || safeFunctionRecord.code;
+    safeFunctionRecord.isPrivate = typeof functionRecord?.isPrivate === 'boolean' ? functionRecord.isPrivate : safeFunctionRecord.isPrivate;
+    safeFunctionRecord.isPublished = typeof functionRecord?.isPublished === 'boolean' ? functionRecord.isPublished : safeFunctionRecord.isPublished;
+    safeFunctionRecord.httpVerb = functionRecord?.httpVerb || safeFunctionRecord.httpVerb;
+    safeFunctionRecord.description = functionRecord?.description || safeFunctionRecord.description;
+
+    // 2. Fill any provided Arguments values to the safe function record
+    safeFunctionRecord.arguments = ( functionRecord?.arguments || [] ).map( (elem: any) => {
+      const newArgument: z.infer<typeof FunctionArgumentSchema> = {
+        functionId: '',
+        name: elem.name,
+        type: elem.type,
+        defaultValue: elem.defaultValue,
+        description: elem.description,
+        isRequired: elem.isRequired,
+      };
+
+      return newArgument;
+    } ).filter( (elem: any) => elem.name.trim() );
+
+    // 3. Fill any provided Tags values to the safe function record
+    safeFunctionRecord.tags = ( functionRecord?.tags || [] ).map( (elem: any) => {
+      const newTag: z.infer<typeof FunctionTagsSchema> = {
+        functionId: '',
+        name: elem.name,
+      };
+
+      return newTag;
+    } ).filter( (elem: any) => elem.name.trim() );
+
+    const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
 
     if (!confirm) {
       return NextResponse.json(
