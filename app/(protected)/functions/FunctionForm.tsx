@@ -68,8 +68,8 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
       slug: functionRecord?.slug || '',
       description: functionRecord?.description || '',
       code: functionRecord?.code || generateCodeDefaultTemplate(allUserAndEnvKeys),
-      isPrivate: !!functionRecord?.isPrivate,
-      isPublished: !!functionRecord?.isPublished,
+      isPrivate: typeof functionRecord?.isPrivate === 'undefined' ? true : !!functionRecord?.isPrivate,
+      isPublished: typeof functionRecord?.isPublished === 'undefined' ? false : !!functionRecord?.isPublished,
       tags: functionRecord?.tags ? functionRecord.tags.map(tag => {
         return {
           id: tag.id || '',
