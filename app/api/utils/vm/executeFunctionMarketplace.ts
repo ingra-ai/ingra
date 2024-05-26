@@ -39,7 +39,7 @@ export async function executeFunctionMarketplace(authSession: AuthSessionRespons
   Object.assign(context, requestArgs);
 
   // Log the actions
-  Logger.withTag('executeFunctionMarketplace').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId, requestArgs, context });
+  Logger.withTag('executeFunctionMarketplace').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId });
 
   return await run(functionToExecute.code, context);
 }
