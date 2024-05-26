@@ -13,6 +13,7 @@ import type { Prisma } from '@prisma/client';
 import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@app/api/utils/vm/types';
 
 type CodeSandboxFormProps = {
+  isMarketplace?: boolean;
   functionRecord: Prisma.FunctionGetPayload<{
     include: {
       arguments: true
@@ -29,6 +30,7 @@ type RunState = {
 
 export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
   const {
+    isMarketplace = false,
     functionRecord,
     onClose = () => void 0
   } = props;
@@ -58,7 +60,7 @@ export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
 
     // execute code
     try {
-      const { outputs, result } = await runCodeSandbox(functionRecord.id, values)
+      const { outputs, result } = await runCodeSandbox(functionRecord.id, values, isMarketplace);
       setRunState({
         isRunning: false,
         outputs,
@@ -78,7 +80,7 @@ export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
         result: null,
       });
     }
-  }, [functionRecord.id]);
+  }, [functionRecord.id, isMarketplace]);
 
   const onLogboxClose = useCallback(() => {
     setRunState({
