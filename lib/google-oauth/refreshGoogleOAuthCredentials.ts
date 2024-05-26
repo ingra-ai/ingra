@@ -34,13 +34,13 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
 
   // Check if the required properties are present
   if (!access_token || !refresh_token) {
-    Logger.withTag('renewGoogleOAuthCredentials').withTag(userId).error('Missing either "access_token" or "refresh_token".');
+    Logger.withTag('renewGoogleOAuthCredentials').withTag(`user:${ userId }`).error('Missing either "access_token" or "refresh_token".');
     return null;
   }
 
   // Check if userId and primaryEmailAddress are present
   if (!userId || !primaryEmailAddress) {
-    Logger.withTag('renewGoogleOAuthCredentials').withTag(userId).error('Missing either "userId" or "primaryEmailAddress".');
+    Logger.withTag('renewGoogleOAuthCredentials').withTag(`user:${ userId }`).error('Missing either "userId" or "primaryEmailAddress".');
     return null;
   }
 
@@ -70,7 +70,7 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
   });
 
   // Log the necessary information
-  Logger.withTag('renewGoogleOAuthCredentials').withTag(userId).info('Refresh is necessary for token:', {
+  Logger.withTag('renewGoogleOAuthCredentials').withTag(`user:${ userId }`).info('Refresh is necessary for token:', {
     hasBeenExpiredFor,
   });
 
