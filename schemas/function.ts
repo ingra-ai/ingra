@@ -28,7 +28,7 @@ async function handler(ctx) {
  * Regular expression pattern for validating function slugs.
  * Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.
  */
-export const FUNCTION_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
+const FUNCTION_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
 
 /**
  * Enum for HTTP verbs.
@@ -45,7 +45,7 @@ export const HttpVerbEnum = z.enum([
 /**
  * Maximum length constraint for function code.
  */
-export const MAX_FUNCTION_CODE_LENGTH = 12000;
+const MAX_FUNCTION_CODE_LENGTH = 1e4;
 
 /**
  * Maximum length constraint for function description.
@@ -57,7 +57,7 @@ export const MAX_FUNCTION_DESCRIPTION_LENGTH = 300;
  * Regular expression pattern for validating function argument names.
  * Names must consist of alphanumeric characters and underscores only, and cannot start with a number.
  */
-export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 
 /**
  * Regular expression pattern for validating function tag names.
@@ -67,23 +67,27 @@ export const FUNCTION_ARG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
  * @remarks
  * This regular expression is used to enforce naming conventions for function tags.
  */
-export const FUNCTION_TAG_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-\s]*$/;
+const FUNCTION_TAG_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-\s]*$/;
 
 /**
  * Maximum length constraint for function argument names.
  */
-export const MAX_FUNCTION_ARG_NAME_LENGTH = 50;
+const MAX_FUNCTION_ARG_NAME_LENGTH = 50;
 
 /**
  * Maximum length constraint for function argument names.
  */
-export const MAX_FUNCTION_TAG_NAME_LENGTH = 50;
+const MAX_FUNCTION_TAG_NAME_LENGTH = 50;
 
 /**
  * Reserved argument names that cannot be used.
  */
-export const RESERVED_ARGUMENT_NAMES = ['userVars'];
+const RESERVED_ARGUMENT_NAMES: string[] = [];
 
+/**
+ * Reserved function slugs that cannot be used.
+ */
+const RESERVED_FUNCTION_SLUGS = ['new', 'search', 'edit', 'view', 'createNew', 'list', 'delete', 'update', 'clone'];
 /**
  * Allowed types for function arguments.
  * Valid values are 'string', 'number', and 'boolean'.
@@ -98,8 +102,42 @@ export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
 ];
 
 /**
- * Schema definition for function arguments.
+ * @swagger
+ * components:
+ *   schemas:
+ *     FunctionArgument:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           default: ''
+ *           description: Unique identifier for the function argument.
+ *         name:
+ *           type: string
+ *           default: ''
+ *           description: The name of the argument.
+ *         type:
+ *           type: string
+ *           enum: [string, number. boolean]
+ *           default: 'string'
+ *           description: The data type of the argument (e.g., string, number, boolean).
+ *         defaultValue:
+ *           type: string
+ *           nullable: true
+ *           default: ''
+ *           description: The default value of the argument.
+ *         description:
+ *           type: string
+ *           nullable: true
+ *           default: ''
+ *           description: A description of the argument.
+ *         isRequired:
+ *           type: boolean
+ *           default: false
+ *           description: Indicates if the argument is required.
  */
+// * Schema definition for function arguments.
 export const FunctionArgumentSchema = z.object({
   id: z.string().optional(),
   functionId: z.string(),
@@ -131,8 +169,28 @@ export const FunctionArgumentSchema = z.object({
 });
 
 /**
- * Schema definition for function tags.
+ * @swagger
+ * components:
+ *   schemas:
+ *     FunctionTag:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           default: ''
+ *           description: Unique identifier for the function tag.
+ *         functionId:
+ *           type: string
+ *           format: uuid
+ *           default: ''
+ *           description: The ID of the function this tag belongs to.
+ *         name:
+ *           type: string
+ *           default: ''
+ *           description: The name of the tag.
  */
+// * Schema definition for function tags.
 export const FunctionTagsSchema = z.object({
   id: z.string().optional(),
   functionId: z.string(),
@@ -146,13 +204,72 @@ export const FunctionTagsSchema = z.object({
 });
 
 /**
- * Schema definition for functions.
+ * @swagger
+ * components:
+ *   schemas:
+ *     Function:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           default: ''
+ *           description: Unique identifier for the function.
+ *         slug:
+ *           type: string
+ *           default: ''
+ *           description: A unique slug for the function.
+ *         code:
+ *           type: string
+ *           default: ''
+ *           description: The code for the function.
+ *         isPrivate:
+ *           type: boolean
+ *           default: true
+ *           description: Indicates if the function is private.
+ *         isPublished:
+ *           type: boolean
+ *           default: false
+ *           description: Indicates if the function is published.
+ *         httpVerb:
+ *           type: string
+ *           enum: [GET, POST, PUT, PATCH, DELETE]
+ *           default: 'GET'
+ *           description: The HTTP verb used by the function.
+ *         description:
+ *           type: string
+ *           default: ''
+ *           description: A description of the function.
+ *         arguments:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/FunctionArgument'
+ *           description: A list of arguments for the function.
+ *         tags:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/FunctionTag'
+ *           description: A list of tags associated with the function.
  */
+// * Schema definition for functions.
 export const FunctionSchema = z.object({
   id: z.string().optional(),
-  slug: z.string().regex(FUNCTION_SLUG_REGEX, {
+  slug: z.string()
+  .min(6, {
+    message: 'Slug must be at least 6 characters long.'
+  })
+  .max(64, {
+    message: 'Slug must be less than 64 characters long.'
+  })
+  .regex(FUNCTION_SLUG_REGEX, {
     message: "Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.",
-  }),
+  })
+  .refine(
+    (value) => RESERVED_FUNCTION_SLUGS.indexOf(value) === -1, 
+    (value) => (
+      { message: `The function slug "${value}" is reserved and cannot be used.` }
+    )
+  ),
   code: z.string().max(MAX_FUNCTION_CODE_LENGTH, {
     message: `Code must be less than ${MAX_FUNCTION_CODE_LENGTH} characters.`,
   }),

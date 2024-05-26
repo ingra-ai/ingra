@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { EnvVarForm } from './EnvVarsForm';
 import { useState, useTransition } from 'react';
@@ -13,7 +14,7 @@ type EnvVarsSectionProps = {
   envVars: EnvVarsOptionalPayload[];
 };
 
-export const EnvVarsSection: React.FC<EnvVarsSectionProps> = (props) => {
+export const EnvVarsSection: FC<EnvVarsSectionProps> = (props) => {
   const router = useRouter();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();

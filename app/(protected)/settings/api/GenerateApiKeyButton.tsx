@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import { useCallback, useState, useTransition } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ type GenerateApiKeyButtonProps = {
   noop?: any;
 };
 
-export const GenerateApiKeyButton: React.FC<GenerateApiKeyButtonProps> = (props) => {
+export const GenerateApiKeyButton: FC<GenerateApiKeyButtonProps> = (props) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

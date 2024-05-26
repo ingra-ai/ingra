@@ -23,7 +23,8 @@ export const getSwaggerSpec = async () => {
   const swaggerOptions: SwaggerOptions = {
     apiFolder: 'api', // define api folder under app folder
     apis: [
-      'app/api/**/*.ts'
+      'app/api/**/*.ts',
+      'schemas/**/*.ts',
     ],
     definition: {
       openapi: '3.0.0',

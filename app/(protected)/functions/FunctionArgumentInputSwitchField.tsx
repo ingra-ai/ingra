@@ -1,5 +1,5 @@
 'use client';
-
+import type { FC } from 'react';
 import { FUNCTION_ARGUMENT_ALLOWED_TYPES } from "@/schemas/function";
 import type { ControllerRenderProps } from "react-hook-form";
 import { Switch } from "@/components/ui/switch"
@@ -14,7 +14,7 @@ type FunctionArgumentInputSwitchFieldProps = {
   field: ControllerRenderProps<any>;
 };
 
-const FunctionArgumentInputSwitchField: React.FC<FunctionArgumentInputSwitchFieldProps> = (props) => {
+const FunctionArgumentInputSwitchField: FC<FunctionArgumentInputSwitchFieldProps> = (props) => {
   const { type, id, className, placeholder, field } = props;
   const classes = cn(className);
 

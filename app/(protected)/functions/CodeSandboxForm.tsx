@@ -1,5 +1,5 @@
 'use client';
-
+import type { FC } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@components/ui/button';
 import { CircleDot, PlayCircleIcon } from 'lucide-react';
@@ -28,7 +28,7 @@ type RunState = {
   result: any;
 };
 
-export const CodeSandboxForm: React.FC<CodeSandboxFormProps> = (props) => {
+export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
   const {
     isMarketplace = false,
     functionRecord,

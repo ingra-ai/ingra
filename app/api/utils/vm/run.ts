@@ -17,7 +17,7 @@ async function withTimeout(promise: Promise<any>, timeoutSeconds = EXECUTION_TIM
 }
 
 interface Sandbox {
-  console: Pick<Console, 'log' | 'error'>;
+  console: Pick<typeof console, 'log' | 'error'>;
   handler: ((ctx: VmContextArgs) => Promise<any>) | null;
   fetch: typeof nodeFetch;
   utils: {

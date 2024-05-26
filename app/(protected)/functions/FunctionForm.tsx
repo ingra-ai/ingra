@@ -5,11 +5,11 @@ import { useForm, useFieldArray, FormProvider, Controller } from 'react-hook-for
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@components/ui/button';
 import { RefreshCcw, BugPlayIcon, CopyPlusIcon, ListChecksIcon } from 'lucide-react';
-import { startTransition, useCallback, useState } from 'react';
+import { startTransition, useCallback, useState, type JSX, type FC } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
-import { CODE_DEFAULT_TEMPLATE, FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
-import { upsertFunction } from './actions/functions';
+import { FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
+import { cloneFunction, upsertFunction } from './actions/functions';
 import { cn } from '@lib/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
@@ -27,6 +27,7 @@ import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 import { UserVarsTable } from './UserVarsTable';
+import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
 
 type FunctionFormProps = {
   userVars: Record<string, any>;
@@ -39,22 +40,13 @@ type FunctionFormProps = {
   }>;
 };
 
-function generateCodeDefaultTemplate(allUserAndEnvKeys: string[]) {
-  if ( !allUserAndEnvKeys.length ) return CODE_DEFAULT_TEMPLATE;
-
-  return CODE_DEFAULT_TEMPLATE
-    .replace("console.log({ ctx });", `
-       const { ${ allUserAndEnvKeys.join(', ')}, ...requestArgs } = ctx;
-    `.trim());
-}
-
-export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
+export const FunctionForm: FC<FunctionFormProps> = (props) => {
   const {
     userVars = {},
     envVars = [],
     functionRecord
   } = props;
-  const isEditMode = !!functionRecord;
+  const isEditMode = !!functionRecord && !!functionRecord.id;
   const { toast } = useToast();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
@@ -167,65 +159,45 @@ export const FunctionForm: React.FC<FunctionFormProps> = (props) => {
   const onClone = useCallback(async () => {
     if (!isEditMode) return;
 
+    const functionId = functionRecord?.id;
+
     setIsSaving(true);
 
-    const existingValues = methods.getValues();
+    const clonedFunction = await cloneFunction(functionId).then((result) => {
+      if (result.status !== 'ok') {
+        throw new Error(result.message);
+      }
+      const toastProps = {
+        title: 'Function cloned!',
+        description: 'Your function has been cloned.',
+        action: <></> as JSX.Element,
+      };
 
-    // save to db and return function
-    const savedFunction = await upsertFunction({
-      ...existingValues,
-      id: '',
-      slug: 'cloned-' + existingValues.slug,
-      isPublished: false,
-      isPrivate: true,
-      arguments: (existingValues.arguments || []).map(arg => {
-        return {
-          ...arg,
-          id: ''
-        };
-      }),
-      tags: (existingValues.tags || []).map(tag => {
-        return {
-          ...tag,
-          id: ''
-        };
-      })
+      if (result?.data?.id) {
+        toastProps.action = (
+          <ToastAction altText="Cloned Function" onClick={() => router.replace(`/functions/edit/${result.data.id}`)}>
+            <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
+          </ToastAction>
+        );
+      }
+
+      toast(toastProps);
+      router.refresh();
     })
-      .then((result) => {
-        if (result.status !== 'ok') {
-          throw new Error(result.message);
-        }
-        const toastProps = {
-          title: 'Function cloned!',
-          description: 'Your function has been cloned.',
-          action: <></> as JSX.Element
-        };
-
-        if (result?.data?.id) {
-          toastProps.action = (
-            <ToastAction altText="Cloned Function" onClick={() => router.replace(`/functions/edit/${result.data.id}`)}>
-              <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
-            </ToastAction>
-          );
-        }
-
-        toast(toastProps);
-        router.refresh();
-      })
-      .catch((error: Error) => {
-        toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: error?.message || 'Failed to perform operation!',
-        });
-
-        Logger.error(error?.message);
-      })
-      .finally(() => {
-        setIsSaving(false);
+    .catch((error: Error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message || 'Failed to perform operation!',
       });
 
-    return savedFunction;
+      Logger.error(error?.message);
+    })
+    .finally(() => {
+      setIsSaving(false);
+    });
+
+    return clonedFunction;
   }, [isEditMode]);
 
   const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');

@@ -308,3 +308,63 @@ export const subscribeToggleFunction = async (functionId: string, userId: string
     };
   }
 }
+
+export const cloneFunction = async (functionId: string, userId: string) => {
+  const functionRecord = await db.function.findUnique({
+    where: {
+      id: functionId,
+      OR: [
+        {
+          ownerUserId: userId,
+        },
+        {
+          subscribers: {
+            some: {
+              userId,
+            }
+          }
+        }
+      ]
+    },
+    include: {
+      arguments: true,
+      tags: true,
+    },
+  });
+
+  if (!functionRecord) {
+    throw new Error('Function not found');
+  }
+
+  // Create a new slug for the cloned function
+  const newSlug = `cloned-${functionRecord.slug}`;
+
+  // Clone the function
+  const clonedFunction = await db.function.create({
+    data: {
+      slug: newSlug,
+      code: functionRecord.code,
+      isPrivate: functionRecord.isPrivate,
+      isPublished: functionRecord.isPublished,
+      ownerUserId: userId,
+      httpVerb: functionRecord.httpVerb,
+      description: functionRecord.description,
+      arguments: {
+        create: functionRecord.arguments.map(arg => ({
+          name: arg.name,
+          type: arg.type,
+          defaultValue: arg.defaultValue,
+          description: arg.description,
+          isRequired: arg.isRequired,
+        })),
+      },
+      tags: {
+        create: functionRecord.tags.map(tag => ({
+          name: tag.name,
+        })),
+      },
+    },
+  });
+
+  return clonedFunction;
+}

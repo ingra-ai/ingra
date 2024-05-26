@@ -1,4 +1,5 @@
 'use client';
+import type { FC } from 'react';
 import { startTransition, useState } from "react";
 import { OAuthToken } from "@prisma/client";
 import { TrashIcon } from '@heroicons/react/20/solid'
@@ -46,7 +47,7 @@ const getTokenDetail = (token: OAuthToken) => {
   }
 };
 
-const OAuthList: React.FC<OAuthListProps> = (props) => {
+const OAuthList: FC<OAuthListProps> = (props) => {
   const { oAuthTokens } = props;
   const router = useRouter();
   const { toast } = useToast();

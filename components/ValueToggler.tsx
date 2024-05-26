@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useState, FC } from "react";
+import { type PropsWithChildren, useState, type FC } from "react";
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Button } from "@components/ui/button";
 

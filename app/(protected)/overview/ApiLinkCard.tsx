@@ -1,3 +1,4 @@
+import type { FC } from 'react';
 import {
   Card,
   CardContent,
@@ -16,7 +17,7 @@ interface ApiLinkCardProps {
   className?: string;
 }
 
-export const ApiLinkCard: React.FC<ApiLinkCardProps> = ({ url, title, description, body, className }) => {
+export const ApiLinkCard: FC<ApiLinkCardProps> = ({ url, title, description, body, className }) => {
   return (
     <a
       href={url}

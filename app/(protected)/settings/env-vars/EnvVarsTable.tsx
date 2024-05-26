@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import {
   AlertDialog,
@@ -25,7 +26,7 @@ type EnvVarsTableProps = {
   onDelete: (record: EnvVarsOptionalPayload) => void;
 };
 
-export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props) => {
+export const EnvVarsTable: FC<EnvVarsTableProps> = (props) => {
   const { envVars, onCreate, onEdit, onDelete } = props;
   const withoutDateColumns = envVars.every((envVar) => envVar.createdAt === undefined || envVar.updatedAt === undefined);
 

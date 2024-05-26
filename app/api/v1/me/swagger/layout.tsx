@@ -1,7 +1,8 @@
+import type { FC } from 'react';
 import { cn } from '@lib/utils';
 import { PropsWithChildren } from 'react';
 
-const SwaggerLayout: React.FC<PropsWithChildren> = async (props) => {
+const SwaggerLayout: FC<PropsWithChildren> = async (props) => {
   const { children } = props;
   const layoutClasses = cn('swagger-docs-layout');
 

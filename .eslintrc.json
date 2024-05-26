@@ -1,7 +1,7 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es2020": true
   },
   "extends": [
     "eslint:recommended",
@@ -17,7 +17,7 @@
   "plugins": [],
   "rules": {
     "no-unused-vars": "warn",
-    "no-undef": "warn",
+    "no-undef": "error",
     "no-case-declarations": "warn"
   }
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import type { FC } from 'react';
 import * as z from 'zod';
 import { MagicLoginSchema } from '@/schemas/auth';
 import { useForm } from 'react-hook-form';
@@ -15,7 +16,7 @@ import { REGEXP_ONLY_DIGITS } from 'input-otp';
 type FormViewState = 'email' | 'otp' | 'redirect';
 type MagicLoginFormProps = {};
 
-export const MagicLoginForm: React.FC<MagicLoginFormProps> = (props) => {
+export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
   const { toast } = useToast();
   const [formView, setFormView] = useState<FormViewState>('email');
   const [isLoading, setIsLoading] = useState(false);

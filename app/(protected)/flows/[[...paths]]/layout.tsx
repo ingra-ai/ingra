@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 type FunctionLayoutProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function Layout(props: FunctionLayoutProps) {
