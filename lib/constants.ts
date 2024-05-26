@@ -63,6 +63,7 @@ export const USERS_API_ROOT_URL = APP_URL + USERS_API_ROOT_PATH;
 // !! Requires to replace the username and slug,
 // !! -- only use this wherever you have access to user profile and function slug
 export const USERS_API_FUNCTION_PATH = [USERS_API_ROOT_PATH, 'functions', ':slug'].join('/');
+export const USERS_API_FUNCTION_SUBSCRIPTIONS_PATH = [USERS_API_ROOT_PATH, 'subscriptions', ':slug'].join('/');
 
 /**
  * The version of the app as defined in package.json
