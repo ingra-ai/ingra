@@ -6,7 +6,7 @@ import db from '@lib/db';
 import { generateVmContextArgs } from './generateVmContextArgs';
 import { Logger } from '@lib/logger';
 
-export async function executeFunction(authSession: AuthSessionResponse, functionId: string, requestArgs: Record<string, any> = {}) {
+export async function executeFunctionMarketplace(authSession: AuthSessionResponse, functionId: string, requestArgs: Record<string, any> = {}) {
   if ( !authSession ) {
     throw new ActionError('error', 401, `Unauthorized session.`);
   }
@@ -15,11 +15,12 @@ export async function executeFunction(authSession: AuthSessionResponse, function
     throw new ActionError('error', 400, `Invalid arguments.`);
   }
 
-  // Fetch the function code from user's functions
+  // 1. Fetch function from marketplace.
   const functionToExecute = await db.function.findUnique({
     where: {
       id: functionId,
-      ownerUserId: authSession.user.id,
+      isPublished: true,
+      isPrivate: false,
     },
     select: {
       code: true,
@@ -27,8 +28,9 @@ export async function executeFunction(authSession: AuthSessionResponse, function
     }
   });
 
-  if (!functionToExecute) {
-    throw new ActionError('error', 400, `Function not found.`);
+  // Validate if function is found
+  if ( !functionToExecute ) {
+    throw new ActionError('error', 400, `Function from marketplace is not found.`);
   }
 
   const context = generateVmContextArgs(authSession, functionToExecute.arguments, requestArgs);
@@ -37,7 +39,7 @@ export async function executeFunction(authSession: AuthSessionResponse, function
   Object.assign(context, requestArgs);
 
   // Log the actions
-  Logger.withTag('executeFunction').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId, requestArgs, context });
+  Logger.withTag('executeFunctionMarketplace').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId, requestArgs, context });
 
   return await run(functionToExecute.code, context);
 }
