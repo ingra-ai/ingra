@@ -5,8 +5,8 @@ import { clearAuthCaches } from "@app/auth/session/caches";
 
 /**
  * @swagger
- * /api/v1/me/clearCaches:
- *   delete:
+ * /api/v1/me/curateFunctions/list:
+ *   get:
  *     summary: Clear caches for the current session
  *     operationId: clearCaches
  *     description: Clear all caches for the current session. This may fix some issues for OAuth credentials being expired, with a trade-off of next request will be slower.
@@ -26,11 +26,14 @@ import { clearAuthCaches } from "@app/auth/session/caches";
  *     tags:
  *       - Built-ins Internal
  */
-export async function DELETE(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const requestArgs = Object.fromEntries(searchParams);
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const deletedCaches = await clearAuthCaches(authSession);
     
-    Logger.withTag('me-builtins').withTag('clearCaches').withTag(authSession.user.id).info('Clearing caches for current session');
+    Logger.withTag('me-builtins').withTag('curateFunctions-list').withTag(`user:${ authSession.user.id }`).info('Clearing caches for current session');
 
     return NextResponse.json(
       {
