@@ -7,6 +7,7 @@
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_PACKAGE_VERSION } from '@lib/constants';
 import { createSwaggerSpec } from 'next-swagger-doc';
 import { kv } from '@vercel/kv';
+import { Logger } from '@lib/logger';
 
 export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]>;
 
@@ -19,7 +20,7 @@ export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]
  */
 export const BASE_SWAGGER_SPEC_KEY = 'BASE_SWAGGER_SPEC';
 
-export const getSwaggerSpec = async () => {
+export const getSwaggerSpec = async ( storeToCache = false ) => {
   const swaggerOptions: SwaggerOptions = {
     apiFolder: 'api', // define api folder under app folder
     apis: [
@@ -41,7 +42,13 @@ export const getSwaggerSpec = async () => {
     },
   };
 
-  const spec = createSwaggerSpec(swaggerOptions);
-  await kv.set(BASE_SWAGGER_SPEC_KEY, spec);
+  const spec = createSwaggerSpec(swaggerOptions),
+    specLength = Object.keys(spec || {}).length;
+
+  if ( storeToCache ) {
+    await kv.set(BASE_SWAGGER_SPEC_KEY, spec);
+    Logger.withTag('swagger').info('Stored base swagger spec to KV store', { specLength });
+  }
+
   return spec;
 };
