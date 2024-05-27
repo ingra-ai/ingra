@@ -158,7 +158,10 @@ export async function PATCH(req: NextRequest) {
       });
     }
 
+    Object.assign(safeFunctionRecord, fieldsToUpdate);
+
     const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
+    
     const result = await dataUpsertFunctions(data, authSession.user.id);
 
     const allUpdatedFields = Object.keys(fieldsToUpdate);
