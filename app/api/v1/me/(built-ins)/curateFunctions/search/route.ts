@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
+import { Prisma } from "@prisma/client";
 import db from "@lib/db";
 
 /**
@@ -15,6 +16,14 @@ import db from "@lib/db";
  *         schema:
  *           type: string
  *         description: Query string to search functions by slug, description, or tags.
+ *       - in: query
+ *         name: fieldsToRetrieve
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [description, code, httpVerb, isPrivate, isPublished, arguments, tags]
+ *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected.
  *     responses:
  *       '200':
  *         description: Successfully retrieved list of searched functions
@@ -34,6 +43,70 @@ import db from "@lib/db";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') || '';
+  const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
+
+  const selectFields: Prisma.FunctionSelect = {
+    id: true,
+    slug: true
+  };
+
+  // Populate Function select fields
+  if ( fieldsToRetrieveParams.length ) {
+    const acceptableFieldNames: ( keyof Prisma.FunctionSelect )[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
+    acceptableFieldNames.forEach(( acceptableFieldName ) => {
+      if (fieldsToRetrieveParams.length === 0 || fieldsToRetrieveParams.includes(acceptableFieldName)) {
+        // Non relational fields;
+        switch ( acceptableFieldName ) {
+          case 'arguments':
+            selectFields[acceptableFieldName] = {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                defaultValue: true,
+                description: true,
+                isRequired: true,
+              }
+            };
+            break;
+          case 'tags':
+            selectFields[acceptableFieldName] = {
+              select: {
+                id: true,
+                name: true,
+              }
+            };
+            break;
+          default:
+            selectFields[acceptableFieldName] = true;
+            break;
+        }
+      }
+    });
+  }
+  else {
+    selectFields.description = true;
+    selectFields.code = true;
+    selectFields.httpVerb = true;
+    selectFields.isPrivate = true;
+    selectFields.isPublished = true;
+    selectFields.arguments = {
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        defaultValue: true,
+        description: true,
+        isRequired: true,
+      }
+    };
+    selectFields.tags = {
+      select: {
+        id: true,
+        name: true,
+      }
+    };
+  }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     const functionRecords = await db.function.findMany({
@@ -77,27 +150,7 @@ export async function GET(req: NextRequest) {
           ]
         } : {})
       },
-      select: {
-        id: true,
-        slug: true,
-        description: true,
-        arguments: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-            defaultValue: true,
-            description: true,
-            isRequired: true
-          }
-        },
-        tags: {
-          select: {
-            id: true,
-            name: true,
-          }
-        },
-      },
+      select: selectFields,
       take: 10,
       orderBy: {
         updatedAt: 'desc',
@@ -112,7 +165,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         status: 'success',
-        message: `Successfully retrieved list of searched functions with term "${ q }"`,
+        message: `Successfully retrieved list of searched functions.`,
         data: functionRecords,
       },
       {

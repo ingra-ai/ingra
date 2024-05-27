@@ -22,6 +22,14 @@ import { Prisma } from "@prisma/client";
  *         schema:
  *           type: string
  *         description: The slug of the function to view.
+ *       - in: query
+ *         name: fieldsToRetrieve
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [description, code, httpVerb, isPrivate, isPublished, arguments, tags]
+ *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected.
  *     responses:
  *       '200':
  *         description: Successfully retrieved the function
@@ -48,11 +56,75 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
   const slug = searchParams.get('slug');
+  const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     // Validate that either id or slug is provided
     if (!id && !slug) {
       throw new Error('Either id or slug must be provided');
+    }
+
+    const selectFields: Prisma.FunctionSelect = {
+      id: true,
+      slug: true
+    };
+    
+    // Populate Function select fields
+    if (fieldsToRetrieveParams.length) {
+      const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
+      acceptableFieldNames.forEach((acceptableFieldName) => {
+        if (fieldsToRetrieveParams.length === 0 || fieldsToRetrieveParams.includes(acceptableFieldName)) {
+          // Non relational fields;
+          switch (acceptableFieldName) {
+            case 'arguments':
+              selectFields[acceptableFieldName] = {
+                select: {
+                  id: true,
+                  name: true,
+                  type: true,
+                  defaultValue: true,
+                  description: true,
+                  isRequired: true,
+                }
+              };
+              break;
+            case 'tags':
+              selectFields[acceptableFieldName] = {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              };
+              break;
+            default:
+              selectFields[acceptableFieldName] = true;
+              break;
+          }
+        }
+      });
+    }
+    else {
+      selectFields.description = true;
+      selectFields.code = true;
+      selectFields.httpVerb = true;
+      selectFields.isPrivate = true;
+      selectFields.isPublished = true;
+      selectFields.arguments = {
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          defaultValue: true,
+          description: true,
+          isRequired: true,
+        }
+      };
+      selectFields.tags = {
+        select: {
+          id: true,
+          name: true,
+        }
+      };
     }
 
     // Prepare the search filter based on provided id or slug
@@ -73,52 +145,28 @@ export async function GET(req: NextRequest) {
       ]
     };
 
-    if ( id && whereFilter.AND && Array.isArray( whereFilter.AND ) ) {
+    if (id && whereFilter.AND && Array.isArray(whereFilter.AND)) {
       whereFilter.AND.push({ id });
     }
 
-    if ( slug && whereFilter.AND && Array.isArray( whereFilter.AND ) ) {
+    if (slug && whereFilter.AND && Array.isArray(whereFilter.AND)) {
       whereFilter.AND.push({ slug });
     }
 
     const functionRecord = await db.function.findFirst({
       where: whereFilter,
-      select: {
-        id: true,
-        slug: true,
-        description: true,
-        code: true,
-        isPrivate: true,
-        isPublished: true,
-        httpVerb: true,
-        arguments: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-            defaultValue: true,
-            description: true,
-            isRequired: true
-          }
-        },
-        tags: {
-          select: {
-            id: true,
-            name: true,
-          }
-        },
-      }
+      select: selectFields
     });
 
     // Check if the function was found
-    if ( !functionRecord ) {
+    if (!functionRecord) {
       throw new Error('Unable to find the function you\'re looking for');
     }
 
     Logger.withTag('me-builtins')
       .withTag('curateFunctions-view')
       .withTag(`user:${authSession.user.id}`)
-      .info('Viewing a specific user function');
+      .info('Viewing a specific user function', { whereFilter });
 
     return NextResponse.json(
       {
