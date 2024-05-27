@@ -5,16 +5,16 @@ import db from "@lib/db";
 import { validateAction } from "@lib/action-helpers";
 import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from "@/schemas/function";
 import cloneDeep from 'lodash/cloneDeep';
-import {
-  upsertFunction as dataUpsertFunctions
-} from '@/data/functions';
+import { upsertFunction as dataUpsertFunctions } from '@/data/functions';
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 import { z } from "zod";
 
 /**
  * @swagger
  * /api/v1/me/curateFunctions/edit:
  *   patch:
- *     summary: Edits or updates an existing function after knowing the function ID.
+ *     summary: Edits or updates one or more fields on an existing function after knowing the function ID.
  *     operationId: editFunction
  *     requestBody:
  *       required: true
@@ -22,18 +22,41 @@ import { z } from "zod";
  *         application/json:
  *           schema:
  *             type: object
- *             description: The schema of the function to be edited
+ *             description: Any of the function fields that can be edited, including arguments and tags. ID is required.
  *             properties:
  *               function:
- *                 allOf:
- *                   - $ref: '#/components/schemas/Function'
- *                   - type: object
- *                     required: [slug, code, httpVerb, description]
- *                     properties: {}
- *               confirm:
- *                 type: boolean
- *                 default: false
- *                 description: Confirms edit action of the function if the schema is valid.
+ *                 type: object
+ *                 required: [id]
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     description: The ID of the function to be edited
+ *                   slug:
+ *                     type: string
+ *                     description: The slug of the function to be edited
+ *                   code:
+ *                     type: string
+ *                     description: The code of the function
+ *                   description:
+ *                     type: string
+ *                     description: The description of the function
+ *                   httpVerb:
+ *                     type: string
+ *                     description: The HTTP verb of the function
+ *                   isPrivate:
+ *                     type: boolean
+ *                     description: If the function is private
+ *                   isPublished:
+ *                     type: boolean
+ *                     description: If the function is published
+ *                   arguments:
+ *                     type: array
+ *                     items:
+ *                       $ref: '#/components/schemas/FunctionArgument'
+ *                   tags:
+ *                     type: array
+ *                     items:
+ *                       $ref: '#/components/schemas/FunctionTag'
  *     responses:
  *       '200':
  *         description: Successfully edited existing function
@@ -52,20 +75,20 @@ import { z } from "zod";
  */
 export async function PATCH(req: NextRequest) {
   const requestArgs = await req.json();
-  const { function: functionRecord = {}, confirm = false } = requestArgs;
+  const functionPayload = requestArgs?.function as z.infer<typeof FunctionSchema>;
+
+  if ( !functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0 ) {
+    throw new Error('Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?');
+  }
+
+  if ( !functionPayload.id ) {
+    throw new Error('Function ID is required to edit the function. Consider searching some functions first for your references.');
+  }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    if ( !functionRecord || typeof functionRecord !== 'object' || Object.keys(functionRecord).length === 0  ) {
-      throw new Error('Function schema is empty or invalid. Consider searching some functions first for your references.');
-    }
-
-    if ( !functionRecord.id ) {
-      throw new Error('Function ID is required to edit the function.');
-    }
-
     const existingFunction = await db.function.findFirst({
       where: {
-        id: functionRecord.id,
+        id: functionPayload.id,
         ownerUserId: authSession.user.id,
       },
       include: {
@@ -74,86 +97,83 @@ export async function PATCH(req: NextRequest) {
       }
     });
 
-    if ( !existingFunction ) {
+    if (!existingFunction) {
       throw new Error('Function not found or you do not have permission to edit the function.');
     }
 
     // Create a safe function record to be edited
     const safeFunctionRecord = cloneDeep(existingFunction as z.infer<typeof FunctionSchema>);
 
-    // 1. Fill any provided Function values to the safe function record
-    safeFunctionRecord.slug = functionRecord?.slug || safeFunctionRecord.slug;
-    safeFunctionRecord.code = functionRecord?.code || safeFunctionRecord.code;
-    safeFunctionRecord.isPrivate = typeof functionRecord?.isPrivate === 'boolean' ? functionRecord.isPrivate : safeFunctionRecord.isPrivate;
-    safeFunctionRecord.isPublished = typeof functionRecord?.isPublished === 'boolean' ? functionRecord.isPublished : safeFunctionRecord.isPublished;
-    safeFunctionRecord.httpVerb = functionRecord?.httpVerb || safeFunctionRecord.httpVerb;
-    safeFunctionRecord.description = functionRecord?.description || safeFunctionRecord.description;
-
-    // 2. Fill any provided Arguments values to the safe function record
-    safeFunctionRecord.arguments = ( functionRecord?.arguments || [] ).map( (elem: any) => {
-      const newArgument: z.infer<typeof FunctionArgumentSchema> = {
-        functionId: '',
-        name: elem.name,
-        type: elem.type,
-        defaultValue: elem.defaultValue,
-        description: elem.description,
-        isRequired: elem.isRequired,
-      };
-
-      return newArgument;
-    } ).filter( (elem: any) => elem.name.trim() );
-
-    // 3. Fill any provided Tags values to the safe function record
-    safeFunctionRecord.tags = ( functionRecord?.tags || [] ).map( (elem: any) => {
-      const newTag: z.infer<typeof FunctionTagsSchema> = {
-        functionId: '',
-        name: elem.name,
-      };
-
-      return newTag;
-    } ).filter( (elem: any) => elem.name.trim() );
-
-    const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
-
-    if (!confirm) {
-      return NextResponse.json(
-        {
-          status: 'info',
-          message: 'Function schema is valid. Please review and confirm to edit the function.',
-          data: {
-            slug: data.slug,
-            code: data.code,
-            httpVerb: data.httpVerb,
-            description: data.description,
-            isPrivate: data.isPrivate,
-            isPublished: data.isPublished,
-            arguments: ( data.arguments || [] ).map( elem => ({
-              name: elem.name,
-              type: elem.type,
-              defaultValue: elem.defaultValue,
-              description: elem.description,
-              isRequired: elem.isRequired,
-            }) ).filter( elem => elem.name.trim() ),
-            tags: ( data.tags || [] ).map( elem => ({
-              name: elem.name,
-            }) ).filter( elem => elem.name.trim() ),
-          },
-        },
-        {
-          status: 200,
-        }
-      );
+    // Fill only the provided Function values to the safe function record
+    const fieldsToUpdate: Partial<typeof safeFunctionRecord> = {};
+    if ( !isNil( functionPayload.slug ) && functionPayload.slug !== safeFunctionRecord.slug ) {
+      fieldsToUpdate.slug = functionPayload.slug;
     }
 
+    if ( !isNil( functionPayload.code ) && functionPayload.code !== safeFunctionRecord.code ) {
+      fieldsToUpdate.code = functionPayload.code;
+    }
+
+    if ( !isNil( functionPayload.isPrivate ) && functionPayload.isPrivate !== safeFunctionRecord.isPrivate ) {
+      fieldsToUpdate.isPrivate = functionPayload.isPrivate;
+    }
+
+    if ( !isNil( functionPayload.isPublished ) && functionPayload.isPublished !== safeFunctionRecord.isPublished ) {
+      fieldsToUpdate.isPublished = functionPayload.isPublished;
+    }
+
+    if ( !isNil( functionPayload.httpVerb ) && functionPayload.httpVerb !== safeFunctionRecord.httpVerb ) {
+      fieldsToUpdate.httpVerb = functionPayload.httpVerb;
+    }
+
+    if ( !isNil( functionPayload.description ) && functionPayload.description !== safeFunctionRecord.description ) {
+      fieldsToUpdate.description = functionPayload.description;
+    }
+
+    // Fill any provided Arguments values to the safe function record
+    const argumentsPayload = ( functionPayload.arguments || [] ).filter(( elem ) => elem.name.trim());
+    if ( !isEmpty( argumentsPayload ) ) {
+      safeFunctionRecord.arguments = argumentsPayload.map((elem) => {
+        const newArgument: z.infer<typeof FunctionArgumentSchema> = {
+          functionId: '',
+          name: elem.name,
+          type: elem.type,
+          defaultValue: elem.defaultValue,
+          description: elem.description,
+          isRequired: elem.isRequired,
+        };
+        return newArgument;
+      });
+    }
+
+    // Fill any provided Tags values to the safe function record
+    const tagsPayload = ( functionPayload.tags || [] ).filter(( elem ) => elem.name.trim());
+    if ( !isEmpty( tagsPayload ) ) {
+      safeFunctionRecord.tags = tagsPayload.map((elem: any) => {
+        const newTag: z.infer<typeof FunctionTagsSchema> = {
+          functionId: '',
+          name: elem.name,
+        };
+        return newTag;
+      });
+    }
+
+    const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
     const result = await dataUpsertFunctions(data, authSession.user.id);
-    
-    Logger.withTag('me-builtins').withTag('curateFunctions-edit').withTag(`user:${ authSession.user.id }`).info(`Editing function ${ result.slug }`);
+
+    const allUpdatedFields = Object.keys(fieldsToUpdate);
+
+    Logger.withTag('me-builtins').withTag('curateFunctions-edit').withTag(`user:${authSession.user.id}`).info(`Editing function ${result.slug}`);
 
     return NextResponse.json(
       {
         status: 'success',
-        message: `Function ${ result.slug } has been successfully edited.`,
-        data: result,
+        message: `Successfully updated ${ allUpdatedFields.join(', ') } fields on "${result.slug}" function.`,
+        data: {
+          id: result.id,
+          slug: result.slug,
+          ...fieldsToUpdate
+        },
       },
       {
         status: 200,
@@ -161,4 +181,3 @@ export async function PATCH(req: NextRequest) {
     );
   });
 }
-
