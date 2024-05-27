@@ -160,7 +160,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Contributing
 
-We welcome contributions to the Bakabit Portal! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue.
+We welcome contributions to the Bakabit Portal! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue. Thanks in advance
 
 ## License
 
