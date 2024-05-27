@@ -8,7 +8,7 @@ import { APP_URL } from '@lib/constants';
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
 export async function GET(request: NextRequest) {
-  const swaggerSpec = await getSwaggerSpec();
+  const swaggerSpec = await getSwaggerSpec(true);
 
   /**
    * Extras for swaggerSpec that if I add in the swagger/config, it will throw an error and the swagger UI won't load
