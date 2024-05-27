@@ -1,8 +1,9 @@
-import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions } from '@app/api/(internal)/swagger/config';
+import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getSwaggerSpec } from '@app/api/(internal)/swagger/config';
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } from '@lib/constants';
 import { generateOpenApiSchema } from '@v1/me/swagger/generateOpenApiSchema';
 import { kv } from '@vercel/kv';
+import isEmpty from 'lodash/isEmpty';
 
 export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
   if ( !authSession ) {
@@ -11,30 +12,31 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const username = authSession?.user?.profile?.userName || authSession.user.email;
 
-  const [userFunctionsPaths, baseSwaggerSpec] = await Promise.all([
+  const [userFunctionsPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([
     generateOpenApiSchema(authSession),
     kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY),
+    getSwaggerSpec(false)
   ]);
 
-  if ( !baseSwaggerSpec ) {
+  const mySwaggerSpec = { ...( baseSwaggerSpec || {} ), ...( baseSwaggerSpecCache || {} ) };
+
+  if ( isEmpty( mySwaggerSpec ) ) {
     return null;
   }
-  
-  const meSwaggerSpec = { ...baseSwaggerSpec };
 
   /**
    * Update the title and description of the swagger
    */
-  if ( meSwaggerSpec?.info ) {
-    Object.assign(meSwaggerSpec.info, {
+  if ( mySwaggerSpec?.info ) {
+    Object.assign(mySwaggerSpec.info, {
       title: `${ username } | ${APP_NAME} Plugin API`,
       description: APP_OPENAI_MANIFEST_DESC_FOR_HUMAN,
     });
   }
 
-  if ( meSwaggerSpec?.paths && userFunctionsPaths ) {
-    Object.assign(meSwaggerSpec.paths, userFunctionsPaths);
+  if ( mySwaggerSpec?.paths && userFunctionsPaths ) {
+    Object.assign(mySwaggerSpec.paths, userFunctionsPaths);
   }
 
-  return meSwaggerSpec;
+  return mySwaggerSpec;
 };
