@@ -6,7 +6,8 @@ import { validateAction } from '@lib/action-helpers';
 import { ProfileSchema } from '@/schemas/profile';
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
 import { clearAuthCaches } from '@app/auth/session/caches';
-import { updateProfile as dataUpdateProfile } from '@/data/profile';
+import { updateProfile as dataUpdateProfile, destroyAccount as dataDestroyAccount } from '@/data/profile';
+import { Logger } from '@lib/logger';
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const validatedValues = await validateAction(ProfileSchema, values); 
@@ -28,4 +29,32 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
       data: profile,
     };
   });
+};
+
+export const destroyProfile = async ( ) => {
+  // Delete all
+  return await actionAuthTryCatch(async (authSession) => {
+    /**
+     * @todo Add some more defensive checks here
+     */
+    const [isDestroyed, isCacheCleared] = await Promise.all([
+      dataDestroyAccount( authSession.user.id ),
+
+      // Delete kv caches for this user
+      clearAuthCaches(authSession),
+
+      Logger.withTag('deleteAllUserProfile').info('Uninstalling user account', { userId: authSession.user.id }),
+    ]);
+
+    if (!isDestroyed) {
+      throw new ActionError('error', 400, 'Failed to delete profile!');
+    }
+
+    return {
+      status: 'ok',
+      message: 'Profile deleted!',
+      data: null,
+    };
+  });
+
 };
