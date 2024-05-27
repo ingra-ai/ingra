@@ -1,12 +1,16 @@
 # Bakabit Portal
 
-Bakabit Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.
+Bakabit Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs.
+Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.
 
-Basically;
-1. Login and go to /marketplace and find some useful curated functions for you.
-2. At /overview, you can find links to your openapi.json or swagger to test it on the web.
-3. Generate API key for `x-api-key` header on your chatgpt actions
-3. Paste JSON to your own chatgpt plugins actions
+It's available to review at [https://portal.bakabit.com](https://portal.bakabit.com) with your browser to see the result.
+
+#### Getting Started as a new User
+1. Login and visit [Marketplace](https://portal.bakabit.com/functions/marketplace) and find some useful community-functions for you to Subscribe or Fork.
+2. Visit [Overview](https://portal.bakabit.com/overview), Review the notification alert and you may find links to your **openapi.json** for your GPT actions or **Swagger** to test it on the web.
+3. Generate API key at [https://portal.bakabit.com/settings/api](https://portal.bakabit.com/settings/api) for `x-api-key` header when configuring your ChatGPT actions
+4. Paste JSON from **openapi.json** to your own chatgpt plugins actions.
+5. Interact with your personalized GPT hooked with the functions you have.
 
 ## Tech Stack
 
@@ -34,7 +38,7 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Integration to OpenAI ChatGPT Plugin**: Provide seamless experience to integrate personal curated functions to ChatGPT Plugin
 - [x] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
    - Screw it, good enough for now - ill be back later.
-- [ ] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
+- [x] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
 - [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
 - [ ] **Advanced Security Features**: Implement advanced security measures such as encryption, secure access controls, and more to protect user data and function integrity.
