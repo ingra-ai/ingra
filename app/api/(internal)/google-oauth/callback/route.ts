@@ -6,6 +6,7 @@ import { google } from 'googleapis';
 import { RedirectType, redirect } from 'next/navigation';
 import { createOAuthToken } from '@/data/oauthToken';
 import { apiAuthTryCatch } from '@app/api/utils/apiAuthTryCatch';
+import { clearAuthCaches } from '@app/auth/session/caches';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -138,6 +139,9 @@ export async function GET(request: NextRequest) {
       if ( !oauthToken ) {
         throw new ActionError('error', 400, 'Failed to create OAuth token');
       }
+
+      // Clear user caches
+      await clearAuthCaches(authSession);
 
       const redirectUrl = new URL(APP_GOOGLE_OAUTH_REDIRECT_URL);
       redirectUrl.searchParams.append('ref', oauthToken.id);
