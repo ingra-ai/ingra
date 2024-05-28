@@ -3,9 +3,7 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { ActionError } from '@v1/types/api-response';
 import db from "@lib/db";
 import { Logger } from "@lib/logger";
-import { run } from "@app/api/utils/vm/run";
-import type { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";
-import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
+import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
 
 const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any> = {} ) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
@@ -33,15 +31,7 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
         throw new ActionError('error', 400, `Function not found.`);
       }
 
-      const vmContext = generateVmContextArgs(authSession, functionRecord.arguments, requestArgs);
-
-      const vmOutput = await run(functionRecord.code, vmContext);
-      const errors = vmOutput.outputs.filter(output => output.type === 'error') as UserSandboxOutput[],
-        metrics = (( vmOutput.outputs || [] ).filter(output => output.type === 'metric') as MetricSandboxOutput[] ).map((metric) => {
-          return {
-            [metric.metric]: metric.value,
-          };
-        });
+      const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs);
 
       if ( errors.length ) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
@@ -55,7 +45,7 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
         {
           status: 'success',
           message: 'Function executed successfully',
-          data: vmOutput?.result || null,
+          data: result || null,
         },
         {
           status: 200,

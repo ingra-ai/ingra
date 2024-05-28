@@ -7,9 +7,9 @@ export type VmContextArgs = {
   [key: string]: any;
 };
 
-export function generateVmContextArgs( authSession: AuthSessionResponse, functionArguments: FunctionArgument[], requestArgs: Record<string, any> = {}) {
+export function generateVmContextArgs( authSession: AuthSessionResponse, functionArguments: FunctionArgument[] = [], requestArgs: Record<string, any> = {}) {
   // Fill requestArgs with default values if not provided.
-  if (functionArguments) {
+  if ( functionArguments && Array.isArray(functionArguments) && functionArguments.length > 0 ) {
     for (const arg of functionArguments) {
       if ( requestArgs?.[arg.name] === undefined || requestArgs?.[arg.name] === '' || requestArgs?.[arg.name] === null ) {
         if ( ( typeof arg.defaultValue === 'string' && arg.defaultValue.length ) || ( typeof arg.defaultValue === 'number' && !isNaN(arg.defaultValue) ) ) {
