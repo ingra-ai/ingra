@@ -1,7 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { ClockIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { GitForkIcon } from 'lucide-react';
+import { GitForkIcon, RefreshCcw } from 'lucide-react';
 import formatDistance from 'date-fns/formatDistance';
 import format from 'date-fns/format';
 import {
@@ -28,8 +28,8 @@ import { Button } from '@components/ui/button';
 interface MarketplaceFunctionItemProps {
   functionData: FunctionMarketListGetPayload;
   isSubscribed: boolean;
-  onFork: () => void;
-  onSubscribeToggle: () => void;
+  onFork: () => Promise<void>;
+  onSubscribeToggle: () => Promise<void>;
   onView: () => void;
 }
 
@@ -37,25 +37,45 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
   const { functionData, isSubscribed = false, onFork, onSubscribeToggle, onView } = props;
   const authorName = functionData?.owner?.profile?.userName || 'Anonymous';
   const totalArguments = functionData.arguments.length;
+  const [isSubscribeLoading, setIsSubscribeLoading] = useState(false);
+  const [isForkLoading, setIsForkLoading] = useState(false);
+
+
+  const onSubscribeToggleHandler = useCallback(() => {
+    if ( typeof onSubscribeToggle === 'function' ) {
+      setIsSubscribeLoading(true);
+
+      onSubscribeToggle()
+      .finally(() => {
+        setIsSubscribeLoading(false);
+      });
+    }
+  }, []);
+
+  const onForkHandler = useCallback(() => {
+    if ( typeof onFork === 'function' ) {
+      setIsForkLoading(true);
+
+      onFork()
+      .finally(() => {
+        setIsForkLoading(false);
+      });
+    }
+  }, []);
+
   return (
     <div
       className="flex flex-col bg-secondary border border-gray-500 hover:border-gray-300 shadow-md rounded-sm px-4 py-2 w-full min-h-[200px] cursor-pointer"
       title={functionData.description}
     >
-      <div 
-        className="block space-y-2 py-2 h-full"
-        role='button'
-        tabIndex={0}
-        aria-pressed='false'
-        onClick={onView}
-      >
+      <div className="block space-y-2 py-2 h-full">
         <div className="flex justify-between">
           <p className="text-gray-400 text-xs">{functionData.httpVerb}</p>
           <p className="text-xs">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button aria-label='Fork' title='Fork' className="p-1">
-                  <GitForkIcon className="h-5 w-5 inline-flex mr-1 text-green-300 hover:text-green-400" />
+                <button type='button' disabled={isForkLoading} aria-label='Fork' title='Fork' className="p-1">
+                  {isForkLoading ? <RefreshCcw className="w-4 h-4 animate-spin inline-block mr-2" /> : <GitForkIcon className="h-5 w-5 inline-flex mr-1 text-green-300 hover:text-green-400" /> }
                   <span>{functionData._count.forksTo.toLocaleString(undefined, { minimumFractionDigits: 0 })}</span>
                 </button>
               </AlertDialogTrigger>
@@ -68,7 +88,7 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onFork}>Continue</AlertDialogAction>
+                  <AlertDialogAction onClick={onForkHandler} disabled={isForkLoading}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -118,13 +138,15 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
           </button>
           {
             isSubscribed ? (
-              <Button onClick={onSubscribeToggle} type='button' variant='ghost' aria-label='Unsubscribe' title='Unsubscribe' className="text-xs px-3 py-2 h-auto rounded-3xl border border-gray-500">
+              <Button onClick={onSubscribeToggleHandler} disabled={isSubscribeLoading} type='button' variant='ghost' aria-label='Unsubscribe' title='Unsubscribe' className="text-xs px-3 py-2 h-auto rounded-3xl border border-gray-500">
+                {isSubscribeLoading && <RefreshCcw className="w-4 h-4 animate-spin inline-block mr-2" />}
                 <span>Unsubscribe</span>
               </Button>
             ) : (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button type='button' variant='default' aria-label='Subscribe' title='Subscribe' className="text-xs px-3 py-2 h-auto rounded-3xl">
+                  <Button type='button' disabled={isSubscribeLoading} variant='default' aria-label='Subscribe' title='Subscribe' className="text-xs px-3 py-2 h-auto rounded-3xl">
+                    {isSubscribeLoading && <RefreshCcw className="w-4 h-4 animate-spin inline-block mr-2" />}
                     <span>Subscribe</span>
                   </Button>
                 </AlertDialogTrigger>
@@ -137,7 +159,7 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onSubscribeToggle}>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={onSubscribeToggleHandler} disabled={isSubscribeLoading}>Continue</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

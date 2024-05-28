@@ -27,8 +27,8 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
     router.push(`/functions/marketplace/view/${id}`);
   };
 
-  const handleFork = (id: string) => {
-    forkFunction(id).then((result) => {
+  const handleFork = async (id: string) => {
+    return forkFunction(id).then((result) => {
       if ( result.status !== 'ok' ) {
         throw new Error(result.message);
       }
@@ -44,7 +44,6 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
       });
 
       startTransition(router.refresh);
-
     }).catch((error) => {
       toast({
         variant: 'destructive',
@@ -54,8 +53,8 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
     });
   }
 
-  const handleSubscribeToggle = (id: string) => {
-    subscribeToggleFunction(id).then((result) => {
+  const handleSubscribeToggle = async (id: string) => {
+    return subscribeToggleFunction(id).then((result) => {
       if ( result.status !== 'ok' ) {
         throw new Error(result.message);
       }
@@ -66,7 +65,6 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
       });
 
       startTransition(router.refresh);
-
     }).catch((error) => {
       toast({
         variant: 'destructive',
@@ -83,8 +81,8 @@ const MarketplaceFunctionList: React.FC<MarketplaceFunctionListProps> = ({ funct
         key={func.id}
         functionData={func}
         isSubscribed={isSubscribed}
-        onFork={() => handleFork(func.id)}
-        onSubscribeToggle={() => handleSubscribeToggle(func.id)}
+        onFork={async () => handleFork(func.id)}
+        onSubscribeToggle={async () => handleSubscribeToggle(func.id)}
         onView={() => handleView(func.id)}
       />
     );
