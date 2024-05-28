@@ -1,17 +1,21 @@
+
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getAuthSession } from '@app/auth/session';
 import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
 import { notFound } from 'next/navigation';
 import { IntegrationsSection } from './IntegrationsSection';
+import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
 
 /**
  * Profile Page
  * @see https://tailwindui.com/components/application-ui/forms/form-layouts
  */
+
 export default async function Page() {
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if (!authSession) {
     return notFound();
   }
 
@@ -66,16 +70,7 @@ export default async function Page() {
         </div>
 
         <div className="md:col-span-1">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger type="button" className="rounded-md bg-gray-500 px-3 py-2 text-sm font-semibold text-white shadow-sm">
-                Yes, delete my account
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>This is not supported at the moment</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <DeleteAccountButtonForm />
         </div>
       </div>
     </div>
