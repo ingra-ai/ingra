@@ -9,8 +9,13 @@ export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI |
 export const APP_AUTH_LOGIN_URI = process.env.NEXT_PUBLIC_AUTH_LOGIN_URI || '/auth/login';
 export const APP_LANDING_PAGE_URI = process.env.NEXT_PUBLIC_LANDING_PAGE_URI || '/dashboard';
 
-export const APP_LEGAL_PRIVACY_POLICY_URI = process.env.NEXT_PUBLIC_LEGAL_PRIVACY_POLICY_URI || '/legal/privacy-policy';
-export const APP_LEGAL_TOS_URI = process.env.NEXT_PUBLIC_LEGAL_TERMS_OF_SERVICE_URI || '/legal/terms-of-service';
+const APP_LEGAL_PRIVACY_POLICY_URI = process.env.NEXT_PUBLIC_LEGAL_PRIVACY_POLICY_URI || '/legal/privacy-policy';
+const APP_LEGAL_TOS_URI = process.env.NEXT_PUBLIC_LEGAL_TERMS_OF_SERVICE_URI || '/legal/terms-of-service';
+const APP_LEGAL_COOKPOL_URI = process.env.NEXT_PUBLIC_LEGAL_COOKPOL_URI || '/legal/cookie-policy';
+
+export const APP_LEGAL_PRIVACY_POLICY_URL = [PARENT_APP_URL, APP_LEGAL_PRIVACY_POLICY_URI].join('');
+export const APP_LEGAL_TOS_URL = [PARENT_APP_URL, APP_LEGAL_TOS_URI].join('');
+export const APP_LEGAL_COOKPOL_URL = [PARENT_APP_URL, APP_LEGAL_COOKPOL_URI].join('');
 
 export const APP_AUTH_CALLBACK_URL = APP_URL + APP_AUTH_CALLBACK_URI;
 export const APP_AUTH_LOGIN_URL = APP_URL + APP_AUTH_LOGIN_URI;
@@ -69,3 +74,10 @@ export const USERS_API_FUNCTION_SUBSCRIPTIONS_PATH = [USERS_API_ROOT_PATH, 'subs
  * The version of the app as defined in package.json
  */
 export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
+
+/**
+ * Chat with Baka Assistant
+ */
+export const BAKA_ASSISTANT_NAME = 'Bakai';
+export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
