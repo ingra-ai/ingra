@@ -12,11 +12,16 @@ import { Button } from '@components/ui/button';
 import { RefreshCcw } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@components/ui/input-otp';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { cn } from '@lib/utils';
 
-type FormViewState = 'email' | 'otp' | 'redirect';
-type MagicLoginFormProps = {};
+export type FormViewState = 'email' | 'otp' | 'redirect';
+
+type MagicLoginFormProps = {
+  className?: string;
+};
 
 export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
+  const { className } = props;
   const { toast } = useToast();
   const [formView, setFormView] = useState<FormViewState>('email');
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +46,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
 
     return magicLoginEmail(values)
       .then((result) => {
-        if ( result.status !== 'ok' ) {
+        if (result.status !== 'ok') {
           throw new Error(result.message);
         }
 
@@ -51,10 +56,10 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
         }
       })
       .catch((error: Error) => {
-        if ( error?.message === 'NEXT_REDIRECT' ) {
+        if (error?.message === 'NEXT_REDIRECT') {
           return;
         }
-        
+
         toast({
           title: 'Uh oh! Something went wrong.',
           description: error?.message || 'Please try again!',
@@ -72,10 +77,12 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
     setValue('otpCode', newValue, { shouldValidate: true });
   };
 
+  const classes = cn('sm:mx-auto sm:w-full sm:max-w-sm', className);
+
   if (formView === 'redirect') {
     return (
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm" data-testid="magic-login-form">
-        <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight">Signing You In</h2>
+      <div className={classes} data-testid="magic-login-form">
+        <h2 className="text-center text-sm font-bold leading-9 tracking-tight">Signing You In</h2>
         <div className="flex space-x-2 justify-center items-center my-10">
           <span className="sr-only">Loading...</span>
           <div className="h-4 w-4 bg-slate-200 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
@@ -93,15 +100,12 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
   }
 
   return (
-    <div className="sm:mx-auto sm:w-full sm:max-w-sm" data-testid="magic-login-form">
+    <div className={classes} data-testid="magic-login-form">
       {formView === 'email' ? (
-        <>
-          <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight">Enter your email address</h2>
-          <p className="mt-2 text-center text-sm text-white/70 max-w">We will send you a magic link and one-time password to your email address.</p>
-        </>
+        <p className="mt-2 text-left text-sm text-white/70 max-w">To get started, we will need to send you a magic link and one-time password to your email address.</p>
       ) : (
         <>
-          <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight">Check your email for the one-time password</h2>
+          <h2 className="text-center text-sm font-bold leading-9 tracking-tight">Check your email for the one-time password</h2>
           <p className="mt-2 text-center text-sm text-white/70 max-w">We’ve sent a 6-character code to your email address. The code expires shortly, so please enter it soon.</p>
         </>
       )}
