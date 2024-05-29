@@ -41,6 +41,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@vercel/kv": "^1.0.1",
+    "ai": "^3.1.15",
     "algoliasearch": "^4.23.3",
     "chrono-node": "^2.7.5",
     "class-variance-authority": "^0.7.0",
