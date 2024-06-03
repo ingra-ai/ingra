@@ -88,6 +88,7 @@ function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, i
   };
 
   switch (functionRecord.httpVerb) {
+    case 'DELETE':
     case 'GET':
       pathItem.parameters = parameters;
       break;
@@ -95,9 +96,6 @@ function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, i
     case 'PUT':
     case 'PATCH':
       pathItem.requestBody = requestBody;
-      break;
-    case 'DELETE':
-      pathItem.parameters = parameters;
       break;
     default:
       throw new Error(`Unsupported HTTP verb: ${functionRecord.httpVerb}`);
