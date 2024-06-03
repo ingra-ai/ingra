@@ -16,9 +16,9 @@ const ProtectedLayout: FC<PropsWithChildren> = async (props) => {
   }
 
   return (
-    <div id="protected-layout" className='min-h-screen' data-testid="protected-layout">
+    <div id="protected-layout" className='block min-h-screen pt-16' data-testid="protected-layout">
       <Navbar authSession={ authSession } className='fixed inset-y-0 w-full h-16 z-50' />
-      <div className="grid grid-cols-1 lg:grid-cols-12 2xl:grid-cols-10 min-h-screen pt-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 2xl:grid-cols-10 min-h-[calc(100vh-128px)]">
         <div className="hidden lg:block lg:col-span-2 2xl:col-span-1 pt-4">
           <SideNav className='border-r border-gray-800' />
         </div>

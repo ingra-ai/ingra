@@ -192,8 +192,8 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
       </div>
 
       {/* Assistant SlideOver */}
-      <FormSlideOver title='Baka Assistant' open={isAssistantOpen} setOpen={setAssistantOpen}>
-        <AssistantForm />
+      <FormSlideOver title={ 'Chat with Assistant' } open={isAssistantOpen} setOpen={setAssistantOpen}>
+        <AssistantForm authSession={ authSession } />
       </FormSlideOver>
     </div>
   );
