@@ -1,33 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { headers } from 'next/headers';
-import { NavItemChild } from '@components/navs/types';
-
-const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
-  {
-    name: 'Profile',
-    href: '/settings/profile',
-  },
-  {
-    name: 'API',
-    href: '/settings/api',
-  },
-  {
-    name: 'Environment Variables',
-    href: '/settings/env-vars',
-  }
-  // {
-  //   name: 'Billing',
-  //   href: '#',
-  // },
-  // {
-  //   name: 'Teams',
-  //   href: '#',
-  // },
-  // {
-  //   name: 'Integrations',
-  //   href: '#',
-  // },
-];
+import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 
 export default async function SettingsLayout({ children }: PropsWithChildren) {
   const pathname = headers().get('x-next-pathname') as string;

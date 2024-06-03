@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
   }
   else {
     selectFields.description = true;
-    selectFields.code = true;
+    selectFields.code = false;
     selectFields.httpVerb = true;
     selectFields.isPrivate = true;
     selectFields.isPublished = true;
@@ -160,7 +160,7 @@ export async function GET(req: NextRequest) {
     Logger.withTag('me-builtins')
       .withTag('curateFunctions-list')
       .withTag(`user:${authSession.user.id}`)
-      .info('Listing some recent user functions');
+      .info('Listing some recent user functions', { fieldsToRetrieveParams });
 
     return NextResponse.json(
       {
