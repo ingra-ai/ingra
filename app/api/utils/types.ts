@@ -11,5 +11,5 @@ export type ActionTryCatchReturnType<T> = {
   data?: null;
 };
 
-export type ApiTryCatchReturnType<T> = NextResponse<ApiError | ApiSuccess<T>> | NextResponse<unknown>;
+export type ApiTryCatchReturnType<T> = NextResponse<ApiError | ApiSuccess<T>> | NextResponse<unknown> | Response;
 

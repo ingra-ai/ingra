@@ -119,7 +119,7 @@ export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
  *           description: The name of the argument.
  *         type:
  *           type: string
- *           enum: [string, number. boolean]
+ *           enum: [string, number, boolean]
  *           default: 'string'
  *           description: The data type of the argument (e.g., string, number, boolean).
  *         defaultValue:

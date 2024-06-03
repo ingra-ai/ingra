@@ -7,11 +7,11 @@ import type { SandboxOutput } from '@app/api/utils/vm/types';
 import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import * as vm from 'vm';
 
-const EXECUTION_TIMEOUT_SECONDS = 30;
+const EXECUTION_TIMEOUT_SECONDS = 60;
 
 async function withTimeout(promise: Promise<any>, timeoutSeconds = EXECUTION_TIMEOUT_SECONDS) {
   const timeoutPromise = setTimeout(timeoutSeconds * 1e3).then(() => {
-    throw new ActionError('error', 408, 'Execution timed out exceeded' + timeoutSeconds + ' seconds');
+    throw new ActionError('error', 408, 'Execution timed out exceeded ' + timeoutSeconds + ' seconds');
   });
   return Promise.race([promise, timeoutPromise]);
 }

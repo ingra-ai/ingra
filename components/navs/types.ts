@@ -15,3 +15,10 @@ export type NavItemParent = NavItemBase & {
 };
 
 export type NavItem = NavItemParent | NavItemChild;
+
+export type NavNotificationItem = {
+  text: string;
+  href?: string;
+};
+
+export type ACTIVE_SIDE_LAYOUT = 'ai' | 'wiki';

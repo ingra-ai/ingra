@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['lucide-react'], // add this
+  transpilePackages: ['lucide-react'],
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   headers: async () => {
     return [
       {
@@ -22,7 +23,7 @@ const nextConfig = {
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET, POST, PUT, DELETE, OPTIONS",
+            value: "GET, POST, PATCH, PUT, DELETE, OPTIONS",
           },
           {
             key: "Access-Control-Allow-Headers",
@@ -79,5 +80,6 @@ const nextConfig = {
     ]
   }
 };
+
 
 export default nextConfig;

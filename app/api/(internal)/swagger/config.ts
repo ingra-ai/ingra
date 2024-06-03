@@ -46,8 +46,10 @@ export const getSwaggerSpec = async ( storeToCache = false ) => {
     specLength = Object.keys(spec || {}).length;
 
   if ( storeToCache ) {
-    await kv.set(BASE_SWAGGER_SPEC_KEY, spec);
-    Logger.withTag('swagger').info('Stored base swagger spec to KV store', { specLength });
+    await Promise.all([
+      kv.set(BASE_SWAGGER_SPEC_KEY, spec),
+      Logger.withTag('swagger').info('Stored base swagger spec to KV store', { specLength })
+    ]);
   }
 
   return spec;
