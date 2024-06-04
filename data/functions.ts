@@ -145,14 +145,16 @@ export const deleteFunction = async (functionId: string, userId: string) => {
       },
     }),
 
-    // Delete associated function forks where this function is the original function
-    db.functionFork.deleteMany({
+    // Delete associated function subscriptions where this function is the original function
+    db.functionSubscription.deleteMany({
       where: {
-        OR: [{
-          originalFunctionId: functionId,
-        }, {
-          forkedFunctionId: functionId,
-        }]
+        functionId,
+      },
+    }),
+
+    db.functionReaction.deleteMany({
+      where: {
+        functionId,
       },
     }),
   ];
@@ -166,73 +168,6 @@ export const deleteFunction = async (functionId: string, userId: string) => {
   });
 
   return result;
-};
-
-export const forkFunction = async (functionId: string, userId: string) => {
-  const functionRecord = await db.function.findUnique({
-    where: {
-      id: functionId,
-      isPublished: true,
-      isPrivate: false,
-    },
-    include: {
-      arguments: true,
-      tags: true,
-    },
-  });
-
-  if (!functionRecord) {
-    throw new Error('Function not found');
-  }
-
-  // Check if the new slug is already taken by the current user
-  const existingFunction = await db.function.findFirst({
-    where: {
-      ownerUserId: userId,
-      slug: functionRecord.slug,
-    },
-  });
-
-  if ( existingFunction ) {
-    throw new Error('Function with the same slug already exists');
-  }
-
-  const forkedFunction = await db.function.create({
-    data: {
-      slug: functionRecord.slug,
-      code: functionRecord.code,
-      isPrivate: true,
-      isPublished: functionRecord.isPublished,
-      httpVerb: functionRecord.httpVerb,
-      description: functionRecord.description,
-      ownerUserId: userId,
-      arguments: {
-        create: functionRecord.arguments.map(arg => ({
-          name: arg.name,
-          type: arg.type,
-          isRequired: arg.isRequired,
-          defaultValue: arg.defaultValue,
-          description: arg.description,
-        })),
-      },
-      tags: {
-        create: functionRecord.tags.map(tag => ({
-          name: tag.name,
-        })),
-      },
-    },
-  });
-
-  // Create a record in FunctionFork
-  await db.functionFork.create({
-    data: {
-      originalFunctionId: functionRecord.id,
-      forkedFunctionId: forkedFunction.id,
-      createdAt: new Date(),
-    },
-  });
-
-  return forkedFunction;
 };
 
 export const subscribeToggleFunction = async (functionId: string, userId: string) => {

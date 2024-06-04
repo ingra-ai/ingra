@@ -22,6 +22,8 @@ model User {
   functions               Function[]
   functionReactions       FunctionReaction[]
   functionSubscriptions   FunctionSubscription[]
+  collections             Collection[]
+  collectionSubscriptions CollectionSubscription[]
 }
 
 model Profile {
@@ -122,11 +124,9 @@ model Function {
 
   // Relations
   owner User @relation(fields: [ownerUserId], references: [id])
-  forksFrom FunctionFork[] @relation("ForkedFunctions")
-  forksTo FunctionFork[] @relation("OriginalFunctions")
   reactions  FunctionReaction[]
   subscribers FunctionSubscription[]
-
+  collectors Collection[]
 
   @@unique([ownerUserId, slug])
   @@map("functions")
@@ -144,20 +144,6 @@ model FunctionSubscription {
 
   @@unique([functionId, userId])
   @@map("function_subscriptions")
-}
-
-model FunctionFork {
-  id                 String      @id @default(uuid()) @db.Uuid
-  originalFunctionId String      @db.Uuid
-  forkedFunctionId   String      @db.Uuid
-  createdAt          DateTime    @default(now())
-
-  // Relations
-  originalFunction Function @relation("OriginalFunctions", fields: [originalFunctionId], references: [id])
-  forkedFunction   Function @relation("ForkedFunctions", fields: [forkedFunctionId], references: [id])
-
-  @@unique([originalFunctionId, forkedFunctionId])
-  @@map("function_forks")
 }
 
 model FunctionReaction {
@@ -226,4 +212,36 @@ model AuditLog {
   type      String   @db.VarChar(32)
   level     Int
   tag       String?  @db.VarChar(255)
+}
+
+
+model Collection {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?  @db.Text @default("")
+  userId      String   @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  owner User @relation(fields: [userId], references: [id])
+  functions Function[]
+  subscribers CollectionSubscription[]
+
+  @@unique([name, userId])
+  @@map("collections")
+}
+
+model CollectionSubscription {
+  id            String   @id @default(uuid()) @db.Uuid
+  collectionId  String   @db.Uuid
+  userId        String   @db.Uuid
+  createdAt     DateTime @default(now())
+
+  // Relations
+  collection Collection @relation(fields: [collectionId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([collectionId, userId])
+  @@map("collection_subscriptions")
 }
