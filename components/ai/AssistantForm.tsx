@@ -10,7 +10,7 @@ import { AuthSessionResponse } from '@app/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';
-import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH } from '@lib/constants';
+import { APP_URL, BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH } from '@lib/constants';
 
 type AssistantFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
@@ -35,7 +35,7 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
   useEffect(() => {
     setLoading(true);
 
-    const url = new URL(BAKA_ASSISTANT_ROOT_PATH);
+    const url = new URL(BAKA_ASSISTANT_ROOT_PATH, APP_URL);
 
     if ( currentThreadId ) {
       url.searchParams.set('threadId', currentThreadId);
