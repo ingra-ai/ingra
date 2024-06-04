@@ -51,6 +51,12 @@ export const destroyAccount = async ( userId: string ) => {
         select: { id: true },
       });
 
+      // Fetch all collections associated with the user
+      const collections = await prisma.collection.findMany({
+        where: { userId: userId },
+        select: { id: true },
+      });
+
       // Delete FunctionArguments and FunctionTags associated with each Function
       for (const func of functions) {
         await prisma.functionArgument.deleteMany({
@@ -70,19 +76,22 @@ export const destroyAccount = async ( userId: string ) => {
         where: { functionId: { in: functions.map((func) => func.id) } },
       });
 
-      await prisma.functionFork.deleteMany({
-        where: {
-          OR: [
-            { originalFunctionId: { in: functions.map((func) => func.id) } },
-            { forkedFunctionId: { in: functions.map((func) => func.id) } },
-          ]
-        },
+      // Delete Collection subscriptions
+      await prisma.collectionSubscription.deleteMany({
+        where: { collectionId: { in: collections.map((collection) => collection.id) } },
       });
 
-      // Delete Functions
+      // Finally Delete Collections
+      await prisma.collection.deleteMany({
+        where: { userId },
+      });
+
+      // Finally Delete Functions
       await prisma.function.deleteMany({
         where: { ownerUserId: userId },
       });
+
+      //
 
       // Delete other related records directly linked to the User
       await prisma.profile.deleteMany({ where: { userId } });

@@ -57,12 +57,7 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
             name: true,
             type: true,
           },
-        },
-        _count: {
-          select: {
-            forksTo: true,
-          },
-        },
+        }
       },
       skip,
       take: pageSizeInt,
