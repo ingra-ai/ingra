@@ -5,12 +5,12 @@ import { redirect, RedirectType } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
 type OverviewLayoutProps = {
-  assistant: ReactNode;
+  // assistant: ReactNode;
 };
 
 
 const OverviewLayout: FC<PropsWithChildren<OverviewLayoutProps>> = async (props) => {
-  const { assistant, children } = props;
+  const { children } = props;
   const authSession = await getAuthSession();
 
   if ( !authSession ) {
@@ -19,14 +19,7 @@ const OverviewLayout: FC<PropsWithChildren<OverviewLayoutProps>> = async (props)
 
   return (
     <div id="overview-layout" className='block' data-testid="overview-layout">
-      <div className="flex flex-col xl:flex-row-reverse space-y-8 xl:space-y-0">
-        <div className="xl:flex-1">
-          { children }
-        </div>
-        <div className="xl:flex-0">
-          { assistant }
-        </div>
-      </div>
+    { children }
     </div>
   );
 };
