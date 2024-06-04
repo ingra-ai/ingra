@@ -86,6 +86,7 @@ export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
  * Chat with Baka Assistant
  */
 export const BAKA_ASSISTANT_NAME = 'Baka Assistant';
+export const BAKA_ASSISTANT_ROOT_PATH = USERS_API_ROOT_PATH + '/assistants';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
