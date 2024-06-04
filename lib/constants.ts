@@ -35,6 +35,11 @@ export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
 export const APP_X_API_KEY = process.env.X_API_KEY || '';
 
 /**
+ * OPENAI Variables
+ */
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+
+/**
  * OPENAI Plugin Variables
  */
 export const APP_OPENAI_VERIFICATION_TOKEN = process.env.NEXT_PUBLIC_OPENAI_VERIFICATION || '';
@@ -42,6 +47,8 @@ export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = 'BakabitVirtualAssistant';
 export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Bakabit Assistant';
 export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = "A portal to curate and manage personal assistant functions and workflows, providing a community-driven approach to personal assistant development."
 export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = "Bakabit Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
+
+
 
 /**
  * Google Plugins
@@ -78,7 +85,8 @@ export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
 /**
  * Chat with Baka Assistant
  */
-export const BAKA_ASSISTANT_NAME = 'Bakai';
+export const BAKA_ASSISTANT_NAME = 'Baka Assistant';
+export const BAKA_ASSISTANT_ROOT_PATH = USERS_API_ROOT_PATH + '/assistants';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
-export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';
+export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr

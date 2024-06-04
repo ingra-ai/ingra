@@ -1,5 +1,5 @@
 
-import { BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME } from '@lib/constants';
+import { BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE } from '@lib/constants';
 import { type AssistantResponse as VercelAssistantResponse, AssistantMessage, formatStreamPart, DataMessage } from 'ai';
 import type { AssistantStream } from 'openai/lib/AssistantStream.mjs';
 import type { Run } from 'openai/resources/beta/threads/runs/runs.mjs';
@@ -116,7 +116,7 @@ export function AssistantResponse(
       'Connection': 'keep-alive',
       'Cache-Control': 'no-cache',
       'Keep-Alive': 'timeout=30',
-      'Set-Cookie': `${BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME}=${threadId}; Path=/; Max-Age=1800; SameSite=Strict; Secure; HttpOnly`,
+      'Set-Cookie': `${BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME}=${threadId}; Path=/; Max-Age=${ BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE }; SameSite=Strict; Secure; HttpOnly`,
     },
   });
 }

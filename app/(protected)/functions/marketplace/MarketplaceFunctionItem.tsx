@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useState } from 'react';
 import { ClockIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { GitForkIcon, RefreshCcw } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 import formatDistance from 'date-fns/formatDistance';
 import format from 'date-fns/format';
 import {
@@ -28,18 +28,15 @@ import { Button } from '@components/ui/button';
 interface MarketplaceFunctionItemProps {
   functionData: FunctionMarketListGetPayload;
   isSubscribed: boolean;
-  onFork: () => Promise<void>;
   onSubscribeToggle: () => Promise<void>;
   onView: () => void;
 }
 
 const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) => {
-  const { functionData, isSubscribed = false, onFork, onSubscribeToggle, onView } = props;
+  const { functionData, isSubscribed = false, onSubscribeToggle, onView } = props;
   const authorName = functionData?.owner?.profile?.userName || 'Anonymous';
   const totalArguments = functionData.arguments.length;
   const [isSubscribeLoading, setIsSubscribeLoading] = useState(false);
-  const [isForkLoading, setIsForkLoading] = useState(false);
-
 
   const onSubscribeToggleHandler = useCallback(() => {
     if ( typeof onSubscribeToggle === 'function' ) {
@@ -52,17 +49,6 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
     }
   }, []);
 
-  const onForkHandler = useCallback(() => {
-    if ( typeof onFork === 'function' ) {
-      setIsForkLoading(true);
-
-      onFork()
-      .finally(() => {
-        setIsForkLoading(false);
-      });
-    }
-  }, []);
-
   return (
     <div
       className="flex flex-col bg-secondary border border-gray-500 hover:border-gray-300 shadow-md rounded-sm px-4 py-2 w-full min-h-[200px] cursor-pointer"
@@ -71,28 +57,6 @@ const MarketplaceFunctionItem: React.FC<MarketplaceFunctionItemProps> = (props) 
       <div className="block space-y-2 py-2 h-full">
         <div className="flex justify-between">
           <p className="text-gray-400 text-xs">{functionData.httpVerb}</p>
-          <p className="text-xs">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <button type='button' disabled={isForkLoading} aria-label='Fork' title='Fork' className="p-1">
-                  {isForkLoading ? <RefreshCcw className="w-4 h-4 animate-spin inline-block mr-2" /> : <GitForkIcon className="h-5 w-5 inline-flex mr-1 text-green-300 hover:text-green-400" /> }
-                  <span>{functionData._count.forksTo.toLocaleString(undefined, { minimumFractionDigits: 0 })}</span>
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure to fork &quot;{functionData.slug}&quot; from {authorName}?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Forking this function allows you to customize and modify it to suit your needs. However, please note that once you fork the function, you won&apos;t receive any future updates or improvements made to the original version.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onForkHandler} disabled={isForkLoading}>Continue</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </p>
         </div>
         <h2 className="text-lg font-bold text-gray-100 truncate min-w-0" title={functionData.slug}>
           {functionData.slug}

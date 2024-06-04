@@ -30,11 +30,6 @@ export type FunctionListGetPayload = Prisma.FunctionGetPayload<{
         defaultValue: false,
         isRequired: false,
       }
-    },
-    _count: {
-      select: {
-        forksTo: true
-      }
     }
   }
 }>;
