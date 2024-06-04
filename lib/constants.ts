@@ -82,3 +82,4 @@ export const BAKA_ASSISTANT_NAME = 'Bakai';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';
+export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
