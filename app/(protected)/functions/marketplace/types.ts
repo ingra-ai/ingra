@@ -39,11 +39,6 @@ export type FunctionMarketListGetPayload = Prisma.FunctionGetPayload<{
         defaultValue: false,
         isRequired: false,
       }
-    },
-    _count: {
-      select: {
-        forksTo: true
-      }
     }
   }
 }>;

@@ -3,7 +3,6 @@ import { useState, type FC, type PropsWithChildren, Fragment, useEffect } from '
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogPanel, Transition, TransitionChild, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
 import { censorEmail } from '@lib/functions/censorEmail';
-import { BotMessageSquareIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { AuthSessionResponse } from '@app/auth/session/types';
@@ -13,8 +12,6 @@ import { usePathname } from 'next/navigation';
 import { Badge } from '@components/ui/badge';
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import type { NavNotificationItem } from '@components/navs/types';
-import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { AssistantForm } from '@components/ai/AssistantForm';
 
 type NavbarProps = {
   authSession: AuthSessionResponse;
@@ -30,7 +27,6 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
   } = props;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isAssistantOpen, setAssistantOpen] = useState(false);
   const pathname = usePathname();
   const classes = cn(
     '',
@@ -104,11 +100,6 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
 
           {/* User Profile */}
           <div className="flex items-center gap-x-6">
-            {/* Chat Icon */}
-            <button type="button" title="Baka Assistant" onClick={() => setAssistantOpen(true)} className="focus:outline-none">
-              <BotMessageSquareIcon className={cn('h-5 w-5', { 'text-green-500': isAssistantOpen })} aria-hidden="true" />
-            </button>
-
             {/* Notification Dropdown */}
             {
               navNotificationItems.length > 0 && (
@@ -190,11 +181,6 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
           </div>
         </div>
       </div>
-
-      {/* Assistant SlideOver */}
-      <FormSlideOver title={ 'Chat with Assistant' } open={isAssistantOpen} setOpen={setAssistantOpen}>
-        <AssistantForm authSession={ authSession } />
-      </FormSlideOver>
     </div>
   );
 };

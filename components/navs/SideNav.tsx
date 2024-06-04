@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon } from 'lucide-react';
+import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon } from 'lucide-react';
 import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {
@@ -18,6 +18,12 @@ export const sideNavRoutes: NavItem[] = [
     description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
     href: '/overview',
     icon: ChartBarSquareIcon,
+  },
+  {
+    name: 'Assistant',
+    description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
+    href: '/assistant',
+    icon: BotMessageSquareIcon,
   },
   // {
   //   name: 'Tasks',

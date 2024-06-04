@@ -23,7 +23,7 @@ import db from "@lib/db";
  *           items:
  *             type: string
  *             enum: [description, code, httpVerb, isPrivate, isPublished, arguments, tags]
- *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected.
+ *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected. Only return `code` when requested since the payload is large.
  *     responses:
  *       '200':
  *         description: Successfully retrieved list of searched functions
