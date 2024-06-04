@@ -13,13 +13,15 @@ import 'highlight.js/styles/github-dark.css';
 
 type AssistantFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
+  threadId?: string;
 };
 
 export const AssistantForm: FC<AssistantFormProps> = (props) => {
-  const { authSession, ...rest } = props;
+  const { authSession, threadId, ...rest } = props;
+  const [currentThreadId, setCurrentThreadId] = useState(threadId);
   const { status, messages, input, submitMessage, handleInputChange, stop, setMessages } = useAssistant({
     api: '/api/v1/me/assistants',
-
+    threadId: currentThreadId
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -32,9 +34,12 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
   useEffect(() => {
     setLoading(true);
 
-    fetch('/api/v1/me/assistants', {
-      method: 'GET'
-    })
+    const url = currentThreadId ? `/api/v1/me/assistants?threadId=${currentThreadId}` : '/api/v1/me/assistants';
+
+    fetch(url,
+      {
+        method: 'GET'
+      })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -42,19 +47,18 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
 
         return {};
       })
-      .then( ( response ) => {
-        const { data } = ( response || {} ) as { data: { threadId: string, messages: Message[] } };
-        if (Array.isArray(data?.messages)) {
+      .then((response) => {
+        const { data } = (response || {}) as { data: { threadId: string, messages: Message[] } };
+        if (data?.threadId && Array.isArray(data?.messages)) {
+          setCurrentThreadId(data.threadId);
           setMessages(data.messages);
         }
-      })
-      .catch((error) => {
-        console.error(error);
+        return;
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [])
+  }, [currentThreadId])
 
   useEffect(() => {
     scrollToBottom();
@@ -78,13 +82,16 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
     textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Set the height based on content, max height is 150px
   };
 
+  const classes = cn('h-full w-full flex flex-col text-sm', rest.className),
+    disableForm = status !== 'awaiting_message' || loading;
+
   return (
     <div
       {...rest}
-      className="h-full w-full flex flex-col bg-gray-900"
+      className={ classes }
       data-testid="assistant-form"
     >
-      <ScrollArea className="flex-1 rounded-sm border p-4 text-sm">
+      <ScrollArea className="flex-1 rounded-sm border p-4">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <LoaderIcon className="animate-spin w-10 h-10 mx-auto" />
@@ -136,22 +143,22 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
         </div>
       )}
 
-      <form onSubmit={submitMessage} className="bg-gray-800 p-2 flex items-center space-x-2">
+      <form onSubmit={submitMessage} className="py-3 flex items-center space-x-2">
         <textarea
-          disabled={status !== 'awaiting_message'}
+          disabled={disableForm}
           value={input}
           placeholder="Type your message..."
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-gray-700 p-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
+          className="flex-1 bg-secondary p-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           rows={1}
           style={{ height: 'auto', maxHeight: '150px' }} // Initial height and max height
         />
-        {status === 'awaiting_message' ? (
+        {!disableForm ? (
           <button
             type="submit"
             className="p-2 bg-blue-600 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={status !== 'awaiting_message'}
+            disabled={disableForm}
           >
             <ArrowRightIcon className="w-5 h-5" />
           </button>

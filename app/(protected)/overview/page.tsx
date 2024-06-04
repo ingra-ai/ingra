@@ -2,6 +2,7 @@ import { getAuthSession } from '@app/auth/session';
 import { APP_AUTH_LOGIN_URL, USERS_API_ROOT_URL } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { SuggestionsList } from './SuggestionsList';
+import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
 import db from '@lib/db';
 import { ApiLinkCard } from './ApiLinkCard';
 
@@ -23,11 +24,12 @@ export default async function Dashboard() {
   const userSwaggerUrl = USERS_API_ROOT_URL + '/swagger';
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-lg mb-6">Overview</h1>
-      <SuggestionsList className="mb-6" authSession={authSession} totalApiKeys={totalApiKeys} />
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="container mx-auto space-y-4">
+      <h1 className="text-base font-semibold leading-10 mb-4">
+        <ChartBarSquareIcon className="inline-block mr-2 w-5 h-5" />
+        Overview
+      </h1>
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
         <ApiLinkCard
           url={ userOpenApiUrl }
           title="OpenAPI Spec"
@@ -40,6 +42,9 @@ export default async function Dashboard() {
           description="Online"
           body="The playground where you can test your functions"
         />
+      </div>
+      <div className="">
+        <SuggestionsList className="" authSession={authSession} totalApiKeys={totalApiKeys} />
       </div>
     </div>
   );
