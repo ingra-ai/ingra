@@ -10,6 +10,7 @@ import { AuthSessionResponse } from '@app/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';
+import { BAKA_ASSISTANT_NAME } from '@lib/constants';
 
 type AssistantFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
@@ -98,7 +99,7 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
           </div>
         ) : (
           messages.map((m: Message) => {
-            const messageUserName = m.role === 'user' ? userName : 'Assistant';
+            const messageUserName = m.role === 'user' ? userName : BAKA_ASSISTANT_NAME;
             return (
               <div
                 key={m.id}
@@ -150,14 +151,14 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
           placeholder="Type your message..."
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-secondary p-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="flex-1 bg-secondary px-3 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           rows={1}
           style={{ height: 'auto', maxHeight: '150px' }} // Initial height and max height
         />
         {!disableForm ? (
           <button
             type="submit"
-            className="p-2 bg-blue-600 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 bg-blue-600 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={disableForm}
           >
             <ArrowRightIcon className="w-5 h-5" />
@@ -165,7 +166,7 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
         ) : (
           <button
             type="button"
-            className="p-2 bg-red-600 rounded-sm"
+            className="p-2 bg-red-600 rounded-full"
             onClick={stop}
           >
             <XIcon className="w-5 h-5" />
