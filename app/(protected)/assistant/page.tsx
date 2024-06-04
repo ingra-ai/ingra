@@ -16,8 +16,8 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
   const assistantThreadId = cookieStore.get(BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME)?.value;
 
   return (
-    <div className="block" data-testid="assistants-page">
-      <div className="container mx-auto">
+    <div className="block container" data-testid="assistants-page">
+      <div className="max-w-prose mx-auto">
         <h3 className="text-base font-semibold leading-10 mb-4">
           <BotMessageSquareIcon className="inline-block mr-2 w-4 h-4" />
           Baka Assistant
@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
         <AssistantForm
           authSession={authSession}
           threadId={assistantThreadId}
-          className="text-balance h-[85vh] max-w-prose"
+          className="text-balance h-[85vh] w-full"
         />
       </div>
     </div>
