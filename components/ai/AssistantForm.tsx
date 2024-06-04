@@ -10,7 +10,7 @@ import { AuthSessionResponse } from '@app/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';
-import { BAKA_ASSISTANT_NAME } from '@lib/constants';
+import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH } from '@lib/constants';
 
 type AssistantFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
@@ -21,7 +21,7 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
   const { authSession, threadId, ...rest } = props;
   const [currentThreadId, setCurrentThreadId] = useState(threadId);
   const { status, messages, input, submitMessage, handleInputChange, stop, setMessages } = useAssistant({
-    api: '/api/v1/me/assistants',
+    api: BAKA_ASSISTANT_ROOT_PATH,
     threadId: currentThreadId
   });
 
@@ -35,7 +35,11 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
   useEffect(() => {
     setLoading(true);
 
-    const url = currentThreadId ? `/api/v1/me/assistants?threadId=${currentThreadId}` : '/api/v1/me/assistants';
+    const url = new URL(BAKA_ASSISTANT_ROOT_PATH);
+
+    if ( currentThreadId ) {
+      url.searchParams.set('threadId', currentThreadId);
+    }
 
     fetch(url,
       {
