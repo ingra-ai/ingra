@@ -10,16 +10,19 @@ import { AuthSessionResponse } from '@app/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';
+import { APP_URL, BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH } from '@lib/constants';
 
 type AssistantFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
+  threadId?: string;
 };
 
 export const AssistantForm: FC<AssistantFormProps> = (props) => {
-  const { authSession, ...rest } = props;
+  const { authSession, threadId, ...rest } = props;
+  const [currentThreadId, setCurrentThreadId] = useState(threadId);
   const { status, messages, input, submitMessage, handleInputChange, stop, setMessages } = useAssistant({
-    api: '/api/v1/me/assistants',
-
+    api: BAKA_ASSISTANT_ROOT_PATH,
+    threadId: currentThreadId
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -32,9 +35,16 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
   useEffect(() => {
     setLoading(true);
 
-    fetch('/api/v1/me/assistants', {
-      method: 'GET'
-    })
+    const url = new URL(BAKA_ASSISTANT_ROOT_PATH, APP_URL);
+
+    if ( currentThreadId ) {
+      url.searchParams.set('threadId', currentThreadId);
+    }
+
+    fetch(url,
+      {
+        method: 'GET'
+      })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -42,19 +52,18 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
 
         return {};
       })
-      .then( ( response ) => {
-        const { data } = ( response || {} ) as { data: { threadId: string, messages: Message[] } };
-        if (Array.isArray(data?.messages)) {
+      .then((response) => {
+        const { data } = (response || {}) as { data: { threadId: string, messages: Message[] } };
+        if (data?.threadId && Array.isArray(data?.messages)) {
+          setCurrentThreadId(data.threadId);
           setMessages(data.messages);
         }
-      })
-      .catch((error) => {
-        console.error(error);
+        return;
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [])
+  }, [currentThreadId])
 
   useEffect(() => {
     scrollToBottom();
@@ -78,20 +87,23 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
     textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Set the height based on content, max height is 150px
   };
 
+  const classes = cn('h-full w-full flex flex-col text-sm', rest.className),
+    disableForm = status !== 'awaiting_message' || loading;
+
   return (
     <div
       {...rest}
-      className="h-full w-full flex flex-col bg-gray-900"
+      className={ classes }
       data-testid="assistant-form"
     >
-      <ScrollArea className="flex-1 rounded-sm border p-4 text-sm">
+      <ScrollArea className="flex-1 rounded-sm border p-4">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <LoaderIcon className="animate-spin w-10 h-10 mx-auto" />
           </div>
         ) : (
           messages.map((m: Message) => {
-            const messageUserName = m.role === 'user' ? userName : 'Assistant';
+            const messageUserName = m.role === 'user' ? userName : BAKA_ASSISTANT_NAME;
             return (
               <div
                 key={m.id}
@@ -136,29 +148,29 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
         </div>
       )}
 
-      <form onSubmit={submitMessage} className="bg-gray-800 p-2 flex items-center space-x-2">
+      <form onSubmit={submitMessage} className="py-3 flex items-center space-x-2">
         <textarea
-          disabled={status !== 'awaiting_message'}
+          disabled={disableForm}
           value={input}
           placeholder="Type your message..."
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-gray-700 p-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"
+          className="flex-1 bg-secondary px-3 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           rows={1}
           style={{ height: 'auto', maxHeight: '150px' }} // Initial height and max height
         />
-        {status === 'awaiting_message' ? (
+        {!disableForm ? (
           <button
             type="submit"
-            className="p-2 bg-blue-600 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={status !== 'awaiting_message'}
+            className="p-2 bg-blue-600 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={disableForm}
           >
             <ArrowRightIcon className="w-5 h-5" />
           </button>
         ) : (
           <button
             type="button"
-            className="p-2 bg-red-600 rounded-sm"
+            className="p-2 bg-red-600 rounded-full"
             onClick={stop}
           >
             <XIcon className="w-5 h-5" />

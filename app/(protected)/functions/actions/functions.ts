@@ -9,7 +9,6 @@ import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
 import {
   upsertFunction as dataUpsertFunctions,
   deleteFunction as dataDeleteFunctions,
-  forkFunction as dataForkFunctions,
   subscribeToggleFunction as dataSubscribeToggleFunction,
   cloneFunction as dataCloneFunction,
 } from '@/data/functions';
@@ -60,18 +59,6 @@ export const cloneFunction = async (functionId: string) => {
       status: 'ok',
       message: `Function "${clonedFunction.slug}" has been cloned!`,
       data: clonedFunction
-    };
-  });
-}
-
-export const forkFunction = async (functionId: string) => {
-  return await actionAuthTryCatch(async (authSession) => {
-    const forkedFunction = await dataForkFunctions(functionId, authSession.user.id);
-
-    return {
-      status: 'ok',
-      message: `Function "${forkedFunction.slug}" has been forked!`,
-      data: forkedFunction
     };
   });
 }
