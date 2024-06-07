@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon } from 'lucide-react';
+import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon, SquareLibraryIcon } from 'lucide-react';
 import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {
@@ -25,6 +25,12 @@ export const sideNavRoutes: NavItem[] = [
     href: '/assistant',
     icon: BotMessageSquareIcon,
   },
+  {
+    name: 'Marketplace',
+    description: 'Browse public collections and functions shared by other users.',
+    href: '/functions/marketplace',
+    icon: GlobeIcon,
+  },
   // {
   //   name: 'Tasks',
   //   description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
@@ -32,17 +38,17 @@ export const sideNavRoutes: NavItem[] = [
   //   icon: BookCheckIcon,
   // },
   {
-    name: "Functions Hub",
-    description: "Dynamic hubs that your AI can utilize, including functions, workflows, assistants and more.",
+    name: "My Hub",
+    description: "Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.",
     children: [
       {
-        name: 'Marketplace',
-        description: 'Browse public functions shared by other users.',
-        href: '/functions/marketplace',
-        icon: GlobeIcon,
+        name: 'Collections',
+        description: 'Access and manage your collection of functions repository.',
+        href: '/collections/mine',
+        icon: SquareLibraryIcon,
       },
       {
-        name: 'My Functions',
+        name: 'Functions',
         description: 'Access and manage your collection of functions repository.',
         href: '/functions/mine',
         icon: SquareDashedBottomCodeIcon,

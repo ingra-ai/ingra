@@ -1,6 +1,7 @@
 import { z } from "zod";
 import db from "@lib/db";
 import { FunctionSchema } from "@/schemas/function";
+import { Logger } from "@lib/logger";
 
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, userId: string) => {
@@ -130,47 +131,76 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, use
 };
 
 export const deleteFunction = async (functionId: string, userId: string) => {
-  const relationshipRemovePromises = [
-    // Delete function arguments
-    db.functionArgument.deleteMany({
-      where: {
-        functionId,
-      },
-    }),
+  try {
+    await db.$transaction(async (prisma) => {
+      // Delete related child records in the correct order
+      const relationshipRemovePromises = [
+        // Delete function arguments
+        prisma.functionArgument.deleteMany({
+          where: {
+            functionId,
+          },
+        }),
 
-    // Delete function tags
-    db.functionTag.deleteMany({
-      where: {
-        functionId,
-      },
-    }),
+        // Delete function tags
+        prisma.functionTag.deleteMany({
+          where: {
+            functionId,
+          },
+        }),
 
-    // Delete associated function subscriptions where this function is the original function
-    db.functionSubscription.deleteMany({
-      where: {
-        functionId,
-      },
-    }),
+        // Delete associated function subscriptions where this function is the original function
+        // Other users who subscribed to this functions will be impacted.
+        prisma.functionSubscription.deleteMany({
+          where: {
+            functionId,
+          },
+        }),
 
-    db.functionReaction.deleteMany({
-      where: {
-        functionId,
-      },
-    }),
-  ];
+        // Delete associated function reactions
+        prisma.functionReaction.deleteMany({
+          where: {
+            functionId,
+          },
+        }),
+      ];
 
-  await Promise.all(relationshipRemovePromises);
-  const result = await db.function.delete({
+      await Promise.all(relationshipRemovePromises);
+      const result = await prisma.function.delete({
+        where: {
+          id: functionId,
+          ownerUserId: userId
+        },
+      });
+    
+      return result;
+    });
+
+    await Logger.withTag('deleteFunction').info('Function and all related records deleted successfully.');
+    return true;
+  } catch (error) {
+    await Logger.withTag('deleteFunction').info('Error deleting function and related records', { error });
+    return false;
+  }
+};
+
+export const toggleFunctionSubscription = async (functionId: string, userId: string) => {
+  const existingSubscription = await db.functionSubscription.findFirst({
     where: {
-      id: functionId,
-      ownerUserId: userId
+      functionId,
+      userId,
     },
   });
 
-  return result;
+  if ( existingSubscription ) {
+    return await unsubscribeToFunction(functionId, userId);
+  }
+  else {
+    return await subscribeToFunction(functionId, userId);
+  }
 };
 
-export const subscribeToggleFunction = async (functionId: string, userId: string) => {
+const subscribeToFunction = async (functionId: string, userId: string) => {
   const functionRecord = await db.function.findUnique({
     where: {
       id: functionId,
@@ -182,7 +212,7 @@ export const subscribeToggleFunction = async (functionId: string, userId: string
     throw new Error('Function not found');
   }
 
-  // Check if function with the same slug exists on user's functions
+  // Check if function with the same "slug" exists on user's functions
   const existingFunction = await db.function.findFirst({
     where: {
       ownerUserId: userId,
@@ -194,6 +224,20 @@ export const subscribeToggleFunction = async (functionId: string, userId: string
     throw new Error('Function with the same slug already exists');
   }
 
+  const subscription = await db.functionSubscription.create({
+    data: {
+      functionId,
+      userId,
+    },
+  });
+
+  return {
+    functionSlug: functionRecord.slug,
+    isSubscribed: true,
+  };
+};
+
+const unsubscribeToFunction = async (functionId: string, userId: string) => {
   // Check if the user is already subscribed to the function
   const existingSubscription = await db.functionSubscription.findFirst({
     where: {
@@ -209,39 +253,20 @@ export const subscribeToggleFunction = async (functionId: string, userId: string
     }
   });
 
-  // Toggle subscription
-  if ( existingSubscription ) {
-    await db.functionSubscription.delete({
-      where: {
-        id: existingSubscription.id,
-      },
-    });
-
-    return {
-      functionSlug: existingSubscription.function.slug,
-      isSubscribed: false,
-    };
+  if (!existingSubscription) {
+    throw new Error('Unable to unsubscribe as the user is not subscribed to the function.');
   }
-  else {
-    const subscription = await db.functionSubscription.create({
-      data: {
-        functionId,
-        userId,
-      },
-      include: {
-        function: {
-          select: {
-            slug: true,
-          },
-        }
-      }
-    });
 
-    return {
-      functionSlug: subscription.function.slug,
-      isSubscribed: true,
-    };
-  }
+  const record = await db.functionSubscription.delete({
+    where: {
+      id: existingSubscription.id,
+    },
+  });
+
+  return {
+    functionSlug: existingSubscription.function.slug,
+    isSubscribed: false,
+  };
 }
 
 export const cloneFunction = async (functionId: string, userId: string) => {

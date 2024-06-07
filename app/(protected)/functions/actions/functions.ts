@@ -9,9 +9,10 @@ import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
 import {
   upsertFunction as dataUpsertFunctions,
   deleteFunction as dataDeleteFunctions,
-  subscribeToggleFunction as dataSubscribeToggleFunction,
   cloneFunction as dataCloneFunction,
+  toggleFunctionSubscription,
 } from '@/data/functions';
+import { addFunctionToCollection, removeFunctionFromCollection } from '@/data/collections';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
   const validatedValues = await validateAction(FunctionSchema, values);
@@ -45,11 +46,11 @@ export const deleteFunction = async (functionId: string) => {
 
     return {
       status: 'ok',
-      message: `Function "${result.slug}" deleted!`,
+      message: `Function "${functionRecord.slug}" deleted!`,
       data: result
     };
   });
-}
+};
 
 export const cloneFunction = async (functionId: string) => {
   return await actionAuthTryCatch(async (authSession) => {
@@ -61,11 +62,11 @@ export const cloneFunction = async (functionId: string) => {
       data: clonedFunction
     };
   });
-}
+};
 
 export const subscribeToggleFunction = async (functionId: string) => {
   return await actionAuthTryCatch(async (authSession) => {
-    const subscribedFunction = await dataSubscribeToggleFunction(functionId, authSession.user.id);
+    const subscribedFunction = await toggleFunctionSubscription(functionId, authSession.user.id);
 
     return {
       status: 'ok',
@@ -73,4 +74,30 @@ export const subscribeToggleFunction = async (functionId: string) => {
       data: subscribedFunction
     };
   });
-}
+};
+
+export const collectionToggleFunction = async (functionId: string, collectionId: string, action: 'add' | 'remove') => {
+  return await actionAuthTryCatch(async (authSession) => {
+
+    if ( action === 'add' ) {
+      await addFunctionToCollection(functionId, collectionId, authSession.user.id);
+      return {
+        status: 'ok',
+        message: 'Successfully added function to collection',
+        data: null
+      };
+    }
+    else if ( action === 'remove' ) {
+      await removeFunctionFromCollection(functionId, collectionId, authSession.user.id);
+      return {
+        status: 'ok',
+        message: 'Successfully removed function to collection',
+        data: null
+      };
+    }
+    else {
+      throw new ActionError('error', 400, 'Invalid action');
+    }
+  });
+
+};
