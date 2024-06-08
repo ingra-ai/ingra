@@ -28,8 +28,26 @@ export const sideNavRoutes: NavItem[] = [
   {
     name: 'Marketplace',
     description: 'Browse public collections and functions shared by other users.',
-    href: '/functions/marketplace',
+    href: '/marketplace',
     icon: GlobeIcon,
+  },
+  {
+    name: "My Subscriptions",
+    description: "Manage your collections and functions subscriptions.",
+    children: [
+      {
+        name: 'Collections',
+        description: 'Access and manage your collection of functions repository.',
+        href: '/mine/subscriptions/collections',
+        icon: SquareLibraryIcon,
+      },
+      {
+        name: 'Functions',
+        description: 'Access and manage your functions repository.',
+        href: '/mine/subscriptions/functions',
+        icon: SquareDashedBottomCodeIcon,
+      },
+    ],
   },
   // {
   //   name: 'Tasks',
@@ -44,20 +62,14 @@ export const sideNavRoutes: NavItem[] = [
       {
         name: 'Collections',
         description: 'Access and manage your collection of functions repository.',
-        href: '/collections/mine',
+        href: '/mine/collections',
         icon: SquareLibraryIcon,
       },
       {
         name: 'Functions',
-        description: 'Access and manage your collection of functions repository.',
-        href: '/functions/mine',
+        description: 'Access and manage your unctions repository.',
+        href: '/mine/functions',
         icon: SquareDashedBottomCodeIcon,
-      },
-      {
-        name: 'Subscriptions',
-        description: 'Manage your subscriptions to other users\' functions.',
-        href: '/functions/subscriptions',
-        icon: RssIcon,
       }
     ],
   },
@@ -94,10 +106,11 @@ const SideNav: FC<SideNavProps> = (props) => {
           <ul role="list" className="-mx-2 space-y-2">
             {sideNavRoutes.map((item) => {
               const isParent = isNavItemParent(item);
+              const hasChildren = isParent && item.children.length > 0;
               return (
                 <li key={item.name}>
                   {isParent ? (
-                    <div className="block">
+                    <div className={ cn('block', { 'mt-8': hasChildren })}>
                       <div className="flex items-center text-xs font-semibold leading-6 text-gray-400">
                         <span className="truncate">{item.name}</span>
                         <hr className="flex-1 border-gray-700 ml-3" />
@@ -110,7 +123,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                                 href={subItem.href}
                                 prefetch={false}
                                 className={cn(
-                                  subItem.href === pathname ?
+                                  pathname.indexOf(subItem.href) >= 0 ?
                                     'bg-gray-800 text-white' :
                                     'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center'
                                 )}
@@ -129,7 +142,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                         href={item.href}
                         prefetch={false}
                         className={cn(
-                          item.href === pathname ?
+                          pathname.indexOf(item.href) >= 0 ?
                             'bg-gray-800 text-white' :
                             'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center'
                         )}

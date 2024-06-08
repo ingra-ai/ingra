@@ -86,7 +86,7 @@ export async function toggleCollectionSubscription( collectionId: string, userId
   }
 }
 
-async function subscribeToCollection( collectionId: string, userId: string ) {
+export async function subscribeToCollection( collectionId: string, userId: string ) {
   const collectionRecord = await db.collection.findUnique({
     where: {
       id: collectionId,
@@ -105,7 +105,7 @@ async function subscribeToCollection( collectionId: string, userId: string ) {
     },
   });
 
-  if ( !existingCollection ) {
+  if ( existingCollection ) {
     throw new Error('Collection with the same name already exists');
   }
 
@@ -122,7 +122,7 @@ async function subscribeToCollection( collectionId: string, userId: string ) {
   };
 }
 
-async function unsubscribeToCollection( collectionId: string, userId: string ) {
+export async function unsubscribeToCollection( collectionId: string, userId: string ) {
   // Check if user is already subscribed to collection
   const existingSubscription = await db.collectionSubscription.findFirst({
     where: {

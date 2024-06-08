@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
-import OverviewPage from './page';
 import OverviewSkeleton from './loading';
 
 async function Layout ({ 
@@ -13,7 +12,7 @@ async function Layout ({
   return (
     <div id="overview-layout" className='relative' data-testid="overview-layout">
       <Suspense fallback={<OverviewSkeleton />}>
-        <OverviewPage />
+        { children }
       </Suspense>
     </div>
   );

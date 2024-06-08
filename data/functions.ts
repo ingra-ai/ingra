@@ -274,15 +274,24 @@ export const cloneFunction = async (functionId: string, userId: string) => {
     where: {
       id: functionId,
       OR: [
+        // User is the sole owner
         {
           ownerUserId: userId,
         },
+
+        // User is a subscriber
         {
           subscribers: {
             some: {
               userId,
             }
           }
+        },
+
+        // Function is in marketplace
+        {
+          isPublished: true,
+          isPrivate: false,
         }
       ]
     },
