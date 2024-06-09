@@ -126,7 +126,7 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
                   View
                 </button>
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-secondary hover:text-secondary-foreground cursor-pointer p-2">
+              <DropdownMenuItem className="text-destructive hover:bg-secondary hover:text-secondary-foreground cursor-pointer p-2">
                 <button
                   type="button"
                   onClick={handleDelete}

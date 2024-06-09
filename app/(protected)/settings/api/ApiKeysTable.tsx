@@ -105,7 +105,7 @@ export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <button aria-label='Delete' title='Delete' className="p-1 text-red-300 hover:text-red-400">
+                    <button aria-label='Delete' title='Delete' className="p-1 text-destructive hover:text-destructive/80">
                       {isLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TrashIcon className="h-4 w-4" />}
                     </button>
                   </AlertDialogTrigger>

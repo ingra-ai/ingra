@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import TopSubNav from '@components/navs/TopSubNav';
 
@@ -13,7 +13,9 @@ export default async function SettingsLayout({ children }: PropsWithChildren) {
       </header>
   
       <div className="">
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>
+          {children}
+        </Suspense>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation';
 import { CodeSandboxForm } from './CodeSandboxForm';
 import { TagField } from '@components/TagField';
 import { Input } from '@components/ui/input';
+import { Textarea } from '@components/ui/textarea';
 import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
@@ -196,8 +197,6 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
     return clonedFunction;
   }, [isEditMode]);
 
-  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
-
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
@@ -298,15 +297,15 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
 
                 </div>
               </div>
-              <div className="block">
+              <div className="block space-y-2">
                 <label htmlFor="description" className="block text-sm font-medium leading-6">
                   Description
                 </label>
-                <textarea
+                <Textarea
                   {...register(`description`)}
                   placeholder="A function to output 'hello world!' text."
                   rows={3}
-                  className={`col-span-12 text-sm ${inputClasses}`}
+                  className={`col-span-12 text-sm`}
                 />
                 <div className='col-span-12 grid grid-cols-12 mt-3'>
                   <div className='col-span-8 text-left'>
@@ -318,7 +317,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 </div>
               </div>
 
-              <div className="block">
+              <div className="block space-y-2">
                 <label htmlFor="tags" className="block text-sm font-medium leading-6">
                   Tags
                 </label>
@@ -332,7 +331,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 {errors.tags?.[0]?.name && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.tags?.[0]?.name.message}</p>}
               </div>
 
-              <div className="block">
+              <div className="block space-y-2">
                 <Controller
                   control={control}
                   name='isPublished'
