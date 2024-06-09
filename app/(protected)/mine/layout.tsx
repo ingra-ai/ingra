@@ -3,10 +3,8 @@ import { MineNavRoutes } from './MineNavRoutes';
 import TopSubNav from '@components/navs/TopSubNav';
 
 async function Layout ({ 
-  searchParams,
   children
 }: { 
-  searchParams: Record<string, string | string[] | undefined>;
   children: ReactNode;
 }) {
   return (
