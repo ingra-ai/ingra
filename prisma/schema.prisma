@@ -126,7 +126,7 @@ model Function {
   owner User @relation(fields: [ownerUserId], references: [id])
   reactions  FunctionReaction[]
   subscribers FunctionSubscription[]
-  collectors Collection[]
+  collectors Collection[] @relation("FunctionCollections")
 
   @@unique([ownerUserId, slug])
   @@map("functions")
@@ -218,6 +218,7 @@ model AuditLog {
 model Collection {
   id          String   @id @default(uuid()) @db.Uuid
   name        String   @db.VarChar(255)
+  slug        String   @db.VarChar(64)
   description String?  @db.Text @default("")
   userId      String   @db.Uuid
   createdAt   DateTime @default(now())
@@ -225,10 +226,11 @@ model Collection {
 
   // Relations
   owner User @relation(fields: [userId], references: [id])
-  functions Function[]
+  functions Function[] @relation("FunctionCollections")
   subscribers CollectionSubscription[]
 
   @@unique([name, userId])
+  @@unique([slug, userId])
   @@map("collections")
 }
 
