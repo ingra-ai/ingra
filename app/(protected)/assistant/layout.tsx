@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Suspense } from 'react';
-import OverviewSkeleton from './loading';
+import AssistantSkeleton from './loading';
 
 async function Layout ({ 
   children 
@@ -8,8 +8,8 @@ async function Layout ({
   children: ReactNode
 }) {
   return (
-    <div id="overview-layout" className='relative' data-testid="overview-layout">
-      <Suspense fallback={<OverviewSkeleton />}>
+    <div id="assistant-layout" className='relative' data-testid="assistant-layout">
+      <Suspense fallback={<AssistantSkeleton />}>
         { children }
       </Suspense>
     </div>
