@@ -97,7 +97,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                             <li className="" key={subItem.name} title={subItem.description} aria-label={subItem.description}>
                               <Link
                                 href={subItem.href}
-                                prefetch={false}
+                                prefetch={true}
                                 className={cn(
                                   pathname.indexOf(subItem.href) >= 0 ?
                                     'bg-gray-800 text-white' :
@@ -116,7 +116,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                     <div className="text-xs font-semibold leading-6 text-gray-400 -mx-2">
                       <Link
                         href={item.href}
-                        prefetch={false}
+                        prefetch={true}
                         title={item.description}
                         aria-label={item.description}
                         className={cn(
