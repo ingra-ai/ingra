@@ -26,6 +26,7 @@ import { Textarea } from '@components/ui/textarea';
 import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
+import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 
 type FunctionFormProps = {
   userVars: Record<string, any>;
@@ -48,6 +49,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
   const { toast } = useToast();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [isSandboxOpen, setSandboxOpen] = useState(false);
   const allUserAndEnvKeys = Object.keys(userVars).concat(envVars.map(envVar => envVar.key));
   const methods = useForm<z.infer<typeof FunctionSchema>>({
     reValidateMode: 'onSubmit',
@@ -240,14 +242,16 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
               <TabsList className="">
                 <TabsTrigger value="function-properties-tab">Properties</TabsTrigger>
                 <TabsTrigger value="arguments-tab">Arguments</TabsTrigger>
-                {
-                  functionRecord && (
-                    <TabsTrigger value="sandbox-tab">
-                      <BugPlayIcon className="inline-block mr-2 h-5" /> Dry Run
-                    </TabsTrigger>
-                  )
-                }
               </TabsList>
+              {
+                functionRecord && (
+                  <div className="block">
+                    <Button variant='accent' type="button" disabled={isSaving} className="flex justify-center rounded-md text-sm font-semibold" onClick={() => setSandboxOpen(true)}>
+                      <BugPlayIcon className="inline-block mr-2 w-4 h-4" /> Dry Run
+                    </Button>
+                  </div>
+                )
+              }
             </div>
             <TabsContent value="function-properties-tab" className='block space-y-6'>
               <div className="grid grid-cols-12 gap-x-4 gap-y-1">
@@ -411,16 +415,16 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 ))}
               </div>
             </TabsContent>
-            {
-              functionRecord && (
-                <TabsContent value="sandbox-tab" className='block space-y-6'>
-                  <CodeSandboxForm functionRecord={functionRecord} />
-                </TabsContent>
-              )
-            }
           </Tabs>
         </form>
       </FormProvider>
+      {
+        functionRecord && (
+          <FormSlideOver title="Sandbox" open={isSandboxOpen} setOpen={setSandboxOpen}>
+            <CodeSandboxForm functionRecord={functionRecord} onClose={() => setSandboxOpen(false)} />
+          </FormSlideOver>
+        )
+      }
     </div>
   );
 };
