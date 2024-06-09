@@ -20,7 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import type { FunctionSubscriptionListGetPayload } from '@protected/mine/subscriptions/functions/types';
+import type { FunctionSubscriptionListGetPayload } from '@protected/subscriptions/functions/types';
 import { Badge } from '@components/ui/badge';
 
 interface FunctionItemProps {

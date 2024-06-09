@@ -1,8 +1,5 @@
 import React from 'react';
-import { Button } from '@components/ui/button';
-import type { CollectionSubscriptionGetPayload } from '@protected/mine/subscriptions/collections/types';
-import { EyeIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { MoreVertical } from 'lucide-react';
+import type { CollectionSubscriptionGetPayload } from '@protected/subscriptions/collections/types';
 import { SquareDashedBottomCodeIcon, TagIcon } from 'lucide-react';
 import {
   Tooltip,
@@ -10,15 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import Link from 'next/link';
 import { cn } from '@lib/utils';
 

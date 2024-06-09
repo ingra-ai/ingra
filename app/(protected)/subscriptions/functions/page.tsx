@@ -1,8 +1,8 @@
 import { getAuthSession } from '@app/auth/session';
-import CollectionList from './CollectionList';
+import FunctionsList from './FunctionList';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
-import type { FetchCollectionSubscriptionListPaginationType } from '@protected/mine/subscriptions/collections/types';
+import type { FetchFunctionSubscriptionListPaginationType } from '@protected/subscriptions/functions/types';
 import { BakaPagination } from '@components/BakaPagination';
 import clamp from 'lodash/clamp';
 import db from '@lib/db';
@@ -19,61 +19,53 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
   // Calculate skip value based on page and pageSize
   const skip = clamp(pageInt - 1, 0, 1e3) * pageSizeInt;
 
-  const [totalCount, allCollectionSubscriptions] = await Promise.all([
+  const [totalCount, allFunctionSubscriptions] = await Promise.all([
     // Fetch the total count of functions
-    db.collectionSubscription.count({
+    db.functionSubscription.count({
       where: {
         userId,
       },
     }),
 
     // Fetch all functions that the user has subscribed to
-    db.collectionSubscription.findMany({
+    db.functionSubscription.findMany({
       where: {
         userId: userId,
       },
-      select: {
-        id: true,
-        collection: {
+      include: {
+        function: {
           select: {
             id: true,
-            name: true,
             slug: true,
+            code: false,
             description: true,
+            httpVerb: true,
+            isPrivate: true,
+            isPublished: true,
+            ownerUserId: true,
+            createdAt: false,
+            updatedAt: true,
+            tags: {
+              select: {
+                id: true,
+                name: true,
+                functionId: false,
+                function: false,
+              }
+            },
             owner: {
               select: {
+                id: true,
                 profile: {
                   select: {
+                    id: true,
                     userName: true,
                   }
                 }
               }
-            },
-            functions: {
-              select: {
-                id: true,
-                slug: true,
-                code: false,
-                description: false,
-                httpVerb: false,
-                isPrivate: true,
-                isPublished: true,
-                ownerUserId: false,
-                createdAt: false,
-                updatedAt: false,
-                tags: {
-                  select: {
-                    id: true,
-                    name: true,
-                    functionId: false,
-                    function: false,
-                  }
-                },
-                arguments: false
-              },
             }
-          },
-        },
+          }
+        }
       },
       skip,
       take: pageSizeInt,
@@ -86,8 +78,8 @@ const fetchPaginationData = async (searchParams: Record<string, string | string[
   const hasNext = (skip + pageSizeInt) < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchCollectionSubscriptionListPaginationType = {
-    records: allCollectionSubscriptions,
+  const result: FetchFunctionSubscriptionListPaginationType = {
+    records: allFunctionSubscriptions,
     page: pageInt,
     pageSize: pageSizeInt,
     totalRecords,
@@ -110,10 +102,13 @@ export default async function Page(
     return notFound();
   }
 
+
   const paginationData = await fetchPaginationData(searchParams, authSession.user.id),
     { records, ...paginationProps } = paginationData;
 
-  const allCollections = records.map((record) => record.collection);
+  const functionListGridClasses = cn({
+    'grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6': true
+  });
 
   return (
     <div className="block" data-testid="functions-subscriptions-page">
@@ -129,7 +124,13 @@ export default async function Page(
       </div>
       <div className="mt-4">
         <BakaPagination className="mb-4" {...paginationProps} />
-        <CollectionList collections={allCollections} />
+        <div className={functionListGridClasses}>
+          {
+            records.length > 0 && (
+              <FunctionsList functionSubscriptions={records} />
+            )
+          }
+        </div>
       </div>
     </div>
   );

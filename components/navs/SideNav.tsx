@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon, SquareLibraryIcon } from 'lucide-react';
+import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon } from 'lucide-react';
 import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {
@@ -26,51 +26,27 @@ export const sideNavRoutes: NavItem[] = [
     icon: BotMessageSquareIcon,
   },
   {
-    name: 'Marketplace',
-    description: 'Browse public collections and functions shared by other users.',
-    href: '/marketplace',
-    icon: GlobeIcon,
-  },
-  {
-    name: "My Subscriptions",
-    description: "Manage your collections and functions subscriptions.",
-    children: [
-      {
-        name: 'Collections',
-        description: 'Access and manage your collection of functions repository.',
-        href: '/mine/subscriptions/collections',
-        icon: SquareLibraryIcon,
-      },
-      {
-        name: 'Functions',
-        description: 'Access and manage your functions repository.',
-        href: '/mine/subscriptions/functions',
-        icon: SquareDashedBottomCodeIcon,
-      },
-    ],
-  },
-  // {
-  //   name: 'Tasks',
-  //   description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
-  //   href: '/tasks',
-  //   icon: BookCheckIcon,
-  // },
-  {
-    name: "My Hub",
+    name: "Hubs",
     description: "Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.",
     children: [
       {
-        name: 'Collections',
-        description: 'Access and manage your collection of functions repository.',
-        href: '/mine/collections',
-        icon: SquareLibraryIcon,
+        name: 'Marketplace',
+        description: 'Browse public collections and functions shared by other users.',
+        href: '/marketplace',
+        icon: GlobeIcon,
       },
       {
-        name: 'Functions',
-        description: 'Access and manage your unctions repository.',
-        href: '/mine/functions',
-        icon: SquareDashedBottomCodeIcon,
-      }
+        name: 'Subscriptions',
+        description: 'Manage your collections and functions that you subscribed from Marketplace.',
+        href: '/subscriptions',
+        icon: RssIcon,
+      },
+      {
+        name: 'My Automations',
+        description: 'Manage your own collections and functions repository.',
+        href: '/mine',
+        icon: UserCogIcon,
+      },
     ],
   },
   // {
@@ -111,14 +87,14 @@ const SideNav: FC<SideNavProps> = (props) => {
                 <li key={item.name}>
                   {isParent ? (
                     <div className={ cn('block', { 'mt-8': hasChildren })}>
-                      <div className="flex items-center text-xs font-semibold leading-6 text-gray-400">
+                      <div className="flex items-center text-xs font-semibold leading-6 text-gray-400" title={item.description} aria-label={item.description}>
                         <span className="truncate">{item.name}</span>
                         <hr className="flex-1 border-gray-700 ml-3" />
                       </div>
                       <ul role="list" className="-mx-2 mt-2 space-y-1">
                         {
                           item.children.map((subItem) => (
-                            <li className="" key={subItem.name}>
+                            <li className="" key={subItem.name} title={subItem.description} aria-label={subItem.description}>
                               <Link
                                 href={subItem.href}
                                 prefetch={false}
@@ -141,6 +117,8 @@ const SideNav: FC<SideNavProps> = (props) => {
                       <Link
                         href={item.href}
                         prefetch={false}
+                        title={item.description}
+                        aria-label={item.description}
                         className={cn(
                           pathname.indexOf(item.href) >= 0 ?
                             'bg-gray-800 text-white' :

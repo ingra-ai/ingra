@@ -4,7 +4,7 @@ import { FunctionItem } from './FunctionItem';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { subscribeToggleFunction } from '@protected/mine/functions/actions/functions';
-import type { FunctionSubscriptionListGetPayload } from '@protected/mine/subscriptions/functions/types';
+import type { FunctionSubscriptionListGetPayload } from '@protected/subscriptions/functions/types';
 
 interface FunctionsListProps {
   functionSubscriptions: FunctionSubscriptionListGetPayload[];

@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { unsubscribeToCollection } from '@protected/mine/collections/actions/collections';
-import type { CollectionSubscriptionGetPayload } from '@protected/mine/subscriptions/collections/types';
+import type { CollectionSubscriptionGetPayload } from '@protected/subscriptions/collections/types';
 import CollectionCard from './CollectionCard';
 import { cn } from '@lib/utils';
 import { Button } from '@components/ui/button';

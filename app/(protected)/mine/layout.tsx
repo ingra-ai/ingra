@@ -1,5 +1,5 @@
 import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
-import { MarketplaceNavRoutes } from './MarketplaceNavRoutes';
+import { MineNavRoutes } from './MineNavRoutes';
 import TopSubNav from '@components/navs/TopSubNav';
 
 async function Layout ({ 
@@ -10,8 +10,8 @@ async function Layout ({
   children: ReactNode;
 }) {
   return (
-    <div className="relative block" data-testid="marketplace-layout">
-      <TopSubNav navItems={MarketplaceNavRoutes} />
+    <div className="relative block" data-testid="mine-layout">
+      <TopSubNav navItems={MineNavRoutes} />
 
       <Suspense fallback={<div>Loading...</div>}>
         { children }

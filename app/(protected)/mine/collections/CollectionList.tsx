@@ -69,19 +69,15 @@ const CollectionList: React.FC<CollectionListProps> = ({ collections, ...divProp
   return (
     <div data-testid='collection-list' { ...divProps } className={ classes }>
       <div className="mx-auto space-y-6">
-        <div className="flex justify-between items-center mb-6">
-          {/* <h1 className="text-2xl font-bold">Collections</h1> */}
+        <div className={collectionListGridClasses}>
           <Button
             type="button"
             variant="outline"
             onClick={() => setOpen(true)}
-            className="flex items-center p-2 rounded"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            Add New Collection
+            className="flex flex-col justify-center items-center text-gray-500 hover:text-gray-300 border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px]">
+            <PlusIcon className="h-12 w-12" />
+            New Collection
           </Button>
-        </div>
-        <div className={collectionListGridClasses}>
           {collections.map((collection) => (
             <CollectionCard 
               key={collection.id}
