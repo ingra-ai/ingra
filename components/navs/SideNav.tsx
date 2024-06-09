@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon } from 'lucide-react';
+import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon } from 'lucide-react';
 import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {
@@ -25,34 +25,28 @@ export const sideNavRoutes: NavItem[] = [
     href: '/assistant',
     icon: BotMessageSquareIcon,
   },
-  // {
-  //   name: 'Tasks',
-  //   description: 'Central hub for managing tasks, including to-dos, reminders, and project assignments.',
-  //   href: '/tasks',
-  //   icon: BookCheckIcon,
-  // },
   {
-    name: "Functions Hub",
-    description: "Dynamic hubs that your AI can utilize, including functions, workflows, assistants and more.",
+    name: "Hubs",
+    description: "Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.",
     children: [
       {
         name: 'Marketplace',
-        description: 'Browse public functions shared by other users.',
-        href: '/functions/marketplace',
+        description: 'Browse public collections and functions shared by other users.',
+        href: '/marketplace',
         icon: GlobeIcon,
       },
       {
-        name: 'My Functions',
-        description: 'Access and manage your collection of functions repository.',
-        href: '/functions/mine',
-        icon: SquareDashedBottomCodeIcon,
+        name: 'Subscriptions',
+        description: 'Manage your collections and functions that you subscribed from Marketplace.',
+        href: '/subscriptions',
+        icon: RssIcon,
       },
       {
-        name: 'Subscriptions',
-        description: 'Manage your subscriptions to other users\' functions.',
-        href: '/functions/subscriptions',
-        icon: RssIcon,
-      }
+        name: 'My Automations',
+        description: 'Manage your own collections and functions repository.',
+        href: '/mine',
+        icon: UserCogIcon,
+      },
     ],
   },
   // {
@@ -88,23 +82,24 @@ const SideNav: FC<SideNavProps> = (props) => {
           <ul role="list" className="-mx-2 space-y-2">
             {sideNavRoutes.map((item) => {
               const isParent = isNavItemParent(item);
+              const hasChildren = isParent && item.children.length > 0;
               return (
                 <li key={item.name}>
                   {isParent ? (
-                    <div className="block">
-                      <div className="flex items-center text-xs font-semibold leading-6 text-gray-400">
+                    <div className={ cn('block', { 'mt-8': hasChildren })}>
+                      <div className="flex items-center text-xs font-semibold leading-6 text-gray-400" title={item.description} aria-label={item.description}>
                         <span className="truncate">{item.name}</span>
                         <hr className="flex-1 border-gray-700 ml-3" />
                       </div>
                       <ul role="list" className="-mx-2 mt-2 space-y-1">
                         {
                           item.children.map((subItem) => (
-                            <li className="" key={subItem.name}>
+                            <li className="" key={subItem.name} title={subItem.description} aria-label={subItem.description}>
                               <Link
                                 href={subItem.href}
                                 prefetch={false}
                                 className={cn(
-                                  subItem.href === pathname ?
+                                  pathname.indexOf(subItem.href) >= 0 ?
                                     'bg-gray-800 text-white' :
                                     'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center'
                                 )}
@@ -122,8 +117,10 @@ const SideNav: FC<SideNavProps> = (props) => {
                       <Link
                         href={item.href}
                         prefetch={false}
+                        title={item.description}
+                        aria-label={item.description}
                         className={cn(
-                          item.href === pathname ?
+                          pathname.indexOf(item.href) >= 0 ?
                             'bg-gray-800 text-white' :
                             'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center'
                         )}

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { RESERVED_SLUGS, SLUG_REGEX } from './schema-constants';
 
 /**
  * The default template for the function code.
@@ -23,12 +24,6 @@ async function handler(ctx) {
   return 'hello world';
 }
 `.trim();
-
-/**
- * Regular expression pattern for validating function slugs.
- * Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.
- */
-const FUNCTION_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
 
 /**
  * Enum for HTTP verbs.
@@ -84,10 +79,6 @@ const MAX_FUNCTION_TAG_NAME_LENGTH = 50;
  */
 const RESERVED_ARGUMENT_NAMES: string[] = [];
 
-/**
- * Reserved function slugs that cannot be used.
- */
-const RESERVED_FUNCTION_SLUGS = ['new', 'search', 'edit', 'view', 'createNew', 'list', 'delete', 'update', 'clone'];
 /**
  * Allowed types for function arguments.
  * Valid values are 'string', 'number', and 'boolean'.
@@ -261,11 +252,11 @@ export const FunctionSchema = z.object({
   .max(64, {
     message: 'Slug must be less than 64 characters long.'
   })
-  .regex(FUNCTION_SLUG_REGEX, {
+  .regex(SLUG_REGEX, {
     message: "Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.",
   })
   .refine(
-    (value) => RESERVED_FUNCTION_SLUGS.indexOf(value) === -1, 
+    (value) => RESERVED_SLUGS.indexOf(value) === -1, 
     (value) => (
       { message: `The function slug "${value}" is reserved and cannot be used.` }
     )

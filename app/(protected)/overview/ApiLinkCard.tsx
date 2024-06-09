@@ -28,7 +28,7 @@ export const ApiLinkCard: FC<ApiLinkCardProps> = ({ url, title, description, bod
       <Card className="hover:border-gray-500" title={title}>
         <CardHeader>
           <CardTitle className="flex justify-between">
-            <h3 className="text-sm">{title}</h3>
+            <p className="text-sm">{title}</p>
             <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-green-500">
               <span className="sr-only">Online</span>
               <svg
