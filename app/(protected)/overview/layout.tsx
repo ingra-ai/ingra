@@ -1,27 +1,21 @@
-import type { FC, ReactNode } from 'react';
-import { getAuthSession } from '@/app/auth/session';
-import { APP_AUTH_LOGIN_URL } from '@lib/constants';
-import { redirect, RedirectType } from 'next/navigation';
-import { PropsWithChildren } from 'react';
+import type { ReactNode } from 'react';
+import { Suspense } from 'react';
+import OverviewSkeleton from './loading';
 
-type OverviewLayoutProps = {
-  // assistant: ReactNode;
-};
-
-
-const OverviewLayout: FC<PropsWithChildren<OverviewLayoutProps>> = async (props) => {
-  const { children } = props;
-  const authSession = await getAuthSession();
-
-  if ( !authSession ) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
-  }
-
+async function Layout ({ 
+  searchParams,
+  children 
+}: { 
+  searchParams: Record<string, string | string[] | undefined>,
+  children: ReactNode
+}) {
   return (
-    <div id="overview-layout" className='block' data-testid="overview-layout">
-    { children }
+    <div id="overview-layout" className='relative' data-testid="overview-layout">
+      <Suspense fallback={<OverviewSkeleton />}>
+        { children }
+      </Suspense>
     </div>
   );
-};
+}
 
-export default OverviewLayout;
+export default Layout;

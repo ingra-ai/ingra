@@ -139,7 +139,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               render={({ slots }) => (
                 <InputOTPGroup className="mx-auto">
                   {slots.map((slot, index) => (
-                    <InputOTPSlot key={index} className="rounded-md border text-xl mx-1 h-10 w-10 xl:h-15 xl:w-15 xl:mx-2 bg-slate-900" {...slot} />
+                    <InputOTPSlot key={index} className="rounded-md border text-xl mx-1 h-10 w-10 xl:h-15 xl:w-15 xl:mx-2 bg-gray-950" {...slot} />
                   ))}{' '}
                 </InputOTPGroup>
               )}

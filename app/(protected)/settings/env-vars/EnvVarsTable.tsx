@@ -40,7 +40,7 @@ export const EnvVarsTable: FC<EnvVarsTableProps> = (props) => {
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <Button onClick={onCreate}>
+          <Button type='button' variant='accent' onClick={onCreate}>
             Add Environment Variable
           </Button>
         </div>

@@ -48,7 +48,7 @@ const CodeEditorInput: FC<CodeEditorInputProps> = (props) => {
   return (
     <DynamicCodeEditor
       id={ id || 'code-editor' }
-      height="60vh"
+      height="70vh"
       defaultLanguage="javascript"
       theme='vs-dark'
       keepCurrentModel={ false }
