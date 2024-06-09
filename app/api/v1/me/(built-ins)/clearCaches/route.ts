@@ -4,8 +4,7 @@ import { Logger } from "@lib/logger";
 import { clearAuthCaches } from "@app/auth/session/caches";
 
 /**
- * Disabling Swagger intentionally for this route.
- * @ swagger
+ * @swagger
  * /api/v1/me/clearCaches:
  *   delete:
  *     summary: Clear caches for the current session
