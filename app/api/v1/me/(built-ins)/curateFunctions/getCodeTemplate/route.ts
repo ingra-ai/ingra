@@ -10,7 +10,7 @@ import { generateCodeDefaultTemplate } from "@app/api/utils/functions/generateCo
  * @swagger
  * /api/v1/me/curateFunctions/getCodeTemplate:
  *   get:
- *     summary: Getting the code template for current user. It will show what are the available user and environment variables that are ready to be utilized in the code.
+ *     summary: Getting the code template for current user. It will show what are the available user vars, environment vars, and VM globals in the comment that are ready to be utilized when generating code.
  *     operationId: getCodeTemplate
  *     responses:
  *       '200':
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         status: 'success',
-        message: 'Successfully retrieved the code template ready to be curated for a function suits your need. You can utilize "environmentVariables" endpoint in case you need more customization. Remember to remove the hardcoded stuffs if you want to save this function.',
+        message: 'Successfully retrieved the code template ready to be curated for a function suits your need. You can utilize "environmentVariables" endpoint in case you need more customization.',
         data: codeTemplate,
       },
       {
