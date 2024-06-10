@@ -8,6 +8,8 @@ import { FUNCTION_ARGUMENT_ALLOWED_TYPES, FunctionArgumentSchema, FunctionSchema
 import { Switch } from "@/components/ui/switch"
 import { cn } from '@lib/utils';
 import FunctionArgumentInput from './FunctionArgumentInputSwitchField';
+import { Textarea } from '@components/ui/textarea';
+import { Input } from '@components/ui/input';
 
 interface FunctionArgumentFormFieldProps {
   index: number;
@@ -34,16 +36,17 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
       defaultValue,
     });
   };
-  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
-  // console.log( { errors } );
+
   return (
     <div key={( item.id || 'new' ) + index} data-testid={`argument-row-${index}`} className={cn("space-y-4", className)}>
       <div className="grid grid-cols-12 gap-4">
         <div className='col-span-7'>
-          <input
+          <Input
             {...register(`arguments.${index}.name`)}
             placeholder="Name"
-            className={inputClasses}
+            aria-autocomplete='none'
+            autoComplete="false"
+            type="text"
           />
           {errors.arguments?.[index]?.name && <p className="text-xs font-medium text-destructive-foreground mt-3">{errors.arguments?.[index]?.name?.message}</p>}
         </div>
@@ -69,7 +72,7 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
         <button
           type="button"
           onClick={() => remove(index)}
-          className="col-span-1 flex justify-end items-center text-red-500 w-full"
+          className="col-span-1 flex justify-end items-center text-destructive w-full"
         >
           <TrashIcon className="h-5 w-5" />
         </button>
@@ -100,7 +103,6 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
               <FunctionArgumentInput
                 id={`arguments.${index}.type`}
                 type={ watch(`arguments.${index}.type`) as any }
-                className={watch(`arguments.${index}.type`) === 'boolean' ? '' : inputClasses}
                 field={field as any}
               />
               {errors.arguments?.[index]?.defaultValue && <p className="text-xs font-medium text-destructive-foreground mt-3">{errors.arguments?.[index]?.defaultValue?.message}</p>}
@@ -109,11 +111,11 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
         />
       </div>
       <div className="grid grid-cols-12 mb-3">
-        <textarea
+        <Textarea
           {...register(`arguments.${index}.description`)}
           placeholder="Description"
           rows={3}
-          className={`col-span-12 text-sm ${inputClasses}`}
+          className={`col-span-12 text-sm`}
         />
         <div className='col-span-12 grid grid-cols-12 mt-3'>
           <div className='col-span-8 text-left'>

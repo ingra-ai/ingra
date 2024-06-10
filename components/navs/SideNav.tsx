@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { GlobeIcon, SquareDashedBottomCodeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon } from 'lucide-react';
+import { GlobeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon } from 'lucide-react';
 import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 export type SideNavProps = {
@@ -42,7 +42,7 @@ export const sideNavRoutes: NavItem[] = [
         icon: RssIcon,
       },
       {
-        name: 'My Automations',
+        name: 'Mine',
         description: 'Manage your own collections and functions repository.',
         href: '/mine',
         icon: UserCogIcon,
@@ -97,7 +97,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                             <li className="" key={subItem.name} title={subItem.description} aria-label={subItem.description}>
                               <Link
                                 href={subItem.href}
-                                prefetch={false}
+                                prefetch={true}
                                 className={cn(
                                   pathname.indexOf(subItem.href) >= 0 ?
                                     'bg-gray-800 text-white' :
@@ -116,7 +116,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                     <div className="text-xs font-semibold leading-6 text-gray-400 -mx-2">
                       <Link
                         href={item.href}
-                        prefetch={false}
+                        prefetch={true}
                         title={item.description}
                         aria-label={item.description}
                         className={cn(

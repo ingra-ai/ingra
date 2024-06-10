@@ -2,8 +2,7 @@ import React from 'react';
 import { Button } from '@components/ui/button';
 import { CollectionListGetPayload } from '@protected/mine/collections/types';
 import { PencilIcon, EyeIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { MoreVertical } from 'lucide-react';
-import { SquareDashedBottomCodeIcon, RssIcon, TagIcon } from 'lucide-react';
+import { SquareDashedBottomCodeIcon, RssIcon, TagIcon, MoreVertical } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -127,7 +126,7 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
                   View
                 </button>
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-secondary hover:text-secondary-foreground cursor-pointer p-2">
+              <DropdownMenuItem className="text-destructive hover:bg-secondary hover:text-secondary-foreground cursor-pointer p-2">
                 <button
                   type="button"
                   onClick={handleDelete}

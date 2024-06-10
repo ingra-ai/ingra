@@ -2,6 +2,25 @@
 const nextConfig = {
   transpilePackages: ['lucide-react'],
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+  redirects: async () => {
+    return [
+      {
+        source: '/marketplace',
+        destination: '/marketplace/collections',
+        permanent: false,
+      },
+      {
+        source: '/subscriptions',
+        destination: '/subscriptions/collections',
+        permanent: false,
+      },
+      {
+        source: '/mine',
+        destination: '/mine/collections',
+        permanent: false,
+      },
+    ];
+  },
   headers: async () => {
     return [
       {

@@ -25,7 +25,7 @@ const TopSubNav: React.FC<TopSubNavProps> = ( props ) => {
         <ul role="list" className="flex min-w-full flex-none gap-x-6 text-sm font-semibold leading-6 text-gray-400">
           {navItems.map((item) => (
             <li key={item.name}>
-              <Link href={item.href} className={pathname.indexOf(item.href) >= 0 ? 'text-indigo-400' : ''}>
+              <Link href={item.href} prefetch={true} className={pathname.indexOf(item.href) >= 0 ? 'text-indigo-400' : ''}>
                 {
                   !!item.icon && (
                     <item.icon className="w-4 h-4 inline-block mr-2" />

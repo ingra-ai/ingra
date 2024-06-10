@@ -150,13 +150,21 @@ export async function unsubscribeToCollection( collectionId: string, userId: str
   };
 }
 
-export async function deleteCollection( collectionId: string, userId: string ) {
+export async function deleteCollection(collectionId: string, userId: string) {
   try {
     await db.$transaction(async (prisma) => {
-      // Get all functions in this collections
-      const functionsRecord = await prisma.collection.findUnique({
+      // Delete related collection subscriptions
+      await prisma.collectionSubscription.deleteMany({
+        where: {
+          collectionId,
+        },
+      });
+
+      // Get all functions in this collection
+      const collectionRecord = await prisma.collection.findUnique({
         where: {
           id: collectionId,
+          userId
         },
         select: {
           functions: {
@@ -167,43 +175,37 @@ export async function deleteCollection( collectionId: string, userId: string ) {
         },
       });
 
-      // Delete related child records in the correct order
-      const relationshipRemovePromises = [
-        // Delete function arguments
-        prisma.collectionSubscription.deleteMany({
-          where: {
-            collectionId,
-          },
-        }),
-
+      if (collectionRecord?.functions.length) {
         // Disconnect all functions in this collection
-        functionsRecord?.functions.length && prisma.collection.update({
+        await prisma.collection.update({
           where: {
             id: collectionId,
+            userId
           },
           data: {
             functions: {
-              disconnect: functionsRecord.functions,
+              disconnect: collectionRecord.functions.map(f => ({ id: f.id })),
             },
           },
-        })
-      ];
-      
-      await Promise.all(relationshipRemovePromises);
-      const record = await db.collection.delete({
+        });
+      }
+
+      // Delete the collection
+      const record = await prisma.collection.delete({
         where: {
           id: collectionId,
-          userId,
+          userId
         },
       });
     
       return record;
     });
 
-    await Logger.withTag('deleteCollection').info('User and all related records deleted successfully.');
+    await Logger.withTag('deleteCollection').info('Collection and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag('deleteCollection').info('Error deleting user and related records', { error });
+    await Logger.withTag('deleteCollection').info('Error deleting collection and related records', { error });
     return false;
   }
 }
+

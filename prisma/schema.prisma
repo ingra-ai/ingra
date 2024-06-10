@@ -75,6 +75,7 @@ model OAuthToken {
   idToken             String?
   scope               String
   tokenType           String    @default("Bearer") @db.VarChar(64)
+  isDefault           Boolean   @default(false)
   expiryDate          DateTime
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt

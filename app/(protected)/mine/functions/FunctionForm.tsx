@@ -22,9 +22,11 @@ import { useRouter } from 'next/navigation';
 import { CodeSandboxForm } from './CodeSandboxForm';
 import { TagField } from '@components/TagField';
 import { Input } from '@components/ui/input';
+import { Textarea } from '@components/ui/textarea';
 import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
+import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 
 type FunctionFormProps = {
   userVars: Record<string, any>;
@@ -47,6 +49,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
   const { toast } = useToast();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const [isSandboxOpen, setSandboxOpen] = useState(false);
   const allUserAndEnvKeys = Object.keys(userVars).concat(envVars.map(envVar => envVar.key));
   const methods = useForm<z.infer<typeof FunctionSchema>>({
     reValidateMode: 'onSubmit',
@@ -196,8 +199,6 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
     return clonedFunction;
   }, [isEditMode]);
 
-  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
-
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
@@ -241,14 +242,16 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
               <TabsList className="">
                 <TabsTrigger value="function-properties-tab">Properties</TabsTrigger>
                 <TabsTrigger value="arguments-tab">Arguments</TabsTrigger>
-                {
-                  functionRecord && (
-                    <TabsTrigger value="sandbox-tab">
-                      <BugPlayIcon className="inline-block mr-2 h-5" /> Dry Run
-                    </TabsTrigger>
-                  )
-                }
               </TabsList>
+              {
+                functionRecord && (
+                  <div className="block">
+                    <Button variant='accent' type="button" disabled={isSaving} className="flex justify-center rounded-md text-sm font-semibold" onClick={() => setSandboxOpen(true)}>
+                      <BugPlayIcon className="inline-block mr-2 w-4 h-4" /> Dry Run
+                    </Button>
+                  </div>
+                )
+              }
             </div>
             <TabsContent value="function-properties-tab" className='block space-y-6'>
               <div className="grid grid-cols-12 gap-x-4 gap-y-1">
@@ -298,15 +301,15 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
 
                 </div>
               </div>
-              <div className="block">
+              <div className="block space-y-2">
                 <label htmlFor="description" className="block text-sm font-medium leading-6">
                   Description
                 </label>
-                <textarea
+                <Textarea
                   {...register(`description`)}
                   placeholder="A function to output 'hello world!' text."
                   rows={3}
-                  className={`col-span-12 text-sm ${inputClasses}`}
+                  className={`col-span-12 text-sm`}
                 />
                 <div className='col-span-12 grid grid-cols-12 mt-3'>
                   <div className='col-span-8 text-left'>
@@ -318,7 +321,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 </div>
               </div>
 
-              <div className="block">
+              <div className="block space-y-2">
                 <label htmlFor="tags" className="block text-sm font-medium leading-6">
                   Tags
                 </label>
@@ -332,7 +335,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 {errors.tags?.[0]?.name && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.tags?.[0]?.name.message}</p>}
               </div>
 
-              <div className="block">
+              <div className="block space-y-2">
                 <Controller
                   control={control}
                   name='isPublished'
@@ -412,16 +415,16 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 ))}
               </div>
             </TabsContent>
-            {
-              functionRecord && (
-                <TabsContent value="sandbox-tab" className='block space-y-6'>
-                  <CodeSandboxForm functionRecord={functionRecord} />
-                </TabsContent>
-              )
-            }
           </Tabs>
         </form>
       </FormProvider>
+      {
+        functionRecord && (
+          <FormSlideOver title="Sandbox" open={isSandboxOpen} setOpen={setSandboxOpen}>
+            <CodeSandboxForm functionRecord={functionRecord} onClose={() => setSandboxOpen(false)} />
+          </FormSlideOver>
+        )
+      }
     </div>
   );
 };

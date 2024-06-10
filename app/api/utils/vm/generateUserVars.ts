@@ -22,9 +22,25 @@ export const generateUserVars = (authSession: AuthSessionResponse): Record<strin
       if (token?.service) {
         const prefix = token.service.split(/[^a-zA-Z0-9]/g).filter( Boolean ).join('_').toUpperCase();
 
-        userVars[`${prefix}_ACCESS_TOKEN`] = token.accessToken;
-        userVars[`${prefix}_ID_TOKEN`] = token.idToken || '';
-        userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || '';
+        /**
+         * Each token's service, only has 1 default. If it's default and the userVars is not set, set it.
+         * This will allow the user to run VM with the default token per service.
+         */
+
+        if ( token.isDefault ) {
+          userVars[`${prefix}_ACCESS_TOKEN`] = token.accessToken;
+          userVars[`${prefix}_ID_TOKEN`] = token.idToken || '';
+          userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || '';
+        }
+        /**
+         * If user has no default set, then set the first token as default.
+         */
+        else if ( !userVars[`${prefix}_ACCESS_TOKEN`] ) {
+          userVars[`${prefix}_ACCESS_TOKEN`] = token.accessToken;
+          userVars[`${prefix}_ID_TOKEN`] = token.idToken || '';
+          userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || '';
+        }
+
       }
     }
   }

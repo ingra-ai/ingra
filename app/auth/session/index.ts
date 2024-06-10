@@ -63,6 +63,14 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
               // Push to upsertPromises array
               updateOAuthPromises.push(updatedOAuthRecord);
             }
+            else {
+              /**
+               * 2.5 Or if it returns false, which means refreshing would've failed.
+               * @todo I would say we tell the user that their OAuth token is expired and they need to re-authenticate.
+               * @todo We can also send an email to the user to let them know that their OAuth token is expired.
+               * @todo And we should probably flag it in database, and also in the UI. So user can re-authenticate.
+               */
+            }
           }
 
           await Promise.all(updateOAuthPromises).then( (updateOAuthRes) => {

@@ -126,7 +126,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
                         {
                           navNotificationItems.map((item, idx) => (
                             <MenuItem key={idx}>
-                              <Link href={item.href || '/'} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title="Profile">
+                              <Link href={item.href || '/'} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title={ item.text }>
                                 <span className="">{item.text}</span>
                               </Link>
                             </MenuItem>
@@ -163,7 +163,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
                     <MenuSeparator className="my-1 h-px bg-gray-700" />
                     {SettingsNavRoutes.map((item) => (
                       <MenuItem key={item.name}>
-                        <Link href={item.href} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title="Profile">
+                        <Link href={item.href} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title={item.name}>
                           <span className="">{item.name}</span>
                         </Link>
                       </MenuItem>
@@ -171,7 +171,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
                   </MenuSection>
                   {/* <MenuSeparator className="my-1 h-px bg-gray-700" /> */}
                   <MenuItem>
-                    <Link href="/auth/logout" className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive-foreground hover:bg-gray-700 hover:text-destructive-foreground/80" title="Profile">
+                    <Link href="/auth/logout" className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
                       <span className="">Logout</span>
                     </Link>
                   </MenuItem>

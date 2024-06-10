@@ -109,7 +109,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
       <FormProvider {...methods}>
         <form className="block" method="POST" onSubmit={handleSubmit(onSave)}>
           <div className="block space-y-6">
-            <div className="block">
+            <div className="block space-y-2">
               <div className="flex mb-3 leading-6 justify-between">
                 <label className="block text-sm font-medium">
                   Collection Name
@@ -120,14 +120,14 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                 {...register('name')}
                 placeholder="Collection Name"
                 aria-autocomplete='none'
-                autoComplete="false"
+                autoComplete="off"
                 type="text"
                 required
                 autoFocus
               />
               {errors.name && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.name.message}</p>}
             </div>
-            <div className="block">
+            <div className="block space-y-2">
               <label htmlFor="slug" className="block text-sm font-medium leading-6">
                 Slug
               </label>
@@ -136,21 +136,21 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                 {...register('slug')}
                 placeholder="collection-slug"
                 aria-autocomplete='none'
-                autoComplete="false"
+                autoComplete="off"
                 type="text"
                 required
               />
               {errors.slug && <p className="text-sm font-medium text-destructive-foreground mt-3">{errors.slug.message}</p>}
             </div>
-            <div className="block">
+            <div className="block space-y-2">
               <label htmlFor="description" className="block text-sm font-medium leading-6">
                 Description
               </label>
               <Textarea
                 {...register(`description`)}
-                placeholder="A brief description of the collection."
-                rows={6}
-                className={`col-span-12 text-sm ${inputClasses}`}
+                placeholder="A description of what this collection automates."
+                rows={8}
+                className={`col-span-12 text-sm`}
               />
               <div className='col-span-12 grid grid-cols-12 mt-3'>
                 <div className='col-span-8 text-left'>

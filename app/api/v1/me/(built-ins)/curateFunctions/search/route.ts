@@ -39,6 +39,7 @@ import db from "@lib/db";
  *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Built-ins Internal
+ *       - Curate Functions
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

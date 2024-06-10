@@ -7,7 +7,7 @@ import { cloneFunction } from "@/data/functions";
  * @swagger
  * /api/v1/me/curateFunctions/clone:
  *   post:
- *     summary: Clone a function by providing referenced function ID.
+ *     summary: Generate an exact copy of a function and its arguments by providing referenced function ID. Useful for fast-prototyping of a new function using an existing similar one.
  *     operationId: cloneFunction
  *     requestBody:
  *       required: true
@@ -42,6 +42,7 @@ import { cloneFunction } from "@/data/functions";
  *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Built-ins Internal
+ *       - Curate Functions
  */
 export async function POST(req: NextRequest) {
   const { functionId } = await req.json();

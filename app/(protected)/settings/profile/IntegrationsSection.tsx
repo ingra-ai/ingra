@@ -27,6 +27,7 @@ export const IntegrationsSection: FC<IntegrationsSectionProps> = async (props) =
   return (
     <section className="block" data-testid="integrations-section">
       <GoogleIntegrationButton type="redirect" text="Connect with your Google Account" />
+      <hr className="mt-2 mb-4" />
       <OAuthList oAuthTokens={oAuthTokens} />
     </section>
   );
