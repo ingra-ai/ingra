@@ -8,7 +8,7 @@ import { Button } from "@components/ui/button";
 import { cn } from "@lib/utils";
 import { useToast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { RefreshCcw } from 'lucide-react';
+import { RefreshCcw, TentIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { APP_NAME } from "@lib/constants";
-import { revokeOAuth } from "../actions/oauth";
+import { revokeOAuth, setTokenAsDefault } from "@protected/settings/actions/oauth";
+import { Badge } from '@components/ui/badge';
 
 type OAuthListProps = {
   oAuthTokens: OAuthToken[];
@@ -51,10 +52,11 @@ const OAuthList: FC<OAuthListProps> = (props) => {
   const { oAuthTokens } = props;
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<false | string>(false);
 
   function onRevoke(token: OAuthToken) {
-    setIsLoading(true);
+    setIsLoading(token.id);
+
     revokeOAuth(token).then((result) => {
       if (result.status !== 'ok') {
         throw new Error(result.message);
@@ -82,10 +84,42 @@ const OAuthList: FC<OAuthListProps> = (props) => {
       });
   }
 
+  function onSetDefault(token: OAuthToken) {
+    setIsLoading(token.id);
+    
+    setTokenAsDefault(token).then((result) => {
+      if (result.status !== 'ok') {
+        throw new Error(result.message);
+      }
+
+      toast({
+        title: 'Token has been set as default!',
+        description: result.message || `Token has been successfully set as default.`,
+      });
+      
+      startTransition(() => {
+        // Refresh the current route and fetch new data from the server without
+        // losing client-side browser or React state.
+        router.refresh();
+      });
+    })
+    .catch((error: any) => {
+      toast({
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message || 'Failed to set default token!',
+      });
+    })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
   return (
     <ul role="list" className="grid grid-cols-1 gap-6 xl:grid-cols-2">
       {oAuthTokens.map((token) => {
         const tokenDetail = getTokenDetail(token);
+        const isTokenLoading = isLoading === token.id;  
+        const isTokenDefault = token.isDefault;
         const stateClasses = cn(
           tokenDetail.state === 'Active' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-red-50 text-red-700 ring-red-600/20'
         );
@@ -99,6 +133,11 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                   <span className={cn("inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset", stateClasses)}>
                     {tokenDetail.state}
                   </span>
+                  {
+                    isTokenDefault && (
+                      <Badge>Default</Badge>
+                    )
+                  }
                 </div>
                 <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
                 <p className="mt-1 truncate text-xs text-gray-400">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
@@ -107,13 +146,24 @@ const OAuthList: FC<OAuthListProps> = (props) => {
             </div>
             <div>
               <div className="-mt-px flex divide-x divide-gray-500">
-                <div className="flex w-0 flex-1 p-1">
+                <div className="flex w-0 flex-1">
+                  <Button 
+                    type="button" 
+                    onClick={() => onSetDefault(token)}
+                    disabled={isTokenLoading}
+                    className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-info"
+                  >
+                    {isTokenLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TentIcon className="h-4 w-4 mr-2" aria-hidden="true" />}
+                    {isTokenLoading ? 'Setting as default...' : 'Set as Default'}
+                  </Button>
+                </div>
+                <div className="flex w-0 flex-1">
                   <Dialog>
                     <DialogTrigger
-                      className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg rounded-br-lg border border-transparent py-4 text-sm font-semibold"
+                      className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-destructive"
                       type='button'
                     >
-                      <TrashIcon className="h-5 w-5" aria-hidden="true" />
+                      <TrashIcon className="h-4 w-4 mr-2" aria-hidden="true" />
                       Revoke
                     </DialogTrigger>
                     <DialogContent>
@@ -134,10 +184,10 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                             variant='destructive'
                             type="button"
                             onClick={() => onRevoke(token)}
-                            disabled={isLoading}
+                            disabled={isTokenLoading}
                           >
-                            {isLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
-                            {isLoading ? 'Revoking...' : 'Revoke'}
+                            {isTokenLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
+                            {isTokenLoading ? 'Revoking...' : 'Revoke'}
                           </Button>
                         </DialogFooter>
                       </DialogHeader>

@@ -82,7 +82,7 @@ export const FunctionItem: React.FC<FunctionItemProps> = (props) => {
           </button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <button aria-label='Unsubscribe' title='Unsubscribe' className="p-1 text-red-300 hover:text-red-400">
+              <button aria-label='Unsubscribe' title='Unsubscribe' className="p-1 text-destructive hover:text-destructive/80">
                 <TrashIcon className="h-4 w-4" />
               </button>
             </AlertDialogTrigger>

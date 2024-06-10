@@ -9,7 +9,7 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  * @swagger
  * /api/v1/me/curateFunctions/dryRun:
  *   post:
- *     summary: Dry run a function by providing referenced function ID and "body" for the arguments.
+ *     summary: Dry run a function by providing referenced function ID and "body" for the function's arguments.
  *     operationId: dryRunFunction
  *     requestBody:
  *       required: true
@@ -49,6 +49,7 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Built-ins Internal
+ *       - Curate Functions
  */
 export async function POST(req: NextRequest) {
   const { functionId, body } = await req.json();

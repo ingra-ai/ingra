@@ -70,6 +70,7 @@ import { z } from "zod";
  *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Built-ins Internal
+ *       - Curate Functions
  */
 export async function POST(req: NextRequest) {
   const requestArgs = await req.json();

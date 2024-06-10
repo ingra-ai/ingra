@@ -110,7 +110,7 @@ export default async function Page(
     <div className="block" data-testid="collections-list-page">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Collections</h1>
+          <h1 className="text-base font-semibold leading-6">My Collections</h1>
           <p className="text-xs text-gray-500 font-sans mt-1">
             # records: <strong>{paginationProps.totalRecords.toLocaleString(undefined, { minimumFractionDigits: 0 })}</strong>
           </p>

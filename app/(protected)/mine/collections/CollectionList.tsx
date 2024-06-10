@@ -74,7 +74,7 @@ const CollectionList: React.FC<CollectionListProps> = ({ collections, ...divProp
             type="button"
             variant="outline"
             onClick={() => setOpen(true)}
-            className="flex flex-col justify-center items-center text-gray-500 hover:text-gray-300 border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px]">
+            className="flex flex-col justify-center items-center text-gray-500 hover:text-gray-300 border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full h-full min-h-[200px]">
             <PlusIcon className="h-12 w-12" />
             New Collection
           </Button>
