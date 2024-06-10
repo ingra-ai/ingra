@@ -27,6 +27,7 @@
     "@hookform/resolvers": "^3.4.0",
     "@monaco-editor/react": "^4.6.0",
     "@next/mdx": "^14.2.3",
+    "@octokit/rest": "^20.1.1",
     "@prisma/client": "5.14.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -60,7 +61,6 @@
     "next": "14.2.3",
     "next-swagger-doc": "^0.4.0",
     "node-fetch": "^3.3.2",
-    "octokit": "^4.0.2",
     "openai": "^4.47.1",
     "react": "^18",
     "react-day-picker": "^8.10.1",
@@ -98,6 +98,7 @@
     "lint-staged": "^15.2.2",
     "postcss": "^8",
     "prisma": "^5.14.0",
+    "rest": "link:@types/@octokit/rest",
     "tailwindcss": "^3.4.3",
     "ts-node": "^10.9.2",
     "typescript": "^5"
