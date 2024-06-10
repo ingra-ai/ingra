@@ -21,10 +21,12 @@ import { clearAuthCaches } from "@app/auth/session/caches";
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   examples:
+ *                     - success
  *                 message:
  *                   type: string
- *                   example: Discovered 5 environment variables set.
+ *                   examples:
+ *                     - Discovered 5 environment variables set.
  *                 data:
  *                   type: array
  *                   items:
@@ -77,10 +79,12 @@ export async function GET(req: NextRequest) {
  *             properties:
  *               key:
  *                 type: string
- *                 example: DATABASE_URL
+ *                 examples:
+ *                   - DATABASE_URL
  *               value:
  *                 type: string
- *                 example: postgres://user:password@localhost:5432/dbname
+ *                 examples:
+ *                   - postgres://user:password@localhost:5432/dbname
  *     responses:
  *       200:
  *         description: Environment variable created successfully.
@@ -91,10 +95,12 @@ export async function GET(req: NextRequest) {
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   examples:
+ *                     - success
  *                 message:
  *                   type: string
- *                   example: Environment variable "DATABASE_URL" created successfully.
+ *                   examples:
+ *                     - Environment variable "DATABASE_URL" created successfully.
  *                 data:
  *                   type: object
  *                   properties:
@@ -116,7 +122,7 @@ export async function POST(req: NextRequest) {
     }
 
     const record = await upsertEnvVar(key, value, authSession.user.id);
-    
+
     await clearAuthCaches(authSession);
 
     Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info('Upserted environment variable');
@@ -164,10 +170,12 @@ export async function POST(req: NextRequest) {
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   examples:
+ *                     - success
  *                 message:
  *                   type: string
- *                   example: Environment variable "DATABASE_URL" removed successfully.
+ *                   examples:
+ *                     - Environment variable "DATABASE_URL" removed successfully.
  *                 data:
  *                   type: object
  *                   properties:
@@ -243,10 +251,12 @@ export async function DELETE(req: NextRequest) {
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   examples:
+ *                     - success
  *                 message:
  *                   type: string
- *                   example: Environment variable "DATABASE_URL" updated successfully.
+ *                   examples:
+ *                     - Environment variable "DATABASE_URL" updated successfully.
  *                 data:
  *                   type: object
  *                   properties:
