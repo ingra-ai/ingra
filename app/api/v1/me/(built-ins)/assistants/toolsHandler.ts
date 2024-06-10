@@ -4,6 +4,7 @@ import { APP_URL } from '@lib/constants';
 import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
 import { OpenAI } from 'openai';
 import { Logger } from '@lib/logger';
+import { type DataMessage } from 'ai';
 
 const getApiDetails = async (authSession: AuthSessionResponse, toolName: string) => {
   const authSwaggerSpec = await getAuthSwaggerSpec(authSession);
@@ -40,7 +41,8 @@ export const actionToolCalls = async (
   authSession: AuthSessionResponse, 
   threadId: string, 
   headers: Record<string, any> = {}, 
-  toolCalls: OpenAI.Beta.Threads.Runs.RequiredActionFunctionToolCall[] 
+  toolCalls: OpenAI.Beta.Threads.Runs.RequiredActionFunctionToolCall[],
+  sendDataMessage?: (dataMessage: DataMessage) => void
 ) => {
   const resultPromises = toolCalls.map( async ( toolCall ) => {
     const logger = Logger.withTag('actionToolCalls').withTag(`thread:${threadId}`).withTag(`user:${authSession.user?.id}`);
@@ -61,6 +63,11 @@ export const actionToolCalls = async (
         throw new Error('Function arguments are required');
       }
 
+      sendDataMessage?.({
+        role: 'data',
+        data: `Invoking ${functionName}...`
+      });
+
       const toolOutput = await toolsHandler(authSession, functionName, functionArgs, headers).catch((error: any) => {
         logger.error(`Error running tool ${functionName}: ${error.message}`);
         return `An error occurred when calling the related function: ${error.message}`;
@@ -71,6 +78,10 @@ export const actionToolCalls = async (
     catch ( err: any ) {
       logger.error(`Error handling tool call: ${ err?.message || 'Unknown Error' }`);
       toolResult.output = `An error occurred when calling the related function: ${ err?.message || 'Unknown Error' }`;
+      sendDataMessage?.({
+        role: 'data',
+        data: `An error occurred when calling the related function: ${ err?.message || 'Unknown Error' }`
+      });
     }
 
     return toolResult;

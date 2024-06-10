@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
-import db from "@lib/db";
-import { ActionError } from "@v1/types/api-response";
 import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
+import { ActionError } from "@v1/types/api-response";
 
 /**
  * @swagger
  * /api/v1/me/curateFunctions/dryRun:
  *   post:
- *     summary: Dry run a function by providing referenced function ID and "body" for the function's arguments.
+ *     summary: Dry run the code without arguments and returns the result. Expecting hard-coded values in replacement for the arguments. User variables and environment variables are still available in the VM context.
  *     operationId: dryRunFunction
  *     requestBody:
  *       required: true
@@ -18,19 +17,12 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  *           schema:
  *             type: object
  *             properties:
- *               functionId:
+ *               code:
  *                 type: string
- *                 format: uuid
- *                 description: The ID of the function to run. In UUID format.
- *                 example: "090abc6e-0e19-466d-8549-83dd24c5c8e5"
- *               body:
- *                 type: object
- *                 description: The arguments to pass to the function.
- *                 additionalProperties:
- *                   type: object
+ *                 description: The sandbox code that follows the guideline to be executed.
  *     responses:
  *       '200':
- *         description: Successfully ran the function
+ *         description: Successfully created new function
  *         content:
  *           application/json:
  *             schema:
@@ -41,57 +33,26 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ApiError'
- *       '404':
- *         description: Function not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ApiError'
  *     tags:
  *       - Built-ins Internal
  *       - Curate Functions
  */
 export async function POST(req: NextRequest) {
-  const { functionId, body } = await req.json();
+  const requestArgs = await req.json();
+  const code = requestArgs?.code || '';
+
+  if ( !code ) {
+    throw new ActionError("error", 400, 'Node.js code is required to run this method. Please follow the guideline by running "getCodeTemplate" API endpoint.');
+  }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    // Find the function
-    const functionRecord = await db.function.findFirst({
-      where: {
-        OR: [
-          {
-            id: functionId,
-            ownerUserId: authSession.user.id
-          },
-          {
-            AND: [
-              {
-                subscribers: {
-                  some: {
-                    userId: authSession.user.id
-                  }
-                }
-              },
-              {
-                id: functionId
-              }
-            ]
-          }
-        ],
-      },
-      select: {
-        id: true,
-        code: true,
-        arguments: true
-      }
-    });
-
-    if ( !functionRecord ) {
-      throw new ActionError('error', 400, `Function not found.`);
-    }
 
     // Run the function
-    const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, body),
+    const { result, metrics, errors } = await runUserFunction(authSession, {
+        id: 'dry-run',
+        code,
+        arguments: [],
+      }, {}),
       loggerObj = Logger.withTag('me-builtins').withTag('curateFunctions-dryRun').withTag(`user:${authSession.user.id}`);
 
     if (errors.length) {
@@ -100,7 +61,7 @@ export async function POST(req: NextRequest) {
       throw new ActionError('error', 400, errorMessage);
     }
 
-    loggerObj.info('Ran a user function');
+    loggerObj.info('Finished dry run a user function');
 
     return NextResponse.json(
       {
@@ -114,3 +75,4 @@ export async function POST(req: NextRequest) {
     );
   });
 }
+

@@ -21,10 +21,12 @@ import { clearAuthCaches } from "@app/auth/session/caches";
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   examples:
+ *                     - success
  *                 message:
  *                   type: string
- *                   example: Discovered 3 oAuth tokens set.
+ *                   examples:
+ *                     - Discovered 3 oAuth tokens set.
  *                 data:
  *                   type: array
  *                   items:
@@ -32,16 +34,20 @@ import { clearAuthCaches } from "@app/auth/session/caches";
  *                     properties:
  *                       id:
  *                         type: string
- *                         example: 123e4567-e89b-12d3-a456-426614174000
+ *                         examples:
+ *                           - 123e4567-e89b-12d3-a456-426614174000
  *                       service:
  *                         type: string
- *                         example: google-oauth
+ *                         examples:
+ *                           - google-oauth
  *                       primaryEmailAddress:
  *                         type: string
- *                         example: user@example.com
+ *                         examples:
+ *                           - user@example.com
  *                       isDefault:
  *                         type: boolean
- *                         example: true
+ *                         examples:
+ *                           - true
  *     tags:
  *       - Built-ins Internal
  *       - OAuth Token
@@ -94,10 +100,12 @@ export async function GET(req: NextRequest) {
  *             properties:
  *               id:
  *                 type: string
- *                 example: 123e4567-e89b-12d3-a456-426614174000
+ *                 examples:
+ *                   - 123e4567-e89b-12d3-a456-426614174000
  *               service:
  *                 type: string
- *                 example: google-oauth
+ *                 examples:
+ *                   - google-oauth
  *     responses:
  *       200:
  *         description: OAuth token set as default successfully.
@@ -108,25 +116,31 @@ export async function GET(req: NextRequest) {
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   examples:
+ *                     - success
  *                 message:
  *                   type: string
- *                   example: Sets default OAuth token for service "google" to user@example.com.
+ *                   examples:
+ *                     - Sets default OAuth token for service "google" to user@example.com.
  *                 data:
  *                   type: object
  *                   properties:
  *                     id:
  *                       type: string
- *                       example: 123e4567-e89b-12d3-a456-426614174000
+ *                       examples:
+ *                         - 123e4567-e89b-12d3-a456-426614174000
  *                     service:
  *                       type: string
- *                       example: google-oauth
+ *                       examples:
+ *                         - google-oauth
  *                     primaryEmailAddress:
  *                       type: string
- *                       example: user@example.com
+ *                       examples:
+ *                         - user@example.com
  *                     isDefault:
  *                       type: boolean
- *                       example: true
+ *                       examples:
+ *                         - true
  *     tags:
  *       - Built-ins Internal
  *       - OAuth Token

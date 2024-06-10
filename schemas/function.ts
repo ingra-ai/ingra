@@ -8,12 +8,13 @@ export const CODE_DEFAULT_TEMPLATE = `
 /*
 VM Context:
 - 'console.log' and 'console.error'
-- 'fetch'
-- 'Buffer'
+- 'fetch': Node fetch
+- 'Buffer': Node Buffer
 - 'utils.date.parseStartAndEnd': To parse start and end dates with natural language and timezone adjustment
   e.g. utils.date.parseStartAndEnd('today at 23:59', 'tomorrow at 12:00', 'America/New_York'))
 - 'utils.date.parseDate': To parse a single date with natural language and timezone adjustment
   e.g. utils.date.parseDate('today at 23:59', 'America/New_York'))
+- 'Octokit': GitHub REST API client library
 */
 
 async function handler(ctx) {

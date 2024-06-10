@@ -20,6 +20,7 @@ type AssistantFormProps = HTMLAttributes<HTMLDivElement> & {
 export const AssistantForm: FC<AssistantFormProps> = (props) => {
   const { authSession, threadId, ...rest } = props;
   const [currentThreadId, setCurrentThreadId] = useState(threadId);
+  const initialLoadTimeout = useRef<number>(0);
   const { status, messages, input, submitMessage, handleInputChange, stop, setMessages } = useAssistant({
     api: BAKA_ASSISTANT_ROOT_PATH,
     threadId: currentThreadId
@@ -35,34 +36,45 @@ export const AssistantForm: FC<AssistantFormProps> = (props) => {
   useEffect(() => {
     setLoading(true);
 
-    const url = new URL(BAKA_ASSISTANT_ROOT_PATH, APP_URL);
-
-    if ( currentThreadId ) {
-      url.searchParams.set('threadId', currentThreadId);
+    if ( initialLoadTimeout.current ) {
+      clearTimeout(initialLoadTimeout.current);
     }
 
-    fetch(url,
-      {
-        method: 'GET'
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
+    initialLoadTimeout.current = window.setTimeout(() => {
+      const url = new URL(BAKA_ASSISTANT_ROOT_PATH, APP_URL);
+  
+      if ( currentThreadId ) {
+        url.searchParams.set('threadId', currentThreadId);
+      }
+  
+      fetch(url,
+        {
+          method: 'GET'
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+  
+          return {};
+        })
+        .then((response) => {
+          const { data } = (response || {}) as { data: { threadId: string, messages: Message[] } };
+          if (data?.threadId && Array.isArray(data?.messages)) {
+            setCurrentThreadId(data.threadId);
+            setMessages(data.messages);
+          }
+          return;
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 1e3);
 
-        return {};
-      })
-      .then((response) => {
-        const { data } = (response || {}) as { data: { threadId: string, messages: Message[] } };
-        if (data?.threadId && Array.isArray(data?.messages)) {
-          setCurrentThreadId(data.threadId);
-          setMessages(data.messages);
-        }
-        return;
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    return () => {
+      clearTimeout(initialLoadTimeout.current);
+    }
+
   }, [currentThreadId])
 
   useEffect(() => {

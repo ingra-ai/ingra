@@ -20,7 +20,8 @@ import { cloneFunction } from "@/data/functions";
  *                 type: string
  *                 format: uuid
  *                 description: The ID of the function to clone. In UUID format.
- *                 example: "090abc6e-0e19-466d-8549-83dd24c5c8e5"
+ *                 examples:
+ *                   - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
  *     responses:
  *       '200':
  *         description: Successfully cloned the function

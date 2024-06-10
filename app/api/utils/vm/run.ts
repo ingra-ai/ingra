@@ -6,6 +6,7 @@ import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
 import type { SandboxOutput } from '@app/api/utils/vm/types';
 import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import * as vm from 'vm';
+import { Octokit } from 'octokit';
 
 const EXECUTION_TIMEOUT_SECONDS = 60;
 
@@ -28,6 +29,7 @@ interface Sandbox {
   },
   Buffer: typeof Buffer;
   URLSearchParams: typeof URLSearchParams;
+  Octokit: typeof Octokit;
 }
 
 // Run the code in a sandbox
@@ -64,6 +66,7 @@ export async function run(code: string, ctx: VmContextArgs) {
     },
     Buffer,
     URLSearchParams,
+    Octokit,
     handler: null,
   };
 
