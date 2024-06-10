@@ -147,7 +147,8 @@ export async function POST(request: NextRequest) {
             {
               'Cookie': `${APP_SESSION_COOKIE_NAME}=${bakaSessionCookie?.value}`
             },
-            runResult.required_action.submit_tool_outputs.tool_calls
+            runResult.required_action.submit_tool_outputs.tool_calls,
+            sendDataMessage
           );
 
           // https://platform.openai.com/docs/assistants/tools/function-calling/quickstart
