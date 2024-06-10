@@ -3,12 +3,14 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db"; // Assuming you have a db instance for interacting with your database
 import { upsertEnvVar } from "@/data/envVars";
+import { clearAuthCaches } from "@app/auth/session/caches";
 
 /**
  * @swagger
  * /api/v1/me/environmentVariables:
  *   get:
  *     summary: Retrieve all available environment variable keys and their record IDs.
+ *     operationId: getEnvironmentVariablesList
  *     responses:
  *       200:
  *         description: Successfully retrieved environment variables.
@@ -65,6 +67,7 @@ export async function GET(req: NextRequest) {
  * /api/v1/me/environmentVariables:
  *   post:
  *     summary: Create a new environment variable.
+ *     operationId: createEnvironmentVariable
  *     requestBody:
  *       required: true
  *       content:
@@ -109,19 +112,12 @@ export async function POST(req: NextRequest) {
     const { key, value } = requestArgs;
 
     if (!key || !value) {
-      Logger.withTag('envVars').withTag(`user:${authSession.user.id}`).error('Key and value are required to create a new environment variable');
-      return NextResponse.json(
-        {
-          status: 'error',
-          message: 'Key and value are required to create a new environment variable',
-        },
-        {
-          status: 400,
-        }
-      );
+      throw new Error('Key and value are required to create a new environment variable');
     }
 
     const record = await upsertEnvVar(key, value, authSession.user.id);
+    
+    await clearAuthCaches(authSession);
 
     Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info('Upserted environment variable');
 
@@ -146,6 +142,7 @@ export async function POST(req: NextRequest) {
  * /api/v1/me/environmentVariables:
  *   delete:
  *     summary: Delete an environment variable.
+ *     operationId: deleteEnvironmentVariable
  *     requestBody:
  *       required: true
  *       content:
@@ -187,16 +184,7 @@ export async function DELETE(req: NextRequest) {
     const { key, id } = await req.json();
 
     if (!key || !id) {
-      Logger.withTag('envVars').withTag(`user:${authSession.user.id}`).error('Both environment variable record ID and key are required to delete an environment variable');
-      return NextResponse.json(
-        {
-          status: 'error',
-          message: 'Both environment variable record ID and key are required to delete an environment variable',
-        },
-        {
-          status: 400,
-        }
-      );
+      throw new Error('Both environment variable record ID and key are required to delete an environment variable');
     }
 
     const deletedEnvVar = await db.envVars.delete({
@@ -208,6 +196,8 @@ export async function DELETE(req: NextRequest) {
         },
       },
     });
+
+    await clearAuthCaches(authSession);
 
     Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info(`Deleted env var: ${key}`);
 
@@ -229,6 +219,7 @@ export async function DELETE(req: NextRequest) {
  * /api/v1/me/environmentVariables:
  *   patch:
  *     summary: Update an environment variable.
+ *     operationId: updateEnvironmentVariable
  *     requestBody:
  *       required: true
  *       content:
@@ -274,16 +265,7 @@ export async function PATCH(req: NextRequest) {
     const { id, key, value } = await req.json();
 
     if (!id || !key || !value) {
-      Logger.withTag('envVars').withTag(`user:${authSession.user.id}`).error('To update an environment variable, provide the record ID, key, and value.');
-      return NextResponse.json(
-        {
-          status: 'error',
-          message: 'To update an environment variable, provide the record ID, key, and value.',
-        },
-        {
-          status: 400,
-        }
-      );
+      throw new Error('To update an environment variable, provide the record ID, key, and value.');
     }
 
     const updatedEnvVar = await db.envVars.update({
@@ -299,6 +281,8 @@ export async function PATCH(req: NextRequest) {
         value,
       },
     });
+    
+    await clearAuthCaches(authSession);
 
     Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info(`Updated env var: ${key}`);
 
