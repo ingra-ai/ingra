@@ -6,7 +6,7 @@ import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
 import type { SandboxOutput } from '@app/api/utils/vm/types';
 import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import * as vm from 'vm';
-import { Octokit } from 'octokit';
+import { Octokit } from '@octokit/rest';
 
 const EXECUTION_TIMEOUT_SECONDS = 60;
 
