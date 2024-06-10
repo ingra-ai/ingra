@@ -22,7 +22,8 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  *                 type: string
  *                 format: uuid
  *                 description: The ID of the function to run. In UUID format.
- *                 example: "090abc6e-0e19-466d-8549-83dd24c5c8e5"
+ *                 examples:
+ *                   - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
  *               body:
  *                 type: object
  *                 description: The arguments to pass to the function.
