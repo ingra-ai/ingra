@@ -1,12 +1,9 @@
 'use server';
 import { ActionError } from '@v1/types/api-response';
-import { parseStartAndEnd, parseDate } from "@app/api/utils/chronoUtils";
 import { setTimeout } from 'timers/promises';
-import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
-import type { SandboxOutput } from '@app/api/utils/vm/types';
 import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import * as vm from 'vm';
-import { Octokit } from '@octokit/rest';
+import { SandboxAnalytics, getVmSandbox } from './getVmSandbox';
 
 const EXECUTION_TIMEOUT_SECONDS = 60;
 
@@ -17,58 +14,17 @@ async function withTimeout(promise: Promise<any>, timeoutSeconds = EXECUTION_TIM
   return Promise.race([promise, timeoutPromise]);
 }
 
-interface Sandbox {
-  console: Pick<typeof console, 'log' | 'error'>;
-  handler: ((ctx: VmContextArgs) => Promise<any>) | null;
-  fetch: typeof nodeFetch;
-  utils: {
-    date: {
-      parseStartAndEnd: typeof parseStartAndEnd,
-      parseDate: typeof parseDate,
-    }
-  },
-  Buffer: typeof Buffer;
-  URLSearchParams: typeof URLSearchParams;
-  Octokit: typeof Octokit;
-}
 
 // Run the code in a sandbox
 export async function run(code: string, ctx: VmContextArgs) {
   // Create outputs
-  const outputs: SandboxOutput[] = [];
-  let apiCallCount = 0;
+  const analytics: SandboxAnalytics = {
+    apiCallCount: 0,
+    outputs: [],
+  }
 
   // Create a context for the VM
-  const sandbox: Sandbox = {
-    console: {
-      log: (...args: any[]) => {
-        outputs.push({
-          type: 'log',
-          message: args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' '),
-        });
-      },
-      error: (...args: any[]) => {
-        outputs.push({
-          type: 'error',
-          message: args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' '),
-        });
-      },
-    },
-    fetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => {
-      apiCallCount++;
-      return nodeFetch(input, init);
-    },
-    utils: {
-      date: {
-        parseStartAndEnd,
-        parseDate,
-      }
-    },
-    Buffer,
-    URLSearchParams,
-    Octokit,
-    handler: null,
-  };
+  const sandbox = getVmSandbox(ctx, analytics);
 
   // Contextify the sandbox
   const context = vm.createContext(sandbox);
@@ -84,7 +40,7 @@ export async function run(code: string, ctx: VmContextArgs) {
     const memoryUsageBefore = process.memoryUsage().heapUsed;
 
     const sandboxHandlerPromise = sandbox.handler(ctx).catch((err: any) => {
-        outputs.push({
+        analytics.outputs.push({
           type: 'error',
           message: err.message || 'Failed to execute function',
         });
@@ -92,7 +48,7 @@ export async function run(code: string, ctx: VmContextArgs) {
       }),
       result = await withTimeout(sandboxHandlerPromise);
 
-    outputs.push({
+    analytics.outputs.push({
       type: 'metric',
       metric: 'executionTime',
       value: Date.now() - start,
@@ -103,14 +59,14 @@ export async function run(code: string, ctx: VmContextArgs) {
     }, {
       type: 'metric',
       metric: 'apiCallCount',
-      value: apiCallCount,
+      value: analytics.apiCallCount || 0,
     }, {
       type: 'output',
       message: typeof result === 'object' ? JSON.stringify(result) : result,
     });
   
     return {
-      outputs,
+      outputs: analytics.outputs,
       result,
     };
   } else {
