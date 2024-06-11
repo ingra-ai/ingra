@@ -4,6 +4,14 @@ import { FunctionArgument } from "@prisma/client";
 import { generateUserVars } from "./generateUserVars";
 
 export type VmContextArgs = {
+  // Known user variables
+  GOOGLE_OAUTH_ACCESS_TOKEN?: string;
+  GOOGLE_OAUTH_ID_TOKEN?: string;
+  GOOGLE_OAUTH_EMAIL_ADDRESS?: string;
+  USER_NAME?: string;
+  USER_TIMEZONE?: string;
+
+  // Unknown user variables or environment variables.
   [key: string]: any;
 };
 
