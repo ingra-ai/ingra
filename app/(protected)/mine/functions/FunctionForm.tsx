@@ -27,6 +27,7 @@ import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
+import { ScrollArea } from '@components/ui/scroll-area';
 
 type FunctionFormProps = {
   userVars: Record<string, any>;

@@ -43,7 +43,7 @@ export const FormSlideOver: FC<PropsWithChildren<FormSlideOverProps>> = (props) 
                       </button>
                     </div>
                   </div>
-                  <div className="relative mt-6 flex-1 max-h-[96%]">{children}</div>
+                  <div className="relative mt-6 flex-1 max-h-[93%] overflow-y-auto">{children}</div>
                 </DialogPanel>
               </TransitionChild>
             </div>
