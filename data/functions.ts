@@ -3,7 +3,6 @@ import db from "@lib/db";
 import { FunctionSchema } from "@/schemas/function";
 import { Logger } from "@lib/logger";
 
-
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, userId: string) => {
   const {
     id: recordId,

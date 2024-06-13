@@ -2,7 +2,7 @@
 import type { FC } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@components/ui/button';
-import { CircleDot, PlayCircleIcon } from 'lucide-react';
+import { CircleDot, PlayCircleIcon, SortAscIcon, SortDescIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { runCodeSandbox } from '@protected/mine/functions/actions/runCodeSandbox';
@@ -11,6 +11,12 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import FunctionArgumentInputSwitchField from '@protected/mine/functions/FunctionArgumentInputSwitchField';
 import type { Prisma } from '@prisma/client';
 import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@app/api/utils/vm/types';
+import { ScrollArea } from '@components/ui/scroll-area';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 type CodeSandboxFormProps = {
   isMarketplace?: boolean;
@@ -96,46 +102,54 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
 
   return (
     <form className="block space-y-6 mt-4 mb-20" method="POST" onSubmit={handleSubmit(onRun)}>
-      <div className="block w-full rounded-md border p-4 shadow space-y-4 bg-black/10">
-        <div className="block">
-          <h4 className="text-sm font-bold text-gray-100 leading-7">Arguments</h4>
-        </div>
-        {functionArguments.length ? functionArguments.map((arg) => (
-          <div key={arg.id} className="grid grid-cols-12 items-start">
-            <label htmlFor={arg.name} className="col-span-4 lg:col-span-3 text-sm font-medium text-right px-4 py-3">
-              {arg.isRequired ? '*' : ''}&nbsp;{arg.name}
-            </label>
-            <div className='col-span-8 lg:col-span-9'>
-              <Controller
-                control={control}
-                name={arg.name}
-                rules={{ required: arg.isRequired }}
-                render={({ field }) => (
-                  <FunctionArgumentInputSwitchField
-                    id={arg.name}
-                    type={arg.type as any}
-                    className={`${arg.type === 'boolean' ? '' : inputClasses}`}
-                    field={field as any}
+      <div className="block w-full rounded-md border shadow py-4 bg-black/10">
+        <Collapsible defaultOpen className='block'>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="flex w-full justify-between items-center">
+              <p className="text-sm font-bold text-gray-100 leading-7">Arguments</p>
+              <SortAscIcon className="h-4 w-4" />
+              <span className="sr-only">Toggle</span>
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className='p-4 space-y-4'>
+            {functionArguments.length ? functionArguments.map((arg) => (
+              <div key={arg.id} className="grid grid-cols-12 items-start">
+                <label htmlFor={arg.name} className="col-span-4 lg:col-span-3 text-sm font-medium text-right px-4 py-3">
+                  {arg.isRequired ? '*' : ''}&nbsp;{arg.name}
+                </label>
+                <div className='col-span-8 lg:col-span-9'>
+                  <Controller
+                    control={control}
+                    name={arg.name}
+                    rules={{ required: arg.isRequired }}
+                    render={({ field }) => (
+                      <FunctionArgumentInputSwitchField
+                        id={arg.name}
+                        type={arg.type as any}
+                        className={`${arg.type === 'boolean' ? '' : inputClasses}`}
+                        field={field as any}
+                      />
+                    )}
                   />
-                )}
-              />
-              {errors?.[arg.name] && typeof errors?.[arg.name]?.message === 'string' && (
-                <p className="text-xs font-medium text-destructive-foreground mt-3">
-                  {errors?.[arg.name]?.message?.toString()}
-                </p>
-              )}
-              {arg.description && (
-                <p className="text-xs text-gray-500 pt-2">{arg.description}</p>
-              )}
-            </div>
-            <div className='col-span-2 lg:col-span-3'>
-            </div>
-          </div>
-        )) : (
-          <div className="block">
-            <p className="text-gray-300">No arguments required</p>
-          </div>
-        )}
+                  {errors?.[arg.name] && typeof errors?.[arg.name]?.message === 'string' && (
+                    <p className="text-xs font-medium text-destructive-foreground mt-3">
+                      {errors?.[arg.name]?.message?.toString()}
+                    </p>
+                  )}
+                  {arg.description && (
+                    <p className="text-xs text-gray-500 pt-2">{arg.description}</p>
+                  )}
+                </div>
+                <div className='col-span-2 lg:col-span-3'>
+                </div>
+              </div>
+            )) : (
+              <div className="block">
+                <p className="text-gray-300">No arguments required</p>
+              </div>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
       </div>
       <div className="block">
         {

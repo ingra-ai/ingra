@@ -4,12 +4,13 @@ import { Logger } from "@lib/logger";
 import db from "@lib/db";
 import { ActionError } from "@v1/types/api-response";
 import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
+import { isUuid } from "@lib/utils";
 
 /**
  * @swagger
  * /api/v1/me/curateFunctions/executeFunction:
  *   post:
- *     summary: Dry run a function by providing referenced function ID and "body" for the function's arguments.
+ *     summary: Dry run a function by providing referenced function ID and "requestArgs" for the function's arguments.
  *     operationId: executeFunction
  *     requestBody:
  *       required: true
@@ -18,17 +19,22 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  *           schema:
  *             type: object
  *             properties:
- *               functionId:
- *                 type: string
- *                 format: uuid
- *                 description: The ID of the function to run. In UUID format.
- *                 examples:
- *                   - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
- *               body:
+ *               functionIdOrSlug:
+ *                 oneOf:
+ *                   - type: string
+ *                     format: uuid
+ *                     description: The ID of the function to run. In UUID format.
+ *                     examples:
+ *                       - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
+ *                   - type: string
+ *                     description: The slug of the function to run.
+ *                     examples:
+ *                       - "myFunction"
+ *               requestArgs:
  *                 type: object
- *                 description: The arguments to pass to the function.
- *                 additionalProperties:
- *                   type: object
+ *                 description: The request arguments to pass to the function in a form of an object. This will be part of requestArgs in the VM context.
+ *                 optional: true
+ *                 required: false
  *     responses:
  *       '200':
  *         description: Successfully ran the function
@@ -53,15 +59,24 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
  *       - Curate Functions
  */
 export async function POST(req: NextRequest) {
-  const { functionId, body } = await req.json();
+  const { functionIdOrSlug, requestArgs = {} } = await req.json();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
+    if ( !functionIdOrSlug ) {
+      throw new ActionError("error", 400, 'Function ID or slug is required to run this method.');
+    }
+
+    const useUuid = isUuid(functionIdOrSlug);
+
     // Find the function
     const functionRecord = await db.function.findFirst({
       where: {
         OR: [
-          {
-            id: functionId,
+          useUuid ? {
+            id: functionIdOrSlug,
+            ownerUserId: authSession.user.id
+          } : {
+            slug: functionIdOrSlug,
             ownerUserId: authSession.user.id
           },
           {
@@ -73,8 +88,10 @@ export async function POST(req: NextRequest) {
                   }
                 }
               },
-              {
-                id: functionId
+              useUuid ? {
+                id: functionIdOrSlug,
+              } : {
+                slug: functionIdOrSlug
               }
             ]
           }
@@ -88,11 +105,11 @@ export async function POST(req: NextRequest) {
     });
 
     if ( !functionRecord ) {
-      throw new ActionError('error', 400, `Function not found.`);
+      throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
     }
 
     // Run the function
-    const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, body),
+    const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs),
       loggerObj = Logger.withTag('me-builtins').withTag('curateFunctions-executeFunction').withTag(`user:${authSession.user.id}`);
 
     if (errors.length) {

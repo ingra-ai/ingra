@@ -3,6 +3,7 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db";
 import { Prisma } from "@prisma/client";
+import { isUuid } from "@lib/utils";
 
 /**
  * @swagger
@@ -12,16 +13,19 @@ import { Prisma } from "@prisma/client";
  *     operationId: viewFunction
  *     parameters:
  *       - in: query
- *         name: id
+ *         name: functionIdOrSlug
  *         schema:
- *           type: string
- *           format: uuid
- *         description: The ID of the function to view.
- *       - in: query
- *         name: slug
- *         schema:
- *           type: string
- *         description: The slug of the function to view.
+ *           oneOf:
+ *             - type: string
+ *               format: uuid
+ *               description: The ID of the function to view. In UUID format.
+ *               examples:
+ *                 - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
+ *             - type: string
+ *               description: The slug of the function to view.
+ *               examples:
+ *                 - "myFunction"
+ *         description: The ID or slug of the function to view.
  *       - in: query
  *         name: fieldsToRetrieve
  *         schema:
@@ -54,20 +58,21 @@ import { Prisma } from "@prisma/client";
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
-  const slug = searchParams.get('slug');
+  const functionIdOrSlug = searchParams.get('functionIdOrSlug');
   const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     // Validate that either id or slug is provided
-    if (!id && !slug) {
-      throw new Error('Either id or slug must be provided');
+    if ( !functionIdOrSlug ) {
+      throw new Error('Either function ID or slug must be provided');
     }
 
     const selectFields: Prisma.FunctionSelect = {
       id: true,
       slug: true
     };
+    
+    const useUuid = isUuid(functionIdOrSlug);
     
     // Populate Function select fields
     if (fieldsToRetrieveParams.length) {
@@ -132,26 +137,33 @@ export async function GET(req: NextRequest) {
       AND: [
         {
           OR: [
-            { ownerUserId: authSession.user.id },
+            useUuid ? {
+              id: functionIdOrSlug,
+              ownerUserId: authSession.user.id
+            } : {
+              slug: functionIdOrSlug,
+              ownerUserId: authSession.user.id
+            },
             {
-              subscribers: {
-                some: {
-                  userId: authSession.user.id
+              AND: [
+                {
+                  subscribers: {
+                    some: {
+                      userId: authSession.user.id
+                    }
+                  }
+                },
+                useUuid ? {
+                  id: functionIdOrSlug,
+                } : {
+                  slug: functionIdOrSlug
                 }
-              }
+              ]
             }
-          ]
+          ],
         }
       ]
     };
-
-    if (id && whereFilter.AND && Array.isArray(whereFilter.AND)) {
-      whereFilter.AND.push({ id });
-    }
-
-    if (slug && whereFilter.AND && Array.isArray(whereFilter.AND)) {
-      whereFilter.AND.push({ slug });
-    }
 
     const functionRecord = await db.function.findFirst({
       where: whereFilter,
@@ -160,7 +172,7 @@ export async function GET(req: NextRequest) {
 
     // Check if the function was found
     if (!functionRecord) {
-      throw new Error('Unable to find the function you\'re looking for');
+      throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
     }
 
     Logger.withTag('me-builtins')

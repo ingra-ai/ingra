@@ -15,16 +15,37 @@ export default async function Page({ params }: { params: { recordId: string } })
     return notFound();
   }
 
-  const functionRecord = await db.function.findUnique({
-    where: {
-      id: recordId,
-      ownerUserId: authSession.user.id,
-    },
-    include: {
-      tags: true,
-      arguments: true
-    },
-  });
+  const [functionRecord, collections] = await Promise.all([
+    db.function.findUnique({
+      where: {
+        id: recordId,
+        ownerUserId: authSession.user.id,
+      },
+      include: {
+        tags: true,
+        arguments: true
+      },
+    }),
+
+    // Fetch all collections for the user
+    db.collection.findMany({
+      where: {
+        userId: authSession.user.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: false,
+        functions: {
+          select: {
+            id: true,
+            slug: true
+          }
+        }
+      },
+    })
+  ]);
 
   if (!functionRecord) {
     return redirect('/functions', RedirectType.replace);
@@ -51,7 +72,7 @@ export default async function Page({ params }: { params: { recordId: string } })
             <TabsTrigger value="vars-tab">Variables</TabsTrigger>
           </TabsList>
           <TabsContent value="function-form-tab" className='block space-y-6 mt-4'>
-            <FunctionForm functionRecord={functionRecord} envVars={optionalEnvVars} userVars={userVarsRecord} />
+            <FunctionForm functionRecord={functionRecord} envVars={optionalEnvVars} userVars={userVarsRecord} collections={ collections } />
           </TabsContent>
           <TabsContent value="vars-tab" className='block space-y-6 mt-4'>
             <EnvVarsSection envVars={optionalEnvVars || []} />

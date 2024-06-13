@@ -1,5 +1,5 @@
 import { AuthSessionResponse } from "@app/auth/session/types";
-import { USERS_API_FUNCTION_PATH, USERS_API_FUNCTION_SUBSCRIPTIONS_PATH } from "@lib/constants";
+import { USERS_API_FUNCTION_COLLECTION_SUBSCRIPTIONS_PATH, USERS_API_FUNCTION_PATH, USERS_API_FUNCTION_SUBSCRIPTIONS_PATH } from "@lib/constants";
 import db from "@lib/db";
 import { Prisma } from "@prisma/client";
 
@@ -17,7 +17,11 @@ type FunctionPayload = Prisma.FunctionGetPayload<{
   }
 }>;
 
-function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, isSubscription = false) {
+type ConvertFunctionRecordOptions = {
+  transformHitUrl?: ( functionSlug: string ) => string;
+}
+
+function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, opts?: ConvertFunctionRecordOptions ) {
   const parameters = functionRecord.arguments.map(arg => ({
     name: arg.name,
     in: 'query',
@@ -48,14 +52,10 @@ function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, i
     }
   };
 
-  let functionHitUrl = '';
-  if (functionRecord.slug) {
-    if ( isSubscription ) {
-      functionHitUrl = USERS_API_FUNCTION_SUBSCRIPTIONS_PATH.replace(':slug', functionRecord.slug);
-    }
-    else {
-      functionHitUrl = USERS_API_FUNCTION_PATH.replace(':slug', functionRecord.slug);
-    }
+  let functionHitUrl = USERS_API_FUNCTION_PATH.replace(':slug', functionRecord.slug);
+
+  if ( typeof opts?.transformHitUrl === 'function' ) {
+    functionHitUrl = opts.transformHitUrl(functionRecord.slug);
   }
 
   const pathItem: Record<string, any> = {
@@ -113,7 +113,7 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
     return null;
   }
 
-  const [functionRecords, subscribedFunctionRecords] = await Promise.all([
+  const [functionRecords, subscribedFunctionRecords, subscribedCollections] = await Promise.all([
     // 1. Fetch all functions from user's own repository.
     db.function.findMany({
       where: {
@@ -155,8 +155,45 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
         arguments: true,
         tags: true,
       }
-    })
+    }),
+
+    // 3. Fetch all functions from collection subscriptions that user has subscribed to.
+    db.collection.findMany({
+      where: {
+        subscribers: {
+          some: {
+            userId: authSession.user.id
+          }
+        },
+      },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            profile: {
+              select: {
+                userName: true,
+              }
+            }
+          }
+        },
+        functions: {
+          select: {
+            id: false,
+            code: false,
+            isPrivate: false,
+            ownerUserId: false,
+            httpVerb: true,
+            slug: true,
+            description: true,
+            arguments: true,
+            tags: true,
+          }
+        }
+      }
+    }),
   ]);
+
 
   const usersFunctionsOpenApiSchema = functionRecords.reduce((acc, functionRecord) => {
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any);
@@ -164,12 +201,29 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
   }, {});
 
   const usersSubscribedFunctionsOpenApiSchema = subscribedFunctionRecords.reduce((acc, functionRecord) => {
-    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, true);
+    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
+      transformHitUrl: (functionSlug) => USERS_API_FUNCTION_SUBSCRIPTIONS_PATH.replace(':slug', functionSlug)
+    });
     return { ...acc, ...functionSchema };
+  }, {});
+
+  const usersSubscribedCollectionssOpenApiSchema = subscribedCollections.reduce((acc1, collection) => {
+    const ownerUsername = collection.owner.profile?.userName || '';
+    const collectionFunctions = collection.functions || [];
+
+    if ( !ownerUsername || collectionFunctions.length === 0 ) return {};
+
+    return collectionFunctions.reduce((acc2, functionRecord) => {
+      const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
+        transformHitUrl: (functionSlug) => USERS_API_FUNCTION_COLLECTION_SUBSCRIPTIONS_PATH.replace(':username', ownerUsername).replace(':slug', functionSlug)
+      });
+      return { ...acc2, ...functionSchema };
+    }, {});
   }, {});
 
   return {
     ...usersSubscribedFunctionsOpenApiSchema,
-    ...usersFunctionsOpenApiSchema
+    ...usersFunctionsOpenApiSchema,
+    ...usersSubscribedCollectionssOpenApiSchema
   };
 }

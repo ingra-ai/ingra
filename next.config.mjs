@@ -6,17 +6,17 @@ const nextConfig = {
     return [
       {
         source: '/marketplace',
-        destination: '/marketplace/collections',
+        destination: '/marketplace/functions',
         permanent: false,
       },
       {
         source: '/subscriptions',
-        destination: '/subscriptions/collections',
+        destination: '/subscriptions/functions',
         permanent: false,
       },
       {
         source: '/mine',
-        destination: '/mine/collections',
+        destination: '/mine/functions',
         permanent: false,
       },
     ];
