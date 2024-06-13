@@ -16,16 +16,15 @@ import { ActionError } from "@v1/types/api-response";
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+*                - code
  *             properties:
  *               code:
  *                 type: string
  *                 description: The sandbox code that follows the guideline to be executed.
- *                 required: true
  *               requestArgs:
  *                 type: object
  *                 description: The request arguments to pass to the function in a form of an object. This will be part of requestArgs in the VM context.
- *                 optional: true
- *                 required: false
  *     responses:
  *       '200':
  *         description: Successfully created new function
