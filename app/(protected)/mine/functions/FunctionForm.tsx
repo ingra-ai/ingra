@@ -9,7 +9,7 @@ import { startTransition, useCallback, useState, type JSX, type FC } from 'react
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
-import { cloneFunction, upsertFunction } from './actions/functions';
+import { cloneFunction, collectionToggleFunction, upsertFunction } from './actions/functions';
 import { cn } from '@lib/utils';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
@@ -27,7 +27,8 @@ import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
 import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { ScrollArea } from '@components/ui/scroll-area';
+import { CollectionListGetPayload } from '@protected/mine/functions/types';
+import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';
 
 type FunctionFormProps = {
   userVars: Record<string, any>;
@@ -38,13 +39,15 @@ type FunctionFormProps = {
       arguments: true
     }
   }>;
+  collections?: CollectionListGetPayload[];
 };
 
 export const FunctionForm: FC<FunctionFormProps> = (props) => {
   const {
     userVars = {},
     envVars = [],
-    functionRecord
+    functionRecord,
+    collections = [],
   } = props;
   const isEditMode = !!functionRecord && !!functionRecord.id;
   const { toast } = useToast();
@@ -200,6 +203,30 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
     return clonedFunction;
   }, [isEditMode]);
 
+
+  const onFunctionCollectionToggleChanged = (collectionId: string, functionId: string, checked: boolean) => {
+    const action = checked ? 'add' : 'remove';
+
+    collectionToggleFunction(collectionId, functionId, action).then((result) => {
+      if (result.status !== 'ok') {
+        throw new Error(result.message);
+      }
+
+      toast({
+        title: 'Success!',
+        description: result.message,
+      });
+
+      router.refresh();
+    }).catch((error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message || 'Failed to handling collection!',
+      });
+    });
+  }
+
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
@@ -212,9 +239,22 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 </label>
                 {
                   isEditMode && (
-                    <button type='button' onClick={onClone} title='Clone this function' className="hover:text-teal-500">
-                      <CopyPlusIcon className="h-5 w-5 ml-2" />
-                    </button>
+                    <div className="relative">
+                      {
+                        ( collections.length > 0 && functionRecord?.id ) &&  (
+                          <ToggleCollectionMenuButton
+                            functionId={functionRecord.id || ''}
+                            collections={collections}
+                            onCheckedChange={onFunctionCollectionToggleChanged}
+                            className="p-2 bg-card mx-4"
+                            iconClassName='h-5 w-5'
+                          />
+                        )
+                      }
+                      <button type='button' onClick={onClone} title='Clone this function' className="hover:text-teal-500">
+                        <CopyPlusIcon className="h-5 w-5 ml-2" />
+                      </button>
+                    </div>
                   )
                 }
               </div>
