@@ -16,7 +16,7 @@ export const MAX_COLLECTION_DESCRIPTION_LENGTH = 1e3;
 
 /**
  * Represents the schema for a collection.
- * @swagger
+ * @ swagger
  * components:
  *   schemas:
  *     CollectionSchema:
@@ -91,7 +91,7 @@ export const CollectionSchema = z.object({
 
 /**
  * Represents the schema for a collection subscription.
- * @swagger
+ * @ swagger
  * components:
  *   schemas:
  *     CollectionSubscriptionSchema:

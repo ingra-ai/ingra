@@ -8,9 +8,10 @@ import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
 const handlerFn = async (functionSlug: string, requestArgs: Record<string, any> = {}) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (typeof functionSlug === 'string' && functionSlug.length) {
-      const userId = authSession.user.id;
+      const userId = authSession.user.id,
+        loggerObj = Logger.withTag('me-functions-subscriptions').withTag(`user:${ userId }`).withTag(`functionSlug:${ functionSlug }`);
 
-      Logger.withTag('me-functions-subscriptions').withTag(`user:${ userId }`).info(`Starts executing function: ${functionSlug}`, requestArgs);
+      loggerObj.info(`Starts executing function: ${functionSlug}`, requestArgs);
 
       const functionRecord = await db.function.findFirst({
         where: {
@@ -46,11 +47,11 @@ const handlerFn = async (functionSlug: string, requestArgs: Record<string, any> 
 
       if (errors.length) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
-        Logger.withTag('me-functions-subscriptions').withTag(`user:${ userId }`).error(`Errored executing function: ${errorMessage}`);
+        loggerObj.error(`Errored executing function: ${errorMessage}`);
         throw new ActionError('error', 400, errorMessage);
       }
 
-      Logger.withTag('me-functions-subscriptions').withTag(`user:${ authSession.user.id }`).info(`Finished executing function: ${functionSlug}`, metrics);
+      loggerObj.info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {
