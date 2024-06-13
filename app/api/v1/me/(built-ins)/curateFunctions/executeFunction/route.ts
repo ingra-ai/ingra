@@ -18,6 +18,8 @@ import { isUuid } from "@lib/utils";
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - functionIdOrSlug
  *             properties:
  *               functionIdOrSlug:
  *                 oneOf:
@@ -33,8 +35,6 @@ import { isUuid } from "@lib/utils";
  *               requestArgs:
  *                 type: object
  *                 description: The request arguments to pass to the function in a form of an object. This will be part of requestArgs in the VM context.
- *                 optional: true
- *                 required: false
  *     responses:
  *       '200':
  *         description: Successfully ran the function
