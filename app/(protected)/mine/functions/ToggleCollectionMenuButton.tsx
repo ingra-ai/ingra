@@ -16,11 +16,18 @@ import { cn } from '@lib/utils';
 type ToggleCollectionMenuButtonProps = React.HTMLAttributes<HTMLDivElement> & {
   functionId: string;
   collections: CollectionListGetPayload[];
+  iconClassName?: string;
   onCheckedChange: (collectionId: string, functionId: string, checked: boolean) => void;
 }
 
 const ToggleCollectionMenuButton: React.FC<ToggleCollectionMenuButtonProps> = (props) => {
-  const { functionId, collections, onCheckedChange, ...divProps } = props;
+  const {
+    functionId, 
+    collections, 
+    iconClassName = 'h-4 w-4', 
+    onCheckedChange, 
+    ...divProps
+  } = props;
 
   const handleCheckedChange = ( collectionId: string, checked: boolean ) => {
     if ( typeof onCheckedChange === 'function' ) {
@@ -32,14 +39,15 @@ const ToggleCollectionMenuButton: React.FC<ToggleCollectionMenuButtonProps> = (p
     return null;
   }
 
-  const classes = cn('p-2', divProps.className);
+  const classes = cn('p-2', divProps.className),
+    iconClasses = cn(iconClassName);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="h-8 w-8 p-0" title="Add or remove from collections">
           <span className="sr-only">Open collections menu</span>
-          <FolderPlusIcon className="h-4 w-4" />
+          <FolderPlusIcon className={ iconClasses } />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" { ...divProps } className={ classes }>
