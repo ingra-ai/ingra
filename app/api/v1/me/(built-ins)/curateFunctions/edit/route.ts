@@ -78,15 +78,15 @@ export async function PATCH(req: NextRequest) {
   const requestArgs = await req.json();
   const functionPayload = requestArgs?.function as z.infer<typeof FunctionSchema>;
 
-  if ( !functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0 ) {
-    throw new Error('Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?');
-  }
-
-  if ( !functionPayload.id ) {
-    throw new Error('Function ID is required to edit the function. Consider searching some functions first for your references.');
-  }
-
   return await apiAuthTryCatch<any>(async (authSession) => {
+    if ( !functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0 ) {
+      throw new Error('Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?');
+    }
+  
+    if ( !functionPayload.id ) {
+      throw new Error('Function ID is required to edit the function. Consider searching some functions first for your references.');
+    }
+
     const existingFunction = await db.function.findFirst({
       where: {
         id: functionPayload.id,
