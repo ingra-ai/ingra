@@ -22,19 +22,16 @@ import { isUuid } from "@lib/utils";
  *               - functionIdOrSlug
  *             properties:
  *               functionIdOrSlug:
- *                 oneOf:
- *                   - type: string
- *                     format: uuid
- *                     description: The ID of the function to run. In UUID format.
- *                     examples:
- *                       - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
- *                   - type: string
- *                     description: The slug of the function to run.
- *                     examples:
- *                       - "myFunction"
+*                  type: string
+*                  description: The ID in UUID format, or slug of the function to run.
+*                  examples:
+*                    - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
+*                    - "myFunction"
  *               requestArgs:
  *                 type: object
  *                 description: The request arguments to pass to the function in a form of an object. This will be part of requestArgs in the VM context.
+ *                 properties: {}
+ *                 additionalProperties: true
  *     responses:
  *       '200':
  *         description: Successfully ran the function
