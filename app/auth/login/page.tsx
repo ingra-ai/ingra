@@ -5,8 +5,13 @@ import { getAuthSession } from '@/app/auth/session';
 import { redirect, RedirectType } from 'next/navigation';
 import { Code, Cpu, Cloud, Rocket, Link, Users } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
+import type { Metadata } from 'next'
+ 
+export const metadata: Metadata = {
+  title: ['Sign In', APP_NAME].join(' | '),
+}
 
-export default async function AuthLogin() {
+export default async function Page() {
   const authSession = await getAuthSession();
 
   if (authSession) {

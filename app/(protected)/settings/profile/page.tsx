@@ -6,6 +6,12 @@ import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
 import { notFound } from 'next/navigation';
 import { IntegrationsSection } from './IntegrationsSection';
 import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
+import { APP_NAME } from '@lib/constants';
+import type { Metadata } from 'next'
+ 
+export const metadata: Metadata = {
+  title: ['Profile', APP_NAME].join(' | '),
+}
 
 /**
  * Profile Page
