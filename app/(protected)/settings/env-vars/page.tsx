@@ -3,6 +3,12 @@ import db from '@lib/db';
 import { RedirectType, redirect } from 'next/navigation';
 import { APP_AUTH_LOGIN_URL } from '@lib/constants';
 import { EnvVarsSection } from './EnvVarsSection';
+import { APP_NAME } from '@lib/constants';
+import type { Metadata } from 'next'
+ 
+export const metadata: Metadata = {
+  title: ['Environment Variables', APP_NAME].join(' | '),
+}
 
 export default async function Page() {
   const authSession = await getAuthSession();

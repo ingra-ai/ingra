@@ -6,6 +6,13 @@ import { FunctionForm } from '@protected/mine/functions/FunctionForm';
 import { UserVarsTable } from '@protected/mine/functions/UserVarsTable';
 import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
 import { RedirectType, notFound, redirect } from 'next/navigation';
+import { APP_NAME } from '@lib/constants';
+ 
+export async function generateMetadata({ params }: { params: { recordId: string } }) {
+  return {
+    title: ['Edit Function', APP_NAME].join(' | '),
+  }
+}
 
 export default async function Page({ params }: { params: { recordId: string } }) {
   const authSession = await getAuthSession();

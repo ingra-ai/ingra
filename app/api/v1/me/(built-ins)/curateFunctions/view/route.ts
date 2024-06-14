@@ -14,26 +14,20 @@ import { isUuid } from "@lib/utils";
  *     parameters:
  *       - in: query
  *         name: functionIdOrSlug
+ *         description: The ID in UUID format, or slug of the function to view.
  *         schema:
- *           oneOf:
- *             - type: string
- *               format: uuid
- *               description: The ID of the function to view. In UUID format.
- *               examples:
- *                 - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
- *             - type: string
- *               description: The slug of the function to view.
- *               examples:
- *                 - "myFunction"
- *         description: The ID or slug of the function to view.
+ *           type: string
+ *           examples:
+ *             - "090abc6e-0e19-466d-8549-83dd24c5c8e5"
+ *             - "myFunction"
  *       - in: query
  *         name: fieldsToRetrieve
+ *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected.
  *         schema:
  *           type: array
  *           items:
  *             type: string
  *             enum: [description, code, httpVerb, isPrivate, isPublished, arguments, tags]
- *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected.
  *     responses:
  *       '200':
  *         description: Successfully retrieved the function
