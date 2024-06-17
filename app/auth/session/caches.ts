@@ -129,10 +129,12 @@ export const clearAuthCaches = async ( authSession: AuthSessionResponse ) => {
     } )
   ].filter( Boolean ) as string[];
 
-  const result = await kv.del(...allRedisKeys);
+  if ( authSession?.userId ) {
+    const result = await kv.del(...allRedisKeys);
+  
+    // Total auth caches deleted
+    Logger.withTag('clearAuthCaches').withTag(`user:${ authSession.userId }`).info(`${ result } KV keys have been removed.`, { allRedisKeys });
+  }
 
-  // Total auth caches deleted
-  Logger.withTag('clearAuthCaches').withTag(authSession?.userId || 'N/A').info(`${ result } KV keys have been removed.`);
-
-  return result;
+  return 0;
 }

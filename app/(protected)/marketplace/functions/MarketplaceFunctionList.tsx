@@ -5,7 +5,7 @@ import Link from 'next/link';
 import MarketplaceFunctionItem from './MarketplaceFunctionItem';
 import { useToast } from '@components/ui/use-toast';
 import { ToastAction } from "@components/ui/toast"
-import { cloneFunction, subscribeToggleFunction } from '@protected/mine/functions/actions/functions';
+import { cloneFunction, subscribeToggleFunction } from '@actions/functions';
 import type { FunctionMarketListGetPayload, FunctionSubscriptionMarketplaceListGetPayload } from '@protected/marketplace/functions/types';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import { Button } from '@components/ui/button';

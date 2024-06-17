@@ -10,7 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { ProfileSchema } from '@/schemas/profile';
 import { censorEmail } from '@lib/functions/censorEmail';
-import { updateProfile } from '@/app/(protected)/settings/actions/profile';
+import { updateProfile } from '@actions/profile';
 import { useCallback, useState, useTransition } from 'react';
 import { Input } from '@components/ui/input';
 import timezones from 'timezones-list';

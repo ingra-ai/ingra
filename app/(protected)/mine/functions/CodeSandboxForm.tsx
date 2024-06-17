@@ -5,7 +5,7 @@ import { Button } from '@components/ui/button';
 import { CircleDot, PlayCircleIcon, SortAscIcon, SortDescIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useToast } from '@components/ui/use-toast';
-import { runCodeSandbox } from '@protected/mine/functions/actions/runCodeSandbox';
+import { runCodeSandbox } from '@actions/runCodeSandbox';
 import { cn } from '@lib/utils';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import FunctionArgumentInputSwitchField from '@protected/mine/functions/FunctionArgumentInputSwitchField';

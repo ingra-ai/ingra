@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from '@components/ui/button';
-import { deleteCollection } from '@protected/mine/collections/actions/collections';
+import { deleteCollection } from '@actions/collections';
 import { useToast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
