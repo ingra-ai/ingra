@@ -80,7 +80,7 @@ const nextConfig = {
               base-uri 'self'; 
               script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; 
               style-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; 
-              img-src 'self' https://cdn.jsdelivr.net; 
+              img-src 'self' data: https://cdn.jsdelivr.net; 
               connect-src 'self' https://cdn.jsdelivr.net; 
               font-src 'self' https://cdn.jsdelivr.net; 
               frame-ancestors 'none'; 
