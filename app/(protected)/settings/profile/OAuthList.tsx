@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { APP_NAME } from "@lib/constants";
-import { revokeOAuth, setTokenAsDefault } from "@protected/settings/actions/oauth";
+import { revokeOAuth, setTokenAsDefault } from "@actions/oauth";
 import { Badge } from '@components/ui/badge';
 
 type OAuthListProps = {

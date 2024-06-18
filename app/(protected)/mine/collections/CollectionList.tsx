@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
-import { deleteCollection } from '@protected/mine/collections/actions/collections';
+import { deleteCollection } from '@actions/collections';
 import type { CollectionListGetPayload } from '@protected/mine/collections/types';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';

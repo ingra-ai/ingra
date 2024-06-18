@@ -75,10 +75,7 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
   });
 
   // Refresh the access token
-  const newTokenResponse = await GoogleOAuthClient.refreshAccessToken().catch((err) => {
-    Logger.withTag('renewGoogleOAuthCredentials').error('Error refreshing token', { err });
-    return null;
-  });
+  const newTokenResponse = await GoogleOAuthClient.refreshAccessToken();
 
   if ( !newTokenResponse?.credentials ) {
     return null;

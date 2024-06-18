@@ -9,7 +9,7 @@ import { startTransition, useCallback, useState, FC } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { CollectionSchema, MAX_COLLECTION_DESCRIPTION_LENGTH } from '@/schemas/collections';
-import { createCollection, updateCollection } from './actions/collections';
+import { createCollection, updateCollection } from '@actions/collections';
 import { cn } from '@lib/utils';
 import { Input } from '@components/ui/input';
 import { Textarea } from '@components/ui/textarea';
