@@ -5,7 +5,7 @@ import { useCallback, useState, useTransition } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { RefreshCcw } from 'lucide-react';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { deleteApiKey } from '@protected/settings/actions/apiKey';
+import { deleteApiKey } from '@actions/apiKey';
 import { useRouter } from 'next/navigation';
 import formatDistance from 'date-fns/formatDistance';
 import {

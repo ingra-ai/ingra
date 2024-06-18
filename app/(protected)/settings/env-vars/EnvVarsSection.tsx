@@ -6,7 +6,7 @@ import { EnvVarForm } from './EnvVarsForm';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { EnvVarsTable } from './EnvVarsTable';
-import { deleteEnvVar } from '@protected/settings/actions/envVars';
+import { deleteEnvVar } from '@actions/envVars';
 import { useToast } from '@components/ui/use-toast';
 import { EnvVarsOptionalPayload } from './types';
 

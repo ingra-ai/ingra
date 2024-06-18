@@ -10,7 +10,7 @@ import { useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { EnvVarsSchema } from '@/schemas/envVars';
-import { upsertEnvVar } from '@protected/settings/actions/envVars';
+import { upsertEnvVar } from '@actions/envVars';
 import { Input } from '@components/ui/input';
 import { EnvVarsOptionalPayload } from './types';
 

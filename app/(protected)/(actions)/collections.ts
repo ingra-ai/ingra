@@ -1,7 +1,6 @@
 'use server';
 
 import * as z from 'zod';
-import { ActionError } from '@v1/types/api-response';
 import { CollectionSchema } from '@/schemas/collections';
 import { validateAction } from '@lib/action-helpers';
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';

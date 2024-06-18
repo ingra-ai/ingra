@@ -14,6 +14,7 @@ const config: Config = {
     consola: "<rootDir>/__tests__/__mocks__/mockConsola.js",
     '^@/(.*)$': '<rootDir>/$1',
     "@protected/(.*)$": "<rootDir>/app/(protected)/$1",
+    "@actions/(.*)$": "<rootDir>/app/(protected)/(actions)/$1",
     "@v1/(.*)$": "<rootDir>/app/api/v1/$1",
     "@components/(.*)$": "<rootDir>/components/$1",
     "@lib/(.*)$": "<rootDir>/lib/$1",

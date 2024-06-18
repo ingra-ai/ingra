@@ -5,7 +5,7 @@ import { useCallback, useState, useTransition } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
-import { generateApiKey } from '@protected/settings/actions/apiKey';
+import { generateApiKey } from '@actions/apiKey';
 import { useRouter } from 'next/navigation';
 
 type GenerateApiKeyButtonProps = {

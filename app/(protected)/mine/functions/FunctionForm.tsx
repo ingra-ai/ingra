@@ -9,8 +9,7 @@ import { startTransition, useCallback, useState, type JSX, type FC } from 'react
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
-import { cloneFunction, collectionToggleFunction, upsertFunction } from './actions/functions';
-import { cn } from '@lib/utils';
+import { cloneFunction, collectionToggleFunction, upsertFunction } from '@actions/functions';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
 import FunctionArgumentFormField from '@protected/mine/functions/FunctionArgumentFormField';

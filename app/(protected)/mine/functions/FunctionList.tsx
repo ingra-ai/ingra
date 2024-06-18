@@ -3,7 +3,7 @@ import React from 'react';
 import { FunctionItem, FunctionItemNew } from './FunctionItem';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
-import { collectionToggleFunction, deleteFunction } from '@protected/mine/functions/actions/functions';
+import { collectionToggleFunction, deleteFunction } from '@actions/functions';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { FunctionListGetPayload, CollectionListGetPayload } from '@protected/mine/functions/types';
 import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';

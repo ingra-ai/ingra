@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@components/ui/button';
 import React, { startTransition, useCallback, useState } from 'react';
-import { destroyProfile } from '../actions/profile';
+import { destroyProfile } from '@actions/profile';
 import { RefreshCcw } from 'lucide-react';
 import { toast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';

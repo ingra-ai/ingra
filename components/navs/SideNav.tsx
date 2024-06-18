@@ -5,8 +5,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import { GlobeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon } from 'lucide-react';
-import { ChartBarSquareIcon } from '@heroicons/react/24/outline'
+import { GlobeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon, LayoutDashboardIcon } from 'lucide-react';
 
 export type SideNavProps = {
   className?: string;
@@ -14,10 +13,10 @@ export type SideNavProps = {
 
 export const sideNavRoutes: NavItem[] = [
   {
-    name: 'Overview',
+    name: 'Dashboard',
     description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
-    href: '/overview',
-    icon: ChartBarSquareIcon,
+    href: '/overview/dashboard',
+    icon: LayoutDashboardIcon,
   },
   {
     name: 'Assistant',

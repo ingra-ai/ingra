@@ -23,7 +23,7 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ record })
       <div className="mt-2">
         <h3 className="text-sm font-semibold leading-6">Description</h3>
         <div
-          className="py-2 rounded-sm min-h-[50vh] text-sm"
+          className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: record.description || '' }}
         />
       </div>
