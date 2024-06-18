@@ -5,7 +5,7 @@ import { Logger } from '@lib/logger';
 import { AuthSessionResponse } from '@app/auth/session/types';
 import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
 import { refreshGoogleOAuthCredentials } from '@lib/google-oauth/refreshGoogleOAuthCredentials';
-import { updateOAuthToken } from '@/data/oauthToken';
+import { deleteOAuthToken, updateOAuthToken } from '@/data/oauthToken';
 
 /**
  * Retrieves the authentication session for the current user.
@@ -36,62 +36,66 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
       // And, also update to database if there are any changes.
       // Otherwise, newOAuthCredentials will all be falseys.
       if ( user.id && user.email && user.oauthTokens.length ) {
+        // Grab defaults oauth token to refresh
+        const defaultOAuthTokenIndex = user.oauthTokens.findIndex( (oauth) => oauth.isDefault ),
+          defaultOAuthToken = user.oauthTokens[defaultOAuthTokenIndex];
+
+        if ( !defaultOAuthToken ) {
+          Logger.withTag('getAuthSession').withTag( user.id ).error('User has no default OAuth token.');
+          return sessionWithUser;
+        }
+
         /**
          * 1. Refresh google OAuth credentials if necessary.
          */
-        const newOAuthCredentials = await Promise.all(user.oauthTokens.map(refreshGoogleOAuthCredentials)).then(async (oauthRefreshes) => {
-          const updateOAuthPromises: ReturnType<typeof updateOAuthToken>[] = [];
+        const newOAuthCredentials = await refreshGoogleOAuthCredentials(defaultOAuthToken).then( async (newOAuth) => {
+          if ( newOAuth?.credentials ) {
+            /**
+             * 2. After refreshing credentials, always update the OAuth token in the database.
+             */
+            const updatedOAuthRecord = updateOAuthToken(newOAuth.userId, newOAuth.primaryEmailAddress, newOAuth.credentials).then( (updatedOAuth) => {
+              if ( updatedOAuth ) {
+                Logger.withTag('getAuthSession').withTag( user.id ).info('Refreshed OAuth tokens:', { 
+                  oauthId: updatedOAuth?.id,
+                  expiryDate: updatedOAuth.expiryDate,
+                });
+              }
 
-          for (let i = 0, len = oauthRefreshes?.length; i < len; i++) {
-            const newOAuth = oauthRefreshes?.[i];
+              return updatedOAuth;
+            });
 
-            if ( newOAuth?.credentials ) {
-              /**
-               * 2. After refreshing credentials, always update the OAuth token in the database.
-               */
-              const updatedOAuthRecord = updateOAuthToken(newOAuth.userId, newOAuth.primaryEmailAddress, newOAuth.credentials).then( (updatedOAuth) => {
-                if ( updatedOAuth ) {
-                  Logger.withTag('getAuthSession').withTag( user.id ).info('Refreshed OAuth tokens:', { 
-                    oauthId: updatedOAuth?.id,
-                    expiryDate: updatedOAuth.expiryDate,
-                  });
-                }
-
-                return updatedOAuth;
-              });
-
-              // Push to upsertPromises array
-              updateOAuthPromises.push(updatedOAuthRecord);
-            }
-            else {
-              /**
-               * 2.5 Or if it returns false, which means refreshing would've failed.
-               * @todo I would say we tell the user that their OAuth token is expired and they need to re-authenticate.
-               * @todo We can also send an email to the user to let them know that their OAuth token is expired.
-               * @todo And we should probably flag it in database, and also in the UI. So user can re-authenticate.
-               */
-            }
-          }
-
-          await Promise.all(updateOAuthPromises).then( (updateOAuthRes) => {
-            for (let i = 0, len = updateOAuthRes?.length; i < len; i++) {
+            await updatedOAuthRecord.then( (updatedOAuth) => {
               /**
                * 3. Update the user's oauth references with the new OAuth record.
                */
-              const updatedOAuthRecord = updateOAuthRes?.[i];
-              if ( updatedOAuthRecord ) {
-                user.oauthTokens[i] = updatedOAuthRecord;
+              if ( updatedOAuth ) {
+                user.oauthTokens[defaultOAuthTokenIndex] = updatedOAuth;
               }
-            }
-          });
+            });
 
-          return oauthRefreshes.map( (newOAuth) => newOAuth?.credentials );
+            return newOAuth.credentials;
+          }
+          else {
+            // No updates required for this oauth token.
+          }
+
+          return null;
+        }).catch( async ( err ) => {
+          /**
+           * 2.5 Or if it has an error, which means refreshing would've failed.
+           * @todo I would say we tell the user that their OAuth token is expired and they need to re-authenticate.
+           * @todo We can also send an email to the user to let them know that their OAuth token is expired.
+           * @todo And we should probably flag it in database, and also in the UI. So user can re-authenticate.
+           */
+          Logger.withTag('getAuthSession').withTag( user.id ).error('Error refreshing OAuth credentials:', err);
+          Logger.withTag('getAuthSession').withTag( user.id ).error('Deleting oauth token due to refresh token may be corrupted.', { id: defaultOAuthToken?.id });
+          await deleteOAuthToken(defaultOAuthToken?.id, user.id);
         });
 
         /**
          * 4. One or more oauth tokens for this user was refreshed.
          */
-        shouldClearCache = newOAuthCredentials.filter( Boolean ).length > 0;
+        shouldClearCache = !!newOAuthCredentials;
       }
     }
     

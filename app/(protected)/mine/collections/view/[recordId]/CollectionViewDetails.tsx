@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from '@components/ui/button';
-import { deleteCollection } from '@protected/mine/collections/actions/collections';
+import { deleteCollection } from '@actions/collections';
 import { useToast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -105,7 +105,7 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ record })
       <div className="mt-2">
         <h3 className="text-sm font-semibold leading-6">Description</h3>
         <div
-          className="py-2 rounded-sm min-h-[50vh] text-sm"
+          className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: record.description || '' }}
         />
       </div>

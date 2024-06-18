@@ -5,7 +5,7 @@ import type { CollectionMarketplaceListGetPayload, CollectionSubscriptionMarketp
 import MarketplaceCollectionCard from './MarketplaceCollectionCard';
 import { cn } from '@lib/utils';
 import { useToast } from '@components/ui/use-toast';
-import { subscribeToggleFunction } from '@protected/mine/collections/actions/collections';
+import { subscribeToggleFunction } from '@actions/collections';
 import { Button } from '@components/ui/button';
 import { RefreshCcw, RssIcon } from 'lucide-react';
 import {
