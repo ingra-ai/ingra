@@ -1,9 +1,9 @@
 export const IS_PROD = process.env.NODE_ENV === 'production';
 
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Bakabit';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Ingra';
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'AI assistant functions and workflows provider.';
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://portal.bakabit.com';
-export const PARENT_APP_URL = process.env.NEXT_PUBLIC_PARENT_APP_URL || 'https://bakabit.com';
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://hubs.ingra.ai';
+export const PARENT_APP_URL = process.env.NEXT_PUBLIC_PARENT_APP_URL || 'https://www.ingra.ai';
 
 export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI || '/auth/callback';
 export const APP_AUTH_LOGIN_URI = process.env.NEXT_PUBLIC_AUTH_LOGIN_URI || '/auth/login';
@@ -21,7 +21,7 @@ export const APP_AUTH_CALLBACK_URL = APP_URL + APP_AUTH_CALLBACK_URI;
 export const APP_AUTH_LOGIN_URL = APP_URL + APP_AUTH_LOGIN_URI;
 export const APP_LANDING_PAGE_URL = APP_URL + APP_LANDING_PAGE_URI;
 
-export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@bakabit.com';
+export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@ingra.com';
 export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'BAKA_SESSION';
 export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 
@@ -43,10 +43,10 @@ export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
  * OPENAI Plugin Variables
  */
 export const APP_OPENAI_VERIFICATION_TOKEN = process.env.NEXT_PUBLIC_OPENAI_VERIFICATION || '';
-export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = 'BakabitVirtualAssistant';
-export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Bakabit Assistant';
+export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = 'IngraVirtualAssistant';
+export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Ingra Assistant';
 export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = "A portal to curate and manage personal assistant functions and workflows, providing a community-driven approach to personal assistant development."
-export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = "Bakabit Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
+export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = "Ingra Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
 
 
 

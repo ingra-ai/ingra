@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         type: 'openapi',
         url: `${APP_URL}/api/openapi.json`,
       },
-      logo_url: `${APP_URL}/static/brand/bakabit-white-logo-only-png`,
+      logo_url: `${APP_URL}/static/brand/ingra-logo.svg`,
       contact_email: APP_SUPPORT_MAILTO,
       legal_info_url: `${PARENT_APP_URL}/legal`,
     },
