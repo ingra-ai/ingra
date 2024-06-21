@@ -1,14 +1,14 @@
-# Bakabit Portal
+# Ingra Portal
 
-Bakabit Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs.
+Ingra Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs.
 Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.
 
-It's available to review at [https://portal.bakabit.com](https://portal.bakabit.com) with your browser to see the result.
+It's available to review at [https://portal.](https://portal.) with your browser to see the result.
 
 #### Getting Started as a new User
-1. Login and visit [Marketplace](https://portal.bakabit.com/functions/marketplace) and find some useful community-functions for you to Subscribe or Fork.
-2. Visit [Overview](https://portal.bakabit.com/overview), Review the notification alert and you may find links to your **openapi.json** for your GPT actions or **Swagger** to test it on the web.
-3. Generate API key at [https://portal.bakabit.com/settings/api](https://portal.bakabit.com/settings/api) for `x-api-key` header when configuring your ChatGPT actions
+1. Login and visit [Marketplace](https://portal./functions/marketplace) and find some useful community-functions for you to Subscribe or Fork.
+2. Visit [Overview](https://portal./overview), Review the notification alert and you may find links to your **openapi.json** for your GPT actions or **Swagger** to test it on the web.
+3. Generate API key at [https://portal./settings/api](https://portal./settings/api) for `x-api-key` header when configuring your ChatGPT actions
 4. Paste JSON from **openapi.json** to your own chatgpt plugins actions.
 5. Interact with your personalized GPT hooked with the functions you have.
 
@@ -67,8 +67,8 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/chozzz/bakabit-portal.git
-   cd bakabit-portal
+   git clone https://github.com/ingra-ai/ingra-hubs
+   cd ingra-hubs
    ```
 
 2. **Install dependencies:**
@@ -88,11 +88,11 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 
 ## Environment Variables
 
-The Bakabit Portal utilizes several environment variables for its configuration. You will need to set these up in your `.env.local` file. Here's a guide to the required environment variables:
+The Ingra Portal utilizes several environment variables for its configuration. You will need to set these up in your `.env.local` file. Here's a guide to the required environment variables:
 
 ### Database Setup with Prisma
 
-To understand how to play around with Prisma, view the [Prisma readme](https://github.com/chozzz/bakabit-portal/tree/main/prisma)
+To understand how to play around with Prisma, view the [Prisma readme](https://github.com/ingra-ai/ingra-hubs/tree/main/prisma)
 
 1. Configure your database connection:
 
@@ -128,7 +128,7 @@ Therefore, the following configuration is needed
 
 #### JWT Configuration Setup
 
-To securely manage user sessions and authentication, Bakabit Portal utilizes JSON Web Tokens (JWT). You must generate a secure JWT secret for your application:
+To securely manage user sessions and authentication, Ingra Portal utilizes JSON Web Tokens (JWT). You must generate a secure JWT secret for your application:
 
 - `JWT_SECRET`: A secret key used for signing JWT tokens. Ensure this is a long, random string to maintain security.
 
@@ -160,16 +160,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Contributing
 
-We welcome contributions to the Bakabit Portal! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue. Thanks in advance
+We welcome contributions to the Ingra Portal! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue. Thanks in advance
 
 ## License
 
-Bakabit Portal is open source software licensed as [MIT](https://choosealicense.com/licenses/mit/).
+Ingra Portal is open source software licensed as [MIT](https://choosealicense.com/licenses/mit/).
 
 
 ## Learn More
 
-To further enhance your development with Bakabit Portal, explore the documentation and resources of the key technologies and libraries used in the project:
+To further enhance your development with Ingra Portal, explore the documentation and resources of the key technologies and libraries used in the project:
 
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - An interactive Next.js tutorial.
@@ -182,6 +182,6 @@ To further enhance your development with Bakabit Portal, explore the documentati
 
 ## Deploy on Vercel
 
-The easiest way to deploy Bakabit is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy Ingra is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

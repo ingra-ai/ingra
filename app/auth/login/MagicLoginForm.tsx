@@ -120,7 +120,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               {...register('email')}
               placeholder="john.doe@example.com"
               type="text"
-              autoComplete="email-bakabit"
+              autoComplete="email-ingra"
               required
               autoFocus
               className="block w-full rounded-md border-0 bg-white/5 py-2 px-4 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-10"
@@ -135,7 +135,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               textAlign="center"
               maxLength={6}
               pattern={REGEXP_ONLY_DIGITS}
-              autoComplete="otp-code-bakabit"
+              autoComplete="otp-code-ingra"
               render={({ slots }) => (
                 <InputOTPGroup className="mx-auto">
                   {slots.map((slot, index) => (

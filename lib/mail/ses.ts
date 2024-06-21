@@ -14,7 +14,7 @@ export async function sendEmailHtml(from: string | null | undefined, to: string,
   const ses = new SESClient(SESConfig);
 
   const params: SendEmailCommandInput = {
-    Source: from || process.env.AWS_SES_MAIL_FROM || 'noreply@bakabit.com',
+    Source: from || process.env.AWS_SES_MAIL_FROM || 'noreply@ingra.com',
     Destination: {
       ToAddresses: [to],
     },
