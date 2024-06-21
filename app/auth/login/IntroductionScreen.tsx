@@ -15,7 +15,7 @@ const IntroductionScreen: React.FC<IntroductionScreenProps> = (props) => {
   return (
     <div className={classes}>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Image className="mx-auto h-12 w-12 xl:w-20 xl:h-20" src="/static/brand/bakabit-white-logo-only.svg" alt={APP_NAME} width={96} height={96} />
+        <Image className="mx-auto h-12 w-12 xl:w-20 xl:h-20" src="/static/brand/ingra.svg" alt={APP_NAME} width={96} height={96} />
       </div>
       <h1 className="text-xl font-bold my-4">Welcome to {APP_NAME}</h1>
       <p className="text-center max-w-screen-md leading-6 text-base">
