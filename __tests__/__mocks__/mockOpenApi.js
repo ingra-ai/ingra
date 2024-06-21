@@ -1,9 +1,9 @@
 export const mockOpenApi = {
   "openapi": "3.1.0",
   "info": {
-    "title": "Bakabit Plugin API",
+    "title": "Ingra Plugin API",
     "version": "0.2.0",
-    "description": "Bakabit Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
+    "description": "Ingra Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
   },
   "paths": {
     "/api/v1/me/curateFunctions/clone": {
