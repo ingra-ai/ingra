@@ -5,8 +5,9 @@ import { ActionError } from '@v1/types/api-response';
 import db from '@lib/db';
 import { generateVmContextArgs } from './generateVmContextArgs';
 import { Logger } from '@lib/logger';
+import { Prisma } from '@prisma/client';
 
-export async function executeFunction(authSession: AuthSessionResponse, functionId: string, requestArgs: Record<string, any> = {}) {
+export async function executeFunction(authSession: AuthSessionResponse, functionId: string, requestArgs: Record<string, any> = {}, isMarketplace = false) {
   if ( !authSession ) {
     throw new ActionError('error', 401, `Unauthorized session.`);
   }
@@ -15,20 +16,47 @@ export async function executeFunction(authSession: AuthSessionResponse, function
     throw new ActionError('error', 400, `Invalid arguments.`);
   }
 
-  // Fetch the function code from user's functions
-  const functionToExecute = await db.function.findUnique({
-    where: {
-      id: functionId,
-      ownerUserId: authSession.user.id,
-    },
+  let functionToExecute: Prisma.FunctionGetPayload<{
     select: {
-      code: true,
-      arguments: true,
-    }
-  });
+      code: boolean;
+      arguments: boolean;
+    };
+  }> | null = null;
 
-  if (!functionToExecute) {
-    throw new ActionError('error', 400, `Function not found.`);
+  if ( isMarketplace ) {
+    // User trying to execute a function from marketplace
+    functionToExecute = await db.function.findUnique({
+      where: {
+        id: functionId,
+        isPublished: true,
+        isPrivate: false,
+      },
+      select: {
+        code: true,
+        arguments: true,
+      }
+    });
+
+    if ( !functionToExecute ) {
+      throw new ActionError('error', 400, `Function from marketplace is not found.`);
+    }
+  }
+  else {
+    // Fetch the function code from user's functions
+    functionToExecute = await db.function.findUnique({
+      where: {
+        id: functionId,
+        ownerUserId: authSession.user.id,
+      },
+      select: {
+        code: true,
+        arguments: true,
+      }
+    });
+  
+    if ( !functionToExecute ) {
+      throw new ActionError('error', 400, `Function not found for current user.`);
+    }
   }
 
   const context = generateVmContextArgs(authSession, functionToExecute.arguments, requestArgs);

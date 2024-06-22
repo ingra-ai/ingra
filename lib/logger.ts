@@ -18,8 +18,10 @@ const consolaWithReporters = createConsola({
           }
         }
       },
+      
     },
   ],
+
 });
 
 const Logger = IS_PROD ? consolaWithReporters : consola;
