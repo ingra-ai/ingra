@@ -125,7 +125,7 @@ export const clearAuthCaches = async ( authSession: AuthSessionResponse ) => {
   const allRedisKeys = [
     authSession?.userId && USERID_SESSION_KEY_PREFIX + authSession.userId,
     ...( authSession?.user?.apiKeys || [] ).map((apiKey) => {
-      return USERID_SESSION_KEY_PREFIX + apiKey.key;
+      return APIKEY_SESSION_KEY_PREFIX + apiKey.key;
     } )
   ].filter( Boolean ) as string[];
 
