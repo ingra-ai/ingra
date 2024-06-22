@@ -4,7 +4,7 @@ import { Logger } from "@lib/logger";
 import { clearAuthCaches } from "@app/auth/session/caches";
 
 /**
- * @swagger
+ * @ swagger
  * /api/v1/me/clearCaches:
  *   delete:
  *     summary: Clear caches for the current session
