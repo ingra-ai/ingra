@@ -21,7 +21,7 @@ export const APP_AUTH_CALLBACK_URL = APP_URL + APP_AUTH_CALLBACK_URI;
 export const APP_AUTH_LOGIN_URL = APP_URL + APP_AUTH_LOGIN_URI;
 export const APP_LANDING_PAGE_URL = APP_URL + APP_LANDING_PAGE_URI;
 
-export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@ingra.com';
+export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@ingra.ai';
 export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'BAKA_SESSION';
 export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 

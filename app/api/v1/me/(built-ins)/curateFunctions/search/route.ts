@@ -24,6 +24,16 @@ import db from "@lib/db";
  *             type: string
  *             enum: [description, code, httpVerb, isPrivate, isPublished, arguments, tags]
  *         description: Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected. Only return `code` when requested since the payload is large.
+ *       - in: query
+ *         name: take
+ *         schema:
+ *           type: integer
+ *         description: Number of records to retrieve. Default is 50.
+ *       - in: query
+ *         name: skip
+ *         schema:
+ *           type: integer
+ *         description: Number of records to skip. Default is 0.
  *     responses:
  *       '200':
  *         description: Successfully retrieved list of searched functions
@@ -44,6 +54,8 @@ import db from "@lib/db";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') || '';
+  const take = parseInt( searchParams.get('take') || '50' ) || 50;
+  const skip = parseInt( searchParams.get('skip') || '0' ) || 0;
   const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
 
   const selectFields: Prisma.FunctionSelect = {
@@ -152,7 +164,8 @@ export async function GET(req: NextRequest) {
         } : {})
       },
       select: selectFields,
-      take: 10,
+      take,
+      skip,
       orderBy: {
         updatedAt: 'desc',
       }
