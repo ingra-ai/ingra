@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
       throw new ActionError('error', 500, 'Failed to send message to the assistant. Please try again later.');
     });
 
-    await Logger.withTag(`thread:${threadId}`).withTag(`user:${authSession.user?.id}`).info(`User is chatting with the assistant.`);
+    await Logger.withTag(`thread|${threadId}`).withTag(`user|${authSession.user?.id}`).info(`User is chatting with the assistant.`);
 
     // Run the assistant on the thread
     const runStream = openai.beta.threads.runs.stream(threadId, {

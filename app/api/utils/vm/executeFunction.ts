@@ -65,7 +65,11 @@ export async function executeFunction(authSession: AuthSessionResponse, function
   Object.assign(context, requestArgs);
 
   // Log the actions
-  Logger.withTag('executeFunction').withTag(`user:${ authSession.user.id }`).info('Executing function', { functionId });
+  Logger
+    .withTag('api|executeFunction')
+    .withTag(`user|${ authSession.user.id }`)
+    .withTag(`function|${ functionId }`)
+    .info('Executing function');
 
   return await run(functionToExecute.code, context);
 }

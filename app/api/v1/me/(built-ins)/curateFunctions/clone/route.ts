@@ -52,10 +52,11 @@ export async function POST(req: NextRequest) {
     // Clone the function
     const clonedFunction = await cloneFunction(functionId, authSession.user.id);
 
-    Logger.withTag('me-builtins')
-      .withTag('curateFunctions-clone')
-      .withTag(`user:${authSession.user.id}`)
-      .info('Cloned a user function');
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-clone')
+      .withTag(`user|${authSession.user.id}`)
+      .withTag(`function|${functionId}`)
+      .info('Cloned a function');
 
     return NextResponse.json(
       {

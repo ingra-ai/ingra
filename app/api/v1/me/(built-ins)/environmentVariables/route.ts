@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info('Fetching environment variables');
+    Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Fetching environment variables');
 
     return NextResponse.json(
       {
@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
 
     await clearAuthCaches(authSession);
 
-    Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info('Upserted environment variable');
+    Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Upserted environment variable');
 
     return NextResponse.json(
       {
@@ -207,7 +207,7 @@ export async function DELETE(req: NextRequest) {
 
     await clearAuthCaches(authSession);
 
-    Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info(`Deleted env var: ${key}`);
+    Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Deleted env var: ${key}`);
 
     return NextResponse.json(
       {
@@ -294,7 +294,7 @@ export async function PATCH(req: NextRequest) {
     
     await clearAuthCaches(authSession);
 
-    Logger.withTag('me-builtins').withTag('envVars').withTag(`user:${authSession.user.id}`).info(`Updated env var: ${key}`);
+    Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Updated env var: ${key}`);
 
     return NextResponse.json(
       {

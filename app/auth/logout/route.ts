@@ -23,11 +23,11 @@ export async function GET() {
       });
     }
     catch ( error: any ) {
-      Logger.withTag('kv').error('Error removing session due to logout', { jwt: jwtCookie.value, error });
+      Logger.withTag('action|logout').error('Error removing session due to logout', { jwt: jwtCookie.value, error });
     }
 
     // Remove from redis
-    Logger.withTag('kv').info('Session removed due to logout', { jwt: jwtCookie.value });
+    Logger.withTag('action|logout').log('Session removed due to logout', { jwt: jwtCookie.value });
 
     // Remove session cookies
     cookieStore.delete(APP_SESSION_COOKIE_NAME);
