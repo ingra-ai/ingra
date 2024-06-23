@@ -29,10 +29,23 @@ export async function run(code: string, ctx: VmContextArgs) {
   // Contextify the sandbox
   const context = vm.createContext(sandbox);
 
-  // Run the code in the sandbox
-  vm.runInContext(code, context, {
-    timeout: EXECUTION_TIMEOUT_SECONDS * 1e3,
-  });
+  try {
+    // Run the code in the sandbox
+    vm.runInContext(code, context, {
+      timeout: EXECUTION_TIMEOUT_SECONDS * 1e3,
+    });
+  }
+  catch ( err: any ) {
+    analytics.outputs.push({
+      type: 'error',
+      message: err?.stack || err?.message || 'Failed to execute code.',
+    });
+
+    return {
+      outputs: analytics.outputs,
+      result: null,
+    };
+  }
 
   // Execute the function and handle results
   if (sandbox.handler) {
