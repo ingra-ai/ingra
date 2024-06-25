@@ -59,6 +59,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.395.0",
+    "mixpanel": "^0.18.0",
     "next": "14.2.4",
     "next-swagger-doc": "^0.4.0",
     "node-fetch": "^3.3.2",

@@ -5,7 +5,7 @@ import { APP_DESCRIPTION, APP_NAME } from '@lib/constants';
 import { cn } from '@lib/utils';
 import '@css/globals.scss';
 import { Toaster } from '@/components/ui/toaster';
-import { HotjarSnippet } from '@components/analytics/HotjarSnippet';
+import { HotjarAnalytics } from '@components/analytics/HotjarAnalytics';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -25,11 +25,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="robots" content="noindex, nofollow" />
+        <HotjarAnalytics />
       </head>
-      <body className={bodyClasses}>
+      <body className={bodyClasses} data-testid="layout-body">
         {children}
         <Toaster />
-        <HotjarSnippet />
       </body>
     </html>
   );

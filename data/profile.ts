@@ -20,6 +20,20 @@ export const getUserProfile = async (user: User): Promise<Profile | null> => {
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>, userId: string) => {
   const { firstName, lastName, userName, timeZone } = values;
 
+  /**
+   * Disable updating the username for now if user already has a username.
+   * Since its tied up with collections subscription API endpoint.
+   * @see USERS_API_FUNCTION_COLLECTION_SUBSCRIPTIONS_PATH constants
+   * e.g. /api/v1/me/collections/:username/:slug
+   */
+  const existingRecord = await db.profile.findUnique({
+    where: { userId },
+  });
+
+  if ( existingRecord?.userName && existingRecord.userName !== userName ) {
+    throw new Error('Username cannot be updated once set. Please contact support for assistance.');
+  }
+
   const record = await db.profile.upsert({
     where: {
       userId: userId,

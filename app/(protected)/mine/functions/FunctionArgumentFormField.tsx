@@ -45,7 +45,7 @@ const FunctionArgumentFormField: React.FC<FunctionArgumentFormFieldProps> = ({ i
             {...register(`arguments.${index}.name`)}
             placeholder="Name"
             aria-autocomplete='none'
-            autoComplete="false"
+            autoComplete=""
             type="text"
           />
           {errors.arguments?.[index]?.name && <p className="text-xs font-medium text-destructive-foreground mt-3">{errors.arguments?.[index]?.name?.message}</p>}

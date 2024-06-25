@@ -3,8 +3,9 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db";
 import { ActionError } from "@v1/types/api-response";
-import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
-import { isUuid } from "@lib/utils";
+import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
+import { getAnalyticsObject, isUuid } from "@lib/utils";
+import { mixpanel } from "@lib/analytics";
 
 /**
  * @swagger
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
       },
       select: {
         id: true,
+        slug: true,
         code: true,
         arguments: true
       }
@@ -109,13 +111,27 @@ export async function POST(req: NextRequest) {
     const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs),
       loggerObj = Logger.withTag('api|builtins').withTag('operation|curateFunctions-executeFunction').withTag(`user|${authSession.user.id}`).withTag(`function|${functionRecord.id}`);
 
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'executeFunction',
+      functionId: functionRecord.id,
+      functionSlug: functionRecord.slug,
+      metrics,
+      errors,
+    });
+
+    loggerObj.info('Ran a user function');
+
     if (errors.length) {
       const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
       loggerObj.error(`Errored executing function: ${errorMessage}`);
       throw new ActionError('error', 400, errorMessage);
     }
-
-    loggerObj.info('Ran a user function');
 
     return NextResponse.json(
       {

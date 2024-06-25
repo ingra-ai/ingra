@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { cloneFunction } from "@/data/functions";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -51,6 +53,16 @@ export async function POST(req: NextRequest) {
   return await apiAuthTryCatch<any>(async (authSession) => {
     // Clone the function
     const clonedFunction = await cloneFunction(functionId, authSession.user.id);
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'cloneFunction'
+    });
 
     Logger.withTag('api|builtins')
       .withTag('operation|curateFunctions-clone')

@@ -1,9 +1,9 @@
 'use client';
 import { Button } from '@components/ui/button';
 import React, { startTransition, useCallback, useState } from 'react';
-import { destroyProfile } from '@actions/profile';
+// import { destroyProfile } from '@actions/profile';
 import { RefreshCcw } from 'lucide-react';
-import { toast } from '@components/ui/use-toast';
+// import { toast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
 interface DeleteAccountButtonFormProps {
@@ -16,8 +16,15 @@ export const DeleteAccountButtonForm: React.FC<DeleteAccountButtonFormProps> = (
   const handleDeleteAccount = useCallback(() => {
 
     if ( typeof window !== 'undefined' && confirm('Are you sure you want to delete your account and all related data?') ) {
+      /**
+       * @todo Disable for now
+       * Future plan is to send a confirmation email before deleting the account, and give user the option to export their data or cancel the deletion.
+       */
+      alert('This feature is disabled for now. Please contact support for assistance.');
+
+      /*
       setIsLoading(true);
-  
+
       return destroyProfile()
         .then((result) => {
           if ( result.status !== 'ok' ) {
@@ -42,6 +49,7 @@ export const DeleteAccountButtonForm: React.FC<DeleteAccountButtonFormProps> = (
         .finally(() => {
           setIsLoading(false);
         });
+      */
     }
   }, []);
 

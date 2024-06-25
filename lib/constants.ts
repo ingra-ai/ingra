@@ -96,5 +96,5 @@ export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
 /**
  * Analytics
  */
-export const HOTJAR_ID = process.env.NEXT_PUBLIC_HOTJAR_ID || '5030574';
-export const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '6cf29b6888bb74b485d04bb9301d1b4c';
+export const HOTJAR_ID = process.env.NEXT_PUBLIC_HOTJAR_ID || '';
+export const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '';
