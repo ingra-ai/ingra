@@ -30,6 +30,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const lockUsername = !!userProfile?.userName;
 
   const { handleSubmit, register, formState, setValue } = useForm<z.infer<typeof ProfileSchema>>({
     resolver: zodResolver(ProfileSchema),
@@ -43,7 +44,8 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
 
   const onSubmit = useCallback((values: z.infer<typeof ProfileSchema>) => {
     setIsSaving(true);
-    updateProfile(values)
+
+    return updateProfile(values)
       .then((result) => {
         if (result.status !== 'ok') {
           throw new Error(result.message);
@@ -162,11 +164,13 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
           <label htmlFor="userName" className="block text-sm font-medium leading-6 mb-3">
             Username
           </label>
-          <input
+          <Input
             id="userName"
             {...register('userName')}
             placeholder="john.doe"
             type="userName"
+            readOnly={lockUsername}
+            disabled={lockUsername}
             autoComplete=""
             required
             autoFocus
