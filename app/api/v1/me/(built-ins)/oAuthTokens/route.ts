@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    Logger.withTag('me-builtins').withTag('oAuthTokens').withTag(`user:${authSession.user.id}`).info('Fetching available OAuth tokens.');
+    Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info('Fetching available OAuth tokens.');
 
     return NextResponse.json(
       {
@@ -157,7 +157,7 @@ export async function PATCH(req: NextRequest) {
 
     await clearAuthCaches(authSession);
 
-    Logger.withTag('me-builtins').withTag('oAuthTokens').withTag(`user:${authSession.user.id}`).info(`Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`);
+    Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info(`Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`);
 
     return NextResponse.json(
       {

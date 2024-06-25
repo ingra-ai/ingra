@@ -13,14 +13,16 @@ import { EnvVarsSchema } from '@/schemas/envVars';
 import { upsertEnvVar } from '@actions/envVars';
 import { Input } from '@components/ui/input';
 import { EnvVarsOptionalPayload } from './types';
+import { cn } from '@lib/utils';
 
 type EnvVarFormProps = {
+  className?: string;
   onSuccess?: () => void;
   envVarRecord?: EnvVarsOptionalPayload;
 };
 
 export const EnvVarForm: FC<EnvVarFormProps> = (props) => {
-  const { onSuccess, envVarRecord } = props;
+  const { className, onSuccess, envVarRecord } = props;
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!envVarRecord;
@@ -66,13 +68,10 @@ export const EnvVarForm: FC<EnvVarFormProps> = (props) => {
       });
   }, []);
 
+  const classes = cn('block space-y-6', className);
+
   return (
-    <form className="block space-y-6 mt-10" method="POST" onSubmit={handleSubmit(onSubmit)}>
-      <h1>
-        {
-          isEditMode ? 'Edit Environment Variable' : 'Add Environment Variable'
-        }
-      </h1>
+    <form className={ classes } method="POST" onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
       <div>
         <label htmlFor="key" className="block text-sm font-medium leading-6">
           Key
@@ -82,7 +81,7 @@ export const EnvVarForm: FC<EnvVarFormProps> = (props) => {
           {...register('key')}
           placeholder="Enter a key"
           type="text"
-          autoComplete="key"
+          autoComplete=""
           disabled={isEditMode}
           required
           autoFocus

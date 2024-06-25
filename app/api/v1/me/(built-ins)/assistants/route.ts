@@ -83,6 +83,46 @@ export async function GET(request: NextRequest) {
   });
 }
 
+/**
+ * @ swagger
+ * /api/v1/me/assistants:
+ *   post:
+ *     summary: Get a streaming response from assistant
+ *     operationId: getAssistantResponse
+ *     description: Get a streaming response from assistant based on the user input. Running based on OpenAI Assistant API.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               theadId:
+ *                 type: string
+ *                 description: The thread ID for the assistant to continue the conversation
+ *                 nullable: true
+ *               message:
+ *                 type: string
+ *                 default: ""
+ *                 description: The input message from the user. Default is an empty string
+ *                 required: true
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved streaming response
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ *               description: The streaming response output from the assistant
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiError'
+ *     tags:
+ *       - Built-ins Internal
+ */
 export async function POST(request: NextRequest) {
   // Parse the request body
   const { threadId, message } = await request.json();
@@ -118,7 +158,7 @@ export async function POST(request: NextRequest) {
       throw new ActionError('error', 500, 'Failed to send message to the assistant. Please try again later.');
     });
 
-    await Logger.withTag(`thread:${threadId}`).withTag(`user:${authSession.user?.id}`).info(`User is chatting with the assistant.`);
+    await Logger.withTag(`thread|${threadId}`).withTag(`user|${authSession.user?.id}`).info(`User is chatting with the assistant.`);
 
     // Run the assistant on the thread
     const runStream = openai.beta.threads.runs.stream(threadId, {

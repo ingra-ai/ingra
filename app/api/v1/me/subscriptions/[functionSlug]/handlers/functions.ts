@@ -9,7 +9,10 @@ const handlerFn = async (functionSlug: string, requestArgs: Record<string, any> 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id,
-        loggerObj = Logger.withTag('me-functions-subscriptions').withTag(`user:${ userId }`).withTag(`functionSlug:${ functionSlug }`);
+        loggerObj = Logger
+          .withTag('api|functionsSubscriptions')
+          .withTag(`user|${ userId }`)
+          .withTag(`slug|${ functionSlug }`);
 
       loggerObj.info(`Starts executing function: ${functionSlug}`, requestArgs);
 
@@ -51,7 +54,7 @@ const handlerFn = async (functionSlug: string, requestArgs: Record<string, any> 
         throw new ActionError('error', 400, errorMessage);
       }
 
-      loggerObj.info(`Finished executing function: ${functionSlug}`, metrics);
+      loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {
