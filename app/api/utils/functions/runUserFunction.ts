@@ -25,19 +25,15 @@ export const runUserFunction = async (authSession: AuthSessionResponse, function
   const vmContext = generateVmContextArgs(authSession, functionRecord.arguments, args);
 
   const vmOutput = await run(functionRecord.code, vmContext);
+
   const errors = vmOutput.outputs.filter(output => output.type === 'error') as UserSandboxOutput[],
-    metrics = ((vmOutput.outputs || []).filter(output => output.type === 'metric') as MetricSandboxOutput[]).map((metric) => {
-      return {
-        [metric.metric]: metric.value,
-      };
-    }),
-    concatMetrics = metrics.reduce<Partial<MetricValues>>((acc, metric) => {
+    metrics = ((vmOutput.outputs || []).filter(output => output.type === 'metric') as MetricSandboxOutput[]).reduce<Partial<MetricValues>>((acc, metric) => {
       return { ...acc, [metric.metric]: metric.value };
     }, {});
 
   return {
     result: vmOutput?.result || null,
-    metrics: concatMetrics,
+    metrics,
     errors,
   }
 };

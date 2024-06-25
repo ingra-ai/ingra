@@ -108,19 +108,6 @@ export const getApiAuthSession = async (xApiKey: string) => {
   return sessionWithUser;
 };
 
-/*
-export const addCachesOfSession = async ( authSession: AuthSessionResponse ) => {
-  return await Promise.all([
-    authSession?.userId && kv.set(USERID_SESSION_KEY_PREFIX + authSession.userId, authSession, { ex: ACTIVE_SESSION_REDIS_EXPIRY }),
-    ( authSession?.user?.apiKeys || [] ).map((apiKey) => {
-      return kv.set(USERID_SESSION_KEY_PREFIX + apiKey.key, authSession, {
-        ex: ACTIVE_SESSION_REDIS_EXPIRY
-      })
-    } )
-  ]);
-}
-*/
-
 export const clearAuthCaches = async ( authSession: AuthSessionResponse ) => {
   const allRedisKeys = [
     authSession?.userId && USERID_SESSION_KEY_PREFIX + authSession.userId,
@@ -133,7 +120,7 @@ export const clearAuthCaches = async ( authSession: AuthSessionResponse ) => {
     const result = await kv.del(...allRedisKeys);
   
     // Total auth caches deleted
-    Logger.withTag('clearAuthCaches').withTag(`user:${ authSession.userId }`).info(`${ result } KV keys have been removed.`, { allRedisKeys });
+    Logger.withTag('action|clearAuthCaches').withTag(`user|${ authSession.userId }`).info(`${ result } KV keys have been removed.`, { allRedisKeys });
   }
 
   return 0;

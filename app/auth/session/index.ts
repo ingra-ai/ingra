@@ -41,7 +41,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
           defaultOAuthToken = user.oauthTokens[defaultOAuthTokenIndex];
 
         if ( !defaultOAuthToken ) {
-          Logger.withTag('getAuthSession').withTag( user.id ).error('User has no default OAuth token.');
+          Logger.withTag('action|getAuthSession').withTag(`user|${ user.id }`).error('User has no default OAuth token.');
           return sessionWithUser;
         }
 
@@ -55,7 +55,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
              */
             const updatedOAuthRecord = updateOAuthToken(newOAuth.userId, newOAuth.primaryEmailAddress, newOAuth.credentials).then( (updatedOAuth) => {
               if ( updatedOAuth ) {
-                Logger.withTag('getAuthSession').withTag( user.id ).info('Refreshed OAuth tokens:', { 
+                Logger.withTag('action|getAuthSession').withTag(`user|${ user.id }`).info('Refreshed OAuth tokens:', { 
                   oauthId: updatedOAuth?.id,
                   expiryDate: updatedOAuth.expiryDate,
                 });
@@ -87,8 +87,8 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
            * @todo We can also send an email to the user to let them know that their OAuth token is expired.
            * @todo And we should probably flag it in database, and also in the UI. So user can re-authenticate.
            */
-          Logger.withTag('getAuthSession').withTag( user.id ).error('Error refreshing OAuth credentials:', err);
-          Logger.withTag('getAuthSession').withTag( user.id ).error('Deleting oauth token due to refresh token may be corrupted.', { id: defaultOAuthToken?.id });
+          Logger.withTag('action|getAuthSession').withTag(`user|${ user.id }`).error('Error refreshing OAuth credentials:', err);
+          Logger.withTag('action|getAuthSession').withTag(`user|${ user.id }`).error('Deleting oauth token due to refresh token may be corrupted.', { id: defaultOAuthToken?.id });
           await deleteOAuthToken(defaultOAuthToken?.id, user.id);
         });
 
@@ -106,7 +106,7 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
 
     return sessionWithUser;
   } catch (error) {
-    Logger.withTag('getAuthSession').error('Error fetching user and session by either JWT or API key:', error);
+    Logger.withTag('action|getAuthSession').error('Error fetching user and session by either JWT or API key:', error);
     return null;
   }
 };

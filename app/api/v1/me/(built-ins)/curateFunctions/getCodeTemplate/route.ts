@@ -49,9 +49,9 @@ export async function GET(req: NextRequest) {
       allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map(envVar => envVar.key)),
       codeTemplate = generateCodeDefaultTemplate(allUserAndEnvKeys);
 
-    Logger.withTag('me-builtins')
-      .withTag('curateFunctions-getCodeTemplate')
-      .withTag(`user:${authSession.user.id}`)
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-getCodeTemplate')
+      .withTag(`user|${authSession.user.id}`)
       .info('Retrieved code template for the user.');
 
     return NextResponse.json(

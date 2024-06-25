@@ -27,8 +27,6 @@ export function generateVmContextArgs( authSession: AuthSessionResponse, functio
     }
   }
 
-  Logger.withTag('vm').info('Generating VM context request arguments:', requestArgs);
-
   const context: VmContextArgs = {
     ...generateUserVars(authSession),
 

@@ -201,10 +201,10 @@ export async function deleteCollection(collectionId: string, userId: string) {
       return record;
     });
 
-    await Logger.withTag('deleteCollection').info('Collection and all related records deleted successfully.');
+    await Logger.withTag('action|deleteCollection').withTag(`user|${userId}`).info('Collection and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag('deleteCollection').info('Error deleting collection and related records', { error });
+    await Logger.withTag('action|deleteCollection').withTag(`user|${userId}`).error('Error deleting collection and related records', { error });
     return false;
   }
 }

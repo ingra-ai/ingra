@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: { functionSlug
     );
   }
 
-  Logger.withTag('me-functions-route').withTag('GET').info(`Function handler ${ functionSlug } invoked.`);
+  Logger.withTag('GET|functions').log(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
 }
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest, { params }: { params: { functionSlu
     );
   }
 
-  Logger.withTag('me-functions-route').withTag('POST').info(`Function handler ${ functionSlug } invoked.`);
+  Logger.withTag('POST|functions').log(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
 }
 
@@ -67,7 +67,7 @@ export async function PUT(req: NextRequest, { params }: { params: { functionSlug
     );
   }
 
-  Logger.withTag('me-functions-route').withTag('PUT').info(`Function handler ${ functionSlug } invoked.`);
+  Logger.withTag('PUT|functions').log(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
 }
 
@@ -90,7 +90,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { functionSl
     );
   }
 
-  Logger.withTag('me-functions-route').withTag('PATCH').info(`Function handler ${ functionSlug } invoked.`);
+  Logger.withTag('PATCH|functions').log(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
 }
 
@@ -113,6 +113,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { functionS
     );
   }
 
-  Logger.withTag('me-functions-route').withTag('DELETE').info(`Function handler ${ functionSlug } invoked.`);
+  Logger.withTag('DELETE|functions').log(`Function handler ${ functionSlug } invoked.`);
   return await handlerFn(functionSlug, requestArgs);
 }

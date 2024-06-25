@@ -175,10 +175,10 @@ export const deleteFunction = async (functionId: string, userId: string) => {
       return result;
     });
 
-    await Logger.withTag('deleteFunction').info('Function and all related records deleted successfully.');
+    await Logger.withTag('action|deleteFunction').withTag(`user|${userId}`).info('Function and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag('deleteFunction').info('Error deleting function and related records', { error });
+    await Logger.withTag('action|deleteFunction').withTag(`user|${userId}`).info('Error deleting function and related records', { error });
     return false;
   }
 };

@@ -9,9 +9,12 @@ const handlerFn = async ( functionSlug: string, ownerUsername: string, requestAr
   return await apiAuthTryCatch<any>(async (authSession) => {
     if ( typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id,
-        loggerObj = Logger.withTag('me-collections-subscriptions').withTag(`user:${ userId }`).withTag(`functionOwner:${ ownerUsername }`).withTag(`functionSlug:${ functionSlug }`);
+        loggerObj = Logger
+          .withTag('api|collectionsSubscriptions')
+          .withTag(`user|${ userId }`)
+          .withTag(`path|${ownerUsername}/${functionSlug}`);
 
-      loggerObj.info(`Starts executing function: ${functionSlug}`, requestArgs);
+      loggerObj.info(`Starts executing function`, requestArgs);
 
       // Fetch owner user ID
       const ownerUser = await db.profile.findUnique({
@@ -74,7 +77,7 @@ const handlerFn = async ( functionSlug: string, ownerUsername: string, requestAr
         throw new ActionError('error', 400, errorMessage);
       }
 
-      loggerObj.info(`Finished executing function: ${functionSlug}`, metrics);
+      loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {

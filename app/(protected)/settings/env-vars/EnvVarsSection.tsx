@@ -8,6 +8,14 @@ import { useRouter } from 'next/navigation';
 import { EnvVarsTable } from './EnvVarsTable';
 import { deleteEnvVar } from '@actions/envVars';
 import { useToast } from '@components/ui/use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { EnvVarsOptionalPayload } from './types';
 
 type EnvVarsSectionProps = {
@@ -19,11 +27,11 @@ export const EnvVarsSection: FC<EnvVarsSectionProps> = (props) => {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
-  const [record, setRecord] = useState<EnvVarsOptionalPayload | undefined>(undefined);
+  const [record, setRecord] = useState<EnvVarsOptionalPayload | null>(null);
 
   function onFormSuccess() {
     setOpen(false);
-    setRecord(undefined);
+    setRecord(null);
     startTransition(() => {
       // Refresh the current route and fetch new data from the server without
       // losing client-side browser or React state.
@@ -32,6 +40,7 @@ export const EnvVarsSection: FC<EnvVarsSectionProps> = (props) => {
   }
 
   function onCreate() {
+    setRecord(null);
     setOpen(true);
   }
 
@@ -68,9 +77,25 @@ export const EnvVarsSection: FC<EnvVarsSectionProps> = (props) => {
   return (
     <section className="block" data-testid="env-vars-section">
       <EnvVarsTable envVars={props.envVars} onCreate={onCreate} onEdit={onEdit} onDelete={onDelete} />
-      <FormSlideOver title="" open={open} setOpen={setOpen}>
-        <EnvVarForm onSuccess={onFormSuccess} envVarRecord={ record } />
-      </FormSlideOver>
+      {/* <FormSlideOver title="" open={open} setOpen={setOpen}>
+      </FormSlideOver> */}
+      <Dialog open={ open } onOpenChange={ setOpen }>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              { 
+                record ? 'Edit Environment Variable' : 'Add Environment Variable'
+              }
+            </DialogTitle>
+            <DialogDescription>
+              {
+                record ? 'Edit an existing environment variable.' : 'Add a new environment variable.'
+              }
+            </DialogDescription>
+          </DialogHeader>
+          <EnvVarForm className='mt-5' onSuccess={onFormSuccess} envVarRecord={ record || undefined } />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

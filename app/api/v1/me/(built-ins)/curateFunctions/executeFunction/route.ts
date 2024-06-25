@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
 
     // Run the function
     const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs),
-      loggerObj = Logger.withTag('me-builtins').withTag('curateFunctions-executeFunction').withTag(`user:${authSession.user.id}`);
+      loggerObj = Logger.withTag('api|builtins').withTag('operation|curateFunctions-executeFunction').withTag(`user|${authSession.user.id}`).withTag(`function|${functionRecord.id}`);
 
     if (errors.length) {
       const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';

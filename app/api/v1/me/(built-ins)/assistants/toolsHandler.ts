@@ -45,7 +45,7 @@ export const actionToolCalls = async (
   sendDataMessage?: (dataMessage: DataMessage) => void
 ) => {
   const resultPromises = toolCalls.map( async ( toolCall ) => {
-    const logger = Logger.withTag('actionToolCalls').withTag(`thread:${threadId}`).withTag(`user:${authSession.user?.id}`);
+    const logger = Logger.withTag('actionToolCalls').withTag(`thread|${threadId}`).withTag(`user|${authSession.user?.id}`);
     const toolResult = {
       tool_call_id: toolCall.id,
       output: ''

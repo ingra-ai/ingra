@@ -6,6 +6,10 @@ export const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
     href: '/settings/profile',
   },
   {
+    name: 'Integrations',
+    href: '/settings/integrations',
+  },
+  {
     name: 'API',
     href: '/settings/api',
   },

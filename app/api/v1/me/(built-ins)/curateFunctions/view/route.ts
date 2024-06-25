@@ -169,9 +169,10 @@ export async function GET(req: NextRequest) {
       throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
     }
 
-    Logger.withTag('me-builtins')
-      .withTag('curateFunctions-view')
-      .withTag(`user:${authSession.user.id}`)
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-view')
+      .withTag(`user|${authSession.user.id}`)
+      .withTag(`function|${functionRecord.id}`)
       .info('Viewing a specific user function', { whereFilter });
 
     return NextResponse.json(

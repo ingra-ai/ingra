@@ -77,7 +77,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
       toast({
         variant: 'destructive',
         title: 'Code execution failed!',
-        description: error?.message || 'Failed to update function!',
+        description: error?.message || 'Failed to execute function!',
       });
 
       setRunState({

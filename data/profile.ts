@@ -89,10 +89,10 @@ export const destroyAccount = async ( userId: string ) => {
       await prisma.user.delete({ where: { id: userId } });
     });
 
-    await Logger.withTag('destroyAccount').info('User and all related records deleted successfully.');
+    await Logger.withTag('action|destroyAccount').withTag(`user|${userId}`).info('User and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag('destroyAccount').info('Error deleting user and related records', { error });
+    await Logger.withTag('action|destroyAccount').withTag(`user|${userId}`).info('Error deleting user and related records', { error });
     return false;
   }
 }

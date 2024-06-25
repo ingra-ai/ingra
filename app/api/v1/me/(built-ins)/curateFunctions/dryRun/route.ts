@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         code,
         arguments: [],
       }, requestArgs),
-      loggerObj = Logger.withTag('me-builtins').withTag('curateFunctions-dryRun').withTag(`user:${authSession.user.id}`);
+      loggerObj = Logger.withTag('api|builtins').withTag('operation|curateFunctions-dryRun').withTag(`user|${authSession.user.id}`);
 
     if (errors.length) {
       const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';

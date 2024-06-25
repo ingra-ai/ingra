@@ -1,5 +1,5 @@
 import { getAuthSession } from '@app/auth/session';
-import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, APP_SETTINGS_PROFILE_URI } from '@lib/constants';
+import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, APP_SETTINGS_INTEGRATIONS_URI } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { SuggestionsList } from './SuggestionsList';
 import { LayoutDashboardIcon } from 'lucide-react';
@@ -92,7 +92,7 @@ export default async function Dashboard() {
               {
                 name: 'Integrated Apps',
                 stat: totalOAuthTokens.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: APP_SETTINGS_PROFILE_URI,
+                href: APP_SETTINGS_INTEGRATIONS_URI,
                 linkText: 'Manage OAuth Integrations',
               },
             ]}

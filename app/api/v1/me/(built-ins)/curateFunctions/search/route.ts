@@ -171,9 +171,9 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    Logger.withTag('me-builtins')
-      .withTag('curateFunctions-list')
-      .withTag(`user:${authSession.user.id}`)
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-list')
+      .withTag(`user|${authSession.user.id}`)
       .info('Listing some recent user functions', { fieldsToRetrieveParams });
 
     return NextResponse.json(

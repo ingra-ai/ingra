@@ -6,7 +6,7 @@ import {
   AlertTitle,
 } from "@/components/ui/alert";
 import Link from "next/link";
-import { APP_SETTINGS_PROFILE_URI, APP_SETTINGS_API_URI, APP_SETTINGS_ENV_VARS_URI } from "@lib/constants";
+import { APP_SETTINGS_PROFILE_URI, APP_SETTINGS_API_URI, APP_SETTINGS_ENV_VARS_URI, APP_SETTINGS_INTEGRATIONS_URI } from "@lib/constants";
 import { cn } from "@lib/utils";
 import { AuthSessionResponse } from '@app/auth/session/types';
 
@@ -41,7 +41,7 @@ export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
     allConcerns.push(
       <p className="text-sm font-medium">
         Note that some functions require <code className="text-orange-400">Google integration</code> to work properly. You can integrate Google by visiting&nbsp;
-        <Link className='underline underline-offset-2 hover:text-orange-300' href={APP_SETTINGS_PROFILE_URI}>visiting your profile page</Link>.
+        <Link className='underline underline-offset-2 hover:text-orange-300' href={APP_SETTINGS_INTEGRATIONS_URI}>visiting your integrations page</Link>.
       </p>
     );
   }

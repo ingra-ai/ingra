@@ -84,7 +84,7 @@ const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
 
 export const sendMagicLinkEmail = async (recipientEmail: string, magicLink: MagicLinkToken) => {
   if ( !IS_PROD ) {
-    Logger.withTag('dev-only').log(`Your OTP Code is ${ magicLink.otpCode }`);
+    Logger.withTag('action|sendMagicLinkEmail').log(`Your OTP Code is ${ magicLink.otpCode }`);
     return true;
   }
 
@@ -97,6 +97,6 @@ export const sendMagicLinkEmail = async (recipientEmail: string, magicLink: Magi
     },
   });
 
-  Logger.withTag('MAIL').log('Magic link email sent', { res });
+  Logger.withTag('action|sendMagicLinkEmail').log('Magic link email sent', { res });
   return !!res;
 };
