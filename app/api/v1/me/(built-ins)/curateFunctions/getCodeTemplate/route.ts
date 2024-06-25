@@ -3,6 +3,8 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { generateUserVars } from "@app/api/utils/vm/generateUserVars";
 import { generateCodeDefaultTemplate } from "@app/api/utils/vm/functions/generateCodeDefaultTemplate";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -46,6 +48,16 @@ export async function GET(req: NextRequest) {
       userVarsRecord = generateUserVars(authSession),
       allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map(envVar => envVar.key)),
       codeTemplate = generateCodeDefaultTemplate(allUserAndEnvKeys);
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'getCodeTemplate'
+    });
 
     Logger.withTag('api|builtins')
       .withTag('operation|curateFunctions-getCodeTemplate')

@@ -3,6 +3,8 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { ActionError } from "@v1/types/api-response";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -59,13 +61,25 @@ export async function POST(req: NextRequest) {
       }, requestArgs),
       loggerObj = Logger.withTag('api|builtins').withTag('operation|curateFunctions-dryRun').withTag(`user|${authSession.user.id}`);
 
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'dryRunFunction',
+      metrics,
+      errors,
+    });
+
+    loggerObj.info('Finished dry run a user function');
+
     if (errors.length) {
       const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
       loggerObj.error(`Errored executing function: ${errorMessage}`);
       throw new ActionError('error', 400, errorMessage);
     }
-
-    loggerObj.info('Finished dry run a user function');
 
     return NextResponse.json(
       {

@@ -4,6 +4,8 @@ import { Logger } from "@lib/logger";
 import db from "@lib/db"; // Assuming you have a db instance for interacting with your database
 import { setTokenAsDefault } from "@/data/oauthToken";
 import { clearAuthCaches } from "@app/auth/session/caches";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -63,6 +65,16 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'getOAuthTokensList'
+    });
+    
     Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info('Fetching available OAuth tokens.');
 
     return NextResponse.json(
@@ -156,6 +168,16 @@ export async function PATCH(req: NextRequest) {
     const defaultOAuthToken = await setTokenAsDefault(id, service, authSession.user.id);
 
     await clearAuthCaches(authSession);
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'setOAuthTokenAsDefault'
+    });
 
     Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info(`Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`);
 

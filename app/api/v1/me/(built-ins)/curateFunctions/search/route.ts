@@ -3,6 +3,8 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { Prisma } from "@prisma/client";
 import db from "@lib/db";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -169,6 +171,16 @@ export async function GET(req: NextRequest) {
       orderBy: {
         updatedAt: 'desc',
       }
+    });
+    
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'searchFunctions'
     });
 
     Logger.withTag('api|builtins')
