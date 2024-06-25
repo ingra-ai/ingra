@@ -3,7 +3,8 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db";
 import { Prisma } from "@prisma/client";
-import { isUuid } from "@lib/utils";
+import { getAnalyticsObject, isUuid } from "@lib/utils";
+import { mixpanel } from "@lib/analytics";
 
 /**
  * @swagger
@@ -169,6 +170,18 @@ export async function GET(req: NextRequest) {
       throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
     }
 
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'viewFunction',
+      functionId: functionRecord.id,
+      functionSlug: functionRecord.slug
+    });
+    
     Logger.withTag('api|builtins')
       .withTag('operation|curateFunctions-view')
       .withTag(`user|${authSession.user.id}`)

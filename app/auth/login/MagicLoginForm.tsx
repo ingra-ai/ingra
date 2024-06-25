@@ -109,7 +109,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
           <p className="mt-2 text-center text-sm text-white/70 max-w">We’ve sent a 6-character code to your email address. The code expires shortly, so please enter it soon.</p>
         </>
       )}
-      <form className="block space-y-6 mt-10" method="POST" onSubmit={handleSubmit(doMagicLogin)}>
+      <form className="block space-y-6 mt-10" method="POST" onSubmit={handleSubmit(doMagicLogin)} autoComplete='off'>
         {formView === 'email' ? (
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 mb-3">
@@ -120,7 +120,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               {...register('email')}
               placeholder="john.doe@example.com"
               type="text"
-              autoComplete="email-ingra"
+              autoComplete=""
               required
               autoFocus
               className="block w-full rounded-md border-0 bg-white/5 py-2 px-4 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-10"
@@ -135,7 +135,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               textAlign="center"
               maxLength={6}
               pattern={REGEXP_ONLY_DIGITS}
-              autoComplete="otp-code-ingra"
+              autoComplete=""
               render={({ slots }) => (
                 <InputOTPGroup className="mx-auto">
                   {slots.map((slot, index) => (
