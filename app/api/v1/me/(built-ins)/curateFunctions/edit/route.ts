@@ -9,6 +9,8 @@ import { upsertFunction as dataUpsertFunctions } from '@/data/functions';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { z } from "zod";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -166,6 +168,16 @@ export async function PATCH(req: NextRequest) {
     const result = await dataUpsertFunctions(data, authSession.user.id);
 
     const allUpdatedFields = Object.keys(fieldsToUpdate);
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'editFunction'
+    });
 
     Logger.withTag('api|builtins')
       .withTag('operation|curateFunctions-edit')

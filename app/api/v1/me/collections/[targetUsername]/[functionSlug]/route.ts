@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiError } from '@v1/types/api-response';
 import { Logger } from "@lib/logger";
 import handlerFn from "./handlers/functions";
+import { getAnalyticsObject } from "@lib/utils";
 
 export async function GET(req: NextRequest, { params }: { params: { functionSlug: string, targetUsername: string } }) {
   const { searchParams } = new URL(req.url);
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: { functionSlug
   }
 
   Logger.withTag('GET|collectionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, targetUsername, requestArgs);
+  return await handlerFn(functionSlug, targetUsername, requestArgs, getAnalyticsObject(req));
 }
 
 export async function POST(req: NextRequest, { params }: { params: { functionSlug: string, targetUsername: string } }) {
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest, { params }: { params: { functionSlu
   }
 
   Logger.withTag('POST|collectionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, targetUsername, requestArgs);
+  return await handlerFn(functionSlug, targetUsername, requestArgs, getAnalyticsObject(req));
 }
 
 
@@ -68,7 +69,7 @@ export async function PUT(req: NextRequest, { params }: { params: { functionSlug
   }
 
   Logger.withTag('PUT|collectionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, targetUsername, requestArgs);
+  return await handlerFn(functionSlug, targetUsername, requestArgs, getAnalyticsObject(req));
 }
 
 
@@ -91,7 +92,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { functionSl
   }
 
   Logger.withTag('PATCH|collectionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, targetUsername, requestArgs);
+  return await handlerFn(functionSlug, targetUsername, requestArgs, getAnalyticsObject(req));
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { functionSlug: string, targetUsername: string } }) {
@@ -114,5 +115,5 @@ export async function DELETE(req: NextRequest, { params }: { params: { functionS
   }
 
   Logger.withTag('DELETE|collectionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, targetUsername, requestArgs);
+  return await handlerFn(functionSlug, targetUsername, requestArgs, getAnalyticsObject(req));
 }

@@ -4,6 +4,8 @@ import { Logger } from "@lib/logger";
 import db from "@lib/db"; // Assuming you have a db instance for interacting with your database
 import { upsertEnvVar } from "@/data/envVars";
 import { clearAuthCaches } from "@app/auth/session/caches";
+import { mixpanel } from "@lib/analytics";
+import { getAnalyticsObject } from "@lib/utils";
 
 /**
  * @swagger
@@ -47,6 +49,16 @@ export async function GET(req: NextRequest) {
         id: true,
         key: true,
       },
+    });
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'getEnvironmentVariablesList'
     });
 
     Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Fetching environment variables');
@@ -125,6 +137,16 @@ export async function POST(req: NextRequest) {
 
     await clearAuthCaches(authSession);
 
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'createEnvironmentVariable'
+    });
+    
     Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Upserted environment variable');
 
     return NextResponse.json(
@@ -206,6 +228,16 @@ export async function DELETE(req: NextRequest) {
     });
 
     await clearAuthCaches(authSession);
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'deleteEnvironmentVariable'
+    });
 
     Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Deleted env var: ${key}`);
 
@@ -293,6 +325,16 @@ export async function PATCH(req: NextRequest) {
     });
     
     await clearAuthCaches(authSession);
+
+    /**
+     * Analytics & Logging
+     */
+    mixpanel.track('Function Executed', {
+      distinct_id: authSession.user.id,
+      type: 'built-ins',
+      ...getAnalyticsObject(req),
+      operationId: 'updateEnvironmentVariable'
+    });
 
     Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Updated env var: ${key}`);
 
