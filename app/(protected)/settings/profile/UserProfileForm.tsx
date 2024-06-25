@@ -76,7 +76,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
   }
 
   return (
-    <form className="block" method="POST" onSubmit={handleSubmit(onSubmit)} data-testid="user-profile-form">
+    <form className="block" method="POST" onSubmit={handleSubmit(onSubmit)} data-testid="user-profile-form" autoComplete='off'>
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
         <div className="col-span-full flex items-center gap-x-8">
           <Image src={`https://ui-avatars.com/api?size=256&name=${censoredUser}`} width={256} height={256} className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover" alt="user avatar" />
@@ -104,7 +104,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
             {...register('firstName')}
             placeholder="John"
             type="text"
-            autoComplete="firstName"
+            autoComplete=""
             required
             autoFocus
             className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
@@ -121,7 +121,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
             {...register('lastName')}
             placeholder="Doe"
             type="text"
-            autoComplete="lastName"
+            autoComplete=""
             required
             autoFocus
             className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
@@ -167,7 +167,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
             {...register('userName')}
             placeholder="john.doe"
             type="userName"
-            autoComplete="off"
+            autoComplete=""
             required
             autoFocus
             className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"

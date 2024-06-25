@@ -107,7 +107,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
   return (
     <div className="block min-h-full mt-4" data-testid="collection-form">
       <FormProvider {...methods}>
-        <form className="block" method="POST" onSubmit={handleSubmit(onSave)}>
+        <form className="block" method="POST" onSubmit={handleSubmit(onSave)} autoComplete="off">
           <div className="block space-y-6">
             <div className="block space-y-2">
               <div className="flex mb-3 leading-6 justify-between">
@@ -120,7 +120,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                 {...register('name')}
                 placeholder="Collection Name"
                 aria-autocomplete='none'
-                autoComplete="off"
+                autoComplete=""
                 type="text"
                 required
                 autoFocus
@@ -136,7 +136,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
                 {...register('slug')}
                 placeholder="collection-slug"
                 aria-autocomplete='none'
-                autoComplete="off"
+                autoComplete=""
                 type="text"
                 required
               />

@@ -332,7 +332,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                     {...register('slug')}
                     placeholder="hello-world"
                     aria-autocomplete='none'
-                    autoComplete="false"
+                    autoComplete=""
                     type="text"
                     required
                     autoFocus
