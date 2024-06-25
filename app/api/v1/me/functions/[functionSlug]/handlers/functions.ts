@@ -5,7 +5,6 @@ import db from "@lib/db";
 import { Logger } from "@lib/logger";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { mixpanel } from "@lib/analytics";
-import { MIXPANEL_TOKEN } from "@lib/constants";
 
 const handlerFn = async (
   functionSlug: string,
@@ -54,10 +53,6 @@ const handlerFn = async (
         functionSlug: functionSlug,
         metrics,
         errors,
-      });
-
-      console.log(':: Mixpanel called', {
-        MIXPANEL_TOKEN
       });
 
       loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionSlug}`, metrics);
