@@ -6,7 +6,11 @@ import { Logger } from "@lib/logger";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { mixpanel } from "@lib/analytics";
 
-const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any> = {} ) => {
+const handlerFn = async (
+  functionSlug: string,
+  requestArgs: Record<string, any> = {},
+  analyticsObject: Record<string, any> = {}
+) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
     if ( typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id,
@@ -44,6 +48,7 @@ const handlerFn = async ( functionSlug: string, requestArgs: Record<string, any>
       mixpanel.track('Function Executed', {
         distinct_id: authSession.user.id,
         type: 'function',
+        ...analyticsObject,
         functionId: functionRecord.id,
         functionSlug: functionSlug,
         metrics,
