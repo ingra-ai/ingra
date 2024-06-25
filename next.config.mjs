@@ -78,11 +78,11 @@ const nextConfig = {
             value: `
               default-src 'self'; 
               base-uri 'self'; 
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://static.hotjar.com https://script.hotjar.com; 
-              style-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; 
-              img-src 'self' data: https://cdn.jsdelivr.net; 
-              connect-src 'self' https://cdn.jsdelivr.net; 
-              font-src 'self' https://cdn.jsdelivr.net; 
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.hotjar.com; 
+              style-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.hotjar.com; 
+              img-src 'self' data: https://cdn.jsdelivr.net https://*.hotjar.com; 
+              connect-src 'self' https://cdn.jsdelivr.net https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com; 
+              font-src 'self' https://cdn.jsdelivr.net https://*.hotjar.com; 
               frame-ancestors 'none'; 
               form-action 'self'; 
               upgrade-insecure-requests;
