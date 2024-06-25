@@ -3,7 +3,8 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { ActionError } from '@v1/types/api-response';
 import db from "@lib/db";
 import { Logger } from "@lib/logger";
-import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
+import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
+import { mixpanel } from "@lib/analytics";
 
 const handlerFn = async ( functionSlug: string, ownerUsername: string, requestArgs: Record<string, any> = {} ) => {
   return await apiAuthTryCatch<any>(async (authSession) => {
@@ -71,13 +72,25 @@ const handlerFn = async ( functionSlug: string, ownerUsername: string, requestAr
 
       const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs);
 
+      /**
+       * Analytics & Logging
+       */
+      mixpanel.track('Collection Subscription Executed', {
+        distinct_id: authSession.user.id,
+        type: 'collectionSubscription',
+        functionId: functionRecord.id,
+        functionSlug: functionSlug,
+        metrics,
+        errors,
+      });
+
+      loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionSlug}`, metrics);
+
       if ( errors.length ) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
         loggerObj.error(`Errored executing function: ${errorMessage}`);
         throw new ActionError('error', 400, errorMessage);
       }
-
-      loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionSlug}`, metrics);
 
       return NextResponse.json(
         {
