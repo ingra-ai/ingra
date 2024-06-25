@@ -26,6 +26,7 @@ export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKI
 export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 
 export const APP_SETTINGS_PROFILE_URI = '/settings/profile';
+export const APP_SETTINGS_INTEGRATIONS_URI = '/settings/integrations';
 export const APP_SETTINGS_API_URI = '/settings/api';
 export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
 
