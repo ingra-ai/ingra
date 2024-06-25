@@ -43,7 +43,7 @@ export const destroyProfile = async ( ) => {
       // Delete kv caches for this user
       clearAuthCaches(authSession),
 
-      Logger.withTag('deleteAllUserProfile').info('Uninstalling user account', { userId: authSession.user.id }),
+      Logger.withTag('action|destroyProfile').withTag(`user|${authSession.user.id}`).info('Destroying user account'),
     ]);
 
     if (!isDestroyed) {

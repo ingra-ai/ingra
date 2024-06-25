@@ -13,7 +13,7 @@ export default async function SettingsLayout({ children }: PropsWithChildren) {
     <div className="" data-testid='settings-layout'>
       <h1 className="sr-only">Settings</h1>
 
-      <header className="border-b border-white/5">
+      <header className="">
         {/* Secondary navigation */}
         <TopSubNav navItems={SettingsNavRoutes} />
       </header>

@@ -30,7 +30,11 @@ export async function DELETE(req: NextRequest) {
   return await apiAuthTryCatch<any>(async (authSession) => {
     const deletedCaches = await clearAuthCaches(authSession);
     
-    Logger.withTag('me-builtins').withTag('clearCaches').withTag(`user:${ authSession.user.id }`).info('Clearing caches for current session');
+    Logger
+      .withTag('api|builtins')
+      .withTag('operation|clearCaches')
+      .withTag(`user|${ authSession.user.id }`)
+      .info('Clearing caches for current session');
 
     return NextResponse.json(
       {

@@ -23,7 +23,7 @@ export const decodeToken = <T extends string | object>(token: string): T | null 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || '');
     return decoded as T;
   } catch (error: Error | any) {
-    Logger.withTag('JWT').error('Error decoding token:', error?.message);
+    Logger.withTag('action|decodeToken').error('Error decoding token:', error?.message);
     return null;
   }
 };

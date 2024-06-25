@@ -174,7 +174,11 @@ export async function POST(req: NextRequest) {
     const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
     const result = await dataUpsertFunctions(data, authSession.user.id);
     
-    Logger.withTag('me-builtins').withTag('curateFunctions-createNew').withTag(`user:${ authSession.user.id }`).info(`Created new function ${ result.slug }`);
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-createNew')
+      .withTag(`user|${authSession.user.id}`)
+      .withTag(`function|${result.id}`)
+      .info(`Created new function ${ result.slug }`);
 
     // Filter the response to include only the provided fields
     const response: Record<string, any> = {

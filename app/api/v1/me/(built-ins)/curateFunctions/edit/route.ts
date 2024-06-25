@@ -167,7 +167,11 @@ export async function PATCH(req: NextRequest) {
 
     const allUpdatedFields = Object.keys(fieldsToUpdate);
 
-    Logger.withTag('me-builtins').withTag('curateFunctions-edit').withTag(`user:${authSession.user.id}`).info(`Editing function ${result.slug}`);
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-edit')
+      .withTag(`user|${authSession.user.id}`)
+      .withTag(`function|${result.id}`)
+      .info(`Editing function ${result.slug}`);
 
     return NextResponse.json(
       {

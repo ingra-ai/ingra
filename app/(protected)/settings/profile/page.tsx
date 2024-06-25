@@ -4,7 +4,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { getAuthSession } from '@app/auth/session';
 import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
 import { notFound } from 'next/navigation';
-import { IntegrationsSection } from './IntegrationsSection';
 import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
 import { APP_NAME } from '@lib/constants';
 import type { Metadata } from 'next'
@@ -27,16 +26,6 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 py-16 w-full">
-        <div className="md:col-span-1 text-right">
-          <h2 className="text-base font-semibold leading-7 text-white">Integrations</h2>
-          <p className="text-sm mt-2 leading-6 text-gray-400">Connect your account with trusted third-party applications such as Google to enhance your experience. Integration allows seamless access to additional features and services while ensuring your data is securely managed and protected.</p>
-        </div>
-        <div className="md:col-span-2">
-          <IntegrationsSection authSession={authSession} />
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 py-16 w-full">
         <div className="md:col-span-1 text-right">
           <h2 className="text-base font-semibold leading-7 text-white">Personal Information</h2>

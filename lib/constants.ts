@@ -26,6 +26,7 @@ export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKI
 export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 
 export const APP_SETTINGS_PROFILE_URI = '/settings/profile';
+export const APP_SETTINGS_INTEGRATIONS_URI = '/settings/integrations';
 export const APP_SETTINGS_API_URI = '/settings/api';
 export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
 
@@ -91,3 +92,9 @@ export const BAKA_ASSISTANT_ROOT_PATH = USERS_API_ROOT_PATH + '/assistants';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
+
+/**
+ * Analytics
+ */
+export const HOTJAR_ID = process.env.NEXT_PUBLIC_HOTJAR_ID || '5030574';
+export const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '6cf29b6888bb74b485d04bb9301d1b4c';
