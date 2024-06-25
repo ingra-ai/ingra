@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
-import db from "@lib/db";
-import { Prisma } from "@prisma/client";
 import { generateUserVars } from "@app/api/utils/vm/generateUserVars";
-import { generateCodeDefaultTemplate } from "@app/api/utils/functions/generateCodeDefaultTemplate";
+import { generateCodeDefaultTemplate } from "@app/api/utils/vm/functions/generateCodeDefaultTemplate";
 
 /**
  * @swagger

@@ -3,7 +3,7 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db";
 import { ActionError } from "@v1/types/api-response";
-import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
+import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { isUuid } from "@lib/utils";
 
 /**

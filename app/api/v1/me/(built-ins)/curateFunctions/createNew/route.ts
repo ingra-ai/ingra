@@ -7,7 +7,7 @@ import {
   upsertFunction as dataUpsertFunctions
 } from '@/data/functions';
 import { generateUserVars } from "@app/api/utils/vm/generateUserVars";
-import { generateCodeDefaultTemplate } from "@app/api/utils/functions/generateCodeDefaultTemplate";
+import { generateCodeDefaultTemplate } from "@app/api/utils/vm/functions/generateCodeDefaultTemplate";
 import isNil from 'lodash/isNil';
 import isBoolean from 'lodash/isBoolean';
 import { z } from "zod";
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
 
     const { data } = await validateAction(FunctionSchema, safeFunctionRecord);
     const result = await dataUpsertFunctions(data, authSession.user.id);
-    
+
     Logger.withTag('api|builtins')
       .withTag('operation|curateFunctions-createNew')
       .withTag(`user|${authSession.user.id}`)

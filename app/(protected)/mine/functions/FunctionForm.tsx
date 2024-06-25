@@ -24,7 +24,7 @@ import { Input } from '@components/ui/input';
 import { Textarea } from '@components/ui/textarea';
 import { ToastAction } from "@/components/ui/toast"
 import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
-import { generateCodeDefaultTemplate } from '@app/api/utils/functions/generateCodeDefaultTemplate';
+import { generateCodeDefaultTemplate } from '@app/api/utils/vm/functions/generateCodeDefaultTemplate';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { CollectionListGetPayload } from '@protected/mine/functions/types';
 import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';

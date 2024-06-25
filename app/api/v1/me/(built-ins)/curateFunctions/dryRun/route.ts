@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
-import { runUserFunction } from "@app/api/utils/functions/runUserFunction";
+import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { ActionError } from "@v1/types/api-response";
 
 /**
