@@ -78,7 +78,7 @@ const nextConfig = {
             value: `
               default-src 'self'; 
               base-uri 'self'; 
-              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.hotjar.com; 
+              script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.hotjar.com; 
               style-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://*.hotjar.com; 
               img-src 'self' data: https://cdn.jsdelivr.net https://*.hotjar.com; 
               connect-src 'self' https://cdn.jsdelivr.net https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com; 
