@@ -217,7 +217,7 @@ export async function generateOpenApiSchema( authSession: AuthSessionResponse ) 
       const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
         transformHitUrl: (functionSlug) => USERS_API_FUNCTION_COLLECTION_SUBSCRIPTIONS_PATH.replace(':username', ownerUsername).replace(':slug', functionSlug)
       });
-      return { ...acc2, ...functionSchema };
+      return { ...acc1, ...acc2, ...functionSchema };
     }, {});
   }, {});
 
