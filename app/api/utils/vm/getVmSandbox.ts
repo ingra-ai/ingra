@@ -3,6 +3,7 @@ import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import { parseStartAndEnd, parseDate } from "@app/api/utils/chronoUtils";
 import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
 import { Octokit } from '@octokit/rest';
+import * as Cheerio from 'cheerio';
 import { SandboxOutput } from './types';
 
 export interface Sandbox {
@@ -18,6 +19,7 @@ export interface Sandbox {
   Buffer: typeof Buffer;
   URLSearchParams: typeof URLSearchParams;
   Octokit: typeof Octokit;
+  Cheerio: typeof Cheerio;
 }
 
 export interface SandboxAnalytics {
@@ -57,6 +59,7 @@ export const getVmSandbox = (ctx: VmContextArgs, analytics: SandboxAnalytics): S
     Buffer,
     URLSearchParams,
     Octokit,
+    Cheerio,
     handler: null,
   };
 

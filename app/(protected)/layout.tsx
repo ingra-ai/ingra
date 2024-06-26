@@ -22,7 +22,7 @@ const ProtectedLayout: FC<PropsWithChildren> = async (props) => {
         <div className="hidden lg:block lg:col-span-2 2xl:col-span-1 pt-4">
           <SideNav className='border-r border-gray-800' />
         </div>
-        <main className='px-2 lg:px-3 xl:px-4 2xl:pl-6 mt-4 xl:mt-6 col-span-1 lg:col-span-10 2xl:col-span-9'>
+        <main className='px-2 lg:px-3 xl:px-4 2xl:pl-6 mt-4 xl:mt-6 col-span-1 lg:col-span-10 2xl:col-span-9 mb-20'>
           {children}
         </main>
       </div>
