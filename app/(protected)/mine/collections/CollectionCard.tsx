@@ -41,61 +41,11 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
 
   return (
     <div data-testid='collection-card' {...divProps} className={classes}>
-      <div className="flex justify-between items-start">
-        <div className="min-w-0 space-y-2">
+      <div className="min-w-0 space-y-2">
+        <div className="flex justify-between items-start">
           <Link className='block w-full leading-6' href={`/mine/collections/view/${collection.id}`}>
             <h2 className="text-lg inline-block text-info">{collection.slug}</h2>
           </Link>
-          <p className="truncate text-xs">
-            <RssIcon className="w-4 h-4 mr-2 inline-block" />
-            {collection._count.subscribers.toLocaleString(undefined, { minimumFractionDigits: 0 })}
-          </p>
-          <div className="block space-y-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild className="">
-                  <p className="truncate text-xs">
-                    <SquareDashedBottomCodeIcon className="w-4 h-4 mr-2 inline-block" />
-                    {functionNamesText || 'N/A'}
-                  </p>
-                </TooltipTrigger>
-                <TooltipContent className='bg-card'>
-                  <ul className='block space-y-2'>
-                    {collection.functions.map(elem => {
-                      return (
-                        <li key={elem.id}>
-                          <p className="truncate min-w-0">
-                            <span>{elem.slug}</span>
-                          </p>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild className="">
-                  <p className="truncate text-xs">
-                    <TagIcon className="w-4 h-4 mr-2 inline-block" />
-                    {allTagsText || 'N/A'}
-                  </p>
-                </TooltipTrigger>
-                <TooltipContent className='bg-card'>
-                  <p className="truncate min-w-0">{[...allTags].join(', ')}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <div className="py-3">
-            <h4 className="truncate text-sm font-medium leading-6">
-              {collection.name}
-            </h4>
-            <p className="truncate text-sm leading-6">
-              {collection.description}
-            </p>
-          </div>
-        </div>
-        <div className="min-w-0 relative inline-block text-left">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0 border rounded-lg">
@@ -139,6 +89,54 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild className="cursor-pointer">
+              <div className="block space-y-2">
+                <p className="truncate text-xs">
+                  <RssIcon className="w-4 h-4 mr-2 inline-block" />
+                  {collection._count.subscribers.toLocaleString(undefined, { minimumFractionDigits: 0 })}
+                </p>
+                <p className="truncate text-xs">
+                  <SquareDashedBottomCodeIcon className="w-4 h-4 mr-2 inline-block" />
+                  {functionNamesText || 'N/A'}
+                </p>
+                <p className="truncate text-xs">
+                  <TagIcon className="w-4 h-4 mr-2 inline-block" />
+                  {allTagsText || 'N/A'}
+                </p>
+                <div className="py-3">
+                  <h4 className="truncate text-sm font-medium leading-6">
+                    {collection.name}
+                  </h4>
+                  <p className="truncate text-sm leading-6">
+                    {collection.description}
+                  </p>
+                </div>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className='bg-card'>
+              <div className="block mb-4 space-y-1">
+                <h4 className="text-xs font-medium leading-6">
+                  {collection.name}
+                </h4>
+                <p className="text-xs max-w-[300px]">
+                  {collection.description}
+                </p>
+              </div>
+              <p className="my-2 text-xs"><TagIcon className="w-4 h-4 mr-2 inline-block" />{[...allTags].join(', ')}</p>
+              <ul className='list-disc list-inside space-y-1 text-xs my-2'>
+                {collection.functions.map(elem => {
+                  return (
+                    <li key={elem.id}>
+                      <span>{elem.slug}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
