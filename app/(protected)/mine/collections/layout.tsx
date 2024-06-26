@@ -16,7 +16,7 @@ export default function Layout(props: FunctionLayoutProps) {
   } = props;
 
   return (
-    <div className="block px-4 mb-20" data-testid='collections-layout'>
+    <div className="block px-4" data-testid='collections-layout'>
       { children }
     </div>
   );
