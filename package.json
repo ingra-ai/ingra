@@ -47,6 +47,7 @@
     "@vercel/kv": "^2.0.0",
     "ai": "^3.1.36",
     "algoliasearch": "^4.23.3",
+    "cheerio": "1.0.0-rc.12",
     "chrono-node": "^2.7.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
