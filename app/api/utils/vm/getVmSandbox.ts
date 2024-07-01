@@ -10,6 +10,7 @@ export interface Sandbox {
   console: Pick<typeof console, 'log' | 'error'>;
   handler: ((ctx: VmContextArgs) => Promise<any>) | null;
   fetch: typeof nodeFetch;
+  setTimeout: typeof setTimeout;
   utils: {
     date: {
       parseStartAndEnd: typeof parseStartAndEnd,
@@ -50,6 +51,7 @@ export const getVmSandbox = (ctx: VmContextArgs, analytics: SandboxAnalytics): S
 
       return nodeFetch(input, init);
     },
+    setTimeout,
     utils: {
       date: {
         parseStartAndEnd,

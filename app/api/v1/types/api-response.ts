@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 /**
  * @swagger
@@ -95,9 +95,9 @@ export type ApiSuccess<T> = {
   data?: T | T[];
 };
 
-
-export class PrismaActionError extends Prisma.PrismaClientKnownRequestError {
-  constructor(error: Prisma.PrismaClientKnownRequestError) {
+// @ts-ignore
+export class PrismaActionError extends PrismaClientKnownRequestError {
+  constructor(error: PrismaClientKnownRequestError) {
     const { code, clientVersion, meta, batchRequestIdx } = error;
 
     // Extract the necessary parameters from the error object to pass to the superclass
@@ -156,13 +156,14 @@ export class PrismaActionError extends Prisma.PrismaClientKnownRequestError {
     }
   }
 
-  friendlyMessage(error: Prisma.PrismaClientKnownRequestError): string {
+  friendlyMessage(error: PrismaClientKnownRequestError): string {
     switch (error.code) {
       case 'P2000':
         return 'The provided value for the column is too long for the column\'s type.';
       case 'P2001':
         return 'The record was not found.';
       case 'P2002':
+        // eslint-disable-next-line no-case-declarations
         const fields = (error.meta?.target as any[] || []).join(', ');
         return `A record with the same ${fields} already exists.`;
       case 'P2003':
