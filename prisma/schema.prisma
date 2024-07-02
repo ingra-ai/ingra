@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]  // Enable the postgresqlExtensions. Currently in preview
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector", schema: "extensions")]  // Add the pgvector extension
 }
 
 model User {
@@ -248,4 +250,11 @@ model CollectionSubscription {
 
   @@unique([collectionId, userId])
   @@map("collection_subscriptions")
+}
+
+model Document {
+  id        String                 @id @default(cuid())
+  content   String
+  namespace String?                @default("default")
+  vector    Unsupported("vector")?
 }
