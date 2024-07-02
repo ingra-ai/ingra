@@ -1,12 +1,11 @@
-import { executeFunction } from '@/app/api/utils/vm/executeFunction';
+import { runUserFunction } from '@/app/api/utils/vm/functions/runUserFunction';
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { mockAuthSession } from '@/__tests__/__mocks__/mockAuthSession';
 import { mockFunctionHelloWorld } from '@/__tests__/__mocks__/mockFunctions';
 import db from '@lib/db';
 
-describe('executeFunction', () => {
+describe('runUserFunction', () => {
   const authSession = mockAuthSession as unknown as AuthSessionResponse;
-  const functionId = mockFunctionHelloWorld.id;
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -15,10 +14,9 @@ describe('executeFunction', () => {
   it('should execute basic function in VM', async () => {
     (db.function.findUnique as jest.Mock).mockResolvedValueOnce(mockFunctionHelloWorld);
 
-    const runOutput = await executeFunction(authSession, functionId, {}, false),
-      { outputs, result } = runOutput;
+    const runOutput = await runUserFunction(authSession, mockFunctionHelloWorld, {}),
+      { metrics, errors, result } = runOutput;
 
-    expect(outputs.length).toBe(4);
     expect(result).toBe('Hello World');
   });
 
@@ -34,13 +32,10 @@ describe('executeFunction', () => {
       }
     `;
 
-    // Mock the function to simulate a long execution time
-    (db.function.findUnique as jest.Mock).mockResolvedValueOnce(clonedMockFunction);
+    const runOutput = await runUserFunction(authSession, clonedMockFunction, {}),
+      { metrics, errors, result } = runOutput;
 
-    const runOutput = await executeFunction(authSession, functionId, {}, false),
-      { outputs, result } = runOutput;
-
-    expect(outputs[0]).toStrictEqual({
+    expect(errors[0]).toStrictEqual({
       type: 'error',
       message: 'I am a pie!'
     });
@@ -59,13 +54,10 @@ describe('executeFunction', () => {
       }
     `;
 
-    // Mock the function to simulate a long execution time
-    (db.function.findUnique as jest.Mock).mockResolvedValueOnce(clonedMockFunction);
+    const runOutput = await runUserFunction(authSession, clonedMockFunction, {}),
+      { metrics, errors, result } = runOutput;
 
-    const runOutput = await executeFunction(authSession, functionId, {}, false),
-      { outputs, result } = runOutput;
-
-    expect(outputs[0]).toStrictEqual({
+    expect(errors[0]).toStrictEqual({
       type: 'error',
       message: 'undeclaredVariable is not defined'
     });
@@ -84,13 +76,10 @@ describe('executeFunction', () => {
       }
     `;
 
-    // Mock the function to simulate a long execution time
-    (db.function.findUnique as jest.Mock).mockResolvedValueOnce(clonedMockFunction);
+    const runOutput = await runUserFunction(authSession, clonedMockFunction, {}),
+      { metrics, errors, result } = runOutput;
 
-    const runOutput = await executeFunction(authSession, functionId, {}, false),
-      { outputs, result } = runOutput;
-
-    expect(outputs[0]).toStrictEqual({
+    expect(errors[0]).toStrictEqual({
       type: 'error',
       message: 'Execution timed out exceeded 3 seconds'
     });
