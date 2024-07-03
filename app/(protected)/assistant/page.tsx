@@ -1,5 +1,6 @@
 import { getAuthSession } from '@app/auth/session';
 import { AssistantForm } from '@components/ai/AssistantForm';
+import { ChatForm } from '@components/ai/ChatForm';
 import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME } from '@lib/constants';
 import { BotMessageSquareIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
