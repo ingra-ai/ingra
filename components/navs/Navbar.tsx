@@ -2,7 +2,7 @@
 import { useState, type FC, type PropsWithChildren, Fragment, useEffect } from 'react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogPanel, Transition, TransitionChild, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
-import { censorEmail } from '@lib/functions/censorEmail';
+import { censorEmail } from '@lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { AuthSessionResponse } from '@app/auth/session/types';

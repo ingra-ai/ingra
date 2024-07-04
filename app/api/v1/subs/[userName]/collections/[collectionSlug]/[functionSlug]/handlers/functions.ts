@@ -7,8 +7,9 @@ import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { mixpanel } from "@lib/analytics";
 
 const handlerFn = async (
-  functionSlug: string,
   ownerUsername: string,
+  collectionSlug: string,
+  functionSlug: string,
   requestArgs: Record<string, any> = {},
   analyticsObject: Record<string, any> = {}
 ) => {
@@ -16,9 +17,9 @@ const handlerFn = async (
     if ( typeof functionSlug === 'string' && functionSlug.length) {
       const userId = authSession.user.id,
         loggerObj = Logger
-          .withTag('api|collectionsSubscriptions')
+          .withTag('api|subscriptionCollectionFunction')
           .withTag(`user|${ userId }`)
-          .withTag(`path|${ownerUsername}/${functionSlug}`);
+          .withTag(`path|${collectionSlug}/${functionSlug}`);
 
       loggerObj.info(`Starts executing function`, requestArgs);
 
@@ -33,7 +34,7 @@ const handlerFn = async (
       });
 
       if ( !ownerUser ) {
-        throw new ActionError('error', 404, `The owner ${ ownerUsername } of function ${ functionSlug } was not found. He might have changed his username or deleted his account. You may need to re-sync your function configuration manually.`);
+        throw new ActionError('error', 404, `The owner ${ ownerUsername } was not found. He might have changed his username or deleted his account. You may need to re-sync your function configuration manually.`);
       }
 
       // Fetch collection that current user is subscribed to
@@ -55,6 +56,7 @@ const handlerFn = async (
               functions: {
                 where: {
                   slug: functionSlug,
+                  ownerUserId: ownerUser.userId,
                   isPublished: true,
                   isPrivate: false
                 },
@@ -69,10 +71,11 @@ const handlerFn = async (
         }
       });
 
-      const functionRecord = myCollectionSubscription?.collection?.functions?.[0];
+      const collectionRecord = myCollectionSubscription?.collection,
+        functionRecord = collectionRecord?.functions?.[0];
 
       if ( !functionRecord ) {
-        throw new ActionError('error', 404, `Function not found.`);
+        throw new ActionError('error', 404, `Function ${ functionSlug } is not found in collection ${ collectionSlug } of ${ ownerUsername }.`);
       }
 
       const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs);
@@ -80,17 +83,23 @@ const handlerFn = async (
       /**
        * Analytics & Logging
        */
-      mixpanel.track('Collection Subscription Executed', {
+      mixpanel.track('Subscription Collection Function Executed', {
         distinct_id: authSession.user.id,
-        type: 'collectionSubscription',
+        type: 'subscriptionCollectionFunction',
         ...analyticsObject,
+        ownerUserId: ownerUser.userId,
+        collectionId: collectionRecord.id,
+        collectionSlug: collectionSlug,
         functionId: functionRecord.id,
         functionSlug: functionSlug,
         metrics,
         errors,
       });
 
-      loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionSlug}`, metrics);
+      loggerObj
+        .withTag(`collection|${collectionRecord.id}`)
+        .withTag(`function|${functionRecord.id}`)
+        .info(`Finished executing function: ${functionSlug}`, metrics);
 
       if ( errors.length ) {
         const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';

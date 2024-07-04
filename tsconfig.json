@@ -23,6 +23,7 @@
       "@actions/*": ["./app/(protected)/(actions)/*"],
       "@v1/*": ["./app/api/v1/*"],
       "@components/*": ["./components/*"],
+      "@data/*": ["./data/*"],
       "@lib/*": ["./lib/*"],
       "@app/*": ["./app/*"],
       "@css/*": ["./styles/*"],

@@ -7,6 +7,7 @@ import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { mixpanel } from "@lib/analytics";
 
 const handlerFn = async (
+  ownerUsername: string,
   functionSlug: string,
   requestArgs: Record<string, any> = {},
   analyticsObject: Record<string, any> = {}
@@ -21,6 +22,20 @@ const handlerFn = async (
 
       loggerObj.info(`Starts executing function: ${functionSlug}`, requestArgs);
 
+      // Fetch owner user ID
+      const ownerUser = await db.profile.findUnique({
+        where: {
+          userName: ownerUsername,
+        },
+        select: {
+          userId: true,
+        }
+      });
+
+      if ( !ownerUser ) {
+        throw new ActionError('error', 404, `The owner ${ ownerUsername } was not found. He might have changed his username or deleted his account. You may need to re-sync your function configuration manually.`);
+      }
+
       const functionRecord = await db.function.findFirst({
         where: {
           AND: [
@@ -32,9 +47,8 @@ const handlerFn = async (
               }
             },
             {
-              slug: functionSlug
-            },
-            {
+              slug: functionSlug,
+              ownerUserId: ownerUser.userId,
               isPublished: true,
               isPrivate: false
             }
@@ -48,7 +62,7 @@ const handlerFn = async (
       });
 
       if (!functionRecord) {
-        throw new ActionError('error', 400, `Function not found.`);
+        throw new ActionError('error', 404, `Function ${ functionSlug } is not found from ${ ownerUsername } repository.`);
       }
 
       const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs);
@@ -60,6 +74,7 @@ const handlerFn = async (
         distinct_id: authSession.user.id,
         type: 'functionSubscription',
         ...analyticsObject,
+        ownerUserId: ownerUser.userId,
         functionId: functionRecord.id,
         functionSlug: functionSlug,
         metrics,

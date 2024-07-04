@@ -4,10 +4,10 @@ import { Logger } from "@lib/logger";
 import handlerFn from "./handlers/functions";
 import { getAnalyticsObject } from "@lib/utils";
 
-export async function GET(req: NextRequest, { params }: { params: { functionSlug: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { collectionSlug: string, functionSlug: string } }) {
   const { searchParams } = new URL(req.url);
   const requestArgs = Object.fromEntries(searchParams);
-  const { functionSlug } = params;
+  const { collectionSlug, functionSlug } = params;
 
   // Check if the handler function exists
   if ( typeof handlerFn !== 'function' ) {
@@ -23,13 +23,13 @@ export async function GET(req: NextRequest, { params }: { params: { functionSlug
     );
   }
 
-  Logger.withTag('GET|functionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, requestArgs, getAnalyticsObject(req));
+  Logger.withTag('GET|collections').log(`Function handler ${ functionSlug } in collection ${ collectionSlug } invoked.`);
+  return await handlerFn(collectionSlug, functionSlug, requestArgs, getAnalyticsObject(req));
 }
 
-export async function POST(req: NextRequest, { params }: { params: { functionSlug: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { collectionSlug: string, functionSlug: string } }) {
   const requestArgs = await req.json();
-  const { functionSlug } = params;
+  const { collectionSlug, functionSlug } = params;
 
   // Check if the handler function exists
   if ( typeof handlerFn !== 'function' ) {
@@ -45,14 +45,14 @@ export async function POST(req: NextRequest, { params }: { params: { functionSlu
     );
   }
 
-  Logger.withTag('POST|functionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, requestArgs, getAnalyticsObject(req));
+  Logger.withTag('POST|collections').log(`Function handler ${ functionSlug } in collection ${ collectionSlug } invoked.`);
+  return await handlerFn(collectionSlug, functionSlug, requestArgs, getAnalyticsObject(req));
 }
 
 
-export async function PUT(req: NextRequest, { params }: { params: { functionSlug: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { collectionSlug: string, functionSlug: string } }) {
   const requestArgs = await req.json();
-  const { functionSlug } = params;
+  const { collectionSlug, functionSlug } = params;
 
   // Check if the handler function exists
   if ( typeof handlerFn !== 'function' ) {
@@ -68,14 +68,14 @@ export async function PUT(req: NextRequest, { params }: { params: { functionSlug
     );
   }
 
-  Logger.withTag('PUT|functionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, requestArgs, getAnalyticsObject(req));
+  Logger.withTag('PUT|collections').log(`Function handler ${ functionSlug } in collection ${ collectionSlug } invoked.`);
+  return await handlerFn(collectionSlug, functionSlug, requestArgs, getAnalyticsObject(req));
 }
 
 
-export async function PATCH(req: NextRequest, { params }: { params: { functionSlug: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: { collectionSlug: string, functionSlug: string } }) {
   const requestArgs = await req.json();
-  const { functionSlug } = params;
+  const { collectionSlug, functionSlug } = params;
 
   // Check if the handler function exists
   if ( typeof handlerFn !== 'function' ) {
@@ -91,14 +91,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { functionSl
     );
   }
 
-  Logger.withTag('PATCH|functionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, requestArgs, getAnalyticsObject(req));
+  Logger.withTag('PATCH|collections').log(`Function handler ${ functionSlug } in collection ${ collectionSlug } invoked.`);
+  return await handlerFn(collectionSlug, functionSlug, requestArgs, getAnalyticsObject(req));
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { functionSlug: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { collectionSlug: string, functionSlug: string } }) {
   const { searchParams } = new URL(req.url);
   const requestArgs = Object.fromEntries(searchParams);
-  const { functionSlug } = params;
+  const { collectionSlug, functionSlug } = params;
 
   // Check if the handler function exists
   if ( typeof handlerFn !== 'function' ) {
@@ -114,6 +114,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { functionS
     );
   }
 
-  Logger.withTag('DELETE|functionsSubscriptions').log(`Function handler ${ functionSlug } invoked.`);
-  return await handlerFn(functionSlug, requestArgs, getAnalyticsObject(req));
+  Logger.withTag('DELETE|collections').log(`Function handler ${ functionSlug } in collection ${ collectionSlug } invoked.`);
+  return await handlerFn(collectionSlug, functionSlug, requestArgs, getAnalyticsObject(req));
 }

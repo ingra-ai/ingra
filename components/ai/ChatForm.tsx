@@ -10,7 +10,7 @@ import { AuthSessionResponse } from '@app/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';
-import { APP_URL, BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH, USERS_API_ROOT_PATH } from '@lib/constants';
+import { APP_URL, BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH, USER_API_ROOT_PATH } from '@lib/constants';
 
 type ChatFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
@@ -22,7 +22,7 @@ export const ChatForm: FC<ChatFormProps> = (props) => {
   const initialLoadTimeout = useRef<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, input, setInput, handleInputChange, handleSubmit, isLoading: loading, setMessages }  = useChat({
-    api: USERS_API_ROOT_PATH + '/chat',
+    api: USER_API_ROOT_PATH + '/chat',
   });
   // const { status, messages, input, submitMessage, handleInputChange, stop, setMessages } = useAssistant({
   //   api: BAKA_ASSISTANT_ROOT_PATH,

@@ -76,22 +76,31 @@ export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
 export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
- * USERS API
+ * USER API
 */
-export const USERS_API_ROOT_PATH = '/api/v1/me';
-export const USERS_API_ROOT_URL = APP_URL + USERS_API_ROOT_PATH;
+export const USER_API_ROOT_PATH = '/api/v1/me';
+export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 // This should reflect the path of the API in the app
-// !! Requires to replace the username and slug,
-// !! -- only use this wherever you have access to user profile and function slug
-export const USERS_API_FUNCTION_PATH = [USERS_API_ROOT_PATH, 'functions', ':slug'].join('/');
-export const USERS_API_FUNCTION_SUBSCRIPTIONS_PATH = [USERS_API_ROOT_PATH, 'subscriptions', ':slug'].join('/');
-export const USERS_API_FUNCTION_COLLECTION_SUBSCRIPTIONS_PATH = [USERS_API_ROOT_PATH, 'collections', ':username', ':slug'].join('/');
+// !! Requires to replace the ":vars" with actual values,
+export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, 'functions', ':functionSlug'].join('/');
+export const USERS_API_COLLECTION_FUNCTION_PATH = [USER_API_ROOT_PATH, 'collections', ':collectionSlug', ':functionSlug'].join('/');
+
+/**
+ * SUBSCRIPTIONS API
+ */
+export const USER_SUBSCRIPTIONS_API_ROOT_PATH = '/api/v1/subs/:userName';
+export const USER_SUBSCRIPTIONS_API_ROOT_URL = APP_URL + USER_SUBSCRIPTIONS_API_ROOT_PATH;
+// This should reflect the path of the API in the app
+// !! Requires to replace the ":vars" with actual values,
+// !! -- only use this wherever user has subscribed to the function or collections.
+export const USER_SUBSCRIPTIONS_API_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, 'functions', ':functionSlug'].join('/');
+export const USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, 'collections', ':collectionSlug', ':functionSlug'].join('/');
 
 /**
  * Chat with Baka Assistant
  */
 export const BAKA_ASSISTANT_NAME = 'Baka Assistant';
-export const BAKA_ASSISTANT_ROOT_PATH = USERS_API_ROOT_PATH + '/assistants';
+export const BAKA_ASSISTANT_ROOT_PATH = USER_API_ROOT_PATH + '/assistants';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
