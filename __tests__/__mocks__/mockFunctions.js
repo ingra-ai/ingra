@@ -1,6 +1,6 @@
 export const mockFunctionHelloWorld = {
-  "id": "66f80fac-9937-4d4c-8b90-bc5fcda08f12",
-  "code": `
+  id: "66f80fac-9937-4d4c-8b90-bc5fcda08f12",
+  code: `
 async function handler(ctx) {
   // View all your environment variables, user variables and arguments by logging them to the console
   const { GOOGLE_OAUTH_ACCESS_TOKEN, GOOGLE_OAUTH_EMAIL_ADDRESS, ...requestArgs } = ctx;
@@ -12,7 +12,10 @@ async function handler(ctx) {
   return 'Hello World';
 }
   `.trim(),
-  "arguments": [
+  description: "A function to output Hello World",
+  httpVerb: "GET",
+  slug: "function-hello-world",
+  arguments: [
     {
       "id": "51234567-89ab-cdef-0123-456789abcdef",
       "functionId": "66f80fac-9937-4d4c-8b90-bc5fcda08f12",
@@ -31,5 +34,6 @@ async function handler(ctx) {
       "description": "The mock argument as a number",
       "isRequired": false
     }
-  ]
+  ],
+  tags: [{ name: "tag1" }, { name: "tag2" }],
 }

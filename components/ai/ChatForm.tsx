@@ -19,16 +19,11 @@ type ChatFormProps = HTMLAttributes<HTMLDivElement> & {
 
 export const ChatForm: FC<ChatFormProps> = (props) => {
   const { authSession, threadId, ...rest } = props;
-  const initialLoadTimeout = useRef<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading: loading, setMessages }  = useChat({
+  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading: loading, setMessages } = useChat({
     api: USER_API_ROOT_PATH + '/chat',
+    streamMode: 'text'
   });
-  // const { status, messages, input, submitMessage, handleInputChange, stop, setMessages } = useAssistant({
-  //   api: BAKA_ASSISTANT_ROOT_PATH,
-  //   threadId: currentThreadId
-  // });
-
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -63,11 +58,7 @@ export const ChatForm: FC<ChatFormProps> = (props) => {
       data-testid="assistant-form"
     >
       <ScrollArea className="flex-1 rounded-sm border p-4">
-        {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <LoaderIcon className="animate-spin w-10 h-10 mx-auto" />
-          </div>
-        ) : (
+        { 
           messages.map((m: Message) => {
             const messageUserName = m.role === 'user' ? userName : BAKA_ASSISTANT_NAME;
             return (
@@ -104,7 +95,7 @@ export const ChatForm: FC<ChatFormProps> = (props) => {
               </div>
             );
           })
-        )}
+        }
         <div ref={messagesEndRef} />
       </ScrollArea>
 

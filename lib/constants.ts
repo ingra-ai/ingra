@@ -88,13 +88,13 @@ export const USERS_API_COLLECTION_FUNCTION_PATH = [USER_API_ROOT_PATH, 'collecti
 /**
  * SUBSCRIPTIONS API
  */
-export const USER_SUBSCRIPTIONS_API_ROOT_PATH = '/api/v1/subs/:userName';
+export const USER_SUBSCRIPTIONS_API_ROOT_PATH = '/api/v1/subs';
 export const USER_SUBSCRIPTIONS_API_ROOT_URL = APP_URL + USER_SUBSCRIPTIONS_API_ROOT_PATH;
 // This should reflect the path of the API in the app
 // !! Requires to replace the ":vars" with actual values,
 // !! -- only use this wherever user has subscribed to the function or collections.
-export const USER_SUBSCRIPTIONS_API_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, 'functions', ':functionSlug'].join('/');
-export const USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, 'collections', ':collectionSlug', ':functionSlug'].join('/');
+export const USER_SUBSCRIPTIONS_API_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
+export const USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug', ':functionSlug'].join('/');
 
 /**
  * Chat with Baka Assistant

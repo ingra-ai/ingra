@@ -1,4 +1,4 @@
-import { apiRequest } from '@v1/me/(built-ins)/assistants/apiRequest';
+import { apiRequest } from '@v1/me/(ai)/assistants/apiRequest';
 import { AuthSessionResponse } from '@app/auth/session/types';
 import { APP_URL } from '@lib/constants';
 import { getAuthSwaggerSpec } from '@v1/me/swagger/config';

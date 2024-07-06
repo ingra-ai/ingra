@@ -208,4 +208,3 @@ export async function deleteCollection(collectionId: string, userId: string) {
     return false;
   }
 }
-

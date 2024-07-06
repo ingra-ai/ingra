@@ -18,6 +18,13 @@ type ConvertFunctionRecordOptions = {
   transformHitUrl: (functionSlug: string) => string;
 }
 
+/**
+ * Converts a function record to an OpenAPI schema.
+ * @param {FunctionPayload} functionRecord - The function record to convert.
+ * @param {ConvertFunctionRecordOptions} opts - Options for the conversion.
+ * @returns {object} The OpenAPI schema.
+ * @usedby generateOpenApiSchema
+ */
 export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, opts: ConvertFunctionRecordOptions) {
   const parameters = functionRecord.arguments.map(arg => ({
     name: arg.name,

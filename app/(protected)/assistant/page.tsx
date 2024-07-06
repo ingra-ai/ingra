@@ -23,11 +23,16 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
           <BotMessageSquareIcon className="inline-block mr-2 w-4 h-4" />
           { BAKA_ASSISTANT_NAME }
         </h3>
-        <AssistantForm
+        <ChatForm
           authSession={authSession}
           threadId={assistantThreadId}
           className="text-balance h-[85vh] w-full"
         />
+        {/* <AssistantForm
+          authSession={authSession}
+          threadId={assistantThreadId}
+          className="text-balance h-[85vh] w-full"
+        /> */}
       </div>
     </div>
   );

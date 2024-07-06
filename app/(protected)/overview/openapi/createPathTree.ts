@@ -1,3 +1,5 @@
+import { USER_API_ROOT_PATH, USER_SUBSCRIPTIONS_API_ROOT_PATH } from "@lib/constants";
+
 interface PathNode {
   title: string;
   key: string;
@@ -12,22 +14,35 @@ export const createPathTree = (paths: string[]): PathNode[] => {
     const segments = path.split('/').filter(Boolean);
     let current = root;
 
-    // Check for the specific case of "/api/v1/me"
-    const rootSegment = '/api/v1/me';
-    if (path.startsWith(rootSegment)) {
-      const remainingSegments = segments.slice(3); // Remove "api", "v1", "me"
+    // Check for the specific case of grouping "/api/v1/me" or "/api/v1/subs"
+    const rootSegments = [
+        USER_API_ROOT_PATH,
+        USER_SUBSCRIPTIONS_API_ROOT_PATH
+      ],
+      currentPathIndex = rootSegments.findIndex((rootSegment) => path.startsWith(rootSegment));
 
+    if ( currentPathIndex >= 0 ) {
+      const rootSegment = rootSegments[currentPathIndex];
+      const remainingSegments = segments.slice(3); // Remove "api", "v1", "me/subs"
 
       // Ensure "/api/v1/me" exists in the tree
       let child = current.children.find((child) => child.key === rootSegment);
-      if (!child) {
+      if ( !child ) {
+        // Grab the last segment as the title
+        const title = rootSegment.split('/').pop() || '';
+
+        if ( !title ) {
+          continue;
+        }
+
         child = {
-          title: 'me',
+          title,
           key: rootSegment,
           children: [],
         };
         current.children.push(child);
       }
+      
       current = child;
 
       for (let j = 0; j < remainingSegments.length; j++) {
@@ -46,7 +61,8 @@ export const createPathTree = (paths: string[]): PathNode[] => {
         }
         current = child;
       }
-    } else {
+    }
+    else {
       for (let j = 0; j < segments.length; j++) {
         const segment = segments[j];
         if (!current.children) {
