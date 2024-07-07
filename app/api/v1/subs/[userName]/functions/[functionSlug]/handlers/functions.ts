@@ -5,6 +5,7 @@ import db from "@lib/db";
 import { Logger } from "@lib/logger";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { mixpanel } from "@lib/analytics";
+import { getFunctionAccessibleByUser } from "@data/functions";
 
 const handlerFn = async (
   ownerUsername: string,
@@ -36,28 +37,17 @@ const handlerFn = async (
         throw new ActionError('error', 404, `The owner ${ ownerUsername } was not found. He might have changed his username or deleted his account. You may need to re-sync your function configuration manually.`);
       }
 
-      const functionRecord = await db.function.findFirst({
-        where: {
-          AND: [
-            {
-              subscribers: {
-                some: {
-                  userId: userId
-                }
-              }
-            },
-            {
-              slug: functionSlug,
-              ownerUserId: ownerUser.userId,
-              isPublished: true,
-              isPrivate: false
-            }
-          ]
-        },
-        select: {
-          id: true,
-          code: true,
-          arguments: true
+      const functionRecord = await getFunctionAccessibleByUser( authSession.user.id, functionSlug, {
+        accessTypes: ['owner', 'subscriber'],
+        findFirstArgs: {
+          select: {
+            id: true,
+            code: true,
+            arguments: true
+          },
+          where: {
+            ownerUserId: ownerUser.userId
+          }
         }
       });
 

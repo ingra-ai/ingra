@@ -5,7 +5,7 @@ import db from "@lib/db";
 import { validateAction } from "@lib/action-helpers";
 import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from "@/schemas/function";
 import cloneDeep from 'lodash/cloneDeep';
-import { upsertFunction as dataUpsertFunctions } from '@/data/functions';
+import { upsertFunction as dataUpsertFunctions, getFunctionAccessibleByUser } from '@data/functions';
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { z } from "zod";
@@ -89,15 +89,8 @@ export async function PATCH(req: NextRequest) {
       throw new Error('Function ID is required to edit the function. Consider searching some functions first for your references.');
     }
 
-    const existingFunction = await db.function.findFirst({
-      where: {
-        id: functionPayload.id,
-        ownerUserId: authSession.user.id,
-      },
-      include: {
-        arguments: true,
-        tags: true,
-      }
+    const existingFunction = await getFunctionAccessibleByUser(authSession.user.id, functionPayload.id, {
+      accessTypes: ['owner'],
     });
 
     if (!existingFunction) {

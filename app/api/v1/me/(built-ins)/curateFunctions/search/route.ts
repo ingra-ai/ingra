@@ -176,7 +176,7 @@ export async function GET(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track('Function Executed', {
+    mixpanel.track('Function Search Executed', {
       distinct_id: authSession.user.id,
       type: 'built-ins',
       ...getAnalyticsObject(req),

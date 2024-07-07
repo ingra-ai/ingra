@@ -5,7 +5,7 @@ import { validateAction } from "@lib/action-helpers";
 import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from "@/schemas/function";
 import {
   upsertFunction as dataUpsertFunctions
-} from '@/data/functions';
+} from '@data/functions';
 import { generateUserVars } from "@app/api/utils/vm/generateUserVars";
 import { generateCodeDefaultTemplate } from "@app/api/utils/vm/functions/generateCodeDefaultTemplate";
 import isNil from 'lodash/isNil';

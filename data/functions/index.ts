@@ -29,7 +29,7 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, use
         },
       });
 
-      if ( !existingFunction ) {
+      if (!existingFunction) {
         throw new Error('Function not found');
       }
 
@@ -171,7 +171,7 @@ export const deleteFunction = async (functionId: string, userId: string) => {
           ownerUserId: userId
         },
       });
-    
+
       return result;
     });
 
@@ -191,7 +191,7 @@ export const toggleFunctionSubscription = async (functionId: string, userId: str
     },
   });
 
-  if ( existingSubscription ) {
+  if (existingSubscription) {
     return await unsubscribeToFunction(functionId, userId);
   }
   else {
@@ -219,7 +219,7 @@ const subscribeToFunction = async (functionId: string, userId: string) => {
     },
   });
 
-  if ( existingFunction ) {
+  if (existingFunction) {
     throw new Error('Function with the same slug already exists');
   }
 
@@ -336,3 +336,5 @@ export const cloneFunction = async (functionId: string, userId: string) => {
 
   return clonedFunction;
 }
+
+export { getFunctionAccessibleByUser } from './getFunctionAccessibleByUser';

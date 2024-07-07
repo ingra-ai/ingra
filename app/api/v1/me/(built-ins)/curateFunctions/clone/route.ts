@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
-import { cloneFunction } from "@/data/functions";
+import { cloneFunction } from "@data/functions";
 import { mixpanel } from "@lib/analytics";
 import { getAnalyticsObject } from "@lib/utils";
 
