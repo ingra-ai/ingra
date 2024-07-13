@@ -125,8 +125,6 @@ export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibl
     whereConditions.push(findFirstArgs.where);
   }
 
-  console.log({ whereConditions: JSON.stringify(whereConditions) })
-
   // Find the function
   const functionRecord = await db.function.findFirst({
     where: {

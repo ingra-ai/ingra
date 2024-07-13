@@ -1,19 +1,91 @@
 
 import { AuthSessionResponse } from "@app/auth/session/types";
-import db from "@lib/db";
-import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
 } from "@langchain/core/prompts";
 import { RunnableConfig } from "@langchain/core/runnables";
-import { AIMessage } from "@langchain/core/messages";
-import { IS_PROD } from "@lib/constants";
+import { AIMessage, AIMessageChunk } from "@langchain/core/messages";
+import { APP_URL, IS_PROD, USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH, USERS_API_COLLECTION_FUNCTION_PATH } from "@lib/constants";
 import { Logger } from "@lib/logger";
-import { convertFunctionRecordToDynamicStructuredTool } from "./convertFunctionRecordToDynamicStructuredTool";
-import { AgentStateChannels } from "./toolsState";
+import { AgentStateChannels, CollectionForToolsGetPayload, ReturnAgentNode } from "./types";
+import { getCollectionsForTools } from "./getCollectionsForTools";
+import { DynamicStructuredTool } from "@langchain/core/tools";
+import { functionArgsToZod } from "@app/api/utils/functions/functionArgsToZod";
+import { apiRequest } from "./apiRequest";
+import { ChatOpenAI } from "@langchain/openai";
+import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
 
-type CreateToolsAgentsByAuthSessionParams = Omit<Parameters<typeof createToolCallingAgent>[0], 'tools' | 'prompt'>;
+// Prompt template must have "input" and "agent_scratchpad input variables"
+const promptTemplate = ChatPromptTemplate.fromMessages([
+  [
+    "system",
+    `
+      You are a helpful agent for functions calling in the collection "{collectionName}".
+
+      This collection has {functionsLength} functions, with the following descriptions:
+      """{collectionDescription}"""
+
+      And here is the list of function names:
+      """{functionNames}"""
+    `.replace(/(?:\r\n|\r|\n)/g, ' ').trim()
+  ],
+  new MessagesPlaceholder("messages"),
+  new MessagesPlaceholder("agent_scratchpad"),
+]);
+
+const collectionFunctionsToDynamicTools = (
+  collection: CollectionForToolsGetPayload,
+  options: {
+    headers: Record<string, any>;
+    isSubscription?: boolean;
+  }
+) => {
+  const { headers = {}, isSubscription = false } = options;
+
+  const functionDynamicTools = collection.functions.map((functionRecord) => {
+    const collectionSlug = collection.slug,
+      functionSlug = functionRecord.slug,
+      ownerUsername = collection.owner.profile?.userName;
+
+    const tool = new DynamicStructuredTool({
+      name: functionRecord.slug,
+      description: functionRecord.description,
+      schema: functionArgsToZod(functionRecord.arguments),
+      func: async (requestArgs = {}) => {
+        const loggerObj = Logger
+          .withTag('api|langchainFunction')
+          .withTag(`functionId|${functionRecord.id}`)
+          .withTag(`functionSlug|${functionSlug}`)
+          .withTag(`collectionSlug|${collectionSlug}`);
+
+        const hitUrl = [
+          APP_URL,
+          isSubscription ?
+            USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH
+              .replace(':userName', ownerUsername!)
+              .replace(':collectionSlug', collectionSlug)
+              .replace(':functionSlug', functionSlug) :
+            USERS_API_COLLECTION_FUNCTION_PATH
+              .replace(':collectionSlug', collectionSlug)
+              .replace(':functionSlug', functionSlug)
+        ].join('');
+
+        loggerObj.info(`Executing langchain function`);
+
+        const result = await apiRequest( hitUrl, functionRecord.httpVerb, requestArgs, headers );
+
+        return JSON.stringify(result);
+      }
+    });
+    
+    return tool;
+  });
+
+  return functionDynamicTools;
+}
+
+// type CreateToolsAgentsByAuthSessionParams = Omit<Parameters<typeof createToolCallingAgent>[0], 'tools' | 'prompt'>;
 
 /**
  * Generates a list of tools agents based on the user's collections.
@@ -21,148 +93,89 @@ type CreateToolsAgentsByAuthSessionParams = Omit<Parameters<typeof createToolCal
  * @see https://js.langchain.com/v0.1/docs/modules/agents/agent_types/tool_calling/
  * @info In LangChain - Tool calling is only available with supported models. https://js.langchain.com/v0.1/docs/integrations/chat/
  */
-export const createToolsAgentsByAuthSession = async (authSession: AuthSessionResponse, params: CreateToolsAgentsByAuthSessionParams) => {
+export const createToolsAgentsByAuthSession = async (authSession: AuthSessionResponse, headers: Record<string, any> = {}): Promise<ReturnAgentNode[]> => {
   /**
    * 1. First step is to grab all collections and functions from the user.
    * A collection equals to an agent. And this agent is responsible for calling the tools inside this collection.
    */
-  const [myCollections, myCollectionSubscriptions] = await Promise.all([
-    // Get the collections of the user
-    db.collection.findMany({
-      where: {
-        userId: authSession.user.id,
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        description: true,
-        functions: {
-          select: {
-            id: true,
-            code: false,
-            isPrivate: false,
-            ownerUserId: false,
-            httpVerb: true,
-            slug: true,
-            description: true,
-            arguments: true,
-            tags: true,
-          },
-        },
-      },
-    }),
+  const [myCollections, subCollections] = await getCollectionsForTools(authSession);
 
-    // Get the collections that the user is subscribed to
-    db.collectionSubscription.findMany({
-      where: {
-        collection: {
-          userId: authSession.user.id
-        },
-        userId: authSession.user.id,
-      },
-      select: {
-        collection: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            description: true,
-            functions: {
-              select: {
-                id: true,
-                code: false,
-                isPrivate: false,
-                ownerUserId: false,
-                httpVerb: true,
-                slug: true,
-                description: true,
-                arguments: true,
-                tags: true,
-              },
-            },
-          }
-        }
-      },
-    }),
-  ]);
-
-  /**
-   * 2. Compile all collections and functions into a single array.
-   */
-  const collections = myCollections.concat(myCollectionSubscriptions.map(sub => sub.collection));
-
-  /**
-   * 3. Create the tools agents.
-   */
-  const result = collections.map( async ( collection ) => {
-    // Generate the agent name. It can't contain spaces.
-    const agentName = [collection.name, 'Agent'].join(' ').replace(/\s+/g, '');
-
-    // Generate system prompt.
-    const systemPrompt = `
-      You are a helpful agent for functions calling in the collection "${collection.name}".
-
-      This collection has ${collection.functions.length} functions, with the following descriptions:
-      \`\`\`
-      ${collection.description}
-      \`\`\`
-
-      And here is the list of function names:
-      \`\`\`
-      ${collection.functions.map( func => `- ${func.slug}` ).join('\n')}
-      \`\`\`
-    `.trim();
-    
-    // Prompt template must have "input" and "agent_scratchpad input variables"
-    const prompt = ChatPromptTemplate.fromMessages([
-      ["system", systemPrompt],
-      new MessagesPlaceholder("messages"),
-      new MessagesPlaceholder("agent_scratchpad"),
-    ]);
-
-    // Generate the tools that will be used by the agent.
-    const tools = collection.functions.map( ( func ) => {
-      return convertFunctionRecordToDynamicStructuredTool( authSession, func );
-    } );
-
-    // Generate the agent.
-    const agent = createToolCallingAgent({
-      ...params,
-      prompt,
-      tools
-    });
-
-    // Generate the agent executor which returns Runnable.
-    const executor = new AgentExecutor({ agent, tools });
-
-    // Generate the node for graph
-    const node = async (
+  function createNode(agentName: string, prompt: ChatPromptTemplate, tools: DynamicStructuredTool[]) {
+    return async (
       state: AgentStateChannels,
       config?: RunnableConfig,
     ) => {
+      const llm = new ChatOpenAI({
+        model: "gpt-4o",
+        temperature: 0,
+        streaming: true,
+      });
+
+      const agent = await createOpenAIToolsAgent({ llm, tools, prompt,  });
+      const executor = new AgentExecutor({ ...config, agent, tools }).withConfig({ runName: agentName });
+
+      // Generate the agent.
       const result = await executor.invoke(state, config);
 
-      if ( !IS_PROD ) {
-        Logger.withTag('toolsAgents').log({ agentName, output: result.output });
+      let content = '';
+      let lastAIMessageChunk: AIMessageChunk | {} = {};
+
+      // for await (const aiMessageChunk of readableStream) {
+      //   lastAIMessageChunk = aiMessageChunk;
+      //   console.log('|  ', { aiMessageChunk })
+      //   content += aiMessageChunk.data.; 
+      // }
+
+      const returnState: AgentStateChannels = {
+        messages: [new AIMessage({ content: result.output, name: agentName })],
+        previous: agentName
       }
 
-      const outputMessage = new AIMessage({ content: result.output, name: agentName });
+      return returnState;
+    }
+  }
 
-      return {
-        messages: [
-          outputMessage,
-        ],
-        lastMessage: outputMessage,
-      };
+  const myToolAgents = myCollections.map(async (collection) => {
+    const agentName = [collection.name, 'Agent'].join(' ').replace(/\s+/g, ''),
+      tools = collectionFunctionsToDynamicTools(collection, { headers }),
+      formattedPrompt = await promptTemplate.partial({
+        collectionName: collection.name,
+        functionsLength: collection.functions.length.toString(),
+        collectionDescription: collection.description || '',
+        functionNames: collection.functions.map(func => `- ${func.slug}`).join('\n')
+      }),
+      node = createNode(agentName, formattedPrompt, tools);
+  
+    const result: ReturnAgentNode = {
+      agentName,
+      description: collection.description || '',
+      node
     };
 
-    return {
-      agentName,
-      description: collection.description,
-      node
-    }
-  } );
+    return result;
+  });
 
-  return await Promise.all( result );
+  const subToolAgents = subCollections.map(async (collection) => {
+    const agentName = [collection.name, 'SubAgent'].join(' ').replace(/\s+/g, ''),
+      tools = collectionFunctionsToDynamicTools(collection, { headers, isSubscription: true}),
+      formattedPrompt = await promptTemplate.partial({
+        collectionName: collection.name,
+        functionsLength: collection.functions.length.toString(),
+        collectionDescription: collection.description || '',
+        functionNames: collection.functions.map(func => `- ${func.slug}`).join('\n')
+      }),
+      node = createNode(agentName, formattedPrompt, tools);
+  
+    const result: ReturnAgentNode = {
+      agentName,
+      description: collection.description || '',
+      node
+    };
+
+    return result;
+  });
+
+  const concatAgents = await Promise.all([...myToolAgents, ...subToolAgents]);
+
+  return concatAgents;
 }

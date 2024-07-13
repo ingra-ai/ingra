@@ -1,3 +1,4 @@
+'use server';
 import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
 import { run } from "@app/api/utils/vm/run";
 import { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";

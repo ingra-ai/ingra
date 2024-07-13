@@ -1,4 +1,3 @@
-'use server';
 /**
  * This file is created by following langgraph tutorial
  * @see https://langchain-ai.github.io/langgraphjs/tutorials/multi_agent/agent_supervisor
@@ -11,55 +10,99 @@ import { Message as VercelChatMessage } from "ai";
 import { apiAuthTryCatch } from '@app/api/utils/apiAuthTryCatch';
 import { createToolsGraph } from './helpers/toolsGraph';
 import { END } from '@langchain/langgraph';
-import { AgentStateChannels } from './helpers/toolsState';
+import { AgentStateChannels } from './helpers/types';
+import { APP_SESSION_COOKIE_NAME, LANGCHAIN_CHAT_RECURSION_LIMIT } from '@lib/constants';
+import { createSimpleGraph } from './helpers/simpleGraph';
+import { createToolsAgentsByAuthSession } from './helpers/toolsAgents';
+import { cookies } from 'next/headers';
 
+// export const runtime = 'nodejs';
+// export const dynamic = 'force-dynamic';
+// export const fetchCache = 'force-no-store';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  const cookieStore = cookies();
+  const appSessionCookie = cookieStore.get(APP_SESSION_COOKIE_NAME);
   const { returnIntermediateSteps = false } = body || {};
 
   return await apiAuthTryCatch(async (authSession) => {
+    console.log(' ------------ START --------------')
     const messages: ReturnType<typeof convertVercelMessageToLangChainMessage> = (body.messages ?? [])
       .filter( (message: VercelChatMessage) => ['user', 'assistant'].indexOf( message.role ) >= 0)
       .map(convertVercelMessageToLangChainMessage);
 
-    /**
-     * Generate agents for tools calling
-     * @info In LangChain - Tool calling is only available with supported models. https://js.langchain.com/v0.1/docs/integrations/chat/
-     */
-    const supervisorName = 'SUPERVISOR';
-    const toolsGraph = await createToolsGraph(authSession, supervisorName);
-
-    // Return the stream
-    const streamResults = await toolsGraph.stream(
-      {
-        messages,
-      },
-      { 
-        recursionLimit: 100,
-        streamMode: 'values'
-      },
-    );
-
-    const textEncoder = new TextEncoder();
-    const transformStream = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of streamResults) {
-          const output = chunk as AgentStateChannels;
-
-          if ( output?.lastMessage ) {
-            const messageContent = typeof output.lastMessage.content === 'string' ? output.lastMessage.content : '';
-
-            if ( output?.next === END && messageContent ) {
-              controller.enqueue(textEncoder.encode(messageContent));
-            }
-          }
-        }
-        controller.close();
-      },
+    // const app = await createSimpleGraph(authSession);
+    const app = await createToolsGraph(authSession, {
+      headers: {
+        'Cookie': `${APP_SESSION_COOKIE_NAME}=${appSessionCookie?.value}`
+      }
     });
 
-    return new StreamingTextResponse(transformStream);
+    const textEncoder = new TextEncoder();
+    const readableStream = new ReadableStream({
+      async start(controller) {
 
+        const test = await app.stream(
+          {
+            messages,
+          },
+          {
+            configurable: {
+              threadId: 'test-threadid'
+            },
+            recursionLimit: LANGCHAIN_CHAT_RECURSION_LIMIT,
+            callbacks: [
+              {
+                handleLLMNewToken(token) {
+                  controller.enqueue(textEncoder.encode(token));
+                },
+                handleToolStart(tool) {
+                  console.log('Tool Start: ', tool.name);
+                },
+                handleToolEnd(tool) {
+                  console.log('Tool End: ', tool);
+                }
+
+              },
+            ],
+    
+            /**
+             * 'updates': Example output for each streamResults iteration { output: { GoogleSuiteAgent: { messages: [Array] } } }
+             * 'values': Example output for each streamResults iteration { output: { messages: [Array] } }
+             */
+            streamMode: 'updates'
+          },
+        );
+
+        for await (const output of test) {
+
+          // console.log({ output })
+
+          for (const [nodeName, stateValue] of Object.entries<AgentStateChannels>(output)) {
+
+            const lastMessage = stateValue?.messages.slice(-1)[0];
+            const messageContent = typeof lastMessage.content === 'string' ? lastMessage.content : '';
+            console.log(`:: ${ nodeName } `, {
+              stateValue,
+              messageContent
+            });
+            // controller.enqueue(textEncoder.encode(messageContent));
+          }
+
+          // if ( output?.next === END ) {
+          //   const lastMessage = output?.messages.slice(-1)[0];
+          //   const messageContent = typeof lastMessage.content === 'string' ? lastMessage.content : '';
+          //   controller.enqueue(textEncoder.encode(messageContent));
+          // }
+        }
+
+        // Cleanup
+        controller.close();
+      },
+
+    });
+
+    return new StreamingTextResponse(readableStream);
   });
 }

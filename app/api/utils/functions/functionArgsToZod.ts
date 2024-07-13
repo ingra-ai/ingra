@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { jsonSchemaToZod } from "json-schema-to-zod";
-import { ZodObject } from "zod";
+import { z } from "zod";
 
 type FunctionArgumentPayload = Prisma.FunctionArgumentGetPayload<{
   select: {
@@ -14,18 +13,40 @@ type FunctionArgumentPayload = Prisma.FunctionArgumentGetPayload<{
 }>;
 
 export function functionArgsToZod(functionArguments: FunctionArgumentPayload[]) {
-  const zodSchema = jsonSchemaToZod({
-    type: 'object',
-    properties: functionArguments.reduce((acc, arg) => {
-      acc[arg.name] = {
-        type: arg.type,
-        description: arg.description,
-        default: arg.defaultValue
-      };
-      return acc;
-    }, {} as Record<string, any>),
-    required: functionArguments.filter(arg => arg.isRequired).map(arg => arg.name)
-  }, { module: "cjs" });
+  return z.object(
+    functionArguments.reduce((acc, arg) => {
+      let zodArg: z.ZodTypeAny;
 
-  return eval(zodSchema) as ZodObject<Record<string, any>>;
+      /**
+       * The supported arg.type is from FUNCTION_ARGUMENT_ALLOWED_TYPES at schemas/functions.ts
+       */
+      switch (arg.type) {
+        case 'number':
+          zodArg = z.number();
+          break;
+        case 'boolean':
+          zodArg = z.boolean();
+          break;
+        case 'string':
+        default:
+          zodArg = z.string();
+          break;
+      }
+
+      if (arg.description) {
+        zodArg = zodArg.describe(arg.description);
+      }
+
+      if (arg.isRequired) {
+        zodArg = zodArg.optional();
+      }
+
+      if (arg.defaultValue !== undefined) {
+        zodArg = zodArg.default(arg.defaultValue);
+      }
+
+      acc[arg.name] = zodArg;
+      return acc;
+    }, {} as Record<string, z.ZodTypeAny>)
+  );
 }

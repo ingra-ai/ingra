@@ -110,3 +110,9 @@ export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
  */
 export const HOTJAR_ID = process.env.NEXT_PUBLIC_HOTJAR_ID || '';
 export const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '';
+
+/**
+ * Langchain
+ */
+export const LANGCHAIN_CHAT_RECURSION_LIMIT = parseInt(process.env.NEXT_PUBLIC_LANGCHAIN_CHAT_RECURSION_LIMIT || '10') || 10;
+
