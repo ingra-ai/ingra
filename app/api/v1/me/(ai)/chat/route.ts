@@ -82,12 +82,15 @@ export async function POST(req: NextRequest) {
           for (const [nodeName, stateValue] of Object.entries<AgentStateChannels>(output)) {
 
             const lastMessage = stateValue?.messages.slice(-1)[0];
-            const messageContent = typeof lastMessage.content === 'string' ? lastMessage.content : '';
+            const messageContent = typeof lastMessage?.content === 'string' ? lastMessage.content : '';
             console.log(`:: ${ nodeName } `, {
               stateValue,
-              messageContent
+              messageContent: messageContent ?? 'No content'
             });
-            // controller.enqueue(textEncoder.encode(messageContent));
+
+            if ( messageContent ) {
+              controller.enqueue(textEncoder.encode(messageContent));
+            }
           }
 
           // if ( output?.next === END ) {

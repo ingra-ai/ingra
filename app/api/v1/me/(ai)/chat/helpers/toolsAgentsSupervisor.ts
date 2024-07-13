@@ -120,10 +120,10 @@ export const createToolsAgentsSupervisor = async (agentNodes: Pick<ReturnAgentNo
           { messageToUser = '', next = END, reason = '' } = firstOutput.args;
 
         const output: AgentStateChannels = {
-          // messages: (
-          //   messageToUser?.length ? [new AIMessage({ content: messageToUser })] : []
-          // ),
-          messages: [],
+          messages: (
+            messageToUser?.length ? [new AIMessage({ content: messageToUser })] : []
+          ),
+          // messages: [],
           previous: agentName,
           next,
         }

@@ -127,7 +127,8 @@ export const createToolsAgentsByAuthSession = async (authSession: AuthSessionRes
       // }
 
       const returnState: AgentStateChannels = {
-        messages: [new AIMessage({ content: result.output, name: agentName })],
+        messages: result?.output ? 
+          [new AIMessage({ content: result.output, name: agentName })] : [],
         previous: agentName
       }
 

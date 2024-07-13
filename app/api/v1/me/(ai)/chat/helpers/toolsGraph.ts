@@ -38,17 +38,23 @@ export const createToolsGraph = async (authSession: AuthSessionResponse, opts?: 
   const agentStateChannels: StateGraphArgs<AgentStateChannels>["channels"] = {
     messages: {
       value: (x?: BaseMessage[], y?: BaseMessage[]) => {
-        // console.log('\n-----agentStateChannels----\n', { x, y }, '\n--------\n')
+        console.log('\n-----channels:messages----\n', { x, y }, '\n--------\n')
         return (x ?? []).concat(y ?? []);
       },
       default: () => [],
     },
     previous: {
-      value: (x?: string, y?: string) => y ?? x ?? START,
+      value: (x?: string, y?: string) => {
+        console.log('\n-----channels:previous----\n', { x, y }, '\n--------\n')
+        return (y ?? x ?? START);
+      },
       default: () => START,
     },
     next: {
-      value: (x?: string, y?: string) => y ?? x ?? END,
+      value: (x?: string, y?: string) => {
+        console.log('\n-----channels:next----\n', { x, y }, '\n--------\n')
+        return (y ?? x ?? END);
+      },
       default: () => END,
     },
   };
@@ -69,13 +75,16 @@ export const createToolsGraph = async (authSession: AuthSessionResponse, opts?: 
 
   // Define the edges, after tool agents done their work, they will report to the supervisor
   toolAgentNames.forEach((toolAgentName) => {
-    graph.addEdge(toolAgentName, supervisorAgent.agentName);
+    // graph.addEdge(toolAgentName, supervisorAgent.agentName);
+    graph.addEdge(toolAgentName, END);
   });
 
   // Whenever supervisor is in the act, it will decide who should act next
   graph.addConditionalEdges(
     supervisorAgent.agentName,
     (state) => {
+      const { previous, next, messages } = state;
+      console.log('\n-----conditionalEdge:supervisor----\n', { previous, next }, '\n--------\n')
       return state?.next || END;
     },
   );
