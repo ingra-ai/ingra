@@ -21,7 +21,7 @@ const promptTemplate = ChatPromptTemplate.fromMessages([
   [
     "system",
     `
-      You are a helpful agent for functions calling in the collection "{collectionName}".
+      You are a helpful agent who have access to functions inside a collection of "{collectionName}".
 
       This collection has {functionsLength} functions, with the following descriptions:
       """{collectionDescription}"""
@@ -95,7 +95,7 @@ const collectionFunctionsToDynamicTools = (
  */
 export const createToolsAgentsByAuthSession = async (authSession: AuthSessionResponse, headers: Record<string, any> = {}): Promise<ReturnAgentNode[]> => {
   /**
-   * 1. First step is to grab all collections and functions from the user.
+   * First step is to grab all collections and functions from the user.
    * A collection equals to an agent. And this agent is responsible for calling the tools inside this collection.
    */
   const [myCollections, subCollections] = await getCollectionsForTools(authSession);
@@ -111,20 +111,12 @@ export const createToolsAgentsByAuthSession = async (authSession: AuthSessionRes
         streaming: true,
       });
 
-      const agent = await createOpenAIToolsAgent({ llm, tools, prompt,  });
+      const agent = await createOpenAIToolsAgent({ llm, tools, prompt, streamRunnable: true });
       const executor = new AgentExecutor({ ...config, agent, tools }).withConfig({ runName: agentName });
 
       // Generate the agent.
+      // `.invoke` can be streamed by listening from graph.stream[callbacks][handleLLMNewToken]
       const result = await executor.invoke(state, config);
-
-      let content = '';
-      let lastAIMessageChunk: AIMessageChunk | {} = {};
-
-      // for await (const aiMessageChunk of readableStream) {
-      //   lastAIMessageChunk = aiMessageChunk;
-      //   console.log('|  ', { aiMessageChunk })
-      //   content += aiMessageChunk.data.; 
-      // }
 
       const returnState: AgentStateChannels = {
         messages: result?.output ? 

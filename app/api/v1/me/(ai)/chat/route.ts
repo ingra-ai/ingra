@@ -13,7 +13,7 @@ import { END } from '@langchain/langgraph';
 import { AgentStateChannels } from './helpers/types';
 import { APP_SESSION_COOKIE_NAME, LANGCHAIN_CHAT_RECURSION_LIMIT } from '@lib/constants';
 import { createSimpleGraph } from './helpers/simpleGraph';
-import { createToolsAgentsByAuthSession } from './helpers/toolsAgents';
+import { createToolsAgentsByAuthSession } from './helpers/createToolsAgents';
 import { cookies } from 'next/headers';
 
 // export const runtime = 'nodejs';
@@ -43,11 +43,12 @@ export async function POST(req: NextRequest) {
     const readableStream = new ReadableStream({
       async start(controller) {
 
-        const test = await app.stream(
+        const graphStream = await app.stream(
           {
             messages,
           },
           {
+            debug: false,
             configurable: {
               threadId: 'test-threadid'
             },
@@ -55,15 +56,22 @@ export async function POST(req: NextRequest) {
             callbacks: [
               {
                 handleLLMNewToken(token) {
+                  // console.log('\n| token: ', { token });
                   controller.enqueue(textEncoder.encode(token));
                 },
                 handleToolStart(tool) {
-                  console.log('Tool Start: ', tool.name);
+                  console.log('\n| Tool Start: ', { tool });
                 },
                 handleToolEnd(tool) {
-                  console.log('Tool End: ', tool);
+                  console.log('\n| Tool End: ', { tool });
+                },
+                handleAgentAction(agentAction) {
+                  console.log('\n| Agent Action: ', { agentAction });
+                },
+                handleText(text, runId ) {
+                  console.log('\n| Text: ', { text, runId });
+                  // controller.enqueue(textEncoder.encode(text));
                 }
-
               },
             ],
     
@@ -75,21 +83,19 @@ export async function POST(req: NextRequest) {
           },
         );
 
-        for await (const output of test) {
-
-          // console.log({ output })
+        for await (const output of graphStream) {
 
           for (const [nodeName, stateValue] of Object.entries<AgentStateChannels>(output)) {
 
             const lastMessage = stateValue?.messages.slice(-1)[0];
             const messageContent = typeof lastMessage?.content === 'string' ? lastMessage.content : '';
-            console.log(`:: ${ nodeName } `, {
+            console.log(`:: nodeName|${ nodeName } `, {
               stateValue,
               messageContent: messageContent ?? 'No content'
             });
 
             if ( messageContent ) {
-              controller.enqueue(textEncoder.encode(messageContent));
+              // controller.enqueue(textEncoder.encode(messageContent));
             }
           }
 
