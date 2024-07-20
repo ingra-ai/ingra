@@ -81,7 +81,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = (props) => {
                     </button>
                   </TransitionChild>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <SideNav className='w-[210px]' />
+                  {/* <SideNav className='w-[210px]' /> */}
                 </DialogPanel>
               </TransitionChild>
             </div>

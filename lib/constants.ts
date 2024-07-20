@@ -97,9 +97,9 @@ export const USER_SUBSCRIPTIONS_API_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT
 export const USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug', ':functionSlug'].join('/');
 
 /**
- * Chat with Baka Assistant
+ * Chat with Assistant
  */
-export const BAKA_ASSISTANT_NAME = 'Baka Assistant';
+export const BAKA_ASSISTANT_NAME = 'Ingra';
 export const BAKA_ASSISTANT_ROOT_PATH = USER_API_ROOT_PATH + '/assistants';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';

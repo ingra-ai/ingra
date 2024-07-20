@@ -26,12 +26,12 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
         <ChatForm
           authSession={authSession}
           threadId={assistantThreadId}
-          className="text-balance h-[85vh] w-full"
+          className="text-balance h-full w-full"
         />
         {/* <AssistantForm
           authSession={authSession}
           threadId={assistantThreadId}
-          className="text-balance h-[85vh] w-full"
+          className="text-balance h-full w-full"
         /> */}
       </div>
     </div>
