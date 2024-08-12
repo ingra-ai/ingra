@@ -35,7 +35,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
 
   return (
     <div className={classes} data-testid='layout-with-nav'>
-      <div className="fixed z-30 left-0 right-0 top-0 flex flex-1 p-2">
+      <div className="fixed z-30 left-0 top-0 flex flex-1 p-2">
         {/* Mobile sidenav toggler */}
         <div className="flex items-center gap-x-2">
           <Button onClick={ () => setSidebarOpen(true) } variant={'outline'} className="p-2 w-auto h-auto">
