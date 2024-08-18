@@ -1,4 +1,4 @@
-import { apiRequest } from '@v1/me/(ai)/assistants/apiRequest';
+import { handleFetch } from "@app/api/utils/handleFetch";
 import { AuthSessionResponse } from '@app/auth/session/types';
 import { APP_URL } from '@lib/constants';
 import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
@@ -34,7 +34,7 @@ const toolsHandler = async ( authSession: AuthSessionResponse, toolName: string,
     throw new Error(`Tool not found: ${toolName}`);
   }
 
-  return await apiRequest( apiDetails.url, apiDetails.method, parameters, headers );
+  return await handleFetch( apiDetails.url, apiDetails.method, parameters, headers );
 };
 
 export const actionToolCalls = async ( 

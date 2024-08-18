@@ -16,7 +16,7 @@ const buildQueryString = (params: Record<string, any>) => {
  * @param {object} [headers] - Optional additional headers.
  * @returns {Promise<object>} - The JSON response from the server.
  */
-export const apiRequest = async (url: string, method: string, params: Record<string, any> = {}, headers: Record<string, any> = {}) => {
+export const handleFetch = async (url: string, method: string, params: Record<string, any> = {}, headers: Record<string, any> = {}) => {
   const options: Record<string, any> = {
     method,
     headers: {
@@ -45,13 +45,13 @@ export const apiRequest = async (url: string, method: string, params: Record<str
     });
 
     if ( !response.ok ) {
-      throw new Error(`Failed to run apiRequest with status ${response.status}: ${response.statusText}`);
+      throw new Error(`Failed to run handleFetch with status ${response.status}: ${response.statusText}`);
     }
 
     return await response.json();
   } 
   catch (error: any) {
-    Logger.withTag('apiRequest').error(`Failed to run fetch: ${ error?.message || 'Unknown Error'}`, { url, method });
+    Logger.withTag('handleFetch').error(`Failed to run fetch: ${ error?.message || 'Unknown Error'}`, { url, method });
     throw error;
   }
 };

@@ -12,7 +12,7 @@ import { AgentStateChannels, CollectionForToolsGetPayload, ReturnAgentNode } fro
 import { getCollectionsForTools } from "./getCollectionsForTools";
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { functionArgsToZod } from "@app/api/utils/functions/functionArgsToZod";
-import { apiRequest } from "./apiRequest";
+import { handleFetch } from "@app/api/utils/handleFetch";
 import { ChatOpenAI } from "@langchain/openai";
 import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
 
@@ -69,7 +69,7 @@ const collectionFunctionsToDynamicTools = (
 
         loggerObj.info(`Executing langchain function`);
 
-        const result = await apiRequest( hitUrl, functionRecord.httpVerb, requestArgs, headers );
+        const result = await handleFetch( hitUrl, functionRecord.httpVerb, requestArgs, headers );
 
         return JSON.stringify(result);
       }
