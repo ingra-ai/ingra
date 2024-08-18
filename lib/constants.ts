@@ -41,11 +41,6 @@ export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
 export const VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS = 60;
 
 /**
- * API Security
- */
-export const APP_X_API_KEY = process.env.X_API_KEY || '';
-
-/**
  * OPENAI Variables
  */
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
@@ -83,7 +78,8 @@ export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 // This should reflect the path of the API in the app
 // !! Requires to replace the ":vars" with actual values,
 export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
-export const USERS_API_COLLECTION_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug', ':functionSlug'].join('/');
+export const USERS_API_COLLECTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
+export const USERS_API_COLLECTION_FUNCTION_PATH = [USERS_API_COLLECTION_PATH, ':functionSlug'].join('/');
 
 /**
  * SUBSCRIPTIONS API
