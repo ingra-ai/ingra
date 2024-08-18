@@ -14,14 +14,20 @@ import { APP_URL, BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH, USER_API_ROOT_P
 
 type ChatFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
+
+  /**
+   * URL of the API to use for chat.
+   * e.g. /api/v1/me/chat
+   */
+  api: string;
   threadId?: string;
 };
 
 export const ChatForm: FC<ChatFormProps> = (props) => {
-  const { authSession, threadId, ...rest } = props;
+  const { authSession, api, threadId, ...rest } = props;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, input, setInput, handleInputChange, handleSubmit, isLoading: loading, setMessages } = useChat({
-    api: USER_API_ROOT_PATH + '/chat',
+    api,
     streamMode: 'text'
   });
 
@@ -48,16 +54,17 @@ export const ChatForm: FC<ChatFormProps> = (props) => {
     textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Set the height based on content, max height is 150px
   };
 
-  const classes = cn('h-full w-full flex flex-col text-sm', rest.className),
+  const classes = cn('h-full w-full flex flex-col text-sm p-4', rest.className),
     disableForm = loading;
 
   return (
     <div
+      id='chat-wrapper'
       {...rest}
       className={ classes }
-      data-testid="assistant-form"
+      data-testid="chat-wrapper"
     >
-      <ScrollArea className="flex-1 rounded-sm border p-4">
+      <ScrollArea className="flex-1 rounded-sm border">
         { 
           messages.map((m: Message) => {
             const messageUserName = m.role === 'user' ? userName : BAKA_ASSISTANT_NAME;

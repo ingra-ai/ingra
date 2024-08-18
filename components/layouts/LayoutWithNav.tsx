@@ -1,5 +1,5 @@
 'use client';
-import { useState, type FC, type PropsWithChildren } from 'react';
+import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
 import { Transition, TransitionChild } from '@headlessui/react';
 import type { AuthSessionResponse } from '@app/auth/session/types';
 import SideNav from '../navs/SideNav';
@@ -7,7 +7,7 @@ import { cn } from '@lib/utils';
 import { MenuIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 
-type NavbarProps = {
+type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   authSession: AuthSessionResponse;
   className?: string;
 };
@@ -16,17 +16,18 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const {
     className,
     authSession,
-    children
+    children,
+    ...restOfDivProps
   } = props;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const classes = cn(
-    'min-h-screen',
+    'relative h-full w-full overflow-hidden',
     className
   );
 
   const mainClasses = cn(
     'bg-dark-radial-pattern',
-    'relative z-20 min-h-screen',
+    'relative z-20 h-full w-full overflow-hidden',
     'transition-padding duration-300 ease-in-out',
     {
       'lg:pl-64': sidebarOpen
@@ -34,7 +35,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   );
 
   return (
-    <div className={classes} data-testid='layout-with-nav'>
+    <div className={classes} data-testid='layout-with-nav' { ...restOfDivProps }>
       <div className="fixed z-30 left-0 top-0 flex flex-1 p-2">
         {/* Mobile sidenav toggler */}
         <div className="flex items-center gap-x-2">
@@ -92,9 +93,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
         </div>
       </div>
       <main className={ mainClasses }>
-        <div className="p-4" data-testid="wrapper">
-          {children}
-        </div>
+        {children}
       </main>
     </div>
   );

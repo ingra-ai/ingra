@@ -15,11 +15,9 @@ const ProtectedLayout: FC<PropsWithChildren> = async (props) => {
   }
 
   return (
-    <div id="protected-layout" className='block' data-testid="protected-layout">
-      <LayoutWithNav authSession={ authSession } className=''>
-        {children}
-      </LayoutWithNav>
-    </div>
+    <LayoutWithNav authSession={ authSession }>
+      {children}
+    </LayoutWithNav>
   );
 };
 

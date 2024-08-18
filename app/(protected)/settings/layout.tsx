@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function SettingsLayout({ children }: PropsWithChildren) {
   return (
-    <div className="" data-testid='settings-layout'>
+    <div className="p-4" data-testid='settings-layout'>
       <h1 className="sr-only">Settings</h1>
 
       <header className="">
