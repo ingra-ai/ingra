@@ -71,30 +71,24 @@ export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_INTEGRATIONS
 /**
  * MARKETPLACE API
  */
-export const MARKETPLACE_API_ROOT_PATH = '/api/v1/marketplace';
-export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
-export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
+// export const MARKETPLACE_API_ROOT_PATH = '/api/v1/marketplace';
+// export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
+// export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
  * USER API
 */
-export const USER_API_ROOT_PATH = '/api/v1/me';
+export const USER_API_ROOT_PATH = '/api/v1';
 export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 // This should reflect the path of the API in the app
 // !! Requires to replace the ":vars" with actual values,
-export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, 'functions', ':functionSlug'].join('/');
-export const USERS_API_COLLECTION_FUNCTION_PATH = [USER_API_ROOT_PATH, 'collections', ':collectionSlug', ':functionSlug'].join('/');
+export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
+export const USERS_API_COLLECTION_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug', ':functionSlug'].join('/');
 
 /**
  * SUBSCRIPTIONS API
+ * 18 Aug - Removed as subscription logic is merged with the user API
  */
-export const USER_SUBSCRIPTIONS_API_ROOT_PATH = '/api/v1/subs';
-export const USER_SUBSCRIPTIONS_API_ROOT_URL = APP_URL + USER_SUBSCRIPTIONS_API_ROOT_PATH;
-// This should reflect the path of the API in the app
-// !! Requires to replace the ":vars" with actual values,
-// !! -- only use this wherever user has subscribed to the function or collections.
-export const USER_SUBSCRIPTIONS_API_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
-export const USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH = [USER_SUBSCRIPTIONS_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug', ':functionSlug'].join('/');
 
 /**
  * Chat with Assistant

@@ -5,8 +5,8 @@ import {
   MessagesPlaceholder,
 } from "@langchain/core/prompts";
 import { RunnableConfig } from "@langchain/core/runnables";
-import { AIMessage, AIMessageChunk } from "@langchain/core/messages";
-import { APP_URL, IS_PROD, USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH, USERS_API_COLLECTION_FUNCTION_PATH } from "@lib/constants";
+import { AIMessage } from "@langchain/core/messages";
+import { APP_URL, USERS_API_COLLECTION_FUNCTION_PATH } from "@lib/constants";
 import { Logger } from "@lib/logger";
 import { AgentStateChannels, CollectionForToolsGetPayload, ReturnAgentNode } from "./types";
 import { getCollectionsForTools } from "./getCollectionsForTools";
@@ -61,14 +61,10 @@ const collectionFunctionsToDynamicTools = (
 
         const hitUrl = [
           APP_URL,
-          isSubscription ?
-            USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH
-              .replace(':userName', ownerUsername!)
-              .replace(':collectionSlug', collectionSlug)
-              .replace(':functionSlug', functionSlug) :
-            USERS_API_COLLECTION_FUNCTION_PATH
-              .replace(':collectionSlug', collectionSlug)
-              .replace(':functionSlug', functionSlug)
+          USERS_API_COLLECTION_FUNCTION_PATH
+            .replace(':userName', ownerUsername!)
+            .replace(':collectionSlug', collectionSlug)
+            .replace(':functionSlug', functionSlug)
         ].join('');
 
         loggerObj.info(`Executing langchain function`);

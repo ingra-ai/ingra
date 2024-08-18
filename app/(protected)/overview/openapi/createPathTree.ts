@@ -1,4 +1,4 @@
-import { USER_API_ROOT_PATH, USER_SUBSCRIPTIONS_API_ROOT_PATH } from "@lib/constants";
+import { USER_API_ROOT_PATH } from "@lib/constants";
 
 interface PathNode {
   title: string;
@@ -16,8 +16,7 @@ export const createPathTree = (paths: string[]): PathNode[] => {
 
     // Check for the specific case of grouping "/api/v1/me" or "/api/v1/subs"
     const rootSegments = [
-        USER_API_ROOT_PATH,
-        USER_SUBSCRIPTIONS_API_ROOT_PATH
+        USER_API_ROOT_PATH
       ],
       currentPathIndex = rootSegments.findIndex((rootSegment) => path.startsWith(rootSegment));
 

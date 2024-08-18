@@ -4,7 +4,7 @@ import { Logger } from "@lib/logger";
 import { Prisma } from "@prisma/client";
 import db from "@lib/db";
 import { mixpanel } from "@lib/analytics";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 
 /**
  * @swagger

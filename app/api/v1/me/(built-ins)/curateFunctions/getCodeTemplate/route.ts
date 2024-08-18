@@ -4,7 +4,7 @@ import { Logger } from "@lib/logger";
 import { generateUserVars } from "@app/api/utils/vm/generateUserVars";
 import { generateCodeDefaultTemplate } from "@app/api/utils/vm/functions/generateCodeDefaultTemplate";
 import { mixpanel } from "@lib/analytics";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 
 /**
  * @swagger

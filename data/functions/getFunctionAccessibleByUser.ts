@@ -2,12 +2,22 @@ import db from "@lib/db";
 import { isUuid } from "@lib/utils";
 import { Prisma } from "@prisma/client";
 
+export type FunctionAccessType = 
+  // User is the owner of the function
+  'owner' | 
+
+  // Other user's function where user is a subscriber and the function is not private
+  'subscriber' | 
+
+  // Function is part of a collection that user is subscribed to
+  'subscribedCollection';
+
 type GetFunctionAccessibleByUserDefaultArgsType = Pick<Prisma.FunctionFindFirstArgs, 'include' | 'select'> & {
   where?: Prisma.FunctionFindFirstArgs['where']
 };
 
 type GetFunctionAccessibleByUserOptionsType<T extends GetFunctionAccessibleByUserDefaultArgsType> = {
-  accessTypes?: ('owner' | 'subscriber' | 'subscribedCollection')[],
+  accessTypes?: FunctionAccessType[],
   findFirstArgs?: T
 };
 

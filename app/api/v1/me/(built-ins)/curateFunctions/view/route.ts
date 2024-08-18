@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { Prisma } from "@prisma/client";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 import { mixpanel } from "@lib/analytics";
 import { getFunctionAccessibleByUser } from "@data/functions";
 

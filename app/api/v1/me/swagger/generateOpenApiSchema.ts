@@ -2,9 +2,7 @@ import { convertFunctionRecordToOpenApiSchema } from "@app/api/utils/functions/c
 import { AuthSessionResponse } from "@app/auth/session/types";
 import {
   USERS_API_FUNCTION_PATH,
-  USERS_API_COLLECTION_FUNCTION_PATH,
-  USER_SUBSCRIPTIONS_API_FUNCTION_PATH,
-  USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH
+  USERS_API_COLLECTION_FUNCTION_PATH
 
 } from "@lib/constants";
 import db from "@lib/db";
@@ -177,7 +175,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
 
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
       transformHitUrl: (functionSlug) => 
-        USER_SUBSCRIPTIONS_API_FUNCTION_PATH
+        USERS_API_COLLECTION_FUNCTION_PATH
           .replace(':userName', functionOwnerUsername)
           .replace(':functionSlug', functionSlug)
     });
@@ -195,7 +193,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
 
       const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
         transformHitUrl: (functionSlug) => 
-          USER_SUBSCRIPTIONS_API_COLLECTION_FUNCTION_PATH
+          USERS_API_COLLECTION_FUNCTION_PATH
             .replace(':userName', ownerUsername)
             .replace(':collectionSlug', collectionSlug)
             .replace(':functionSlug', functionSlug)

@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { z } from "zod";
 import { mixpanel } from "@lib/analytics";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 
 /**
  * @swagger

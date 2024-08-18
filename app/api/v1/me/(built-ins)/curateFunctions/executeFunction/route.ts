@@ -3,7 +3,7 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import { ActionError } from "@v1/types/api-response";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 import { mixpanel } from "@lib/analytics";
 import { getFunctionAccessibleByUser } from "@data/functions";
 

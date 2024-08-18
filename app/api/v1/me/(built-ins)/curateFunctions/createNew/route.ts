@@ -12,7 +12,7 @@ import isNil from 'lodash/isNil';
 import isBoolean from 'lodash/isBoolean';
 import { z } from "zod";
 import { mixpanel } from "@lib/analytics";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 
 /**
  * @swagger
