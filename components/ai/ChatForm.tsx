@@ -64,45 +64,47 @@ export const ChatForm: FC<ChatFormProps> = (props) => {
       className={ classes }
       data-testid="chat-wrapper"
     >
-      <ScrollArea className="flex-1 rounded-sm border">
-        { 
-          messages.map((m: Message) => {
-            const messageUserName = m.role === 'user' ? userName : BAKA_ASSISTANT_NAME;
-            return (
-              <div
-                key={m.id}
-                className={cn('p-3 rounded-sm [&:not(:last-child)]:mb-4', {
-                  'bg-blue-600 self-end': m.role === 'user',
-                  'bg-gray-700 self-start': m.role === 'assistant'
-                })}
-              >
-                <div className="flex items-center space-x-2">
-                  {m.role === 'user' ? <UserIcon className="w-5 h-5" /> : <BotMessageSquareIcon className="w-5 h-5" />}
-                  <strong>{messageUserName}: </strong>
+      <ScrollArea className="flex-1">
+        <div className="max-w-prose mx-auto h-full">
+          { 
+            messages.map((m: Message) => {
+              const messageUserName = m.role === 'user' ? userName : BAKA_ASSISTANT_NAME;
+              return (
+                <div
+                  key={m.id}
+                  className={cn('p-3 rounded-sm [&:not(:last-child)]:mb-4', {
+                    'bg-blue-600 self-end': m.role === 'user',
+                    'bg-gray-700 self-start': m.role === 'assistant'
+                  })}
+                >
+                  <div className="flex items-center space-x-2">
+                    {m.role === 'user' ? <UserIcon className="w-5 h-5" /> : <BotMessageSquareIcon className="w-5 h-5" />}
+                    <strong>{messageUserName}: </strong>
+                  </div>
+                  <div className="mt-1">
+                    {m.role !== 'data' && (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeHighlight]}
+                        className="prose prose-sm prose-invert"
+                      >
+                        {m.content}
+                      </ReactMarkdown>
+                    )}
+                    {m.role === 'data' && (
+                      <>
+                        <p>{(m.data as any).description}</p>
+                        <pre className="bg-gray-800 p-2 rounded-sm">
+                          {JSON.stringify(m.data, null, 2)}
+                        </pre>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-1">
-                  {m.role !== 'data' && (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeHighlight]}
-                      className="prose prose-sm prose-invert"
-                    >
-                      {m.content}
-                    </ReactMarkdown>
-                  )}
-                  {m.role === 'data' && (
-                    <>
-                      <p>{(m.data as any).description}</p>
-                      <pre className="bg-gray-800 p-2 rounded-sm">
-                        {JSON.stringify(m.data, null, 2)}
-                      </pre>
-                    </>
-                  )}
-                </div>
-              </div>
-            );
-          })
-        }
+              );
+            })
+          }
+        </div>
         <div ref={messagesEndRef} />
       </ScrollArea>
 
