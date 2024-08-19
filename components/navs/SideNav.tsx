@@ -25,12 +25,12 @@ const sideNavRoutes: NavItem[] = [
     href: '/overview/dashboard',
     icon: LayoutDashboardIcon,
   },
-  {
-    name: 'Assistant',
-    description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
-    href: '/assistant',
-    icon: BotMessageSquareIcon,
-  },
+  // {
+  //   name: 'Assistant',
+  //   description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
+  //   href: '/assistant',
+  //   icon: BotMessageSquareIcon,
+  // },
   {
     name: "Hubs",
     description: "Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.",
