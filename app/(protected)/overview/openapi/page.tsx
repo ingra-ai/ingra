@@ -11,8 +11,8 @@ export default async function Page() {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 
-  const userOpenApiUrl = USER_API_ROOT_URL + '/openapi.json';
-  const userSwaggerUrl = USER_API_ROOT_URL + '/swagger';
+  const userOpenApiUrl = USER_API_ROOT_URL + '/me/openapi.json';
+  const userSwaggerUrl = USER_API_ROOT_URL + '/me/swagger';
 
   return (
     <div className="relative">
