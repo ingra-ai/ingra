@@ -30,7 +30,7 @@ const MarketplaceCollectionCard: React.FC<React.PropsWithChildren<MarketplaceCol
     <div data-testid='collection-card' {...divProps} className={classes}>
       <div className="min-w-0 space-y-2">
         <div className="flex justify-between items-start">
-          <Link className='block w-full leading-6' href={`/mine/collections/view/${collection.id}`}>
+          <Link className='block w-full leading-6' href={ href }>
             <h2 className="text-lg inline-block text-info">{collection.slug}</h2>
           </Link>
         </div>
