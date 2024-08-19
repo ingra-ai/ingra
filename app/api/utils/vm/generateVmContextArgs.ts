@@ -1,5 +1,4 @@
 import { AuthSessionResponse } from "@app/auth/session/types";
-import { Logger } from "@lib/logger";
 import { FunctionArgument } from "@prisma/client";
 import { generateUserVars } from "./generateUserVars";
 

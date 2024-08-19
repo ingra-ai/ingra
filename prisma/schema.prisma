@@ -62,7 +62,8 @@ model ActiveSession {
 enum UserRole {
   FREE
   PREMIUM
-  ULTRA_PREMIUM
+  ENTERPRISE
+  CONTRIBUTOR
 }
 
 model OAuthToken {

@@ -10,7 +10,7 @@ async function Layout ({
   children: ReactNode
 }) {
   return (
-    <div id="overview-layout" className='relative' data-testid="overview-layout">
+    <div id="overview-layout" className='relative p-4' data-testid="overview-layout">
       <TopSubNav navItems={OverviewNavRoutes} />
       <Suspense fallback={<OverviewSkeleton />}>
         { children }

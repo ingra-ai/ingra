@@ -31,9 +31,14 @@ export const APP_SETTINGS_API_URI = '/settings/api';
 export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
 
 /**
- * API Security
+ * The version of the app as defined in package.json
  */
-export const APP_X_API_KEY = process.env.X_API_KEY || '';
+export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
+
+/**
+ * VM Sandbox Configuration
+ */
+export const VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS = 60;
 
 /**
  * OPENAI Variables
@@ -49,8 +54,6 @@ export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Ingra Assistant';
 export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = "A portal to curate and manage personal assistant functions and workflows, providing a community-driven approach to personal assistant development."
 export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN = "Ingra Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development."
 
-
-
 /**
  * Google Plugins
  */
@@ -58,37 +61,36 @@ export const APP_GOOGLE_OAUTH_CLIENT_ID = process.env.GOOG_OAUTH_CLIENT_ID || ''
 export const APP_GOOGLE_OAUTH_CLIENT_SECRET = process.env.GOOG_OAUTH_CLIENT_SECRET || '';
 export const APP_GOOGLE_OAUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_GOOG_OAUTH_CALLBACK_URI || '/auth/google/callback';
 export const APP_GOOGLE_OAUTH_CALLBACK_URL = APP_URL + APP_GOOGLE_OAUTH_CALLBACK_URI;
-export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_PROFILE_URI;
+export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_INTEGRATIONS_URI;
 
 /**
  * MARKETPLACE API
  */
-export const MARKETPLACE_API_ROOT_PATH = '/api/v1/marketplace';
-export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
-export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
+// export const MARKETPLACE_API_ROOT_PATH = '/api/v1/marketplace';
+// export const MARKETPLACE_API_ROOT_URL = APP_URL + MARKETPLACE_API_ROOT_PATH;
+// export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
- * USERS API
+ * USER API
 */
-export const USERS_API_ROOT_PATH = '/api/v1/me';
-export const USERS_API_ROOT_URL = APP_URL + USERS_API_ROOT_PATH;
+export const USER_API_ROOT_PATH = '/api/v1';
+export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 // This should reflect the path of the API in the app
-// !! Requires to replace the username and slug,
-// !! -- only use this wherever you have access to user profile and function slug
-export const USERS_API_FUNCTION_PATH = [USERS_API_ROOT_PATH, 'functions', ':slug'].join('/');
-export const USERS_API_FUNCTION_SUBSCRIPTIONS_PATH = [USERS_API_ROOT_PATH, 'subscriptions', ':slug'].join('/');
-export const USERS_API_FUNCTION_COLLECTION_SUBSCRIPTIONS_PATH = [USERS_API_ROOT_PATH, 'collections', ':username', ':slug'].join('/');
+// !! Requires to replace the ":vars" with actual values,
+export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
+export const USERS_API_COLLECTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
+export const USERS_API_COLLECTION_FUNCTION_PATH = [USERS_API_COLLECTION_PATH, ':functionSlug'].join('/');
 
 /**
- * The version of the app as defined in package.json
+ * SUBSCRIPTIONS API
+ * 18 Aug - Removed as subscription logic is merged with the user API
  */
-export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
 
 /**
- * Chat with Baka Assistant
+ * Chat with Assistant
  */
-export const BAKA_ASSISTANT_NAME = 'Baka Assistant';
-export const BAKA_ASSISTANT_ROOT_PATH = USERS_API_ROOT_PATH + '/assistants';
+export const BAKA_ASSISTANT_NAME = 'Ingra';
+export const BAKA_ASSISTANT_ROOT_PATH = USER_API_ROOT_PATH + '/assistants';
 export const BAKA_ASSISTANT_ID = process.env.OPENAI_ASSISTANT_ID || '';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME = 'BAKAI_THREAD_ID';
 export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
@@ -98,3 +100,9 @@ export const BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE = 7200; // 2hr
  */
 export const HOTJAR_ID = process.env.NEXT_PUBLIC_HOTJAR_ID || '';
 export const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '';
+
+/**
+ * Langchain
+ */
+export const LANGCHAIN_CHAT_RECURSION_LIMIT = parseInt(process.env.NEXT_PUBLIC_LANGCHAIN_CHAT_RECURSION_LIMIT || '10') || 10;
+

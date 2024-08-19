@@ -1,3 +1,4 @@
+'use server';
 import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
 import { run } from "@app/api/utils/vm/run";
 import { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";
@@ -17,12 +18,20 @@ type MetricValues = {
   [key in MetricSandboxOutput['metric']]: number;
 };
 
-export const runUserFunction = async (authSession: AuthSessionResponse, functionRecord: RunUserFunctionArgType, args: Record<string, any> = {}) => {
-  if (!functionRecord || !authSession) {
-    throw new ActionError('error', 403, `Invalid function or session.`);
+export const runUserFunction = async (authSession: AuthSessionResponse, functionRecord: RunUserFunctionArgType, requestArgs: Record<string, any> = {}) => {
+  if ( !authSession ) {
+    throw new ActionError('error', 401, `Unauthorized session.`);
   }
 
-  const vmContext = generateVmContextArgs(authSession, functionRecord.arguments, args);
+  if ( !functionRecord ) {
+    throw new ActionError('error', 400, `Function not found.`);
+  }
+
+  if (typeof requestArgs !== 'object') {
+    throw new ActionError('error', 400, `Invalid arguments.`);
+  }
+
+  const vmContext = generateVmContextArgs(authSession, functionRecord.arguments, requestArgs);
 
   const vmOutput = await run(functionRecord.code, vmContext);
 
@@ -32,7 +41,7 @@ export const runUserFunction = async (authSession: AuthSessionResponse, function
     }, {});
 
   return {
-    result: vmOutput?.result || null,
+    result: vmOutput?.result,
     metrics,
     errors,
   }
