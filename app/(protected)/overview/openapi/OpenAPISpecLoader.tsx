@@ -5,13 +5,16 @@ import Tree, { type FieldDataNode } from 'rc-tree';
 import { Button } from '@components/ui/button';
 import { useToast } from '@components/ui/use-toast';
 import { createPathTree } from './createPathTree';
+import { cn } from '@lib/utils';
+import { ScrollArea } from '@components/ui/scroll-area';
 
 interface OpenAPISpecLoaderProps {
   openapiUrl: string;
+  className?: string;
 }
 
 export const OpenAPISpecLoader: React.FC<OpenAPISpecLoaderProps> = ( props ) => {
-  const { openapiUrl } = props;
+  const { openapiUrl, className } = props;
   const [spec, setSpec] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedPaths, setSelectedPaths] = useState<string[]>([]);
@@ -95,10 +98,11 @@ export const OpenAPISpecLoader: React.FC<OpenAPISpecLoaderProps> = ( props ) => 
   }
 
   const treeData = createPathTree(Object.keys(spec.paths));
+  const classes = cn('flex flex-1 text-xs overflow-hidden', className);
 
   return (
-    <div className="flex h-screen text-xs">
-      <div className="w-[400px] p-4 overflow-y-auto border-r">
+    <div className={ classes } data-testid="openapi-spec-loader">
+      <ScrollArea className="w-[400px] pt-4 pb-4 overflow-y-auto border-r">
         <Tree
           checkable
           defaultExpandAll
@@ -110,8 +114,8 @@ export const OpenAPISpecLoader: React.FC<OpenAPISpecLoaderProps> = ( props ) => 
           draggable={false}
           selectable={false}
         />
-      </div>
-      <div className="w-full p-4 overflow-hidden overflow-y-auto overflow-x-auto">
+      </ScrollArea>
+      <div className="flex-1 overflow-hidden">
         <div className="flex justify-end space-x-4">
           <Button
             type='button'
@@ -124,11 +128,11 @@ export const OpenAPISpecLoader: React.FC<OpenAPISpecLoaderProps> = ( props ) => 
             <span className="sr-only">Copy</span>
           </Button>
         </div>
-        <div className="block w-full overflow-y-auto overflow-x-auto">
+        <ScrollArea className="h-[calc(100%-60px)]">
           <pre className="p-4 rounded">
             { JSON.stringify( refinedSpec, null, 2 ) }
           </pre>
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export const APP_AUTH_LOGIN_URL = APP_URL + APP_AUTH_LOGIN_URI;
 export const APP_LANDING_PAGE_URL = APP_URL + APP_LANDING_PAGE_URI;
 
 export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@ingra.ai';
-export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'BAKA_SESSION';
+export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'ING_SESSION';
 export const APP_SESSION_API_KEY_NAME = process.env.NEXT_PUBLIC_APP_SESSION_API_KEY_NAME || 'x-api-key';
 
 export const APP_SETTINGS_PROFILE_URI = '/settings/profile';
@@ -71,7 +71,7 @@ export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_INTEGRATIONS
 // export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
- * USER API
+ * API
 */
 export const USER_API_ROOT_PATH = '/api/v1';
 export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
@@ -80,6 +80,12 @@ export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
 export const USERS_API_COLLECTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
 export const USERS_API_COLLECTION_FUNCTION_PATH = [USERS_API_COLLECTION_PATH, ':functionSlug'].join('/');
+
+/**
+ * ME API
+ */
+export const ME_API_ROOT_PATH = '/api/v1/me';
+export const ME_API_ROOT_URL = APP_URL + ME_API_ROOT_PATH;
 
 /**
  * SUBSCRIPTIONS API
