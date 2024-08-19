@@ -140,7 +140,9 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   const userFunctionsOpenApiSchema = functionRecords.reduce((acc, functionRecord) => {
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
       transformHitUrl: (functionSlug) => 
-        USERS_API_FUNCTION_PATH.replace(':functionSlug', functionSlug)
+        USERS_API_FUNCTION_PATH
+        .replace(':userName', authSession.user.profile?.userName || '')
+        .replace(':functionSlug', functionSlug)
     });
     return { ...acc, ...functionSchema };
   }, {});
@@ -156,6 +158,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
       const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
         transformHitUrl: (functionSlug) => 
           USERS_API_COLLECTION_FUNCTION_PATH
+            .replace(':userName', ownerUsername)
             .replace(':collectionSlug', collectionSlug)
             .replace(':functionSlug', functionSlug)
       });
@@ -175,7 +178,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
 
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
       transformHitUrl: (functionSlug) => 
-        USERS_API_COLLECTION_FUNCTION_PATH
+        USERS_API_FUNCTION_PATH
           .replace(':userName', functionOwnerUsername)
           .replace(':functionSlug', functionSlug)
     });

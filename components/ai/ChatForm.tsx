@@ -1,6 +1,6 @@
 'use client';
-import { type FC, type HTMLAttributes, useRef, useEffect, useState, ChangeEvent, KeyboardEvent } from 'react';
-import { Message, useAssistant, useChat } from 'ai/react';
+import { type FC, type HTMLAttributes, useRef, useEffect, ChangeEvent, KeyboardEvent } from 'react';
+import { Message, useChat } from 'ai/react';
 import { ArrowRightIcon, LoaderIcon, UserIcon, XIcon, BotMessageSquareIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,7 +10,7 @@ import { AuthSessionResponse } from '@app/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';
-import { APP_URL, BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_ROOT_PATH, USER_API_ROOT_PATH } from '@lib/constants';
+import { BAKA_ASSISTANT_NAME } from '@lib/constants';
 
 type ChatFormProps = HTMLAttributes<HTMLDivElement> & {
   authSession: AuthSessionResponse;
