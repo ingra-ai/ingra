@@ -1,5 +1,5 @@
 import { getAuthSession } from '@app/auth/session';
-import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, USERS_API_ROOT_URL } from '@lib/constants';
+import { APP_AUTH_LOGIN_URL, USER_API_ROOT_URL } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { BracesIcon } from 'lucide-react';
 import { OpenAPISpecLoader } from './OpenAPISpecLoader';
@@ -11,8 +11,8 @@ export default async function Page() {
     redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
   }
 
-  const userOpenApiUrl = USERS_API_ROOT_URL + '/openapi.json';
-  const userSwaggerUrl = USERS_API_ROOT_URL + '/swagger';
+  const userOpenApiUrl = USER_API_ROOT_URL + '/openapi.json';
+  const userSwaggerUrl = USER_API_ROOT_URL + '/swagger';
 
   return (
     <div className="relative">

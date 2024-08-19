@@ -14,7 +14,7 @@ async function Layout ({
   children: ReactNode;
 }) {
   return (
-    <div className="relative block" data-testid="subscriptions-layout">
+    <div className="relative block p-4" data-testid="subscriptions-layout">
       <TopSubNav navItems={SubscriptionNavRoutes} />
 
       <Suspense fallback={<div>Loading...</div>}>

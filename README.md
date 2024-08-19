@@ -1,14 +1,14 @@
-# Ingra Portal
+# Ingra Hubs
 
-Ingra Portal is designed to help you curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs.
+Ingra Hubs is designed to seamlessly integrate any LLMs tool calling for your own needs. By providing capabilities to curate and manage functions or workflows that can be used to create your own personal assistant suite tailored to your needs.
 Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.
 
-It's available to review at [https://portal.](https://portal.) with your browser to see the result.
+It's available to review at [https://hubs.ingra.ai](https://hubs.ingra.ai) with your browser to see the result.
 
 #### Getting Started as a new User
-1. Login and visit [Marketplace](https://portal./functions/marketplace) and find some useful community-functions for you to Subscribe or Fork.
-2. Visit [Overview](https://portal./overview), Review the notification alert and you may find links to your **openapi.json** for your GPT actions or **Swagger** to test it on the web.
-3. Generate API key at [https://portal./settings/api](https://portal./settings/api) for `x-api-key` header when configuring your ChatGPT actions
+1. Login and visit [Marketplace](https://hubs.ingra.ai/functions/marketplace) and find some useful community-functions for you to Subscribe or Fork.
+2. Visit [Overview](https://hubs.ingra.ai/overview), Review the notification alert and you may find links to your **openapi.json** for your GPT actions or **Swagger** to test it on the web.
+3. Generate API key at [https://hubs.ingra.ai/settings/api](https://hubs.ingra.ai/settings/api) for `x-api-key` header when configuring your ChatGPT actions
 4. Paste JSON from **openapi.json** to your own chatgpt plugins actions.
 5. Interact with your personalized GPT hooked with the functions you have.
 
@@ -39,15 +39,13 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
    - Screw it, good enough for now - ill be back later.
 - [x] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
+- [ ] **Assistant**: Provides built-in AI Assistant utilizing LangChain to converse and interact with tools calling.
 - [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
 - [ ] **Advanced Security Features**: Implement advanced security measures such as encryption, secure access controls, and more to protect user data and function integrity.
 - [ ] **Collaboration Tools**: Develop tools to facilitate collaboration among users and developers, such as version control, code reviews, and more.
 - [ ] **Personalization Options**: Offer advanced personalization options to tailor the assistant’s behavior and responses to individual preferences.
-- [ ] **AI and Machine Learning Integration**: Incorporate AI and ML models to enhance the capabilities of your personal assistant, allowing for more intelligent and responsive interactions.
-- [ ] **AI Agent Creation**: Incorporate AI Agent creation for specific comprehensive task.
 - [ ] **Cron Features**: Integrate scheduled run for certain function, that will feed to users. Either by web, email or to their own AI Agent.
-- [ ] **Natural Language Processing**: Improve interaction with natural language understanding and processing, making the assistant more intuitive and user-friendly.
 
 
 ## Getting Started
@@ -88,7 +86,7 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 
 ## Environment Variables
 
-The Ingra Portal utilizes several environment variables for its configuration. You will need to set these up in your `.env.local` file. Here's a guide to the required environment variables:
+The Ingra Hubs utilizes several environment variables for its configuration. You will need to set these up in your `.env.local` file. Here's a guide to the required environment variables:
 
 ### Database Setup with Prisma
 
@@ -128,7 +126,7 @@ Therefore, the following configuration is needed
 
 #### JWT Configuration Setup
 
-To securely manage user sessions and authentication, Ingra Portal utilizes JSON Web Tokens (JWT). You must generate a secure JWT secret for your application:
+To securely manage user sessions and authentication, Ingra Hubs utilizes JSON Web Tokens (JWT). You must generate a secure JWT secret for your application:
 
 - `JWT_SECRET`: A secret key used for signing JWT tokens. Ensure this is a long, random string to maintain security.
 
@@ -160,16 +158,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Contributing
 
-We welcome contributions to the Ingra Portal! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue. Thanks in advance
+We welcome contributions to the Ingra Hubs! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue. Thanks in advance
 
 ## License
 
-Ingra Portal is open source software licensed as [MIT](https://choosealicense.com/licenses/mit/).
+Ingra Hubs is open source software licensed as [MIT](https://choosealicense.com/licenses/mit/).
 
 
 ## Learn More
 
-To further enhance your development with Ingra Portal, explore the documentation and resources of the key technologies and libraries used in the project:
+To further enhance your development with Ingra Hubs, explore the documentation and resources of the key technologies and libraries used in the project:
 
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - An interactive Next.js tutorial.
