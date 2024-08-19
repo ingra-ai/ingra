@@ -71,7 +71,7 @@ export const APP_GOOGLE_OAUTH_REDIRECT_URL = APP_URL + APP_SETTINGS_INTEGRATIONS
 // export const MARKETPLACE_API_FUNCTION_PATH = [MARKETPLACE_API_ROOT_PATH, 'functions', ':slug'].join('/');
 
 /**
- * USER API
+ * API
 */
 export const USER_API_ROOT_PATH = '/api/v1';
 export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
@@ -80,6 +80,12 @@ export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
 export const USERS_API_COLLECTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
 export const USERS_API_COLLECTION_FUNCTION_PATH = [USERS_API_COLLECTION_PATH, ':functionSlug'].join('/');
+
+/**
+ * ME API
+ */
+export const ME_API_ROOT_PATH = '/api/v1/me';
+export const ME_API_ROOT_URL = APP_URL + ME_API_ROOT_PATH;
 
 /**
  * SUBSCRIPTIONS API
