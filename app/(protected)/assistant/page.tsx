@@ -1,7 +1,7 @@
 import { getAuthSession } from '@app/auth/session';
 import { AssistantForm } from '@components/ai/AssistantForm';
 import { ChatForm } from '@components/ai/ChatForm';
-import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, USER_API_ROOT_PATH } from '@lib/constants';
+import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, ME_API_ROOT_PATH } from '@lib/constants';
 import { BotMessageSquareIcon } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { paths: string[] } }) 
       </h3> */}
       <ChatForm
         authSession={authSession}
-        api={ USER_API_ROOT_PATH + '/me/chat' }
+        api={ ME_API_ROOT_PATH + '/chat' }
         threadId={assistantThreadId}
         className="text-balance h-full w-full"
       />

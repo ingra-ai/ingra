@@ -1,4 +1,4 @@
-import { USER_API_ROOT_PATH } from "@lib/constants";
+import { ME_API_ROOT_PATH } from "@lib/constants";
 
 interface PathNode {
   title: string;
@@ -14,15 +14,15 @@ export const createPathTree = (paths: string[]): PathNode[] => {
     const segments = path.split('/').filter(Boolean);
     let current = root;
 
-    // Check for the specific case of grouping "/api/v1/me" or "/api/v1/subs"
+    // Check for the specific case of grouping "/api/v1/me"
     const rootSegments = [
-        USER_API_ROOT_PATH
+        '/api/v1',
       ],
       currentPathIndex = rootSegments.findIndex((rootSegment) => path.startsWith(rootSegment));
 
     if ( currentPathIndex >= 0 ) {
       const rootSegment = rootSegments[currentPathIndex];
-      const remainingSegments = segments.slice(3); // Remove "api", "v1", "me/subs"
+      const remainingSegments = segments.slice(2); // Remove "api", "v1", "me/subs"
 
       // Ensure "/api/v1/me" exists in the tree
       let child = current.children.find((child) => child.key === rootSegment);
