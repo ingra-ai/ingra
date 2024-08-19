@@ -11,7 +11,7 @@ import {
   deleteFunction as dataDeleteFunctions,
   cloneFunction as dataCloneFunction,
   toggleFunctionSubscription,
-} from '@/data/functions';
+} from '@data/functions';
 import { addFunctionToCollection, removeFunctionFromCollection } from '@/data/collections';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {

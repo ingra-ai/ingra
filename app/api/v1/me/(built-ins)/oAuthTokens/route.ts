@@ -5,7 +5,7 @@ import db from "@lib/db"; // Assuming you have a db instance for interacting wit
 import { setTokenAsDefault } from "@/data/oauthToken";
 import { clearAuthCaches } from "@app/auth/session/caches";
 import { mixpanel } from "@lib/analytics";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 
 /**
  * @swagger

@@ -61,9 +61,6 @@ export async function executeFunction(authSession: AuthSessionResponse, function
 
   const context = generateVmContextArgs(authSession, functionToExecute.arguments, requestArgs);
 
-  // Spread args into context
-  Object.assign(context, requestArgs);
-
   // Log the actions
   Logger
     .withTag('api|executeFunction')

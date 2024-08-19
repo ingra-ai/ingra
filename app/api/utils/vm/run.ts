@@ -4,16 +4,21 @@ import { setTimeout } from 'timers/promises';
 import type { VmContextArgs } from '@app/api/utils/vm/generateVmContextArgs';
 import * as vm from 'vm';
 import { SandboxAnalytics, getVmSandbox } from './getVmSandbox';
+import { VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS } from '@lib/constants';
 
-const EXECUTION_TIMEOUT_SECONDS = 60;
-
-async function withTimeout(promise: Promise<any>, timeoutSeconds = EXECUTION_TIMEOUT_SECONDS) {
-  const timeoutPromise = setTimeout(timeoutSeconds * 1e3).then(() => {
+// In run.ts, refine the withTimeout function for better error handling and type safety
+async function withTimeout<T>(promise: Promise<T>, timeoutSeconds = VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS): Promise<T> {
+  const controller = new AbortController();
+  const timeoutPromise = setTimeout(timeoutSeconds * 1e3, null, {
+    signal: controller.signal,
+  }).then(() => {
     throw new ActionError('error', 408, 'Execution timed out exceeded ' + timeoutSeconds + ' seconds');
   });
-  return Promise.race([promise, timeoutPromise]);
-}
 
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    controller.abort();
+  });
+}
 
 // Run the code in a sandbox
 export async function run(code: string, ctx: VmContextArgs) {
@@ -32,7 +37,7 @@ export async function run(code: string, ctx: VmContextArgs) {
   try {
     // Run the code in the sandbox
     vm.runInContext(code, context, {
-      timeout: EXECUTION_TIMEOUT_SECONDS * 1e3,
+      timeout: VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS * 1e3,
     });
   }
   catch ( err: any ) {
@@ -52,14 +57,13 @@ export async function run(code: string, ctx: VmContextArgs) {
     const start = Date.now();
     const memoryUsageBefore = process.memoryUsage().heapUsed;
 
-    const sandboxHandlerPromise = sandbox.handler(ctx).catch((err: any) => {
-        analytics.outputs.push({
-          type: 'error',
-          message: err.message || 'Failed to execute function',
-        });
-        return void 0;
-      }),
-      result = await withTimeout(sandboxHandlerPromise);
+    const result = await withTimeout(sandbox.handler(ctx)).catch((err: any) => {
+      analytics.outputs.push({
+        type: 'error',
+        message: err.message || 'Failed to execute function',
+      });
+      return void 0;
+    });
 
     analytics.outputs.push({
       type: 'metric',

@@ -6,7 +6,7 @@ export default function Loading() {
     <div className="block container" data-testid="assistants-page">
       <div className="max-w-prose mx-auto">
         <Skeleton className="h-6 w-1/2 mb-8" />
-        <Skeleton className="h-[85vh] w-full" />
+        <Skeleton className="h-full w-full" />
       </div>
     </div>
   );

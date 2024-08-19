@@ -14,7 +14,7 @@ async function Layout ({
   children: ReactNode
 }) {
   return (
-    <div id="assistant-layout" className='relative' data-testid="assistant-layout">
+    <div id="assistant-layout" className='relative h-full w-full overflow-hidden' data-testid="assistant-layout">
       <Suspense fallback={<AssistantSkeleton />}>
         { children }
       </Suspense>

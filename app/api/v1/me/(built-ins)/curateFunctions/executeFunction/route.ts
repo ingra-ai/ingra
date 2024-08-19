@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
-import db from "@lib/db";
 import { ActionError } from "@v1/types/api-response";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
-import { getAnalyticsObject, isUuid } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 import { mixpanel } from "@lib/analytics";
+import { getFunctionAccessibleByUser } from "@data/functions";
 
 /**
  * @swagger
@@ -64,44 +64,16 @@ export async function POST(req: NextRequest) {
       throw new ActionError("error", 400, 'Function ID or slug is required to run this method.');
     }
 
-    const useUuid = isUuid(functionIdOrSlug);
-
     // Find the function
-    const functionRecord = await db.function.findFirst({
-      where: {
-        OR: [
-          useUuid ? {
-            id: functionIdOrSlug,
-            ownerUserId: authSession.user.id
-          } : {
-            slug: functionIdOrSlug,
-            ownerUserId: authSession.user.id
-          },
-          {
-            AND: [
-              {
-                subscribers: {
-                  some: {
-                    userId: authSession.user.id
-                  }
-                }
-              },
-              useUuid ? {
-                id: functionIdOrSlug,
-              } : {
-                slug: functionIdOrSlug
-              }
-            ]
-          }
-        ],
-      },
-      select: {
-        id: true,
-        slug: true,
-        code: true,
-        arguments: true
+    const functionRecord = await getFunctionAccessibleByUser( authSession.user.id, functionIdOrSlug, {
+      accessTypes: ['owner', 'subscriber'],
+      findFirstArgs: {
+        include: {
+          arguments: true,
+          tags: true,
+        },
       }
-    });
+    } );
 
     if ( !functionRecord ) {
       throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);

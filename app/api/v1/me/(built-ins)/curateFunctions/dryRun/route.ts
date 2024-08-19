@@ -4,7 +4,7 @@ import { Logger } from "@lib/logger";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
 import { ActionError } from "@v1/types/api-response";
 import { mixpanel } from "@lib/analytics";
-import { getAnalyticsObject } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 
 /**
  * @swagger

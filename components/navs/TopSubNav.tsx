@@ -22,7 +22,7 @@ const TopSubNav: React.FC<TopSubNavProps> = ( props ) => {
   return (
     <>
       <nav className={classes} { ...navProps } data-testid="top-sub-nav">
-        <ul role="list" className="flex min-w-full flex-none gap-x-6 text-sm font-semibold leading-6 text-gray-400">
+        <ul role="list" className="flex justify-center min-w-full flex-none gap-x-6 text-sm font-semibold leading-6 text-gray-400">
           {navItems.map((item) => (
             <li key={item.name}>
               <Link href={item.href} prefetch={true} className={pathname.indexOf(item.href) >= 0 ? 'text-indigo-400' : ''}>

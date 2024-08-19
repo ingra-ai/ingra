@@ -17,6 +17,7 @@ const config: Config = {
     "@actions/(.*)$": "<rootDir>/app/(protected)/(actions)/$1",
     "@v1/(.*)$": "<rootDir>/app/api/v1/$1",
     "@components/(.*)$": "<rootDir>/components/$1",
+    "@data/(.*)$": "<rootDir>/data/$1",
     "@lib/(.*)$": "<rootDir>/lib/$1",
     "@app/(.*)$": "<rootDir>/app/$1"
   },

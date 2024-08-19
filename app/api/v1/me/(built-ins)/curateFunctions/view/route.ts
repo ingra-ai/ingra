@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
-import db from "@lib/db";
 import { Prisma } from "@prisma/client";
-import { getAnalyticsObject, isUuid } from "@lib/utils";
+import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 import { mixpanel } from "@lib/analytics";
+import { getFunctionAccessibleByUser } from "@data/functions";
 
 /**
  * @swagger
@@ -67,8 +67,6 @@ export async function GET(req: NextRequest) {
       slug: true
     };
     
-    const useUuid = isUuid(functionIdOrSlug);
-    
     // Populate Function select fields
     if (fieldsToRetrieveParams.length) {
       const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
@@ -127,43 +125,12 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    // Prepare the search filter based on provided id or slug
-    const whereFilter: Prisma.FunctionWhereInput = {
-      AND: [
-        {
-          OR: [
-            useUuid ? {
-              id: functionIdOrSlug,
-              ownerUserId: authSession.user.id
-            } : {
-              slug: functionIdOrSlug,
-              ownerUserId: authSession.user.id
-            },
-            {
-              AND: [
-                {
-                  subscribers: {
-                    some: {
-                      userId: authSession.user.id
-                    }
-                  }
-                },
-                useUuid ? {
-                  id: functionIdOrSlug,
-                } : {
-                  slug: functionIdOrSlug
-                }
-              ]
-            }
-          ],
-        }
-      ]
-    };
-
-    const functionRecord = await db.function.findFirst({
-      where: whereFilter,
-      select: selectFields
-    });
+    const functionRecord = await getFunctionAccessibleByUser( authSession.user.id, functionIdOrSlug, {
+      accessTypes: ['owner', 'subscriber'],
+      findFirstArgs: {
+        select: selectFields
+      }
+    } )
 
     // Check if the function was found
     if (!functionRecord) {
@@ -186,7 +153,7 @@ export async function GET(req: NextRequest) {
       .withTag('operation|curateFunctions-view')
       .withTag(`user|${authSession.user.id}`)
       .withTag(`function|${functionRecord.id}`)
-      .info('Viewing a specific user function', { whereFilter });
+      .info('Viewing a specific user function', { accessTypes: ['owner', 'subscriber'] });
 
     return NextResponse.json(
       {

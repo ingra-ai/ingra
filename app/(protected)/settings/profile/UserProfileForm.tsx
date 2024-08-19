@@ -9,7 +9,7 @@ import { useToast } from '@components/ui/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AuthSessionResponse } from "@app/auth/session/types";
 import { ProfileSchema } from '@/schemas/profile';
-import { censorEmail } from '@lib/functions/censorEmail';
+import { censorEmail } from '@lib/utils';
 import { updateProfile } from '@actions/profile';
 import { useCallback, useState, useTransition } from 'react';
 import { Input } from '@components/ui/input';
