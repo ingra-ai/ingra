@@ -1,6 +1,6 @@
 'use client';
 import { NavItemChild } from '@components/navs/types';
-import { SquareDashedBottomCodeIcon, SquareLibraryIcon } from 'lucide-react';
+import { SquareFunctionIcon, SquareLibraryIcon } from 'lucide-react';
 
 export const MarketplaceNavRoutes: NavItemChild[] = [
   {
@@ -11,6 +11,6 @@ export const MarketplaceNavRoutes: NavItemChild[] = [
   {
     name: 'Functions',
     href: '/marketplace/functions',
-    icon: SquareDashedBottomCodeIcon
+    icon: SquareFunctionIcon
   }
 ];

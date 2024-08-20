@@ -17,6 +17,28 @@ export const getUserProfile = async (user: User): Promise<Profile | null> => {
   });
 };
 
+/**
+ * Retrieves the user profile for a given username.
+ * @param userName - The username.
+ * @returns A Promise that resolves to the user's profile, or null if not found.
+ */
+export const getUserProfileByUsername = async (userName: string) => {
+  if ( !userName ) {
+    return null;
+  }
+
+  return await db.profile.findUnique({
+    where: { userName },
+    select: {
+      userId: true,
+      userName: true,
+      firstName: true,
+      lastName: true,
+      timeZone: true,
+    },
+  });
+};
+
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>, userId: string) => {
   const { firstName, lastName, userName, timeZone } = values;
 
