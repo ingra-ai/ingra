@@ -1,7 +1,6 @@
 import type { BakaPaginationType } from "@components/BakaPagination";
 import { Prisma } from "@prisma/client";
 
-// The type is similar to the one in mine/subscriptions/collections/types.ts
 export type CollectionMarketplaceListGetPayload = Prisma.CollectionGetPayload<{
   select: {
     id: true,

@@ -12,7 +12,7 @@ import {
   unsubscribeToCollection as dataUnsubscribeToCollection,
   toggleCollectionSubscription as dataToggleCollectionSubscription,
   
-} from '@/data/collections';
+} from '@data/collections';
 
 export const createCollection = async (values: z.infer<typeof CollectionSchema>) => {
   const validatedValues = await validateAction(CollectionSchema, values);

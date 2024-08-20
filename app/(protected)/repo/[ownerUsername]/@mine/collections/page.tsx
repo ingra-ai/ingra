@@ -1,26 +1,29 @@
 import { getAuthSession } from '@app/auth/session';
+import { notFound } from 'next/navigation';
 import { BakaPagination } from '@components/BakaPagination';
-import { cn } from '@lib/utils';
+import CollectionList from './CollectionList';
 import { fetchPaginationData } from './fetchPaginationData';
-import CommunityCollectionList from '@components/data/collections/CommunityCollectionList';
 
 export default async function Page(
-  { searchParams }: {
-    searchParams: Record<string, string | string[] | undefined>
+  { searchParams, params }: {
+    searchParams: Record<string, string | string[] | undefined>;
+    params: { ownerUsername: string };
   }
 ) {
   const authSession = await getAuthSession();
+  
+  if ( !authSession || !params.ownerUsername ) {
+    return notFound();
+  }
 
-  const paginationData = await fetchPaginationData(searchParams, authSession?.userId || 'guest'),
+  const paginationData = await fetchPaginationData(searchParams, authSession.user.id),
     { records, ...paginationProps } = paginationData;
 
-  const classes = cn('block');
-
   return (
-    <div className={ classes } data-testid="marketplace-collections-page">
+    <div className="block" data-testid="collections-list-page">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">Collections Marketplace</h1>
+          <h1 className="text-base font-semibold leading-6">My Collections</h1>
           <p className="text-xs text-gray-500 font-sans mt-1">
             # records: <strong>{paginationProps.totalRecords.toLocaleString(undefined, { minimumFractionDigits: 0 })}</strong>
           </p>
@@ -29,8 +32,8 @@ export default async function Page(
         </div>
       </div>
       <div className="mt-4">
-        <BakaPagination className="mb-4" {...paginationProps} />
-        <CommunityCollectionList showControls={ !!authSession } collections={records} />
+        <BakaPagination className="mb-4" { ...paginationProps } />
+        <CollectionList ownerUsername={params.ownerUsername} collections={records} />
       </div>
     </div>
   );

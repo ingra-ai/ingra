@@ -105,13 +105,13 @@ export default async function Dashboard() {
               {
                 name: 'Mine',
                 stat: totalFunctions.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: '/mine/functions',
+                href: `/repo/${ profile?.userName }/functions`,
               },
               {
                 name: 'Subscribed',
                 stat: totalSubscribedFunctions.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: totalSubscribedFunctions > 0 ? '/subscriptions/functions' : '/marketplace/functions',
-                linkText: totalSubscribedFunctions > 0 ? 'View all' : 'Visit Marketplace',
+                href: '/marketplace/functions',
+                linkText: 'Visit Marketplace',
               },
             ]}
           />
@@ -123,13 +123,13 @@ export default async function Dashboard() {
               {
                 name: 'Mine',
                 stat: totalCollections.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: '/mine/collections',
+                href: `/repo/${ profile?.userName }/collections`,
               },
               {
                 name: 'Subscribed',
                 stat: totalSubscribedCollections.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: totalSubscribedCollections > 0 ? '/subscriptions/collections' : '/marketplace/collections',
-                linkText: totalSubscribedCollections > 0 ? 'View all' : 'Visit Marketplace',
+                href: '/marketplace/collections',
+                linkText: 'Visit Marketplace',
               },
             ]}
           />

@@ -1,19 +1,21 @@
 import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
-import LoadingSkeleton from './loading';
-import { APP_NAME } from '@lib/constants';
+import FunctionNewSkeleton from './loading';
 import type { Metadata } from 'next'
+import { APP_NAME } from '@lib/constants';
  
 export const metadata: Metadata = {
-  title: ['Collection Marketplace', APP_NAME].join(' | '),
+  title: ['New Function', APP_NAME].join(' | '),
 }
 
 async function Layout ({ 
+  params,
   children 
 }: { 
+  params: { ownerUsername: string; recordId: string },
   children: ReactNode
 }) {
   return (
-    <Suspense fallback={<LoadingSkeleton />}>
+    <Suspense fallback={<FunctionNewSkeleton />}>
       { children }
     </Suspense>
   );

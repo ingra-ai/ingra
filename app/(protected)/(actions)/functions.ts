@@ -12,7 +12,7 @@ import {
   cloneFunction as dataCloneFunction,
   toggleFunctionSubscription,
 } from '@data/functions';
-import { addFunctionToCollection, removeFunctionFromCollection } from '@/data/collections';
+import { addFunctionToCollection, removeFunctionFromCollection } from '@data/collections';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
   const validatedValues = await validateAction(FunctionSchema, values);
@@ -59,7 +59,10 @@ export const cloneFunction = async (functionId: string) => {
     return {
       status: 'ok',
       message: `Function "${clonedFunction.slug}" has been cloned!`,
-      data: clonedFunction
+      data: {
+        ...clonedFunction,
+        href: `/repo/${authSession.user.profile?.userName}/functions/edit/${clonedFunction.id}`
+      }
     };
   });
 };

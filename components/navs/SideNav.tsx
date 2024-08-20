@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
 import type { AuthSessionResponse } from '@app/auth/session/types';
-import { GlobeIcon, RssIcon, BotMessageSquareIcon, UserCogIcon, LayoutDashboardIcon, EllipsisIcon, MenuIcon } from 'lucide-react';
+import { GlobeIcon, Package2Icon, LayoutDashboardIcon, EllipsisIcon, MenuIcon } from 'lucide-react';
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import { Button } from '@components/ui/button';
@@ -18,61 +18,69 @@ export type SideNavProps = {
   onMenuClick?: () => void;
 };
 
-const sideNavRoutes: NavItem[] = [
-  {
-    name: 'Dashboard',
-    description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
-    href: '/overview/dashboard',
-    icon: LayoutDashboardIcon,
-  },
-  // {
-  //   name: 'Assistant',
-  //   description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
-  //   href: '/assistant',
-  //   icon: BotMessageSquareIcon,
-  // },
-  {
-    name: "Hubs",
-    description: "Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.",
-    children: [
-      {
-        name: 'Marketplace',
-        description: 'Browse public collections and functions shared by other users.',
-        href: '/marketplace',
-        icon: GlobeIcon,
-      },
-      {
-        name: 'Subscriptions',
-        description: 'Manage your collections and functions that you subscribed from Marketplace.',
-        href: '/subscriptions',
-        icon: RssIcon,
-      },
-      {
-        name: 'Mine',
-        description: 'Manage your own collections and functions repository.',
-        href: '/mine',
-        icon: UserCogIcon,
-      },
-    ],
-  },
-  // {
-  //   name: "Workflows",
-  //   description: "Generate workflows for automating tasks, including data processing, notifications, and more.",
-  //   children: [
-  //     {
-  //       name: 'Your Flows',
-  //       description: 'Access and manage your collection of workflows.',
-  //       href: '/flows',
-  //       icon: WorkflowIcon,
-  //     }
-  //   ],
-  // },
-];
+const getSideNavRoutes = (authSession: AuthSessionResponse) => {
+  const username = authSession?.user?.profile?.userName || '';
+
+  const sideNavRoutes: NavItem[] = [
+    {
+      name: 'Dashboard',
+      description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
+      href: '/overview/dashboard',
+      icon: LayoutDashboardIcon,
+    },
+    // {
+    //   name: 'Assistant',
+    //   description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
+    //   href: '/assistant',
+    //   icon: BotMessageSquareIcon,
+    // },
+    {
+      name: "Hubs",
+      description: "Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.",
+      children: [
+        {
+          name: 'Marketplace',
+          description: 'Browse public collections and functions shared by other users.',
+          href: '/marketplace',
+          icon: GlobeIcon,
+        },
+        {
+          ...( username ? {
+            name: 'Repository',
+            description: 'Manage your collections and functions that you own or have access to.',
+            href: `/repo/${username}/collections`,
+            icon: Package2Icon,
+          } : {
+            name: 'Repository',
+            description: 'Manage your collections and functions that you own or have access to.',
+            href: `/repo`,
+            icon: Package2Icon,
+          })
+        }
+      ],
+    },
+    // {
+    //   name: "Workflows",
+    //   description: "Generate workflows for automating tasks, including data processing, notifications, and more.",
+    //   children: [
+    //     {
+    //       name: 'Your Flows',
+    //       description: 'Access and manage your collection of workflows.',
+    //       href: '/flows',
+    //       icon: WorkflowIcon,
+    //     }
+    //   ],
+    // },
+  ];
+
+  return sideNavRoutes;
+};
 
 const SideNav: FC<SideNavProps> = (props) => {
   const { className, authSession, onMenuClick } = props;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
   const pathname = usePathname();
+  const sideNavRoutes = getSideNavRoutes(authSession);
 
   // Type guard to determine if a NavItem is a NavItemParent
   const isNavItemParent = useCallback((item: NavItem): item is NavItemParent => {

@@ -27,7 +27,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
 
   const mainClasses = cn(
     'bg-dark-radial-pattern',
-    'relative z-20 h-full w-full overflow-hidden',
+    'relative z-20 h-full w-full overflow-hidden overflow-y-auto',
     'transition-padding duration-300 ease-in-out',
     {
       'lg:pl-64': sidebarOpen
