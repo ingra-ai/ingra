@@ -8,7 +8,7 @@ import { useToast } from '@components/ui/use-toast';
 import { runCodeSandbox } from '@actions/runCodeSandbox';
 import { cn } from '@lib/utils';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import FunctionArgumentInputSwitchField from '@protected/mine/functions/FunctionArgumentInputSwitchField';
+import FunctionArgumentInputSwitchField from './FunctionArgumentInputSwitchField';
 import type { Prisma } from '@prisma/client';
 import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@app/api/utils/vm/types';
 import { ScrollArea } from '@components/ui/scroll-area';

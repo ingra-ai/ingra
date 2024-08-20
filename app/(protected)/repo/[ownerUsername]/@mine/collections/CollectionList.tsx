@@ -6,7 +6,7 @@ import { deleteCollection } from '@actions/collections';
 import type { CollectionListGetPayload } from './types';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { CollectionForm } from '@protected/mine/collections/CollectionForm';
+import { CollectionForm } from './CollectionForm';
 import { Button } from '@components/ui/button';
 import CollectionCard from './CollectionCard';
 import { cn } from '@lib/utils';

@@ -1,10 +1,10 @@
 'use client';
 import React, { useCallback, useTransition } from 'react';
-import { PencilIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import { MoreVertical, TrashIcon } from 'lucide-react'
 import { CollectionViewDetailPayload } from './types';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { CollectionForm } from '@protected/mine/collections/CollectionForm';
+import { CollectionForm } from '../../CollectionForm';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

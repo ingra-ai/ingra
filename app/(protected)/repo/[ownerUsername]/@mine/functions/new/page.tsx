@@ -1,10 +1,11 @@
 import { getAuthSession } from '@app/auth/session';
 import { notFound } from 'next/navigation';
-import { FunctionForm } from '@protected/mine/functions/FunctionForm';
+import { FunctionForm } from '../FunctionForm';
 import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
 
-export default async function Page() {
+export default async function Page({ params }: { params: { ownerUsername: string } }) {
   const authSession = await getAuthSession();
+  const { ownerUsername } = params;
 
   if ( !authSession ) {
     return notFound();
@@ -26,7 +27,7 @@ export default async function Page() {
           <h1 className="text-base font-semibold leading-10">Add New Function</h1>
         </div>
         <div className="block">
-          <FunctionForm envVars={optionalEnvVars} userVars={ userVarsRecord } />
+          <FunctionForm ownerUsername={ownerUsername} envVars={optionalEnvVars} userVars={ userVarsRecord } />
         </div>
       </div>
     </div>

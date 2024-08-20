@@ -1,8 +1,8 @@
 import { getAuthSession } from '@app/auth/session';
 import db from '@lib/db';
-import { FunctionItem } from '@protected/mine/functions/FunctionItem';
-import { RedirectType, notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import CollectionViewDetails from './CollectionViewDetails';
+import { FunctionItem } from '../../../functions/FunctionItem';
 
 export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const authSession = await getAuthSession();

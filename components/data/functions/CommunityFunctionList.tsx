@@ -75,9 +75,9 @@ const CommunityFunctionsList: React.FC<CommunityFunctionsListProps> = (props) =>
         action: <></> as React.JSX.Element,
       };
 
-      if (result?.data?.id) {
+      if (result?.data?.href) {
         toastProps.action = (
-          <ToastAction altText="Cloned Function" onClick={() => router.replace(`/mine/functions/edit/${result.data.id}`)}>
+          <ToastAction altText="Cloned Function" onClick={() => router.replace(result?.data?.href)}>
             <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
           </ToastAction>
         );

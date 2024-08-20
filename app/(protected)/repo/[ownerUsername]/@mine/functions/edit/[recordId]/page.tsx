@@ -2,12 +2,12 @@ import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
 import { getAuthSession } from '@app/auth/session';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@components/ui/tabs';
 import db from '@lib/db';
-import { FunctionForm } from '@protected/mine/functions/FunctionForm';
-import { UserVarsTable } from '@protected/mine/functions/UserVarsTable';
 import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 import { APP_NAME } from '@lib/constants';
 import { getCollectionsByUserId } from '@data/collections/getCollectionsByUserId';
+import { FunctionForm } from '../../FunctionForm';
+import { UserVarsTable } from '../../UserVarsTable';
  
 export async function generateMetadata({ params }: { params: { ownerUsername: string; recordId: string } }) {
   return {
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: { ownerUsername: st
 
 export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const authSession = await getAuthSession();
-  const recordId = params?.recordId;
+  const { ownerUsername, recordId } = params;
 
   if (!recordId || !authSession) {
     return notFound();
@@ -64,7 +64,7 @@ export default async function Page({ params }: { params: { ownerUsername: string
             <TabsTrigger value="vars-tab">Variables</TabsTrigger>
           </TabsList>
           <TabsContent value="function-form-tab" className='block space-y-6 mt-4'>
-            <FunctionForm functionRecord={functionRecord} envVars={optionalEnvVars} userVars={userVarsRecord} collections={ collections } />
+            <FunctionForm ownerUsername={ownerUsername} functionRecord={functionRecord} envVars={optionalEnvVars} userVars={userVarsRecord} collections={ collections } />
           </TabsContent>
           <TabsContent value="vars-tab" className='block space-y-6 mt-4'>
             <EnvVarsSection envVars={optionalEnvVars || []} />

@@ -12,7 +12,7 @@ import { FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@
 import { cloneFunction, collectionToggleFunction, upsertFunction } from '@actions/functions';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
-import FunctionArgumentFormField from '@protected/mine/functions/FunctionArgumentFormField';
+import FunctionArgumentFormField from './FunctionArgumentFormField';
 import type { Prisma } from '@prisma/client';
 import CodeEditorInput from '@/components/CodeEditorInput';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
@@ -177,9 +177,9 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
         action: <></> as JSX.Element,
       };
 
-      if (result?.data?.id) {
+      if (result?.data?.href) {
         toastProps.action = (
-          <ToastAction altText="Cloned Function" onClick={() => router.replace(`/repo/${ownerUsername}/functions/edit/${result.data.id}`)}>
+          <ToastAction altText="Cloned Function" onClick={() => router.replace(result.data.href)}>
             <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
           </ToastAction>
         );
