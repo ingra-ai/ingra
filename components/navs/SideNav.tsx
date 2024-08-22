@@ -11,7 +11,7 @@ import { GlobeIcon, Package2Icon, LayoutDashboardIcon, EllipsisIcon, MenuIcon } 
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import { Button } from '@components/ui/button';
-import { getUserRepoCollectionsUri } from '@lib/constants/repo';
+import { getUserRepoUri } from '@lib/constants/repo';
 
 export type SideNavProps = {
   className?: string;
@@ -48,7 +48,7 @@ const getSideNavRoutes = (authSession: AuthSessionResponse) => {
         {
           name: 'Repository',
           description: 'Manage your collections and functions that you own or have access to.',
-          href: getUserRepoCollectionsUri(username),
+          href: getUserRepoUri(username),
           icon: Package2Icon,
         }
       ],

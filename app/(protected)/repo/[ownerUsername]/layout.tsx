@@ -7,7 +7,6 @@ import { APP_SETTINGS_PROFILE_URI } from '@lib/constants';
 import Link from 'next/link';
 import RepoTopNav from './RepoTopNav';
 import { getUserProfileByUsername } from '@data/profile';
-import { notFound } from 'next/navigation';
  
 export const metadata: Metadata = {
   title: ['Hubs', APP_NAME].join(' | '),
