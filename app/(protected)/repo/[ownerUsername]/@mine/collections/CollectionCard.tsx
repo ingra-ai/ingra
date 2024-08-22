@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link';
 import { cn } from '@lib/utils';
+import { getUserRepoCollectionsViewUri } from '@lib/constants/repo';
 
 interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
   ownerUsername: string;
@@ -44,7 +45,7 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
     <div data-testid='collection-card' {...divProps} className={classes}>
       <div className="min-w-0 space-y-2">
         <div className="flex justify-between items-start">
-          <Link className='block w-full leading-6' href={`/repo/${ownerUsername}/collections/view/${collection.id}`}>
+          <Link className='block w-full leading-6' href={getUserRepoCollectionsViewUri(ownerUsername, collection.id)}>
             <h2 className="text-lg inline-block text-info">{collection.slug}</h2>
           </Link>
           <DropdownMenu>

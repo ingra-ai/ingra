@@ -3,6 +3,7 @@ import React from 'react';
 import { NavItemChild } from '@components/navs/types';
 import TopSubNav from '@components/navs/TopSubNav';
 import { SquareFunctionIcon, SquareLibraryIcon } from 'lucide-react';
+import { getUserRepoCollectionsUri, getUserRepoFunctionsUri } from '@lib/constants/repo';
 
 type RepoTopNavProps = {
   ownerUsername: string;
@@ -13,12 +14,12 @@ const RepoTopNav: React.FC<RepoTopNavProps> = ( props ) => {
   const navRoutes: NavItemChild[] = [
     {
       name: 'Collections',
-      href: `/repo/${ownerUsername}/collections`,
+      href: getUserRepoCollectionsUri(ownerUsername),
       icon: SquareLibraryIcon
     },
     {
       name: 'Functions',
-      href: `/repo/${ownerUsername}/functions`,
+      href: getUserRepoFunctionsUri(ownerUsername),
       icon: SquareFunctionIcon
     }
   ];

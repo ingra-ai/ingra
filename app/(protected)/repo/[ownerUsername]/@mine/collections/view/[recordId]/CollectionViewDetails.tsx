@@ -18,6 +18,7 @@ import { Button } from '@components/ui/button';
 import { deleteCollection } from '@actions/collections';
 import { useToast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+import { getUserRepoCollectionsUri } from '@lib/constants/repo';
 
 interface CollectionViewDetailsProps {
   ownerUsername: string;
@@ -46,7 +47,7 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ ownerUser
         });
 
         startTransition(() => {
-          router.replace(`/repo/${ownerUsername}/collections`);
+          router.replace(getUserRepoCollectionsUri(ownerUsername));
         });
   
       }).catch((error) => {

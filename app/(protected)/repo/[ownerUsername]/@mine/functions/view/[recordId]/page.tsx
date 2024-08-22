@@ -1,4 +1,5 @@
 import { getAuthSession } from '@app/auth/session';
+import { getUserRepoFunctionsEditUri } from '@lib/constants/repo';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 
 export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
@@ -9,5 +10,5 @@ export default async function Page({ params }: { params: { ownerUsername: string
     return notFound();
   }
   
-  redirect(`/repo/${ authSession.user.profile?.userName }/functions/edit/${ recordId }`, RedirectType.replace);
+  redirect(getUserRepoFunctionsEditUri(authSession.user.profile?.userName, recordId), RedirectType.replace);
 }

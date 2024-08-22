@@ -28,6 +28,7 @@ import { generateCodeDefaultTemplate } from '@app/api/utils/vm/functions/generat
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { CollectionListGetPayload } from './types';
 import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';
+import { getUserRepoFunctionsUri, getUserRepoFunctionsEditUri } from '@lib/constants/repo';
 
 type FunctionFormProps = {
   ownerUsername: string;
@@ -100,7 +101,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
   });
 
   const onCancel = useCallback(() => {
-    router.replace(`/repo/${ownerUsername}/functions`);
+    router.replace(getUserRepoFunctionsUri(ownerUsername));
   }, [ownerUsername]);
 
   const onSave = useCallback(async (values: z.infer<typeof FunctionSchema>) => {
@@ -118,7 +119,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
               title: 'Function updated!',
               description: 'Your function has been updated.',
               action: (
-                <ToastAction altText="My Functions" onClick={() => router.replace(`/repo/${ownerUsername}/functions`)}>
+                <ToastAction altText="My Functions" onClick={() => router.replace(getUserRepoFunctionsUri(ownerUsername))}>
                   <ListChecksIcon className="w-3 h-3 mr-3" /> My Functions
                 </ToastAction>
               )
@@ -131,7 +132,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
             });
 
             // Go to the created functions
-            redirectUrl = `/repo/${ownerUsername}/functions/edit/${resp.data.id}`;
+            redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp.data.id);
           }
         }
 
@@ -171,15 +172,18 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
       if (result.status !== 'ok') {
         throw new Error(result.message);
       }
+    
       const toastProps = {
         title: 'Function cloned!',
         description: 'Your function has been cloned.',
         action: <></> as JSX.Element,
       };
 
-      if (result?.data?.href) {
+      const functionHref = result?.data?.href;
+
+      if (functionHref) {
         toastProps.action = (
-          <ToastAction altText="Cloned Function" onClick={() => router.replace(result.data.href)}>
+          <ToastAction altText="Cloned Function" onClick={() => router.replace(functionHref)}>
             <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
           </ToastAction>
         );

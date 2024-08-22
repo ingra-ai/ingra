@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/tooltip"
 import formatDistance from 'date-fns/formatDistance';
 import format from 'date-fns/format';
+import { getUserRepoFunctionsNewUri } from '@lib/constants/repo';
 
 interface FunctionItemProps {
   functionData: FunctionListGetPayload;
@@ -83,7 +84,7 @@ interface FunctionItemNewProps {
 const FunctionItemNew: React.FC<FunctionItemNewProps> = ({ ownerUsername }) => {
   return (
     <Link
-      href={`/repo/${ownerUsername}/functions/new`}
+      href={getUserRepoFunctionsNewUri(ownerUsername)}
       className="flex flex-col justify-center items-center text-gray-500 hover:text-gray-300 border border-gray-500 hover:border-gray-300 shadow-md rounded-sm p-4 w-full min-h-[200px]">
       <PlusIcon className="h-12 w-12" />
       New Function

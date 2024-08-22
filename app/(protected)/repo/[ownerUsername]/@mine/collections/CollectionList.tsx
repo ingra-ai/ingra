@@ -10,6 +10,7 @@ import { CollectionForm } from './CollectionForm';
 import { Button } from '@components/ui/button';
 import CollectionCard from './CollectionCard';
 import { cn } from '@lib/utils';
+import { getUserRepoCollectionsViewUri } from '@lib/constants/repo';
 
 interface CollectionListProps extends React.HTMLAttributes<HTMLDivElement> {
   ownerUsername: string;
@@ -33,7 +34,7 @@ const CollectionList: React.FC<CollectionListProps> = ({ collections, ownerUsern
   }
 
   const handleView = (collection: CollectionListGetPayload) => {
-    router.push(`/repo/${ownerUsername}/collections/view/${collection.id}`);
+    router.push(getUserRepoCollectionsViewUri(ownerUsername, collection.id));
   };
 
   const handleDelete = (collection: CollectionListGetPayload) => {
