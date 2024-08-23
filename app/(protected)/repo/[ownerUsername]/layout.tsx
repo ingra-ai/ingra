@@ -1,7 +1,7 @@
 import { Suspense, type ReactNode } from 'react';
 import type { Metadata } from 'next'
 import { APP_DESCRIPTION, APP_NAME } from '@lib/constants';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { UserCircleIcon, LinkIcon } from '@heroicons/react/20/solid';
 import { APP_SETTINGS_PROFILE_URI } from '@lib/constants';
 import Link from 'next/link';

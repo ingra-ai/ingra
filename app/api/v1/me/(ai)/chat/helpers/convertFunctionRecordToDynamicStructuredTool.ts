@@ -2,7 +2,7 @@ import { DynamicStructuredTool } from "@langchain/community/tools/dynamic";
 import { Prisma } from "@prisma/client";
 import { functionArgsToZod } from "@app/api/utils/functions/functionArgsToZod";
 import { runUserFunction } from "@app/api/utils/vm/functions/runUserFunction";
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import { mixpanel } from "@lib/analytics";
 import { Logger } from "@lib/logger";
 import { getFunctionAccessibleByUser } from "@data/functions";

@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { deleteCollection } from '@actions/collections';
-import type { CollectionListGetPayload } from './types';
+import type { MineCollectionListGetPayload } from '@components/data/collections/mine/types';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { CollectionForm } from './CollectionForm';
@@ -14,16 +14,16 @@ import { getUserRepoCollectionsViewUri } from '@lib/constants/repo';
 
 interface CollectionListProps extends React.HTMLAttributes<HTMLDivElement> {
   ownerUsername: string;
-  collections: CollectionListGetPayload[];
+  collections: MineCollectionListGetPayload[];
 }
 
 const CollectionList: React.FC<CollectionListProps> = ({ collections, ownerUsername, ...divProps }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [open, setOpen] = React.useState(false);
-  const [editCollection, setEditCollection] = React.useState<CollectionListGetPayload | undefined>(undefined);
+  const [editCollection, setEditCollection] = React.useState<MineCollectionListGetPayload | undefined>(undefined);
 
-  const handleEdit = (collection: CollectionListGetPayload) => {
+  const handleEdit = (collection: MineCollectionListGetPayload) => {
     setEditCollection(collection);
     setOpen(true);
   };
@@ -33,11 +33,11 @@ const CollectionList: React.FC<CollectionListProps> = ({ collections, ownerUsern
     setOpen(false);
   }
 
-  const handleView = (collection: CollectionListGetPayload) => {
+  const handleView = (collection: MineCollectionListGetPayload) => {
     router.push(getUserRepoCollectionsViewUri(ownerUsername, collection.id));
   };
 
-  const handleDelete = (collection: CollectionListGetPayload) => {
+  const handleDelete = (collection: MineCollectionListGetPayload) => {
     // Prompt user
     const confirmed = confirm(`Are you sure to delete this collection? Removing this will just remove the collection and your functions will only be disconnected from it.`);
 

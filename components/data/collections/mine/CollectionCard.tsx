@@ -1,6 +1,7 @@
+'use client';
 import React from 'react';
 import { Button } from '@components/ui/button';
-import { CollectionListGetPayload } from './types';
+import { MineCollectionListGetPayload } from '@components/data/collections/mine/types';
 import { PencilIcon, EyeIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { SquareFunctionIcon, RssIcon, TagIcon, MoreVertical } from 'lucide-react';
 import {
@@ -24,7 +25,7 @@ import { getUserRepoCollectionsViewUri } from '@lib/constants/repo';
 
 interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
   ownerUsername: string;
-  collection: CollectionListGetPayload;
+  collection: MineCollectionListGetPayload;
   handleEdit: () => void;
   handleView: () => void;
   handleDelete: () => void;

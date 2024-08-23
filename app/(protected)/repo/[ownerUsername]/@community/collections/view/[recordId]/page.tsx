@@ -1,9 +1,9 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import db from '@lib/db';
 import { isUuid } from "@lib/utils";
-import { CommunityFunctionItem } from '@components/data/functions/CommunityFunctionItem';
+import { CommunityFunctionItem } from '@components/data/functions/community/CommunityFunctionItem';
 import { notFound } from 'next/navigation';
-import CommunityCollectionViewDetails from '@components/data/collections/CommunityCollectionViewDetails';
+import CommunityCollectionViewDetails from '@components/data/collections/community/CommunityCollectionViewDetails';
 import { getUserProfileByUsername } from '@data/profile';
 import { getUserRepoFunctionsViewUri } from '@lib/constants/repo';
 

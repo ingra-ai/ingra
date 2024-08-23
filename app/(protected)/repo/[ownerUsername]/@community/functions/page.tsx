@@ -1,5 +1,5 @@
-import { getAuthSession } from '@app/auth/session';
-import CommunityFunctionList from '@components/data/functions/CommunityFunctionList';
+import { getAuthSession } from '@data/auth/session';
+import CommunityFunctionList from '@components/data/functions/community/CommunityFunctionList';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@components/BakaPagination';

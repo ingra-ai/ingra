@@ -1,11 +1,12 @@
 'use client';
 
 import * as z from 'zod';
+import { startTransition, useCallback, useState, type JSX, type FC } from 'react';
 import { useForm, useFieldArray, FormProvider, Controller } from 'react-hook-form';
+import type { Prisma } from '@prisma/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@components/ui/button';
 import { RefreshCcw, BugPlayIcon, CopyPlusIcon, ListChecksIcon } from 'lucide-react';
-import { startTransition, useCallback, useState, type JSX, type FC } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { FunctionSchema, HttpVerbEnum, MAX_FUNCTION_DESCRIPTION_LENGTH } from '@/schemas/function';
@@ -13,7 +14,6 @@ import { cloneFunction, collectionToggleFunction, upsertFunction } from '@action
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { Switch } from "@/components/ui/switch"
 import FunctionArgumentFormField from './FunctionArgumentFormField';
-import type { Prisma } from '@prisma/client';
 import CodeEditorInput from '@/components/CodeEditorInput';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -23,12 +23,12 @@ import { TagField } from '@components/TagField';
 import { Input } from '@components/ui/input';
 import { Textarea } from '@components/ui/textarea';
 import { ToastAction } from "@/components/ui/toast"
-import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
+import type { EnvVarsOptionalPayload } from '@components/data/envVars/types';
 import { generateCodeDefaultTemplate } from '@app/api/utils/vm/functions/generateCodeDefaultTemplate';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { CollectionListGetPayload } from './types';
-import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';
 import { getUserRepoFunctionsUri, getUserRepoFunctionsEditUri } from '@lib/constants/repo';
+import ToggleCollectionMenuButton from '@components/data/collections/mine/ToggleCollectionMenuButton';
+import type { MineCollectionMenuListGetPayload } from '@components/data/collections/mine/types';
 
 type FunctionFormProps = {
   ownerUsername: string;
@@ -40,7 +40,7 @@ type FunctionFormProps = {
       arguments: true
     }
   }>;
-  collections?: CollectionListGetPayload[];
+  collections?: MineCollectionMenuListGetPayload[];
 };
 
 export const FunctionForm: FC<FunctionFormProps> = (props) => {

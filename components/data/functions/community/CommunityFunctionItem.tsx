@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import type { CommunityFunctionListGetPayload } from './types';
+import type { CommunityFunctionListGetPayload } from '@components/data/functions/community/types';
 import { Badge } from '@components/ui/badge';
 
 interface CommunityFunctionItemProps {

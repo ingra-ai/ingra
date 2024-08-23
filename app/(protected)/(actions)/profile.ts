@@ -5,7 +5,7 @@ import { ActionError } from '@v1/types/api-response';
 import { validateAction } from '@lib/action-helpers';
 import { ProfileSchema } from '@/schemas/profile';
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
-import { clearAuthCaches } from '@app/auth/session/caches';
+import { clearAuthCaches } from '@data/auth/session/caches';
 import { updateProfile as dataUpdateProfile, destroyAccount as dataDestroyAccount } from '@/data/profile';
 import { Logger } from '@lib/logger';
 

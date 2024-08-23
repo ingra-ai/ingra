@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { collectionToggleFunction, deleteFunction } from '@actions/functions';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import type { FunctionListGetPayload, CollectionListGetPayload } from './types';
-import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';
+import type { FunctionListGetPayload } from './types';
+import ToggleCollectionMenuButton from '@components/data/collections/mine/ToggleCollectionMenuButton';
 import { getUserRepoFunctionsEditUri, getUserRepoFunctionsUri } from '@lib/constants/repo';
+import type { MineCollectionMenuListGetPayload } from '@components/data/collections/mine/types';
 
 interface FunctionsListProps {
   ownerUsername: string;
   functions: FunctionListGetPayload[];
-  collections: CollectionListGetPayload[];
+  collections: MineCollectionMenuListGetPayload[];
 }
 
 const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions, collections }) => {

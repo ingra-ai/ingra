@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { CommunityCollectionListGetPayload } from './types';
+import type { CommunityCollectionListGetPayload } from '@components/data/collections/community/types';
 import CommunityCollectionCard from './CommunityCollectionCard';
 import { getUserRepoCollectionsViewUri } from '@lib/constants/repo';
 

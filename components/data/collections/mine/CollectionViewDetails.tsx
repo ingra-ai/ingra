@@ -2,9 +2,7 @@
 import React, { useCallback, useTransition } from 'react';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import { MoreVertical, TrashIcon } from 'lucide-react'
-import { CollectionViewDetailPayload } from './types';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { CollectionForm } from '../../CollectionForm';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -19,10 +17,12 @@ import { deleteCollection } from '@actions/collections';
 import { useToast } from '@components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { getUserRepoCollectionsUri } from '@lib/constants/repo';
+import { CollectionForm } from '@components/data/collections/mine/CollectionForm';
+import { MineCollectionViewDetailPayload } from '@components/data/collections/mine/types';
 
 interface CollectionViewDetailsProps {
   ownerUsername: string;
-  record: CollectionViewDetailPayload;
+  record: MineCollectionViewDetailPayload;
 }
 
 const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ ownerUsername, record }) => {

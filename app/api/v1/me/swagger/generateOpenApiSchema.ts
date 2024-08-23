@@ -1,5 +1,5 @@
 import { convertFunctionRecordToOpenApiSchema } from "@app/api/utils/functions/convertFunctionRecordToOpenApiSchema";
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import {
   USERS_API_FUNCTION_URI,
   USERS_API_COLLECTION_FUNCTION_URI

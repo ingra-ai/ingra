@@ -1,7 +1,7 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { notFound } from 'next/navigation';
-import { FunctionForm } from '../FunctionForm';
 import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
+import { FunctionForm } from '@components/data/functions/mine/FunctionForm';
 
 export default async function Page({ params }: { params: { ownerUsername: string } }) {
   const authSession = await getAuthSession();

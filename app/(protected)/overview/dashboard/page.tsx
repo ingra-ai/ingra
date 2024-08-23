@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, APP_SETTINGS_INTEGRATIONS_URI } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { SuggestionsList } from './SuggestionsList';

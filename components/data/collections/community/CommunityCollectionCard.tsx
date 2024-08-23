@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cn } from '@lib/utils';
-import type { CommunityCollectionListGetPayload } from './types';
+import type { CommunityCollectionListGetPayload } from '@components/data/collections/community/types';
 
 interface CommunityCollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
   collection: CommunityCollectionListGetPayload;

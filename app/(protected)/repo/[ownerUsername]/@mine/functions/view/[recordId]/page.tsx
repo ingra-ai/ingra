@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { getUserRepoFunctionsEditUri } from '@lib/constants/repo';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 

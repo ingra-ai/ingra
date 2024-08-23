@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useToast } from '@components/ui/use-toast';
 import { ToastAction } from "@components/ui/toast"
 import { cloneFunction, subscribeToggleFunction } from '@actions/functions';
-import type { CommunityFunctionListGetPayload } from './types';
+import type { CommunityFunctionListGetPayload } from '@components/data/functions/community/types';
 import { CommunityFunctionItem } from './CommunityFunctionItem';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import { Button } from '@components/ui/button';

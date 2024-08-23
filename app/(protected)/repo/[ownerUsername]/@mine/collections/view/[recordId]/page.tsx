@@ -1,9 +1,9 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import db from '@lib/db';
 import { notFound } from 'next/navigation';
-import CollectionViewDetails from './CollectionViewDetails';
-import { FunctionItem } from '../../../functions/FunctionItem';
 import { getUserRepoFunctionsEditUri } from '@lib/constants/repo';
+import CollectionViewDetails from '@components/data/collections/mine/CollectionViewDetails';
+import { FunctionItem } from '@components/data/functions/mine/FunctionItem';
 
 export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const authSession = await getAuthSession();
