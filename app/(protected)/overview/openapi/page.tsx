@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { APP_AUTH_LOGIN_URL, ME_API_ROOT_URL } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { BracesIcon } from 'lucide-react';

@@ -5,7 +5,7 @@ import { Dialog, DialogPanel, Transition, TransitionChild, Menu, MenuSection, Me
 import { censorEmail } from '@lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
-import type { AuthSessionResponse } from '@app/auth/session/types';
+import type { AuthSessionResponse } from '@data/auth/session/types';
 import SideNav from './SideNav';
 import { cn } from '@lib/utils';
 import { usePathname } from 'next/navigation';

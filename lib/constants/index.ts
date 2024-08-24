@@ -77,9 +77,9 @@ export const USER_API_ROOT_PATH = '/api/v1';
 export const USER_API_ROOT_URL = APP_URL + USER_API_ROOT_PATH;
 // This should reflect the path of the API in the app
 // !! Requires to replace the ":vars" with actual values,
-export const USERS_API_FUNCTION_PATH = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
-export const USERS_API_COLLECTION_PATH = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
-export const USERS_API_COLLECTION_FUNCTION_PATH = [USERS_API_COLLECTION_PATH, ':functionSlug'].join('/');
+export const USERS_API_FUNCTION_URI = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
+export const USERS_API_COLLECTION_URI = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
+export const USERS_API_COLLECTION_FUNCTION_URI = [USERS_API_COLLECTION_URI, ':functionSlug'].join('/');
 
 /**
  * ME API
@@ -111,4 +111,3 @@ export const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || '';
  * Langchain
  */
 export const LANGCHAIN_CHAT_RECURSION_LIMIT = parseInt(process.env.NEXT_PUBLIC_LANGCHAIN_CHAT_RECURSION_LIMIT || '10') || 10;
-

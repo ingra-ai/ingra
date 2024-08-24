@@ -1,5 +1,5 @@
 import { handleFetch } from "@app/api/utils/handleFetch";
-import { AuthSessionResponse } from '@app/auth/session/types';
+import { AuthSessionResponse } from '@data/auth/session/types';
 import { APP_URL } from '@lib/constants';
 import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
 import { OpenAI } from 'openai';

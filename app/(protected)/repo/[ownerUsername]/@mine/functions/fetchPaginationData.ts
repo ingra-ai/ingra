@@ -1,7 +1,7 @@
 
-import type { FetchFunctionListPaginationType } from './types';
 import clamp from 'lodash/clamp';
 import db from '@lib/db';
+import type { FetchFunctionListPaginationType } from '@components/data/functions/mine/types';
 
 export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
   // Parse the query parameteres

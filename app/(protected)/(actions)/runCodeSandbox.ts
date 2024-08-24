@@ -1,6 +1,6 @@
 'use server';
 import { executeFunction } from '@app/api/utils/vm/executeFunction';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { ActionError } from '@v1/types/api-response';
 
 export async function runCodeSandbox(functionId: string, args: Record<string, any> = {}, isMarketplace = false) {

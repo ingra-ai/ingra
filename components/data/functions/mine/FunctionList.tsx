@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@components/ui/use-toast';
 import { collectionToggleFunction, deleteFunction } from '@actions/functions';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import type { FunctionListGetPayload, CollectionListGetPayload } from './types';
-import ToggleCollectionMenuButton from './ToggleCollectionMenuButton';
+import type { FunctionListGetPayload } from './types';
+import ToggleCollectionMenuButton from '@components/data/collections/mine/ToggleCollectionMenuButton';
+import { getUserRepoFunctionsEditUri, getUserRepoFunctionsUri } from '@lib/constants/repo';
+import type { MineCollectionMenuListGetPayload } from '@components/data/collections/mine/types';
 
 interface FunctionsListProps {
   ownerUsername: string;
   functions: FunctionListGetPayload[];
-  collections: CollectionListGetPayload[];
+  collections: MineCollectionMenuListGetPayload[];
 }
 
 const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions, collections }) => {
@@ -19,7 +21,7 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions,
   const { toast } = useToast();
 
   const handleEdit = (functionId: string) => {
-    router.push(`/repo/${ownerUsername}/functions/edit/${functionId}`);
+    router.push(getUserRepoFunctionsEditUri(ownerUsername, functionId));
   };
 
   const onFunctionCollectionToggleChanged = (collectionId: string, functionId: string, checked: boolean) => {
@@ -35,7 +37,7 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions,
         description: result.message,
       });
 
-      router.replace(`/repo/${ownerUsername}/functions`);
+      router.replace(getUserRepoFunctionsUri(ownerUsername));
       router.refresh();
     }).catch((error) => {
       toast({
@@ -61,7 +63,7 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions,
           description: 'Function has been deleted successfully.',
         });
 
-        router.replace(`/repo/${ownerUsername}/functions`);
+        router.replace(getUserRepoFunctionsUri(ownerUsername));
         router.refresh();
       }).catch((error) => {
         toast({
@@ -78,7 +80,7 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions,
       <FunctionItemNew ownerUsername={ ownerUsername } />
       {functions.map(( functionData ) => {
         return (
-          <FunctionItem key={functionData.id} functionData={functionData} href={`/repo/${ownerUsername}/functions/edit/${functionData.id}`}>
+          <FunctionItem key={functionData.id} functionData={functionData} href={getUserRepoFunctionsEditUri(ownerUsername, functionData.id)}>
             <div className="flex mt-4 bg-card border rounded-[10px] px-3 py-2">
               <ToggleCollectionMenuButton
                 functionId={functionData.id}

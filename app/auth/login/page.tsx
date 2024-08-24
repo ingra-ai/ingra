@@ -1,7 +1,7 @@
 import { APP_LANDING_PAGE_URL, APP_LEGAL_COOKPOL_URL, APP_LEGAL_PRIVACY_POLICY_URL, APP_LEGAL_TOS_URL, APP_NAME } from '@lib/constants';
 import Image from 'next/image';
 import { MagicLoginForm } from './MagicLoginForm';
-import { getAuthSession } from '@/app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { redirect, RedirectType } from 'next/navigation';
 import { Code, Cpu, Cloud, Rocket, Link, Users } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';

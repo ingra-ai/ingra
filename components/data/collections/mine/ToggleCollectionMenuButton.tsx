@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { FolderPlusIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
-import { type CollectionListGetPayload } from './types';
 import { cn } from '@lib/utils';
+import { MineCollectionMenuListGetPayload } from './types';
 
 type ToggleCollectionMenuButtonProps = React.HTMLAttributes<HTMLDivElement> & {
   functionId: string;
-  collections: CollectionListGetPayload[];
+  collections: MineCollectionMenuListGetPayload[];
   iconClassName?: string;
   onCheckedChange: (collectionId: string, functionId: string, checked: boolean) => void;
 }

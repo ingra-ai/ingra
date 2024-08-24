@@ -1,5 +1,5 @@
 import { generateVmContextArgs } from '@/app/api/utils/vm/generateVmContextArgs';
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import { FunctionArgument } from "@prisma/client";
 import { mockAuthSession } from '@/__tests__/__mocks__/mockAuthSession';
 import { mockFunctionHelloWorld } from '@/__tests__/__mocks__/mockFunctions';
