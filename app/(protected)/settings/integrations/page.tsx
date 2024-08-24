@@ -1,6 +1,6 @@
 
 
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { notFound } from 'next/navigation';
 import { IntegrationsSection } from './IntegrationsSection';
 import { APP_NAME } from '@lib/constants';

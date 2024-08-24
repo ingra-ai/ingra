@@ -1,8 +1,9 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import db from '@lib/db';
 import { notFound } from 'next/navigation';
-import CollectionViewDetails from './CollectionViewDetails';
-import { FunctionItem } from '../../../functions/FunctionItem';
+import { getUserRepoFunctionsEditUri } from '@lib/constants/repo';
+import CollectionViewDetails from '@components/data/collections/mine/CollectionViewDetails';
+import { FunctionItem } from '@components/data/functions/mine/FunctionItem';
 
 export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const authSession = await getAuthSession();
@@ -73,7 +74,7 @@ export default async function Page({ params }: { params: { ownerUsername: string
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3 xl:gap-3 2xl:grid-cols-4 2xl:gap-4">
             {
               collectionRecord.functions.map((functionRecord) => (
-                <FunctionItem key={functionRecord.id} functionData={functionRecord} href={`/repo/${ownerUsername}/functions/edit/${functionRecord.id}`} />
+                <FunctionItem key={functionRecord.id} functionData={functionRecord} href={getUserRepoFunctionsEditUri(ownerUsername, functionRecord.id)} />
               ))
             }
           </div>

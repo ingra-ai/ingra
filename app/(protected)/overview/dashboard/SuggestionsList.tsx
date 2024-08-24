@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import { APP_SETTINGS_PROFILE_URI, APP_SETTINGS_API_URI, APP_SETTINGS_ENV_VARS_URI, APP_SETTINGS_INTEGRATIONS_URI } from "@lib/constants";
 import { cn } from "@lib/utils";
-import { AuthSessionResponse } from '@app/auth/session/types';
+import { AuthSessionResponse } from '@data/auth/session/types';
 
 type SuggestionsListProps = {
   authSession: AuthSessionResponse;

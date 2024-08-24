@@ -6,7 +6,7 @@ import { google } from 'googleapis';
 import { RedirectType, redirect } from 'next/navigation';
 import { createOAuthToken } from '@/data/oauthToken';
 import { apiAuthTryCatch } from '@app/api/utils/apiAuthTryCatch';
-import { clearAuthCaches } from '@app/auth/session/caches';
+import { clearAuthCaches } from '@data/auth/session/caches';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

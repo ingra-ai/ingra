@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuthSwaggerSpec } from '../swagger/config';
 import { APP_AUTH_LOGIN_URL, APP_URL } from '@lib/constants';
 import { ActionError } from '@v1/types/api-response';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { RedirectType, redirect } from 'next/navigation';
 
 /**

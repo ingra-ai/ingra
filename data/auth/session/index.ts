@@ -2,7 +2,7 @@
 import { cookies, headers } from 'next/headers';
 import { APP_SESSION_API_KEY_NAME, APP_SESSION_COOKIE_NAME } from '@lib/constants';
 import { Logger } from '@lib/logger';
-import { AuthSessionResponse } from '@app/auth/session/types';
+import { AuthSessionResponse } from '@data/auth/session/types';
 import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
 import { refreshGoogleOAuthCredentials } from '@lib/google-oauth/refreshGoogleOAuthCredentials';
 import { deleteOAuthToken, updateOAuthToken } from '@/data/oauthToken';

@@ -1,6 +1,6 @@
 import { APP_AUTH_LOGIN_URL, APP_LANDING_PAGE_URL } from '@lib/constants';
 import { RedirectType, redirect } from 'next/navigation';
-import { getAuthSession } from '@/app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 
 export default async function Home() {
   const authSession = await getAuthSession();

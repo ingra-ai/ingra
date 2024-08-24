@@ -1,4 +1,4 @@
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import { ChatOpenAI } from "@langchain/openai";
 import { createToolsAgentsByAuthSession } from "./createToolsAgents";
 import { createToolsAgentsSupervisor } from "./createToolsAgentsSupervisor";

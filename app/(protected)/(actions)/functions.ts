@@ -13,6 +13,7 @@ import {
   toggleFunctionSubscription,
 } from '@data/functions';
 import { addFunctionToCollection, removeFunctionFromCollection } from '@data/collections';
+import { getUserRepoFunctionsEditUri } from '@lib/constants/repo';
 
 export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
   const validatedValues = await validateAction(FunctionSchema, values);
@@ -54,14 +55,17 @@ export const deleteFunction = async (functionId: string) => {
 
 export const cloneFunction = async (functionId: string) => {
   return await actionAuthTryCatch(async (authSession) => {
-    const clonedFunction = await dataCloneFunction(functionId, authSession.user.id);
+    const clonedFunction = await dataCloneFunction(functionId, authSession.user.id),
+      ownerUsername = authSession.user.profile?.userName;
 
     return {
       status: 'ok',
       message: `Function "${clonedFunction.slug}" has been cloned!`,
       data: {
         ...clonedFunction,
-        href: `/repo/${authSession.user.profile?.userName}/functions/edit/${clonedFunction.id}`
+        ...( ownerUsername && ({
+          href: getUserRepoFunctionsEditUri(ownerUsername, clonedFunction.id)
+        }))
       }
     };
   });

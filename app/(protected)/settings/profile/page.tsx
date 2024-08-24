@@ -1,7 +1,7 @@
 
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
 import { notFound } from 'next/navigation';
 import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';

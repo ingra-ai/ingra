@@ -13,11 +13,11 @@ import { createCollection, updateCollection } from '@actions/collections';
 import { cn } from '@lib/utils';
 import { Input } from '@components/ui/input';
 import { Textarea } from '@components/ui/textarea';
-import { CollectionListGetPayload } from './types';
+import { MineCollectionListGetPayload } from '@components/data/collections/mine/types';
 import { useRouter } from 'next/navigation';
 
 type CollectionFormProps = {
-  collectionRecord?: Pick<CollectionListGetPayload, 'id' | 'name' | 'slug' | 'description'>;
+  collectionRecord?: Pick<MineCollectionListGetPayload, 'id' | 'name' | 'slug' | 'description'>;
   onCancel: () => void;
 };
 

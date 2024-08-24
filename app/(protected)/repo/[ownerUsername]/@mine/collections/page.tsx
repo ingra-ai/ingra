@@ -1,8 +1,8 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@components/BakaPagination';
-import CollectionList from './CollectionList';
 import { fetchPaginationData } from './fetchPaginationData';
+import CollectionList from '@components/data/collections/mine/CollectionList';
 
 export default async function Page(
   { searchParams, params }: {

@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { ScrollArea } from '@components/ui/scroll-area';
-import { AuthSessionResponse } from '@app/auth/session/types';
+import { AuthSessionResponse } from '@data/auth/session/types';
 import { cn } from '@lib/utils';
 
 import 'highlight.js/styles/github-dark.css';

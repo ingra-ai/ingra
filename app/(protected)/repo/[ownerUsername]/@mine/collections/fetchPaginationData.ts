@@ -1,7 +1,7 @@
 
-import type { FetchCollectionListPaginationType } from './types';
 import clamp from 'lodash/clamp';
 import db from '@lib/db';
+import type { FetchMineCollectionListPaginationType } from '@components/data/collections/mine/types';
 
 export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
   // Parse the query parameteres
@@ -76,7 +76,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
   const hasNext = (skip + pageSizeInt) < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchCollectionListPaginationType = {
+  const result: FetchMineCollectionListPaginationType = {
     records: allcollections,
     page: pageInt,
     pageSize: pageSizeInt,

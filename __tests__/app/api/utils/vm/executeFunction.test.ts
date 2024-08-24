@@ -1,5 +1,5 @@
 import { executeFunction } from '@/app/api/utils/vm/executeFunction';
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import { mockAuthSession } from '@/__tests__/__mocks__/mockAuthSession';
 import { mockFunctionHelloWorld } from '@/__tests__/__mocks__/mockFunctions';
 import db from '@lib/db';

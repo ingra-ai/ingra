@@ -1,8 +1,8 @@
 import { convertFunctionRecordToOpenApiSchema } from "@app/api/utils/functions/convertFunctionRecordToOpenApiSchema";
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import {
-  USERS_API_FUNCTION_PATH,
-  USERS_API_COLLECTION_FUNCTION_PATH
+  USERS_API_FUNCTION_URI,
+  USERS_API_COLLECTION_FUNCTION_URI
 
 } from "@lib/constants";
 import db from "@lib/db";
@@ -140,7 +140,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   const userFunctionsOpenApiSchema = functionRecords.reduce((acc, functionRecord) => {
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
       transformHitUrl: (functionSlug) => 
-        USERS_API_FUNCTION_PATH
+        USERS_API_FUNCTION_URI
         .replace(':userName', authSession.user.profile?.userName || '')
         .replace(':functionSlug', functionSlug)
     });
@@ -157,7 +157,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
     return collectionFunctions.reduce((acc2, functionRecord) => {
       const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
         transformHitUrl: (functionSlug) => 
-          USERS_API_COLLECTION_FUNCTION_PATH
+          USERS_API_COLLECTION_FUNCTION_URI
             .replace(':userName', ownerUsername)
             .replace(':collectionSlug', collectionSlug)
             .replace(':functionSlug', functionSlug)
@@ -178,7 +178,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
 
     const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
       transformHitUrl: (functionSlug) => 
-        USERS_API_FUNCTION_PATH
+        USERS_API_FUNCTION_URI
           .replace(':userName', functionOwnerUsername)
           .replace(':functionSlug', functionSlug)
     });
@@ -196,7 +196,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
 
       const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
         transformHitUrl: (functionSlug) => 
-          USERS_API_COLLECTION_FUNCTION_PATH
+          USERS_API_COLLECTION_FUNCTION_URI
             .replace(':userName', ownerUsername)
             .replace(':collectionSlug', collectionSlug)
             .replace(':functionSlug', functionSlug)

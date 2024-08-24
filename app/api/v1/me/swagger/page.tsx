@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
 import { getAuthSwaggerSpec } from './config';
 import { redirect, RedirectType } from 'next/navigation';

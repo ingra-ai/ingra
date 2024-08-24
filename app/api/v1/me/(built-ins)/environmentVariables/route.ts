@@ -3,7 +3,7 @@ import { apiAuthTryCatch } from "@app/api/utils/apiAuthTryCatch";
 import { Logger } from "@lib/logger";
 import db from "@lib/db"; // Assuming you have a db instance for interacting with your database
 import { upsertEnvVar } from "@/data/envVars";
-import { clearAuthCaches } from "@app/auth/session/caches";
+import { clearAuthCaches } from "@data/auth/session/caches";
 import { mixpanel } from "@lib/analytics";
 import { getAnalyticsObject } from "@lib/utils/getAnalyticsObject";
 

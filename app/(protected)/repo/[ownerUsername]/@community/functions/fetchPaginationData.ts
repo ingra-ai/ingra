@@ -1,5 +1,5 @@
 
-import type { FetchCommunityFunctionListPaginationType } from '@components/data/functions/types';
+import type { FetchCommunityFunctionListPaginationType } from '@components/data/functions/community/types';
 import clamp from 'lodash/clamp';
 import db from '@lib/db';
 

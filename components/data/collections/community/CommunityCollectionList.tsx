@@ -17,8 +17,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { CommunityCollectionListGetPayload } from './types';
+import type { CommunityCollectionListGetPayload } from '@components/data/collections/community/types';
 import CommunityCollectionCard from './CommunityCollectionCard';
+import { getUserRepoCollectionsViewUri } from '@lib/constants/repo';
 
 interface CommunityCollectionListProps extends React.HTMLAttributes<HTMLDivElement> {
   showControls: boolean;
@@ -102,7 +103,7 @@ const CommunityCollectionList: React.FC<CommunityCollectionListProps> = (props) 
         <div className={collectionListGridClasses}>
           {collections.map((collection) => {
             const isSubscribing = isSubscribeLoading === collection.id,
-              href = `/repo/${collection.owner.profile?.userName}/collections/view/${collection.id}`;
+              href = getUserRepoCollectionsViewUri(collection.owner.profile?.userName || '', collection.id);
 
             return (
               <CommunityCollectionCard

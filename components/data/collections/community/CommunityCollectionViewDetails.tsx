@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { CommunityCollectionViewDetailPayload } from './types';
+import { CommunityCollectionViewDetailPayload } from '@components/data/collections/community/types';
 
 interface CommunityCollectionViewDetailsProps {
   record: CommunityCollectionViewDetailPayload;

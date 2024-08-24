@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useToast } from '@components/ui/use-toast';
 import { ToastAction } from "@components/ui/toast"
 import { cloneFunction, subscribeToggleFunction } from '@actions/functions';
-import type { CommunityFunctionListGetPayload } from './types';
+import type { CommunityFunctionListGetPayload } from '@components/data/functions/community/types';
 import { CommunityFunctionItem } from './CommunityFunctionItem';
 import { EyeIcon } from '@heroicons/react/24/outline';
 import { Button } from '@components/ui/button';
@@ -21,6 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { getUserRepoFunctionsViewUri } from '@lib/constants/repo';
 
 interface CommunityFunctionsListProps {
   showControls: boolean;
@@ -69,15 +70,18 @@ const CommunityFunctionsList: React.FC<CommunityFunctionsListProps> = (props) =>
       if (result.status !== 'ok') {
         throw new Error(result.message);
       }
+
       const toastProps = {
         title: 'Function cloned!',
         description: 'Your function has been cloned.',
         action: <></> as React.JSX.Element,
       };
 
-      if (result?.data?.href) {
+      const functionHref = result?.data?.href;
+
+      if (functionHref) {
         toastProps.action = (
-          <ToastAction altText="Cloned Function" onClick={() => router.replace(result?.data?.href)}>
+          <ToastAction altText="Cloned Function" onClick={() => router.replace(functionHref)}>
             <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
           </ToastAction>
         );
@@ -101,7 +105,7 @@ const CommunityFunctionsList: React.FC<CommunityFunctionsListProps> = (props) =>
   return functionRecords.map(functionRecord => {
     const isSubscribing = isSubscribeLoading === functionRecord.id,
       isCloning = isCloneLoading === functionRecord.id,
-      href = `/repo/${functionRecord.owner.profile?.userName}/functions/view/${functionRecord.id}`;
+      href = getUserRepoFunctionsViewUri(functionRecord.owner.profile?.userName || '', functionRecord.id);
 
     return (
       <CommunityFunctionItem

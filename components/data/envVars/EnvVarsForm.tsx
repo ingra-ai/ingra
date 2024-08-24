@@ -1,19 +1,19 @@
 'use client';
 
-import type { FC } from 'react';
 import * as z from 'zod';
+import type { FC } from 'react';
+import { useCallback, useState } from 'react';
+import { RefreshCcw } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@components/ui/button';
-import { RefreshCcw } from 'lucide-react';
-import { useCallback, useState } from 'react';
 import { Logger } from '@lib/logger';
 import { useToast } from '@components/ui/use-toast';
 import { EnvVarsSchema } from '@/schemas/envVars';
 import { upsertEnvVar } from '@actions/envVars';
 import { Input } from '@components/ui/input';
-import { EnvVarsOptionalPayload } from './types';
 import { cn } from '@lib/utils';
+import type { EnvVarsOptionalPayload } from '@components/data/envVars/types';
 
 type EnvVarFormProps = {
   className?: string;

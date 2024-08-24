@@ -6,11 +6,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem, NavItemParent } from '@components/navs/types';
-import type { AuthSessionResponse } from '@app/auth/session/types';
+import type { AuthSessionResponse } from '@data/auth/session/types';
 import { GlobeIcon, Package2Icon, LayoutDashboardIcon, EllipsisIcon, MenuIcon } from 'lucide-react';
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import { Button } from '@components/ui/button';
+import { getUserRepoUri } from '@lib/constants/repo';
 
 export type SideNavProps = {
   className?: string;
@@ -45,17 +46,10 @@ const getSideNavRoutes = (authSession: AuthSessionResponse) => {
           icon: GlobeIcon,
         },
         {
-          ...( username ? {
-            name: 'Repository',
-            description: 'Manage your collections and functions that you own or have access to.',
-            href: `/repo/${username}/collections`,
-            icon: Package2Icon,
-          } : {
-            name: 'Repository',
-            description: 'Manage your collections and functions that you own or have access to.',
-            href: `/repo`,
-            icon: Package2Icon,
-          })
+          name: 'Repository',
+          description: 'Manage your collections and functions that you own or have access to.',
+          href: getUserRepoUri(username),
+          icon: Package2Icon,
         }
       ],
     },

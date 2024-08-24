@@ -1,5 +1,5 @@
 
-import type { FetchCommunityCollectionListPaginationType } from '@components/data/collections/types';
+import type { FetchCommunityCollectionListPaginationType } from '@components/data/collections/community/types';
 import clamp from 'lodash/clamp';
 import db from '@lib/db';
 

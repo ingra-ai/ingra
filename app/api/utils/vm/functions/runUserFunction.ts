@@ -2,7 +2,7 @@
 import { generateVmContextArgs } from "@app/api/utils/vm/generateVmContextArgs";
 import { run } from "@app/api/utils/vm/run";
 import { MetricSandboxOutput, UserSandboxOutput } from "@app/api/utils/vm/types";
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import { Prisma } from '@prisma/client';
 import { ActionError } from "@v1/types/api-response";
 

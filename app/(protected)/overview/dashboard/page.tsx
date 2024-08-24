@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, APP_SETTINGS_INTEGRATIONS_URI } from '@lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { SuggestionsList } from './SuggestionsList';
@@ -6,6 +6,7 @@ import { LayoutDashboardIcon } from 'lucide-react';
 import { KeyIcon, SquareFunctionIcon, LibraryIcon, KeyRoundIcon } from 'lucide-react';
 import db from '@lib/db';
 import { StatCard } from './StatCard';
+import { getUserRepoCollectionsUri, getUserRepoFunctionsUri } from '@lib/constants/repo';
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();
@@ -105,7 +106,7 @@ export default async function Dashboard() {
               {
                 name: 'Mine',
                 stat: totalFunctions.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: `/repo/${ profile?.userName }/functions`,
+                href: getUserRepoFunctionsUri(profile?.userName || ''),
               },
               {
                 name: 'Subscribed',
@@ -123,7 +124,7 @@ export default async function Dashboard() {
               {
                 name: 'Mine',
                 stat: totalCollections.toLocaleString(undefined, { minimumFractionDigits: 0 }),
-                href: `/repo/${ profile?.userName }/collections`,
+                href: getUserRepoCollectionsUri(profile?.userName || ''),
               },
               {
                 name: 'Subscribed',

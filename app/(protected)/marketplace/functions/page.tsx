@@ -1,8 +1,8 @@
 'use server';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { cn } from '@lib/utils';
 import { BakaPagination } from '@components/BakaPagination';
-import CommunityFunctionList from '@components/data/functions/CommunityFunctionList';
+import CommunityFunctionList from '@components/data/functions/community/CommunityFunctionList';
 import { fetchPaginationData } from './fetchPaginationData';
 
 export default async function Page(

@@ -1,4 +1,4 @@
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 
 /**
  * Generates necessary user variables to run VM from the user's profile.

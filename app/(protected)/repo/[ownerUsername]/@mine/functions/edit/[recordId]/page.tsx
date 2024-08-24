@@ -1,13 +1,13 @@
 import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@components/ui/tabs';
 import db from '@lib/db';
-import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
-import { RedirectType, notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { APP_NAME } from '@lib/constants';
 import { getCollectionsByUserId } from '@data/collections/getCollectionsByUserId';
-import { FunctionForm } from '../../FunctionForm';
-import { UserVarsTable } from '../../UserVarsTable';
+import { FunctionForm } from '@components/data/functions/mine/FunctionForm';
+import { UserVarsTable } from '@components/data/envVars/UserVarsTable';
+import { EnvVarsSection } from '@components/data/envVars/EnvVarsSection';
  
 export async function generateMetadata({ params }: { params: { ownerUsername: string; recordId: string } }) {
   return {

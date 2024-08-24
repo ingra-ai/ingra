@@ -1,6 +1,6 @@
 'use server';
 import type { FC } from 'react';
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import { OAuthToken } from '@prisma/client';
 import db from '@lib/db';
 import OAuthList from '@protected/settings/integrations/OAuthList';
