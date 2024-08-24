@@ -1,3 +1,4 @@
+import { getUserRepoCollectionsUri } from '@lib/constants/repo';
 import { RedirectType, redirect } from 'next/navigation';
 
 type ThisPageParams = {
@@ -7,8 +8,5 @@ type ThisPageParams = {
 };
 
 export default async function Page({ params }: ThisPageParams) {
-  console.log({ params })
-  return (
-    <></>
-  )
+  return redirect(getUserRepoCollectionsUri( params.ownerUsername ), RedirectType.replace);
 }

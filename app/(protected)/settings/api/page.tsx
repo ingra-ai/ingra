@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import db from '@lib/db';
 import { ApiKeysTable } from './ApiKeysTable';
 import { RedirectType, redirect } from 'next/navigation';

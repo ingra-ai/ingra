@@ -1,5 +1,5 @@
 
-import { AuthSessionResponse } from "@app/auth/session/types";
+import { AuthSessionResponse } from "@data/auth/session/types";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,

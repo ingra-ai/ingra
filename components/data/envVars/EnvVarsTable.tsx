@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { formatDistance } from 'date-fns';
 import { Button } from '@components/ui/button';
-import { EnvVarsOptionalPayload } from './types';
+import { EnvVarsOptionalPayload } from '@components/data/envVars/types';
 import { cn } from '@lib/utils';
 import { ValueToggler } from '@components/ValueToggler';
 

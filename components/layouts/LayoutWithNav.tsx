@@ -1,7 +1,7 @@
 'use client';
 import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
 import { Transition, TransitionChild } from '@headlessui/react';
-import type { AuthSessionResponse } from '@app/auth/session/types';
+import type { AuthSessionResponse } from '@data/auth/session/types';
 import SideNav from '../navs/SideNav';
 import { cn } from '@lib/utils';
 import { MenuIcon } from 'lucide-react';

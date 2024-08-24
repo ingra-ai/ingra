@@ -7,11 +7,11 @@ import CodeEditorInput from '@/components/CodeEditorInput';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter } from 'next/navigation';
 import { FormSlideOver } from '@components/slideovers/FormSlideOver';
-import { EnvVarsSection } from '@protected/settings/env-vars/EnvVarsSection';
-import { EnvVarsOptionalPayload } from '@protected/settings/env-vars/types';
+import { EnvVarsSection } from '@components/data/envVars/EnvVarsSection';
+import { EnvVarsOptionalPayload } from '@components/data/envVars/types';
 import { cn } from '@lib/utils';
-import { UserVarsTable } from '@protected/repo/[ownerUsername]/@mine/functions/UserVarsTable';
-import { CodeSandboxForm } from '@protected/repo/[ownerUsername]/@mine/functions/CodeSandboxForm';
+import { UserVarsTable } from '@components/data/envVars/UserVarsTable';
+import { CodeSandboxForm } from '@components/data/functions/mine/CodeSandboxForm';
 
 type CommunityFunctionReadOnlyViewProps = {
   functionRecord: Prisma.FunctionGetPayload<{

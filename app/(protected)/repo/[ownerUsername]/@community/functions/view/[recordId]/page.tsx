@@ -1,8 +1,8 @@
 import { generateUserVars } from '@app/api/utils/vm/generateUserVars';
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import db from '@lib/db';
 import { isUuid } from "@lib/utils";
-import { CommunityFunctionReadOnlyView } from '@components/data/functions/CommunityFunctionReadOnlyView';
+import { CommunityFunctionReadOnlyView } from '@components/data/functions/community/CommunityFunctionReadOnlyView';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {

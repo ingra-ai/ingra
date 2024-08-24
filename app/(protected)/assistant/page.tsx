@@ -1,4 +1,4 @@
-import { getAuthSession } from '@app/auth/session';
+import { getAuthSession } from '@data/auth/session';
 import { AssistantForm } from '@components/ai/AssistantForm';
 import { ChatForm } from '@components/ai/ChatForm';
 import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, ME_API_ROOT_PATH } from '@lib/constants';

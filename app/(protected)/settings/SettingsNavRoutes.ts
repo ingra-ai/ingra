@@ -1,21 +1,22 @@
 import { NavItemChild } from '@components/navs/types';
+import { APP_SETTINGS_PROFILE_URI, APP_SETTINGS_INTEGRATIONS_URI, APP_SETTINGS_API_URI, APP_SETTINGS_ENV_VARS_URI } from '@lib/constants';
 
 export const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
   {
     name: 'Profile',
-    href: '/settings/profile',
+    href: APP_SETTINGS_PROFILE_URI,
   },
   {
     name: 'Integrations',
-    href: '/settings/integrations',
+    href: APP_SETTINGS_INTEGRATIONS_URI,
   },
   {
     name: 'API',
-    href: '/settings/api',
+    href: APP_SETTINGS_API_URI,
   },
   {
     name: 'Environment Variables',
-    href: '/settings/env-vars',
+    href: APP_SETTINGS_ENV_VARS_URI,
   }
   // {
   //   name: 'Billing',

@@ -1,10 +1,10 @@
-import { getAuthSession } from '@app/auth/session';
-import FunctionsList from './FunctionList';
+import { getAuthSession } from '@data/auth/session';
 import { cn } from '@lib/utils';
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@components/BakaPagination';
 import { fetchPaginationData } from './fetchPaginationData';
 import { getCollectionsByUserId } from '@data/collections/getCollectionsByUserId';
+import FunctionsList from '@components/data/functions/mine/FunctionList';
 
 export default async function Page(
   { searchParams, params }: {

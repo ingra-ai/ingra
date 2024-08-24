@@ -2,7 +2,7 @@
 import type { FC } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@components/ui/button';
-import { CircleDot, PlayCircleIcon, SortAscIcon, SortDescIcon } from 'lucide-react';
+import { CircleDot, PlayCircleIcon, SortAscIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useToast } from '@components/ui/use-toast';
 import { runCodeSandbox } from '@actions/runCodeSandbox';
@@ -11,7 +11,6 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import FunctionArgumentInputSwitchField from './FunctionArgumentInputSwitchField';
 import type { Prisma } from '@prisma/client';
 import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@app/api/utils/vm/types';
-import { ScrollArea } from '@components/ui/scroll-area';
 import {
   Collapsible,
   CollapsibleContent,

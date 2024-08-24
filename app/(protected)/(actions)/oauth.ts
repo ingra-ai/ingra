@@ -3,7 +3,7 @@
 import { ActionError } from '@v1/types/api-response';
 import { OAuthToken } from "@prisma/client";
 import { actionAuthTryCatch } from '@app/api/utils/actionAuthTryCatch';
-import { clearAuthCaches } from '@app/auth/session/caches';
+import { clearAuthCaches } from '@data/auth/session/caches';
 import { 
   deleteOAuthToken,
   setTokenAsDefault as dataSetTokenAsDefault,

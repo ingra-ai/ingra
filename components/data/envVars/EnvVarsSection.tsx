@@ -1,7 +1,6 @@
 'use client';
 
 import type { FC } from 'react';
-import { FormSlideOver } from '@components/slideovers/FormSlideOver';
 import { EnvVarForm } from './EnvVarsForm';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
