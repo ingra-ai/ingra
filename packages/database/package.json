@@ -7,9 +7,18 @@
     "./prisma": "./src/prisma.ts"
   } ,
   "scripts": {
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "tsx src/seed.ts",
+    "dev": "tsup src/* --watch",
+    "format": "prisma format",
+    "generate": "prisma generate",
+    "prebuild": "npm run generate",
+    "predev": "npm run generate",
+    "studio": "prisma studio",
     "lint": "eslint src/",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate"
+    "db:generate": "prisma generate"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
