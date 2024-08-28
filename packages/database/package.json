@@ -1,0 +1,27 @@
+{
+  "name": "@repo/db",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./client": "./src/client.ts",
+    "./prisma": "./src/prisma.ts"
+  } ,
+  "scripts": {
+    "lint": "eslint src/",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@turbo/gen": "^1.12.4",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^22.5.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5",
+    "prisma": "^5.16.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0"
+  }
+}
