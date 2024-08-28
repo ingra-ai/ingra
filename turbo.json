@@ -26,7 +26,7 @@
         "LANGCHAIN_PROJECT",
         "LANGCHAIN_TRACING_V2"
       ],
-      "dependsOn": ["^db:generate", "^test", "^build"],
+      "dependsOn": ["^db:generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env"],
       "outputs": [".dist/**", ".swc/**", ".next/**", "!.next/cache/**"]
     },
@@ -46,6 +46,8 @@
     },
     "db:push": {
       "cache": false
-    }
+    },
+    "db:migrate:deploy": {},
+    "db:seed": {}
   }
 }
