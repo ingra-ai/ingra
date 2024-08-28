@@ -4,6 +4,29 @@
   "globalEnv": [".env"],
   "tasks": {
     "build": {
+      "env": [
+        "JWT_SECRET",
+        "AWS_SES_ACCESS_KEY",
+        "AWS_SES_MAIL_FROM",
+        "AWS_SES_REGION",
+        "AWS_SES_SECRET",
+        "DATABASE_URL",
+        "OPENAI_API_KEY",
+        "KV_REST_API_READ_ONLY_TOKEN",
+        "KV_REST_API_TOKEN",
+        "KV_REST_API_URL",
+        "KV_URL",
+        "GOOG_OAUTH_CLIENT_ID",
+        "GOOG_OAUTH_CLIENT_SECRET",
+        "NEXT_PUBLIC_GOOG_OAUTH_CALLBACK_URI",
+        "PINECONE_API_KEY",
+        "PINECONE_INDEX_NAME",
+        "LANGCHAIN_API_KEY",
+        "LANGCHAIN_CALLBACKS_BACKGROUND",
+        "LANGCHAIN_ENDPOINT",
+        "LANGCHAIN_PROJECT",
+        "LANGCHAIN_TRACING_V2"
+      ],
       "dependsOn": ["^db:generate", "^test", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env"],
       "outputs": [".next/**", "!.next/cache/**"]

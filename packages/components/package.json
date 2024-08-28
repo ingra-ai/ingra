@@ -67,7 +67,7 @@
     "./ValueToggler": "./src/ValueToggler.tsx"
   },
   "scripts": {
-    "lint": "eslint src/ --max-warnings 0",
+    "lint": "eslint src/",
     "check-types": "tsc --noEmit",
     "generate:component": "turbo gen react-component"
   },

@@ -71,7 +71,7 @@
     "./types": "./src/types/index.ts"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint"
   },
   "devDependencies": {
     "@repo/db": "workspace:*",

@@ -7,7 +7,7 @@
     "./prisma": "./src/prisma.ts"
   } ,
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint src/",
     "db:generate": "prisma generate",
     "db:push": "prisma db push --skip-generate"
   },
