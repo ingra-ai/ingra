@@ -28,7 +28,7 @@
       ],
       "dependsOn": ["^db:generate", "^test", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".dist/**", ".swc/**", ".next/**", "!.next/cache/**"]
     },
     "test": {
       "dependsOn": ["^db:generate"]
