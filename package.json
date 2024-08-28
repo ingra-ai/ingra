@@ -2,15 +2,21 @@
   "name": "ingra",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production turbo build",
-    "dev": "turbo dev",
-    "test": "turbo test",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "build": "NODE_ENV=production turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "db:migrate:deploy": "turbo run db:migrate:deploy",
+    "db:push": "turbo run db:push",
+    "db:seed": "turbo run db:seed",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "generate": "turbo run generate"
   },
   "devDependencies": {
     "consola": "^3.2.3",
     "prettier": "^3.2.5",
+    "prisma": "^5.16.2",
+    "tsup": "^8.2.4",
     "turbo": "^2.0.12",
     "typescript": "^5.4.5"
   },
@@ -19,6 +25,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@prisma/client": "^5.18.0",
     "@vercel/kv": "^2.0.0"
   }
 }

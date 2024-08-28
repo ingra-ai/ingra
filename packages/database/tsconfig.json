@@ -1,8 +1,11 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@prisma/client": ["./node_modules/@prisma/client"]
+    }
   },
-  "include": ["src"],
+  "include": ["src", "prisma"],
   "exclude": ["node_modules", "dist"]
 }
