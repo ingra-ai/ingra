@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { RESERVED_SLUGS, SLUG_REGEX } from "./schema-constants";
+import { z } from 'zod';
+import { RESERVED_SLUGS, SLUG_REGEX } from './schema-constants';
 
 /**
  * The default template for the function code.
@@ -31,7 +31,7 @@ async function handler(ctx) {
  * Enum for HTTP verbs.
  * Valid values are 'GET', 'POST', 'PUT', 'PATCH', and 'DELETE'.
  */
-export const HttpVerbEnum = z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]);
+export const HttpVerbEnum = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
 
 /**
  * Maximum length constraint for function code.
@@ -80,9 +80,9 @@ const RESERVED_ARGUMENT_NAMES: string[] = [];
  * Valid values are 'string', 'number', and 'boolean'.
  */
 export const FUNCTION_ARGUMENT_ALLOWED_TYPES: readonly [string, ...string[]] = [
-  "string",
-  "number",
-  "boolean",
+  'string',
+  'number',
+  'boolean',
   // Not supported at the moment.
   // 'object',
   // 'array'
@@ -134,24 +134,23 @@ export const FunctionArgumentSchema = z.object({
       message: `Argument name must be less than ${MAX_FUNCTION_ARG_NAME_LENGTH} characters.`,
     })
     .regex(FUNCTION_ARG_NAME_REGEX, {
-      message:
-        "Invalid argument name. Names must consist of alphanumeric characters and underscores only, and cannot start with a number.",
+      message: 'Invalid argument name. Names must consist of alphanumeric characters and underscores only, and cannot start with a number.',
     })
     .refine(
       (value) => RESERVED_ARGUMENT_NAMES.indexOf(value) === -1,
       (value) => ({
         message: `The argument name "${value}" is reserved and cannot be used.`,
-      }),
+      })
     ),
   type: z
     .enum(FUNCTION_ARGUMENT_ALLOWED_TYPES, {
       errorMap: (issue, ctx) => {
         return {
-          message: `Invalid argument type '${issue}'. Must be one of: ${FUNCTION_ARGUMENT_ALLOWED_TYPES.join(", ")}.`,
+          message: `Invalid argument type '${issue}'. Must be one of: ${FUNCTION_ARGUMENT_ALLOWED_TYPES.join(', ')}.`,
         };
       },
     })
-    .default("string"),
+    .default('string'),
   defaultValue: z.string().optional(),
   description: z
     .string()
@@ -159,7 +158,7 @@ export const FunctionArgumentSchema = z.object({
       message: `Description must be less than ${MAX_FUNCTION_DESCRIPTION_LENGTH} characters.`,
     })
     .optional()
-    .default(""),
+    .default(''),
   isRequired: z.boolean().default(false),
 });
 
@@ -195,8 +194,7 @@ export const FunctionTagsSchema = z.object({
       message: `Tag name must be less than ${MAX_FUNCTION_TAG_NAME_LENGTH} characters.`,
     })
     .regex(FUNCTION_TAG_NAME_REGEX, {
-      message:
-        "Invalid tag name. Names must start with a letter, followed by any combination of letters, numbers, and underscores.",
+      message: 'Invalid tag name. Names must start with a letter, followed by any combination of letters, numbers, and underscores.',
     }),
 });
 
@@ -254,20 +252,19 @@ export const FunctionSchema = z.object({
   slug: z
     .string()
     .min(6, {
-      message: "Slug must be at least 6 characters long.",
+      message: 'Slug must be at least 6 characters long.',
     })
     .max(64, {
-      message: "Slug must be less than 64 characters long.",
+      message: 'Slug must be less than 64 characters long.',
     })
     .regex(SLUG_REGEX, {
-      message:
-        "Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.",
+      message: 'Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.',
     })
     .refine(
       (value) => RESERVED_SLUGS.indexOf(value) === -1,
       (value) => ({
         message: `The function slug "${value}" is reserved and cannot be used.`,
-      }),
+      })
     ),
   code: z.string().max(MAX_FUNCTION_CODE_LENGTH, {
     message: `Code must be less than ${MAX_FUNCTION_CODE_LENGTH} characters.`,
@@ -283,27 +280,25 @@ export const FunctionSchema = z.object({
     .date()
     .optional()
     .default(() => new Date()),
-  httpVerb: HttpVerbEnum.default("GET"),
+  httpVerb: HttpVerbEnum.default('GET'),
   description: z
     .string()
     .max(MAX_FUNCTION_DESCRIPTION_LENGTH, {
       message: `Description must be less than ${MAX_FUNCTION_DESCRIPTION_LENGTH} characters.`,
     })
-    .default(""),
+    .default(''),
   arguments: z
     .array(FunctionArgumentSchema)
     .optional()
     .refine(
       (args) => {
         if (!args || !args.length) return true; // If args are not provided, skip the check
-        const uniqueArgs = new Set(
-          args.map((arg) => arg.name.trim().toLowerCase()),
-        );
+        const uniqueArgs = new Set(args.map((arg) => arg.name.trim().toLowerCase()));
         return uniqueArgs.size === args.length;
       },
       {
-        message: "Duplicate arguments are not allowed",
-      },
+        message: 'Duplicate arguments are not allowed',
+      }
     ),
   tags: z
     .array(FunctionTagsSchema)
@@ -311,14 +306,12 @@ export const FunctionSchema = z.object({
     .refine(
       (tags) => {
         if (!tags || !tags.length) return true; // If tags are not provided, skip the check
-        const uniqueTags = new Set(
-          tags.map((tag) => tag.name.trim().toLowerCase()),
-        );
+        const uniqueTags = new Set(tags.map((tag) => tag.name.trim().toLowerCase()));
         return uniqueTags.size === tags.length;
       },
       {
-        message: "Duplicate tags are not allowed",
-      },
+        message: 'Duplicate tags are not allowed',
+      }
     ),
   originalFunctionId: z.string().optional(),
 });

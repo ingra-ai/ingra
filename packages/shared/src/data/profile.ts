@@ -1,10 +1,10 @@
-import { z } from "zod";
-import db from "@repo/db/client";
-import type { User, Profile } from "@repo/db/prisma";
-import { ProfileSchema } from "../schemas/profile";
-import { Logger } from "../lib/logger";
-import { deleteCollection } from "./collections";
-import { deleteFunction } from "./functions";
+import { z } from 'zod';
+import db from '@repo/db/client';
+import type { User, Profile } from '@repo/db/prisma';
+import { ProfileSchema } from '../schemas/profile';
+import { Logger } from '../lib/logger';
+import { deleteCollection } from './collections';
+import { deleteFunction } from './functions';
 
 /**
  * Retrieves the user profile for a given user.
@@ -39,10 +39,7 @@ export const getUserProfileByUsername = async (userName: string) => {
   });
 };
 
-export const updateProfile = async (
-  values: z.infer<typeof ProfileSchema>,
-  userId: string,
-) => {
+export const updateProfile = async (values: z.infer<typeof ProfileSchema>, userId: string) => {
   const { firstName, lastName, userName, timeZone } = values;
 
   /**
@@ -56,9 +53,7 @@ export const updateProfile = async (
   });
 
   if (existingRecord?.userName && existingRecord.userName !== userName) {
-    throw new Error(
-      "Username cannot be updated once set. Please contact support for assistance.",
-    );
+    throw new Error('Username cannot be updated once set. Please contact support for assistance.');
   }
 
   const record = await db.profile.upsert({
@@ -97,11 +92,7 @@ export const destroyAccount = async (userId: string) => {
       const collectionsDeletionPromises = [];
 
       if (collections.length) {
-        collectionsDeletionPromises.push(
-          collections.map((collection) =>
-            deleteCollection(collection.id, userId),
-          ),
-        );
+        collectionsDeletionPromises.push(collections.map((collection) => deleteCollection(collection.id, userId)));
         await Promise.all(collectionsDeletionPromises);
       }
 
@@ -114,9 +105,7 @@ export const destroyAccount = async (userId: string) => {
       const functiosnDeletionsPromises = [];
 
       if (functions.length) {
-        functiosnDeletionsPromises.push(
-          functions.map((func) => deleteFunction(func.id, userId)),
-        );
+        functiosnDeletionsPromises.push(functions.map((func) => deleteFunction(func.id, userId)));
         await Promise.all(functiosnDeletionsPromises);
       }
 
@@ -136,14 +125,10 @@ export const destroyAccount = async (userId: string) => {
       await prisma.user.delete({ where: { id: userId } });
     });
 
-    await Logger.withTag("action|destroyAccount")
-      .withTag(`user|${userId}`)
-      .info("User and all related records deleted successfully.");
+    await Logger.withTag('action|destroyAccount').withTag(`user|${userId}`).info('User and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag("action|destroyAccount")
-      .withTag(`user|${userId}`)
-      .info("Error deleting user and related records", { error });
+    await Logger.withTag('action|destroyAccount').withTag(`user|${userId}`).info('Error deleting user and related records', { error });
     return false;
   }
 };

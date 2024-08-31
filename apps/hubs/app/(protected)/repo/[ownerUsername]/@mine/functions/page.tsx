@@ -1,18 +1,12 @@
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import { cn } from "@repo/shared/lib/utils";
-import { notFound } from "next/navigation";
-import { BakaPagination } from "@repo/components/BakaPagination";
-import { fetchPaginationData } from "./fetchPaginationData";
-import { getCollectionsByUserId } from "@repo/shared/data/collections/getCollectionsByUserId";
-import FunctionsList from "@repo/components/data/functions/mine/FunctionList";
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { cn } from '@repo/shared/lib/utils';
+import { notFound } from 'next/navigation';
+import { BakaPagination } from '@repo/components/BakaPagination';
+import { fetchPaginationData } from './fetchPaginationData';
+import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
+import FunctionsList from '@repo/components/data/functions/mine/FunctionList';
 
-export default async function Page({
-  searchParams,
-  params,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-  params: { ownerUsername: string };
-}) {
+export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const authSession = await getAuthSession();
 
   if (!authSession) {
@@ -28,8 +22,7 @@ export default async function Page({
     { records, ...paginationProps } = paginationData;
 
   const functionListGridClasses = cn({
-    "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6":
-      true,
+    'grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6': true,
   });
 
   return (
@@ -38,7 +31,7 @@ export default async function Page({
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">My Functions</h1>
           <p className="text-xs text-gray-500 font-sans mt-1">
-            # records:{" "}
+            # records:{' '}
             <strong>
               {paginationProps.totalRecords.toLocaleString(undefined, {
                 minimumFractionDigits: 0,
@@ -50,15 +43,7 @@ export default async function Page({
       </div>
       <div className="mt-4">
         <BakaPagination className="mb-4" {...paginationProps} />
-        <div className={functionListGridClasses}>
-          {
-            <FunctionsList
-              ownerUsername={params.ownerUsername}
-              functions={records}
-              collections={collections}
-            />
-          }
-        </div>
+        <div className={functionListGridClasses}>{<FunctionsList ownerUsername={params.ownerUsername} functions={records} collections={collections} />}</div>
       </div>
     </div>
   );

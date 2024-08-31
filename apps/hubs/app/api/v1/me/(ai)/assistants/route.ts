@@ -1,32 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import OpenAI from "openai";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import {
-  APP_SESSION_COOKIE_NAME,
-  BAKA_ASSISTANT_ID,
-  BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE,
-  BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME,
-  OPENAI_API_KEY,
-} from "@repo/shared/lib/constants";
-import { Logger } from "@repo/shared/lib/logger";
-import { ActionError } from "@v1/types/api-response";
-import { type Message } from "ai";
-import { AssistantResponse } from "./AssistantResponse";
-import { actionToolCalls } from "./toolsHandler";
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import OpenAI from 'openai';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { APP_SESSION_COOKIE_NAME, BAKA_ASSISTANT_ID, BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, OPENAI_API_KEY } from '@repo/shared/lib/constants';
+import { Logger } from '@repo/shared/lib/logger';
+import { ActionError } from '@v1/types/api-response';
+import { type Message } from 'ai';
+import { AssistantResponse } from './AssistantResponse';
+import { actionToolCalls } from './toolsHandler';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const limit = parseInt(searchParams.get("limit") || "10");
-  let threadId = searchParams.get("threadId") || "";
+  const limit = parseInt(searchParams.get('limit') || '10');
+  let threadId = searchParams.get('threadId') || '';
 
   return await apiAuthTryCatch(async (authSession) => {
     if (!OPENAI_API_KEY || !BAKA_ASSISTANT_ID) {
-      throw new ActionError(
-        "error",
-        500,
-        "The assistant seems to be offline right now. Please try again later.",
-      );
+      throw new ActionError('error', 500, 'The assistant seems to be offline right now. Please try again later.');
     }
 
     const openai = new OpenAI({
@@ -43,19 +33,16 @@ export async function GET(request: NextRequest) {
       threadId = newThread.id;
     } else {
       // Thread ID already exists, fetch the messages
-      const existingMessagePage = await openai.beta.threads.messages.list(
-        threadId,
-        {
-          limit,
-          order: "desc",
-        },
-      );
+      const existingMessagePage = await openai.beta.threads.messages.list(threadId, {
+        limit,
+        order: 'desc',
+      });
 
       const existingMessages = (existingMessagePage.data || [])
         .map((threadMessage) => {
           const content = threadMessage.content?.[0];
 
-          if (content?.type === "text" && content?.text) {
+          if (content?.type === 'text' && content?.text) {
             return {
               id: threadMessage.id,
               role: threadMessage.role,
@@ -76,8 +63,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        status: "success",
-        message: "Successfully retrieved assistant messages.",
+        status: 'success',
+        message: 'Successfully retrieved assistant messages.',
         data: {
           threadId: threadId,
           messages,
@@ -86,9 +73,9 @@ export async function GET(request: NextRequest) {
       {
         status: 200,
         headers: {
-          "Set-Cookie": `${BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME}=${threadId}; Path=/; Max-Age=${BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE}; SameSite=Strict; Secure; HttpOnly`,
+          'Set-Cookie': `${BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME}=${threadId}; Path=/; Max-Age=${BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE}; SameSite=Strict; Secure; HttpOnly`,
         },
-      },
+      }
     );
   });
 }
@@ -141,31 +128,19 @@ export async function POST(request: NextRequest) {
 
   return await apiAuthTryCatch(async (authSession) => {
     if (!threadId) {
-      throw new ActionError(
-        "error",
-        400,
-        "Assistant thread ID is not found. Please try again later.",
-      );
+      throw new ActionError('error', 400, 'Assistant thread ID is not found. Please try again later.');
     }
 
     if (!bakaSessionCookie) {
-      throw new ActionError(
-        "error",
-        400,
-        "No browser session found for the user. Please try again later or refresh the page.",
-      );
+      throw new ActionError('error', 400, 'No browser session found for the user. Please try again later or refresh the page.');
     }
 
     if (!message) {
-      throw new ActionError("error", 400, "Message is required.");
+      throw new ActionError('error', 400, 'Message is required.');
     }
 
     if (!OPENAI_API_KEY || !BAKA_ASSISTANT_ID) {
-      throw new ActionError(
-        "error",
-        500,
-        "The assistant seems to be offline right now. Please try again later.",
-      );
+      throw new ActionError('error', 500, 'The assistant seems to be offline right now. Please try again later.');
     }
 
     const openai = new OpenAI({
@@ -175,20 +150,14 @@ export async function POST(request: NextRequest) {
     // Add a message to the thread
     const createdMessage = await openai.beta.threads.messages
       .create(threadId, {
-        role: "user",
+        role: 'user',
         content: message,
       })
       .catch(() => {
-        throw new ActionError(
-          "error",
-          500,
-          "Failed to send message to the assistant. Please try again later.",
-        );
+        throw new ActionError('error', 500, 'Failed to send message to the assistant. Please try again later.');
       });
 
-    await Logger.withTag(`thread|${threadId}`)
-      .withTag(`user|${authSession.user?.id}`)
-      .info(`User is chatting with the assistant.`);
+    await Logger.withTag(`thread|${threadId}`).withTag(`user|${authSession.user?.id}`).info(`User is chatting with the assistant.`);
 
     // Run the assistant on the thread
     const runStream = openai.beta.threads.runs.stream(threadId, {
@@ -198,42 +167,32 @@ export async function POST(request: NextRequest) {
     /**
      * Start Assistant Response
      */
-    return AssistantResponse(
-      { threadId, messageId: createdMessage.id },
-      async (process) => {
-        const { forwardStream, sendDataMessage } = process;
+    return AssistantResponse({ threadId, messageId: createdMessage.id }, async (process) => {
+      const { forwardStream, sendDataMessage } = process;
 
-        // forward run status would stream message deltas
-        let runResult = await forwardStream(runStream);
+      // forward run status would stream message deltas
+      let runResult = await forwardStream(runStream);
 
-        // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
-        while (
-          runResult?.status === "requires_action" &&
-          runResult.required_action?.type === "submit_tool_outputs"
-        ) {
-          const tool_outputs = await actionToolCalls(
-            authSession,
-            threadId,
-            {
-              Cookie: `${APP_SESSION_COOKIE_NAME}=${bakaSessionCookie?.value}`,
-            },
-            runResult.required_action.submit_tool_outputs.tool_calls,
-            sendDataMessage,
-          );
+      // status can be: queued, in_progress, requires_action, cancelling, cancelled, failed, completed, or expired
+      while (runResult?.status === 'requires_action' && runResult.required_action?.type === 'submit_tool_outputs') {
+        const tool_outputs = await actionToolCalls(
+          authSession,
+          threadId,
+          {
+            Cookie: `${APP_SESSION_COOKIE_NAME}=${bakaSessionCookie?.value}`,
+          },
+          runResult.required_action.submit_tool_outputs.tool_calls,
+          sendDataMessage
+        );
 
-          // https://platform.openai.com/docs/assistants/tools/function-calling/quickstart
-          const newStream = openai.beta.threads.runs.submitToolOutputsStream(
-            threadId,
-            runResult.id,
-            {
-              tool_outputs,
-              stream: true,
-            },
-          );
+        // https://platform.openai.com/docs/assistants/tools/function-calling/quickstart
+        const newStream = openai.beta.threads.runs.submitToolOutputsStream(threadId, runResult.id, {
+          tool_outputs,
+          stream: true,
+        });
 
-          runResult = await forwardStream(newStream);
-        }
-      },
-    );
+        runResult = await forwardStream(newStream);
+      }
+    });
   });
 }

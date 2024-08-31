@@ -1,7 +1,7 @@
-import SwaggerDocs from "./SwaggerDocs";
-import { getSwaggerSpec } from "./config";
+import SwaggerDocs from './SwaggerDocs';
+import { getSwaggerSpec } from './config';
 
-import "@css/swagger.scss";
+import '@css/swagger.scss';
 
 export default async function Page() {
   const swaggerSpec = await getSwaggerSpec(true);

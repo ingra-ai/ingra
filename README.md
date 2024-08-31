@@ -83,7 +83,6 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 
    Copy the `.env.example` file to a new file named `./apps/hubs/.env` and fill in your database connection details and any other environment variables required.
 
-
 ## Environment Variables
 
 The Ingra Hubs utilizes several environment variables for its configuration. You will need to set these up in your `.env` file. Here's a guide to the required environment variables:
@@ -155,7 +154,6 @@ For more detailed instructions and additional configurations, refer to the [Amaz
 pnpm dev
 ```
 
-
 ### Turborepo Remote Caching
 
 Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
@@ -195,7 +193,6 @@ To further enhance your development with Ingra Hubs, explore the documentation a
 - [Zod GitHub Repository](https://github.com/colinhacks/zod) - Discover Zod, a TypeScript-first schema validation library.
 - [AWS SES Documentation](https://docs.aws.amazon.com/ses/latest/dg/welcome.html) - Get started with Amazon Simple Email Service for email sending.
 - [jsonwebtoken GitHub Repository](https://github.com/auth0/node-jsonwebtoken) - Learn about creating and verifying JWTs with this popular library.
-
 
 ### Turborepo Useful Links
 

@@ -1,11 +1,11 @@
-import { PropsWithChildren, Suspense } from "react";
-import { SettingsNavRoutes } from "@protected/settings/SettingsNavRoutes";
-import TopSubNav from "@/components/navs/TopSubNav";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import type { Metadata } from "next";
+import { PropsWithChildren, Suspense } from 'react';
+import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
+import TopSubNav from '@/components/navs/TopSubNav';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: ["Settings", APP_NAME].join(" | "),
+  title: ['Settings', APP_NAME].join(' | '),
 };
 
 export default async function SettingsLayout({ children }: PropsWithChildren) {

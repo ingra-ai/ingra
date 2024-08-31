@@ -1,11 +1,11 @@
-import { Suspense, type ReactNode, type PropsWithChildren } from "react";
-import { MarketplaceNavRoutes } from "./MarketplaceNavRoutes";
-import TopSubNav from "@/components/navs/TopSubNav";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import type { Metadata } from "next";
+import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
+import { MarketplaceNavRoutes } from './MarketplaceNavRoutes';
+import TopSubNav from '@/components/navs/TopSubNav';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: ["Marketplace", APP_NAME].join(" | "),
+  title: ['Marketplace', APP_NAME].join(' | '),
 };
 
 async function Layout({ children }: { children: ReactNode }) {

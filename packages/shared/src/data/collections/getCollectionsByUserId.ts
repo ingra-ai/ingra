@@ -1,4 +1,4 @@
-import db from "@repo/db/client";
+import db from '@repo/db/client';
 
 export const getCollectionsByUserId = async (userId: string) => {
   const records = await db.collection.findMany({

@@ -1,5 +1,5 @@
-import type { BakaPaginationType } from "@repo/components/BakaPagination";
-import { Prisma } from "@repo/db/prisma";
+import type { BakaPaginationType } from '@repo/components/BakaPagination';
+import { Prisma } from '@repo/db/prisma';
 
 export type CollectionMarketplaceListGetPayload = Prisma.CollectionGetPayload<{
   select: {
@@ -47,12 +47,11 @@ export type CollectionMarketplaceListGetPayload = Prisma.CollectionGetPayload<{
   };
 }>;
 
-export type CollectionSubscriptionMarketplaceListGetPayload =
-  Prisma.CollectionSubscriptionGetPayload<{
-    select: {
-      collectionId: true;
-    };
-  }>;
+export type CollectionSubscriptionMarketplaceListGetPayload = Prisma.CollectionSubscriptionGetPayload<{
+  select: {
+    collectionId: true;
+  };
+}>;
 
 export type FetchCollectionMarketplacePaginationType = BakaPaginationType & {
   records: CollectionMarketplaceListGetPayload[];

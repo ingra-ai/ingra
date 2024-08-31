@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import type { FC } from "react";
-import dynamic from "next/dynamic";
+import type { FC } from 'react';
+import dynamic from 'next/dynamic';
 
-const DynamicSwaggerUI = dynamic(() => import("swagger-ui-react"), {
+const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'), {
   ssr: false,
   loading: () => <p>Loading Component...</p>,
 });

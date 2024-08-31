@@ -1,16 +1,13 @@
-"use server";
+'use server';
 
-import * as z from "zod";
-import { ActionError } from "../types/api-response";
-import { validateAction } from "../lib/action-helpers";
-import { ProfileSchema } from "../schemas/profile";
-import { actionAuthTryCatch } from "../utils/actionAuthTryCatch";
-import { clearAuthCaches } from "../data/auth/session/caches";
-import {
-  updateProfile as dataUpdateProfile,
-  destroyAccount as dataDestroyAccount,
-} from "../data/profile";
-import { Logger } from "../lib/logger";
+import * as z from 'zod';
+import { ActionError } from '../types/api-response';
+import { validateAction } from '../lib/action-helpers';
+import { ProfileSchema } from '../schemas/profile';
+import { actionAuthTryCatch } from '../utils/actionAuthTryCatch';
+import { clearAuthCaches } from '../data/auth/session/caches';
+import { updateProfile as dataUpdateProfile, destroyAccount as dataDestroyAccount } from '../data/profile';
+import { Logger } from '../lib/logger';
 
 export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
   const validatedValues = await validateAction(ProfileSchema, values);
@@ -20,15 +17,15 @@ export const updateProfile = async (values: z.infer<typeof ProfileSchema>) => {
     const profile = await dataUpdateProfile(data, authSession.user.id);
 
     if (!profile) {
-      throw new ActionError("error", 400, "Failed to update profile!");
+      throw new ActionError('error', 400, 'Failed to update profile!');
     }
 
     // Delete kv caches for this user
     await clearAuthCaches(authSession);
 
     return {
-      status: "ok",
-      message: "Profile updated!",
+      status: 'ok',
+      message: 'Profile updated!',
       data: profile,
     };
   });
@@ -46,18 +43,16 @@ export const destroyProfile = async () => {
       // Delete kv caches for this user
       clearAuthCaches(authSession),
 
-      Logger.withTag("action|destroyProfile")
-        .withTag(`user|${authSession.user.id}`)
-        .info("Destroying user account"),
+      Logger.withTag('action|destroyProfile').withTag(`user|${authSession.user.id}`).info('Destroying user account'),
     ]);
 
     if (!isDestroyed) {
-      throw new ActionError("error", 400, "Failed to delete profile!");
+      throw new ActionError('error', 400, 'Failed to delete profile!');
     }
 
     return {
-      status: "ok",
-      message: "Profile deleted!",
+      status: 'ok',
+      message: 'Profile deleted!',
       data: null,
     };
   });

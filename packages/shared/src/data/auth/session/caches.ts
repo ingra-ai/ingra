@@ -1,14 +1,14 @@
-import { kv } from "@vercel/kv";
-import { getSessionByApiKey, updateApiKeyLastUpdatedAt } from "../../apiKey";
-import { decodeToken } from "../../../lib/tokens";
-import { AuthSessionResponse } from "./types";
-import { getActiveSessionByJwt } from "../../activeSession";
-import { Logger } from "../../../lib/logger";
+import { kv } from '@vercel/kv';
+import { getSessionByApiKey, updateApiKeyLastUpdatedAt } from '../../apiKey';
+import { decodeToken } from '../../../lib/tokens';
+import { AuthSessionResponse } from './types';
+import { getActiveSessionByJwt } from '../../activeSession';
+import { Logger } from '../../../lib/logger';
 
 // KV prefixes
 const ACTIVE_SESSION_REDIS_EXPIRY = 3600 * 24 * 7; // 7 days in seconds
-const USERID_SESSION_KEY_PREFIX = "userId_Session:";
-const APIKEY_SESSION_KEY_PREFIX = "apiKey_Session:";
+const USERID_SESSION_KEY_PREFIX = 'userId_Session:';
+const APIKEY_SESSION_KEY_PREFIX = 'apiKey_Session:';
 
 /**
  * Recursively traverses an object and converts date-like strings to Date objects.
@@ -18,18 +18,17 @@ const APIKEY_SESSION_KEY_PREFIX = "apiKey_Session:";
  */
 function convertDateStringsToDates(obj: any): any {
   // Regular expression to match date strings in ISO 8601 format
-  const isoDateRegex =
-    /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
+  const isoDateRegex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 
   if (obj === null || obj === undefined) {
     return obj;
   }
 
-  if (typeof obj === "string" && isoDateRegex.test(obj)) {
+  if (typeof obj === 'string' && isoDateRegex.test(obj)) {
     return new Date(obj);
   }
 
-  if (typeof obj === "object") {
+  if (typeof obj === 'object') {
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         obj[key] = convertDateStringsToDates(obj[key]);
@@ -51,11 +50,9 @@ export const getWebAuthSession = async (jwt: string) => {
   if (jwt) {
     const decodedJwt = decodeToken<{ id: string }>(jwt);
 
-    if (typeof decodedJwt?.id === "string" && decodedJwt.id.length > 0) {
+    if (typeof decodedJwt?.id === 'string' && decodedJwt.id.length > 0) {
       const userId = decodedJwt.id;
-      sessionWithUser = await kv.get<AuthSessionResponse>(
-        USERID_SESSION_KEY_PREFIX + userId,
-      );
+      sessionWithUser = await kv.get<AuthSessionResponse>(USERID_SESSION_KEY_PREFIX + userId);
 
       if (sessionWithUser) {
         // We need to fix all date type objects to be Date objects
@@ -69,11 +66,7 @@ export const getWebAuthSession = async (jwt: string) => {
 
       // Add to cache
       if (sessionWithUser) {
-        await kv.set(
-          USERID_SESSION_KEY_PREFIX + sessionWithUser.userId,
-          sessionWithUser,
-          { ex: ACTIVE_SESSION_REDIS_EXPIRY },
-        );
+        await kv.set(USERID_SESSION_KEY_PREFIX + sessionWithUser.userId, sessionWithUser, { ex: ACTIVE_SESSION_REDIS_EXPIRY });
       }
     }
   }
@@ -90,9 +83,7 @@ export const getApiAuthSession = async (xApiKey: string) => {
   let sessionWithUser: AuthSessionResponse | null = null;
 
   if (xApiKey) {
-    sessionWithUser = await kv.get<AuthSessionResponse>(
-      APIKEY_SESSION_KEY_PREFIX + xApiKey,
-    );
+    sessionWithUser = await kv.get<AuthSessionResponse>(APIKEY_SESSION_KEY_PREFIX + xApiKey);
 
     if (sessionWithUser) {
       // We need to fix all date type objects to be Date objects
@@ -131,9 +122,7 @@ export const clearAuthCaches = async (authSession: AuthSessionResponse) => {
     const result = await kv.del(...allRedisKeys);
 
     // Total auth caches deleted
-    Logger.withTag("action|clearAuthCaches")
-      .withTag(`user|${authSession.userId}`)
-      .info(`${result} KV keys have been removed.`, { allRedisKeys });
+    Logger.withTag('action|clearAuthCaches').withTag(`user|${authSession.userId}`).info(`${result} KV keys have been removed.`, { allRedisKeys });
   }
 
   return 0;

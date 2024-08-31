@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { Prisma } from "@repo/db/prisma";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getFunctionAccessibleByUser } from "@repo/shared/data/functions";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { Prisma } from '@repo/db/prisma';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 
 /**
  * @swagger
@@ -53,14 +53,13 @@ import { getFunctionAccessibleByUser } from "@repo/shared/data/functions";
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const functionIdOrSlug = searchParams.get("functionIdOrSlug");
-  const fieldsToRetrieveParams: string[] =
-    searchParams.getAll("fieldsToRetrieve") || [];
+  const functionIdOrSlug = searchParams.get('functionIdOrSlug');
+  const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     // Validate that either id or slug is provided
     if (!functionIdOrSlug) {
-      throw new Error("Either function ID or slug must be provided");
+      throw new Error('Either function ID or slug must be provided');
     }
 
     const selectFields: Prisma.FunctionSelect = {
@@ -70,23 +69,12 @@ export async function GET(req: NextRequest) {
 
     // Populate Function select fields
     if (fieldsToRetrieveParams.length) {
-      const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = [
-        "description",
-        "code",
-        "httpVerb",
-        "isPrivate",
-        "isPublished",
-        "arguments",
-        "tags",
-      ];
+      const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
       acceptableFieldNames.forEach((acceptableFieldName) => {
-        if (
-          fieldsToRetrieveParams.length === 0 ||
-          fieldsToRetrieveParams.includes(acceptableFieldName)
-        ) {
+        if (fieldsToRetrieveParams.length === 0 || fieldsToRetrieveParams.includes(acceptableFieldName)) {
           // Non relational fields;
           switch (acceptableFieldName) {
-            case "arguments":
+            case 'arguments':
               selectFields[acceptableFieldName] = {
                 select: {
                   id: true,
@@ -98,7 +86,7 @@ export async function GET(req: NextRequest) {
                 },
               };
               break;
-            case "tags":
+            case 'tags':
               selectFields[acceptableFieldName] = {
                 select: {
                   id: true,
@@ -136,53 +124,47 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    const functionRecord = await getFunctionAccessibleByUser(
-      authSession.user.id,
-      functionIdOrSlug,
-      {
-        accessTypes: ["owner", "subscriber"],
-        findFirstArgs: {
-          select: selectFields,
-        },
+    const functionRecord = await getFunctionAccessibleByUser(authSession.user.id, functionIdOrSlug, {
+      accessTypes: ['owner', 'subscriber'],
+      findFirstArgs: {
+        select: selectFields,
       },
-    );
+    });
 
     // Check if the function was found
     if (!functionRecord) {
-      throw new Error(
-        `The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`,
-      );
+      throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
     }
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "viewFunction",
+      operationId: 'viewFunction',
       functionId: functionRecord.id,
       functionSlug: functionRecord.slug,
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|curateFunctions-view")
+    Logger.withTag('api|builtins')
+      .withTag('operation|curateFunctions-view')
       .withTag(`user|${authSession.user.id}`)
       .withTag(`function|${functionRecord.id}`)
-      .info("Viewing a specific user function", {
-        accessTypes: ["owner", "subscriber"],
+      .info('Viewing a specific user function', {
+        accessTypes: ['owner', 'subscriber'],
       });
 
     return NextResponse.json(
       {
-        status: "success",
-        message: "Successfully retrieved the function",
+        status: 'success',
+        message: 'Successfully retrieved the function',
         data: functionRecord,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

@@ -1,22 +1,13 @@
-"use client";
-import {
-  type DetailedHTMLProps,
-  type HTMLAttributes,
-  useState,
-  type FC,
-  type PropsWithChildren,
-} from "react";
-import { Transition, TransitionChild } from "@headlessui/react";
-import type { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import SideNav from "../navs/SideNav";
-import { cn } from "@repo/shared/lib/utils";
-import { MenuIcon } from "lucide-react";
-import { Button } from "@repo/components/ui/button";
+'use client';
+import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
+import { Transition, TransitionChild } from '@headlessui/react';
+import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import SideNav from '../navs/SideNav';
+import { cn } from '@repo/shared/lib/utils';
+import { MenuIcon } from 'lucide-react';
+import { Button } from '@repo/components/ui/button';
 
-type NavbarProps = DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-> & {
+type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   authSession: AuthSessionResponse;
   className?: string;
 };
@@ -24,27 +15,18 @@ type NavbarProps = DetailedHTMLProps<
 export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const { className, authSession, children, ...restOfDivProps } = props;
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const classes = cn("relative h-full w-full overflow-hidden", className);
+  const classes = cn('relative h-full w-full overflow-hidden', className);
 
-  const mainClasses = cn(
-    "bg-dark-radial-pattern",
-    "relative z-20 h-full w-full overflow-hidden overflow-y-auto",
-    "transition-padding duration-300 ease-in-out",
-    {
-      "lg:pl-64": sidebarOpen,
-    },
-  );
+  const mainClasses = cn('bg-dark-radial-pattern', 'relative z-20 h-full w-full overflow-hidden overflow-y-auto', 'transition-padding duration-300 ease-in-out', {
+    'lg:pl-64': sidebarOpen,
+  });
 
   return (
     <div className={classes} data-testid="layout-with-nav" {...restOfDivProps}>
       <div className="fixed z-30 left-0 top-0 flex flex-1 p-2">
         {/* Mobile sidenav toggler */}
         <div className="flex items-center gap-x-2">
-          <Button
-            onClick={() => setSidebarOpen(true)}
-            variant={"outline"}
-            className="p-2 w-auto h-auto"
-          >
+          <Button onClick={() => setSidebarOpen(true)} variant={'outline'} className="p-2 w-auto h-auto">
             <span className="sr-only">Toggle sidebar</span>
             <MenuIcon className="w-4 h-4" />
           </Button>
@@ -53,9 +35,9 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
 
       <div className="lg:visible lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <div className="relative z-30">
-          <Transition show={sidebarOpen} as={"div"}>
+          <Transition show={sidebarOpen} as={'div'}>
             <TransitionChild
-              as={"div"}
+              as={'div'}
               className="lg:hidden"
               enter="transition-opacity ease-linear duration-300"
               enterFrom="opacity-0"
@@ -64,15 +46,12 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div
-                className="fixed inset-0 bg-gray-900/80"
-                onClick={() => setSidebarOpen(false)}
-              />
+              <div className="fixed inset-0 bg-gray-900/80" onClick={() => setSidebarOpen(false)} />
             </TransitionChild>
 
             <div className="fixed left-0 top-0 flex">
               <TransitionChild
-                as={"div"}
+                as={'div'}
                 enter="transition ease-in-out duration-300 transform"
                 enterFrom="-translate-x-64"
                 enterTo="translate-x-0"
@@ -81,22 +60,9 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
                 leaveTo="-translate-x-64"
               >
                 <div className="flex max-w-xs flex-1 h-screen max-h-screen w-64">
-                  <TransitionChild
-                    as={"div"}
-                    className={"flex w-64"}
-                    enter="ease-in-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in-out duration-300"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
+                  <TransitionChild as={'div'} className={'flex w-64'} enter="ease-in-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in-out duration-300" leaveFrom="opacity-100" leaveTo="opacity-0">
                     {/* Sidebar component, swap this element with another sidebar if you like */}
-                    <SideNav
-                      authSession={authSession}
-                      onMenuClick={() => setSidebarOpen(false)}
-                      className="bg-card border-r border-gray-700 flex flex-1 flex-col overflow-x-hidden"
-                    />
+                    <SideNav authSession={authSession} onMenuClick={() => setSidebarOpen(false)} className="bg-card border-r border-gray-700 flex flex-1 flex-col overflow-x-hidden" />
                   </TransitionChild>
                 </div>
               </TransitionChild>

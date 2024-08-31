@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import db from "@repo/db/client"; // Assuming you have a db instance for interacting with your database
-import { setTokenAsDefault } from "@repo/shared/data/oauthToken";
-import { clearAuthCaches } from "@repo/shared/data/auth/session/caches";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import db from '@repo/db/client'; // Assuming you have a db instance for interacting with your database
+import { setTokenAsDefault } from '@repo/shared/data/oauthToken';
+import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -61,28 +61,25 @@ export async function GET(req: NextRequest) {
         userId: authSession.user.id,
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
     });
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "getOAuthTokensList",
+      operationId: 'getOAuthTokensList',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|oAuthTokens")
-      .withTag(`user|${authSession.user.id}`)
-      .info("Fetching available OAuth tokens.");
+    Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info('Fetching available OAuth tokens.');
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Discovered ${oAuthTokens.length} oAuth tokens set.`,
         data: oAuthTokens.map((elem) => {
           return {
@@ -95,7 +92,7 @@ export async function GET(req: NextRequest) {
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }
@@ -165,39 +162,28 @@ export async function PATCH(req: NextRequest) {
     const { id, service } = await req.json();
 
     if (!id || !service) {
-      throw new Error(
-        "To update an OAuth Token, provide the record ID, and service type.",
-      );
+      throw new Error('To update an OAuth Token, provide the record ID, and service type.');
     }
 
-    const defaultOAuthToken = await setTokenAsDefault(
-      id,
-      service,
-      authSession.user.id,
-    );
+    const defaultOAuthToken = await setTokenAsDefault(id, service, authSession.user.id);
 
     await clearAuthCaches(authSession);
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "setOAuthTokenAsDefault",
+      operationId: 'setOAuthTokenAsDefault',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|oAuthTokens")
-      .withTag(`user|${authSession.user.id}`)
-      .info(
-        `Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`,
-      );
+    Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info(`Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`);
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`,
         data: {
           id: defaultOAuthToken.id,
@@ -208,7 +194,7 @@ export async function PATCH(req: NextRequest) {
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

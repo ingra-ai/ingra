@@ -1,6 +1,6 @@
-"use server";
-import db from "@repo/db/client";
-import type { LogObject } from "consola/core";
+'use server';
+import db from '@repo/db/client';
+import type { LogObject } from 'consola/core';
 
 export async function pushToAuditTable(logObj: LogObject) {
   const { date, args, type, level, tag } = logObj;
@@ -19,6 +19,6 @@ export async function pushToAuditTable(logObj: LogObject) {
       },
     });
   } catch (error) {
-    console.error("Error inserting audit log:", error);
+    console.error('Error inserting audit log:', error);
   }
 }

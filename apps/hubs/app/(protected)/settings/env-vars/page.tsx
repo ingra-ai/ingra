@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-import { RedirectType, redirect } from "next/navigation";
-import db from "@repo/db/client";
-import { APP_AUTH_LOGIN_URL } from "@repo/shared/lib/constants";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import { EnvVarsSection } from "@repo/components/data/envVars/EnvVarsSection";
-import { getAuthSession } from "@repo/shared/data/auth/session";
+import type { Metadata } from 'next';
+import { RedirectType, redirect } from 'next/navigation';
+import db from '@repo/db/client';
+import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 
 export const metadata: Metadata = {
-  title: ["Environment Variables", APP_NAME].join(" | "),
+  title: ['Environment Variables', APP_NAME].join(' | '),
 };
 
 export default async function Page() {

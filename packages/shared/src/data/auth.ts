@@ -1,6 +1,6 @@
-import type { User, MagicLinkToken, ActiveSession } from "@repo/db/prisma";
-import { generateToken } from "../lib/tokens";
-import db from "@repo/db/client";
+import type { User, MagicLinkToken, ActiveSession } from '@repo/db/prisma';
+import { generateToken } from '../lib/tokens';
+import db from '@repo/db/client';
 
 /**
  * ---------------------------------
@@ -18,7 +18,7 @@ const generateRandomNumber = (length = 6) => {
   // Generate a random number between 0 and 999999
   const randomNumber = Math.floor(Math.random() * 10 ** length);
   // Convert to a string and pad with leading zeros to ensure it is 6 digits
-  const paddedRandomNumber = randomNumber.toString().padStart(6, "0");
+  const paddedRandomNumber = randomNumber.toString().padStart(6, '0');
   return paddedRandomNumber;
 };
 
@@ -28,18 +28,12 @@ const generateRandomNumber = (length = 6) => {
  * @param expiresSeconds - The number of seconds until the token expires. Default is 180 seconds (3 minutes).
  * @returns A Promise that resolves to the upserted magic link token, or null if the operation fails.
  */
-export const createMagicLink = async (
-  user: Pick<User, "id" | "email">,
-  expiresSeconds = 180,
-): Promise<MagicLinkToken | null> => {
+export const createMagicLink = async (user: Pick<User, 'id' | 'email'>, expiresSeconds = 180): Promise<MagicLinkToken | null> => {
   const expiresTs = Date.now() + expiresSeconds * 1000;
   const expiresAt = new Date(expiresTs);
   // Generate 6 digits authentication code
   const otpCode = generateRandomNumber(6);
-  const token = generateToken(
-    { id: user.id, email: user.email, code: otpCode },
-    expiresSeconds,
-  );
+  const token = generateToken({ id: user.id, email: user.email, code: otpCode }, expiresSeconds);
 
   return await db.magicLinkToken.create({
     data: {
@@ -57,10 +51,7 @@ export const createMagicLink = async (
  * @param otpCode - The OTP code to search for.
  * @returns A Promise that resolves to the magic link with user information, or null if not found.
  */
-export const getMagicLinkByOtp = async (
-  user: Pick<User, "id">,
-  otpCode: string,
-) => {
+export const getMagicLinkByOtp = async (user: Pick<User, 'id'>, otpCode: string) => {
   const magicLinkWithUser = await db.magicLinkToken.findFirst({
     select: {
       token: true,
@@ -112,16 +103,10 @@ export const expireMagicLinkByToken = async (token: string) => {
  * @param expiresSeconds - The number of seconds until the session expires. Default is 86400 seconds (24 hours).
  * @returns A promise that resolves to the upserted active session, or null if the operation fails.
  */
-export const createActiveSession = async (
-  user: Pick<User, "id" | "email">,
-  expiresSeconds = 86400 * 7,
-): Promise<ActiveSession | null> => {
+export const createActiveSession = async (user: Pick<User, 'id' | 'email'>, expiresSeconds = 86400 * 7): Promise<ActiveSession | null> => {
   const expiresTs = Date.now() + expiresSeconds * 1000;
   const expiresAt = new Date(expiresTs);
-  const token = generateToken(
-    { id: user.id, email: user.email, _expiresTs: expiresTs },
-    expiresSeconds,
-  );
+  const token = generateToken({ id: user.id, email: user.email, _expiresTs: expiresTs }, expiresSeconds);
 
   return await db.activeSession.create({
     data: {

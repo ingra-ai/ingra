@@ -1,31 +1,21 @@
-import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import {
-  ChatPromptTemplate,
-  MessagesPlaceholder,
-} from "@langchain/core/prompts";
-import { RunnableConfig } from "@langchain/core/runnables";
-import { AIMessage } from "@langchain/core/messages";
-import {
-  APP_URL,
-  USERS_API_COLLECTION_FUNCTION_URI,
-} from "@repo/shared/lib/constants";
-import { Logger } from "@repo/shared/lib/logger";
-import {
-  AgentStateChannels,
-  CollectionForToolsGetPayload,
-  ReturnAgentNode,
-} from "./types";
-import { getCollectionsForTools } from "./getCollectionsForTools";
-import { DynamicStructuredTool } from "@langchain/core/tools";
-import { functionArgsToZod } from "@repo/shared/utils/functions/functionArgsToZod";
-import { handleFetch } from "@repo/shared/utils/handleFetch";
-import { ChatOpenAI } from "@langchain/openai";
-import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
+import { RunnableConfig } from '@langchain/core/runnables';
+import { AIMessage } from '@langchain/core/messages';
+import { HUBS_APP_URL, USERS_API_COLLECTION_FUNCTION_URI } from '@repo/shared/lib/constants';
+import { Logger } from '@repo/shared/lib/logger';
+import { AgentStateChannels, CollectionForToolsGetPayload, ReturnAgentNode } from './types';
+import { getCollectionsForTools } from './getCollectionsForTools';
+import { DynamicStructuredTool } from '@langchain/core/tools';
+import { functionArgsToZod } from '@repo/shared/utils/functions/functionArgsToZod';
+import { handleFetch } from '@repo/shared/utils/handleFetch';
+import { ChatOpenAI } from '@langchain/openai';
+import { AgentExecutor, createOpenAIToolsAgent } from 'langchain/agents';
 
 // Prompt template must have "input" and "agent_scratchpad input variables"
 const promptTemplate = ChatPromptTemplate.fromMessages([
   [
-    "system",
+    'system',
     `
       You are a helpful agent who have access to functions inside a collection of "{collectionName}".
 
@@ -35,11 +25,11 @@ const promptTemplate = ChatPromptTemplate.fromMessages([
       And here is the list of function names:
       """{functionNames}"""
     `
-      .replace(/(?:\r\n|\r|\n)/g, " ")
+      .replace(/(?:\r\n|\r|\n)/g, ' ')
       .trim(),
   ],
-  new MessagesPlaceholder("messages"),
-  new MessagesPlaceholder("agent_scratchpad"),
+  new MessagesPlaceholder('messages'),
+  new MessagesPlaceholder('agent_scratchpad'),
 ]);
 
 const collectionFunctionsToDynamicTools = (
@@ -47,7 +37,7 @@ const collectionFunctionsToDynamicTools = (
   options: {
     headers: Record<string, any>;
     isSubscription?: boolean;
-  },
+  }
 ) => {
   const { headers = {}, isSubscription = false } = options;
 
@@ -61,26 +51,13 @@ const collectionFunctionsToDynamicTools = (
       description: functionRecord.description,
       schema: functionArgsToZod(functionRecord.arguments),
       func: async (requestArgs = {}) => {
-        const loggerObj = Logger.withTag("api|langchainFunction")
-          .withTag(`functionId|${functionRecord.id}`)
-          .withTag(`functionSlug|${functionSlug}`)
-          .withTag(`collectionSlug|${collectionSlug}`);
+        const loggerObj = Logger.withTag('api|langchainFunction').withTag(`functionId|${functionRecord.id}`).withTag(`functionSlug|${functionSlug}`).withTag(`collectionSlug|${collectionSlug}`);
 
-        const hitUrl = [
-          APP_URL,
-          USERS_API_COLLECTION_FUNCTION_URI.replace(":userName", ownerUsername!)
-            .replace(":collectionSlug", collectionSlug)
-            .replace(":functionSlug", functionSlug),
-        ].join("");
+        const hitUrl = [HUBS_APP_URL, USERS_API_COLLECTION_FUNCTION_URI.replace(':userName', ownerUsername!).replace(':collectionSlug', collectionSlug).replace(':functionSlug', functionSlug)].join('');
 
         loggerObj.info(`Executing langchain function`);
 
-        const result = await handleFetch(
-          hitUrl,
-          functionRecord.httpVerb,
-          requestArgs,
-          headers,
-        );
+        const result = await handleFetch(hitUrl, functionRecord.httpVerb, requestArgs, headers);
 
         return JSON.stringify(result);
       },
@@ -100,25 +77,17 @@ const collectionFunctionsToDynamicTools = (
  * @see https://js.langchain.com/v0.1/docs/modules/agents/agent_types/tool_calling/
  * @info In LangChain - Tool calling is only available with supported models. https://js.langchain.com/v0.1/docs/integrations/chat/
  */
-export const createToolsAgentsByAuthSession = async (
-  authSession: AuthSessionResponse,
-  headers: Record<string, any> = {},
-): Promise<ReturnAgentNode[]> => {
+export const createToolsAgentsByAuthSession = async (authSession: AuthSessionResponse, headers: Record<string, any> = {}): Promise<ReturnAgentNode[]> => {
   /**
    * First step is to grab all collections and functions from the user.
    * A collection equals to an agent. And this agent is responsible for calling the tools inside this collection.
    */
-  const [myCollections, subCollections] =
-    await getCollectionsForTools(authSession);
+  const [myCollections, subCollections] = await getCollectionsForTools(authSession);
 
-  function createNode(
-    agentName: string,
-    prompt: ChatPromptTemplate,
-    tools: DynamicStructuredTool[],
-  ) {
+  function createNode(agentName: string, prompt: ChatPromptTemplate, tools: DynamicStructuredTool[]) {
     return async (state: AgentStateChannels, config?: RunnableConfig) => {
       const llm = new ChatOpenAI({
-        model: "gpt-4o",
+        model: 'gpt-4o',
         temperature: 0,
         streaming: true,
       });
@@ -140,9 +109,7 @@ export const createToolsAgentsByAuthSession = async (
       const result = await executor.invoke(state, config);
 
       const returnState: AgentStateChannels = {
-        messages: result?.output
-          ? [new AIMessage({ content: result.output, name: agentName })]
-          : [],
+        messages: result?.output ? [new AIMessage({ content: result.output, name: agentName })] : [],
         previous: agentName,
       };
 
@@ -151,21 +118,19 @@ export const createToolsAgentsByAuthSession = async (
   }
 
   const myToolAgents = myCollections.map(async (collection) => {
-    const agentName = [collection.name, "Agent"].join(" ").replace(/\s+/g, ""),
+    const agentName = [collection.name, 'Agent'].join(' ').replace(/\s+/g, ''),
       tools = collectionFunctionsToDynamicTools(collection, { headers }),
       formattedPrompt = await promptTemplate.partial({
         collectionName: collection.name,
         functionsLength: collection.functions.length.toString(),
-        collectionDescription: collection.description || "",
-        functionNames: collection.functions
-          .map((func) => `- ${func.slug}`)
-          .join("\n"),
+        collectionDescription: collection.description || '',
+        functionNames: collection.functions.map((func) => `- ${func.slug}`).join('\n'),
       }),
       node = createNode(agentName, formattedPrompt, tools);
 
     const result: ReturnAgentNode = {
       agentName,
-      description: collection.description || "",
+      description: collection.description || '',
       node,
     };
 
@@ -173,9 +138,7 @@ export const createToolsAgentsByAuthSession = async (
   });
 
   const subToolAgents = subCollections.map(async (collection) => {
-    const agentName = [collection.name, "SubAgent"]
-        .join(" ")
-        .replace(/\s+/g, ""),
+    const agentName = [collection.name, 'SubAgent'].join(' ').replace(/\s+/g, ''),
       tools = collectionFunctionsToDynamicTools(collection, {
         headers,
         isSubscription: true,
@@ -183,16 +146,14 @@ export const createToolsAgentsByAuthSession = async (
       formattedPrompt = await promptTemplate.partial({
         collectionName: collection.name,
         functionsLength: collection.functions.length.toString(),
-        collectionDescription: collection.description || "",
-        functionNames: collection.functions
-          .map((func) => `- ${func.slug}`)
-          .join("\n"),
+        collectionDescription: collection.description || '',
+        functionNames: collection.functions.map((func) => `- ${func.slug}`).join('\n'),
       }),
       node = createNode(agentName, formattedPrompt, tools);
 
     const result: ReturnAgentNode = {
       agentName,
-      description: collection.description || "",
+      description: collection.description || '',
       node,
     };
 
