@@ -1,11 +1,11 @@
-import { DynamicStructuredTool } from "@langchain/community/tools/dynamic";
-import { Prisma } from "@repo/db/prisma";
-import { functionArgsToZod } from "@repo/shared/utils/functions/functionArgsToZod";
-import { runUserFunction } from "@repo/shared/utils/vm/functions/runUserFunction";
-import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { Logger } from "@repo/shared/lib/logger";
-import { getFunctionAccessibleByUser } from "@repo/shared/data/functions";
+import { DynamicStructuredTool } from '@langchain/community/tools/dynamic';
+import { Prisma } from '@repo/db/prisma';
+import { functionArgsToZod } from '@repo/shared/utils/functions/functionArgsToZod';
+import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 
 type FunctionForLangchainPayload = Prisma.FunctionGetPayload<{
   select: {
@@ -21,36 +21,27 @@ type FunctionForLangchainPayload = Prisma.FunctionGetPayload<{
   };
 }>;
 
-export const convertFunctionRecordToDynamicStructuredTool = (
-  authSession: AuthSessionResponse,
-  functionRecord: FunctionForLangchainPayload,
-) => {
+export const convertFunctionRecordToDynamicStructuredTool = (authSession: AuthSessionResponse, functionRecord: FunctionForLangchainPayload) => {
   return new DynamicStructuredTool({
     name: functionRecord.slug,
     description: functionRecord.description,
     schema: functionArgsToZod(functionRecord.arguments),
     func: async (requestArgs = {}) => {
       try {
-        const loggerObj = Logger.withTag("api|langchainFunction")
-          .withTag(`function|${functionRecord.id}`)
-          .withTag(`slug|${functionRecord.slug}`);
+        const loggerObj = Logger.withTag('api|langchainFunction').withTag(`function|${functionRecord.id}`).withTag(`slug|${functionRecord.slug}`);
 
         /**
          * Grab the function again, I know its redundant but it's necessary to only grab the function code here to reduce complexities.
          */
-        const record = await getFunctionAccessibleByUser(
-          authSession.user.id,
-          functionRecord.id,
-          {
-            accessTypes: ["owner", "subscribedCollection"],
-            findFirstArgs: {
-              include: {
-                arguments: true,
-                tags: true,
-              },
+        const record = await getFunctionAccessibleByUser(authSession.user.id, functionRecord.id, {
+          accessTypes: ['owner', 'subscribedCollection'],
+          findFirstArgs: {
+            include: {
+              arguments: true,
+              tags: true,
             },
           },
-        );
+        });
 
         if (!record) {
           throw new Error(`Function ${functionRecord.slug} is not found.`);
@@ -58,43 +49,34 @@ export const convertFunctionRecordToDynamicStructuredTool = (
 
         loggerObj.info(`Executing langchain function: ${functionRecord.slug}`);
 
-        const { result, metrics, errors } = await runUserFunction(
-          authSession,
-          record,
-          requestArgs,
-        );
+        const { result, metrics, errors } = await runUserFunction(authSession, record, requestArgs);
 
         /**
          * Analytics & Logging
          */
-        mixpanel.track("Langchain Function Executed", {
+        mixpanel.track('Langchain Function Executed', {
           distinct_id: authSession.user.id,
-          type: "langchainFunction",
+          type: 'langchainFunction',
           functionId: functionRecord.id,
           metrics,
           errors,
         });
 
-        loggerObj.info(
-          `Finished executing langchain function: ${functionRecord.slug}`,
-          metrics,
-        );
+        loggerObj.info(`Finished executing langchain function: ${functionRecord.slug}`, metrics);
 
         if (errors.length) {
-          const errorMessage =
-            errors?.[0].message ||
-            "An error occurred while executing the function.";
+          const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
           loggerObj.error(`Errored executing function: ${errorMessage}`);
           throw new Error(errorMessage);
         }
 
         return JSON.stringify({
-          status: "success",
+          status: 'success',
           data: result || null,
         });
       } catch (err: any) {
         return JSON.stringify({
-          error: err.message || "An error occurred.",
+          error: err.message || 'An error occurred.',
         });
       }
     },

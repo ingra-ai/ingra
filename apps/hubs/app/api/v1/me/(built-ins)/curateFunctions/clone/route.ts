@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { cloneFunction } from "@repo/shared/data/functions";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { cloneFunction } from '@repo/shared/data/functions';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -57,28 +57,24 @@ export async function POST(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "cloneFunction",
+      operationId: 'cloneFunction',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|curateFunctions-clone")
-      .withTag(`user|${authSession.user.id}`)
-      .withTag(`function|${functionId}`)
-      .info("Cloned a function");
+    Logger.withTag('api|builtins').withTag('operation|curateFunctions-clone').withTag(`user|${authSession.user.id}`).withTag(`function|${functionId}`).info('Cloned a function');
 
     return NextResponse.json(
       {
-        status: "success",
-        message: "Successfully cloned the function",
+        status: 'success',
+        message: 'Successfully cloned the function',
         data: clonedFunction,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

@@ -1,11 +1,10 @@
-import { Skeleton } from "@repo/components/ui/skeleton";
-import { cn } from "@repo/shared/lib/utils";
+import { Skeleton } from '@repo/components/ui/skeleton';
+import { cn } from '@repo/shared/lib/utils';
 
 export default function FunctionFormLoading() {
   // You can add any UI inside Loading, including a Skeleton.
   const functionListGridClasses = cn({
-    "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6":
-      true,
+    'grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6': true,
   });
 
   return (

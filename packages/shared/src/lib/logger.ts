@@ -1,18 +1,18 @@
-import { createConsola, consola } from "consola";
-import { pushToAuditTable } from "../data/auditLog";
-import { IS_PROD } from "./constants";
+import { createConsola, consola } from 'consola';
+import { pushToAuditTable } from '../data/auditLog';
+import { IS_PROD } from './constants';
 
 const consolaWithReporters = createConsola({
   reporters: [
     {
       log: (logObj) => {
         if (logObj.level === 2) {
-          console.log("<💩>", JSON.stringify(logObj));
+          console.log('<💩>', JSON.stringify(logObj));
         } else {
           // Push to audit log
-          console.log("<💀>", JSON.stringify(logObj));
+          console.log('<💀>', JSON.stringify(logObj));
 
-          if (typeof window === "undefined") {
+          if (typeof window === 'undefined') {
             pushToAuditTable(logObj);
           }
         }

@@ -1,8 +1,8 @@
-"use server";
-import { Logger } from "../logger";
-import { Prisma } from "@repo/db/prisma";
-import { GoogleOAuthClient, Credentials } from "../google-oauth/client";
-import { formatDistance, differenceInSeconds } from "date-fns";
+'use server';
+import { Logger } from '../logger';
+import { Prisma } from '@repo/db/prisma';
+import { GoogleOAuthClient, Credentials } from '../google-oauth/client';
+import { formatDistance, differenceInSeconds } from 'date-fns';
 
 type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
   select: {
@@ -29,31 +29,18 @@ type RefreshTokenResponse = {
  * @param oAuthToken - The OAuth token object containing the necessary properties.
  * @returns The new token response if successful, otherwise null.
  */
-export const refreshGoogleOAuthCredentials = async (
-  oAuthToken: OAuthTokenProps,
-) => {
-  const {
-    userId = "N/A",
-    primaryEmailAddress = "",
-    accessToken: access_token,
-    refreshToken: refresh_token,
-    idToken: id_token,
-    expiryDate,
-  } = oAuthToken;
+export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps) => {
+  const { userId = 'N/A', primaryEmailAddress = '', accessToken: access_token, refreshToken: refresh_token, idToken: id_token, expiryDate } = oAuthToken;
 
   // Check if the required properties are present
   if (!access_token || !refresh_token) {
-    Logger.withTag("action|refreshGoogleOAuthCredentials")
-      .withTag(`user|${userId}`)
-      .error('Missing either "access_token" or "refresh_token".');
+    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).error('Missing either "access_token" or "refresh_token".');
     return null;
   }
 
   // Check if userId and primaryEmailAddress are present
   if (!userId || !primaryEmailAddress) {
-    Logger.withTag("action|refreshGoogleOAuthCredentials")
-      .withTag(`user|${userId}`)
-      .error('Missing either "userId" or "primaryEmailAddress".');
+    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).error('Missing either "userId" or "primaryEmailAddress".');
     return null;
   }
 
@@ -85,12 +72,10 @@ export const refreshGoogleOAuthCredentials = async (
   });
 
   // Log the necessary information
-  Logger.withTag("action|refreshGoogleOAuthCredentials")
-    .withTag(`user|${userId}`)
-    .info("Refresh is necessary for token:", {
-      primaryEmailAddress,
-      hasBeenExpiredFor,
-    });
+  Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).info('Refresh is necessary for token:', {
+    primaryEmailAddress,
+    hasBeenExpiredFor,
+  });
 
   // Refresh the access token
   const newTokenResponse = await GoogleOAuthClient.refreshAccessToken();

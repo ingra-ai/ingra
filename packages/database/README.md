@@ -1,4 +1,5 @@
 # Database
+
 ### Prisma Knowledge Base
 
 Welcome to the Prisma Knowledge Base! This guide provides an overview of the most common commands you'll need to use when working with Prisma, an open-source database toolkit. Prisma helps you easily manage your database schema and interact with your data through an auto-generated and type-safe query builder.

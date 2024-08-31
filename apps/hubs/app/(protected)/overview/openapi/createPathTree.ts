@@ -1,4 +1,4 @@
-import { ME_API_ROOT_PATH } from "@repo/shared/lib/constants";
+import { ME_API_ROOT_PATH } from '@repo/shared/lib/constants';
 
 interface PathNode {
   title: string;
@@ -7,18 +7,16 @@ interface PathNode {
 }
 
 export const createPathTree = (paths: string[]): PathNode[] => {
-  const root: PathNode = { title: "root", key: "root", children: [] };
+  const root: PathNode = { title: 'root', key: 'root', children: [] };
 
   for (let i = 0; i < paths.length; i++) {
     const path = paths[i];
-    const segments = path.split("/").filter(Boolean);
+    const segments = path.split('/').filter(Boolean);
     let current = root;
 
     // Check for the specific case of grouping "/api/v1/me"
-    const rootSegments = ["/api/v1"],
-      currentPathIndex = rootSegments.findIndex((rootSegment) =>
-        path.startsWith(rootSegment),
-      );
+    const rootSegments = ['/api/v1'],
+      currentPathIndex = rootSegments.findIndex((rootSegment) => path.startsWith(rootSegment));
 
     if (currentPathIndex >= 0) {
       const rootSegment = rootSegments[currentPathIndex];
@@ -28,7 +26,7 @@ export const createPathTree = (paths: string[]): PathNode[] => {
       let child = current.children.find((child) => child.key === rootSegment);
       if (!child) {
         // Grab the last segment as the title
-        const title = rootSegment.split("/").pop() || "";
+        const title = rootSegment.split('/').pop() || '';
 
         if (!title) {
           continue;
@@ -53,7 +51,7 @@ export const createPathTree = (paths: string[]): PathNode[] => {
         if (!child) {
           child = {
             title: segment,
-            key: `${rootSegment}/${remainingSegments.slice(0, j + 1).join("/")}`,
+            key: `${rootSegment}/${remainingSegments.slice(0, j + 1).join('/')}`,
             children: [],
           };
           current.children.push(child);
@@ -70,7 +68,7 @@ export const createPathTree = (paths: string[]): PathNode[] => {
         if (!child) {
           child = {
             title: segment,
-            key: "/" + segments.slice(0, j + 1).join("/"),
+            key: '/' + segments.slice(0, j + 1).join('/'),
             children: [],
           };
           current.children.push(child);

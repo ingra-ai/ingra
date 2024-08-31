@@ -1,21 +1,14 @@
-"use client";
+'use client';
 
-import type { FC } from "react";
-import { EnvVarForm } from "./EnvVarsForm";
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { EnvVarsTable } from "./EnvVarsTable";
-import { deleteEnvVar } from "@repo/shared/actions/envVars";
-import { useToast } from "../../ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
-import { EnvVarsOptionalPayload } from "./types";
+import type { FC } from 'react';
+import { EnvVarForm } from './EnvVarsForm';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { EnvVarsTable } from './EnvVarsTable';
+import { deleteEnvVar } from '@repo/shared/actions/envVars';
+import { useToast } from '../../ui/use-toast';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
+import { EnvVarsOptionalPayload } from './types';
 
 type EnvVarsSectionProps = {
   envVars: EnvVarsOptionalPayload[];
@@ -51,13 +44,13 @@ export const EnvVarsSection: FC<EnvVarsSectionProps> = (props) => {
   function onDelete(record: EnvVarsOptionalPayload) {
     deleteEnvVar(record.id)
       .then((result) => {
-        if (result.status !== "ok") {
+        if (result.status !== 'ok') {
           throw new Error(result.message);
         }
 
         toast({
-          title: "Success!",
-          description: "Environment variable has been deleted successfully.",
+          title: 'Success!',
+          description: 'Environment variable has been deleted successfully.',
         });
 
         startTransition(() => {
@@ -68,43 +61,25 @@ export const EnvVarsSection: FC<EnvVarsSectionProps> = (props) => {
       })
       .catch((error) => {
         toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description:
-            error?.message || "Failed to delete environment variable!",
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to delete environment variable!',
         });
       });
   }
 
   return (
     <section className="block" data-testid="env-vars-section">
-      <EnvVarsTable
-        envVars={props.envVars}
-        onCreate={onCreate}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
+      <EnvVarsTable envVars={props.envVars} onCreate={onCreate} onEdit={onEdit} onDelete={onDelete} />
       {/* <FormSlideOver title="" open={open} setOpen={setOpen}>
       </FormSlideOver> */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {record
-                ? "Edit Environment Variable"
-                : "Add Environment Variable"}
-            </DialogTitle>
-            <DialogDescription>
-              {record
-                ? "Edit an existing environment variable."
-                : "Add a new environment variable."}
-            </DialogDescription>
+            <DialogTitle>{record ? 'Edit Environment Variable' : 'Add Environment Variable'}</DialogTitle>
+            <DialogDescription>{record ? 'Edit an existing environment variable.' : 'Add a new environment variable.'}</DialogDescription>
           </DialogHeader>
-          <EnvVarForm
-            className="mt-5"
-            onSuccess={onFormSuccess}
-            envVarRecord={record || undefined}
-          />
+          <EnvVarForm className="mt-5" onSuccess={onFormSuccess} envVarRecord={record || undefined} />
         </DialogContent>
       </Dialog>
     </section>

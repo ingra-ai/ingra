@@ -1,10 +1,8 @@
-import db from "@repo/db/client";
-import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import { CollectionForToolsGetPayload } from "./types";
+import db from '@repo/db/client';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { CollectionForToolsGetPayload } from './types';
 
-export const getCollectionsForTools = async (
-  authSession: AuthSessionResponse,
-) => {
+export const getCollectionsForTools = async (authSession: AuthSessionResponse) => {
   const [myCollections, myCollectionSubscriptions] = await Promise.all([
     // Get the collections of the user
     db.collection.findMany({
@@ -75,8 +73,5 @@ export const getCollectionsForTools = async (
     }),
   ]);
 
-  return [myCollections, myCollectionSubscriptions] as [
-    CollectionForToolsGetPayload[],
-    CollectionForToolsGetPayload[],
-  ];
+  return [myCollections, myCollectionSubscriptions] as [CollectionForToolsGetPayload[], CollectionForToolsGetPayload[]];
 };

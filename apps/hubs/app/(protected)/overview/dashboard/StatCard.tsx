@@ -1,5 +1,5 @@
-import type { FC, ForwardRefExoticComponent, SVGProps } from "react";
-import Link from "next/link";
+import type { FC, ForwardRefExoticComponent, SVGProps } from 'react';
+import Link from 'next/link';
 
 interface Stat {
   name: string;
@@ -11,16 +11,13 @@ interface Stat {
 interface StatCardProps {
   id: string;
   name: string;
-  icon: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, "ref">>;
+  icon: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, 'ref'>>;
   stats: Stat[];
 }
 
 export const StatCard: FC<StatCardProps> = (props) => {
   return (
-    <div
-      key={props.id}
-      className="relative overflow-hidden rounded-lg bg-secondary text-secondary-foreground px-4 border border-gray-500 sm:px-6 sm:pt-6"
-    >
+    <div key={props.id} className="relative overflow-hidden rounded-lg bg-secondary text-secondary-foreground px-4 border border-gray-500 sm:px-6 sm:pt-6">
       <dt>
         <div className="absolute rounded-md bg-indigo-500 p-3">
           <props.icon className="h-6 w-6" aria-hidden="true" />
@@ -33,13 +30,8 @@ export const StatCard: FC<StatCardProps> = (props) => {
             <p className="text-2xl font-semibold">{stat.stat}</p>
             <p className="text-sm font-medium">{stat.name}</p>
             <div className="mt-2">
-              <Link
-                href={stat.href}
-                prefetch={true}
-                className="font-medium text-indigo-500 hover:text-indigo-400 text-sm"
-              >
-                {stat.linkText || "View all"}{" "}
-                <span className="sr-only">{stat.name}</span>
+              <Link href={stat.href} prefetch={true} className="font-medium text-indigo-500 hover:text-indigo-400 text-sm">
+                {stat.linkText || 'View all'} <span className="sr-only">{stat.name}</span>
               </Link>
             </div>
           </div>

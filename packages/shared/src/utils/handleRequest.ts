@@ -1,18 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { ApiError } from "../types/api-response";
-import { Logger } from "../lib/logger";
-import { getAnalyticsObject } from "../lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { ApiError } from '../types/api-response';
+import { Logger } from '../lib/logger';
+import { getAnalyticsObject } from '../lib/utils/getAnalyticsObject';
 
 // Common handler for all HTTP methods
-export async function handleRequest<T extends {}, U extends {}>(
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
-  req: NextRequest,
-  params: T,
-  handlerFn: (args: U) => Promise<Response | NextResponse>,
-) {
+export async function handleRequest<T extends {}, U extends {}>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', req: NextRequest, params: T, handlerFn: (args: U) => Promise<Response | NextResponse>) {
   let requestArgs: Record<string, any>;
 
-  if (method === "GET" || method === "DELETE") {
+  if (method === 'GET' || method === 'DELETE') {
     const { searchParams } = new URL(req.url);
     requestArgs = Object.fromEntries(searchParams);
   } else {
@@ -20,16 +15,16 @@ export async function handleRequest<T extends {}, U extends {}>(
   }
 
   // Check if the handler function exists
-  if (typeof handlerFn !== "function") {
+  if (typeof handlerFn !== 'function') {
     return NextResponse.json(
       {
         status: 400,
-        code: "BAD_REQUEST",
-        message: "Unable to understand the request.",
+        code: 'BAD_REQUEST',
+        message: 'Unable to understand the request.',
       } as ApiError,
       {
         status: 400,
-      },
+      }
     );
   }
 

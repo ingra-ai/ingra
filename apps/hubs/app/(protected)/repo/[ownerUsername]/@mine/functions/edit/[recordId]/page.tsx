@@ -1,34 +1,21 @@
-import { generateUserVars } from "@repo/shared/utils/vm/generateUserVars";
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import {
-  Tabs,
-  TabsList,
-  TabsContent,
-  TabsTrigger,
-} from "@repo/components/ui/tabs";
-import db from "@repo/db/client";
-import { notFound } from "next/navigation";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import { getCollectionsByUserId } from "@repo/shared/data/collections/getCollectionsByUserId";
-import { FunctionForm } from "@repo/components/data/functions/mine/FunctionForm";
-import { UserVarsTable } from "@repo/components/data/envVars/UserVarsTable";
-import { EnvVarsSection } from "@repo/components/data/envVars/EnvVarsSection";
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { Tabs, TabsList, TabsContent, TabsTrigger } from '@repo/components/ui/tabs';
+import db from '@repo/db/client';
+import { notFound } from 'next/navigation';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
+import { FunctionForm } from '@repo/components/data/functions/mine/FunctionForm';
+import { UserVarsTable } from '@repo/components/data/envVars/UserVarsTable';
+import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { ownerUsername: string; recordId: string };
-}) {
+export async function generateMetadata({ params }: { params: { ownerUsername: string; recordId: string } }) {
   return {
-    title: ["Edit Function", APP_NAME].join(" | "),
+    title: ['Edit Function', APP_NAME].join(' | '),
   };
 }
 
-export default async function Page({
-  params,
-}: {
-  params: { ownerUsername: string; recordId: string };
-}) {
+export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const authSession = await getAuthSession();
   const { ownerUsername, recordId } = params;
 
@@ -71,26 +58,13 @@ export default async function Page({
         <h1 className="text-base font-semibold leading-10">Edit Function</h1>
       </div>
       <div className="block">
-        <Tabs
-          id="function-edit-page-tabs"
-          defaultValue="function-form-tab"
-          className="block"
-        >
+        <Tabs id="function-edit-page-tabs" defaultValue="function-form-tab" className="block">
           <TabsList className="">
             <TabsTrigger value="function-form-tab">Function Form</TabsTrigger>
             <TabsTrigger value="vars-tab">Variables</TabsTrigger>
           </TabsList>
-          <TabsContent
-            value="function-form-tab"
-            className="block space-y-6 mt-4"
-          >
-            <FunctionForm
-              ownerUsername={ownerUsername}
-              functionRecord={functionRecord}
-              envVars={optionalEnvVars}
-              userVars={userVarsRecord}
-              collections={collections}
-            />
+          <TabsContent value="function-form-tab" className="block space-y-6 mt-4">
+            <FunctionForm ownerUsername={ownerUsername} functionRecord={functionRecord} envVars={optionalEnvVars} userVars={userVarsRecord} collections={collections} />
           </TabsContent>
           <TabsContent value="vars-tab" className="block space-y-6 mt-4">
             <EnvVarsSection envVars={optionalEnvVars || []} />
