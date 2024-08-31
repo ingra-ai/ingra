@@ -1,11 +1,7 @@
-"use server";
-import db from "@repo/db/client";
+'use server';
+import db from '@repo/db/client';
 
-export async function upsertEnvVar(
-  key: string,
-  value: string,
-  ownerUserId: string,
-) {
+export async function upsertEnvVar(key: string, value: string, ownerUserId: string) {
   const record = await db.envVars.upsert({
     where: {
       ownerUserId_key: {

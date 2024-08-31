@@ -1,14 +1,12 @@
-"use client";
-import React from "react";
-import { CommunityCollectionViewDetailPayload } from "./types";
+'use client';
+import React from 'react';
+import { CommunityCollectionViewDetailPayload } from './types';
 
 interface CommunityCollectionViewDetailsProps {
   record: CommunityCollectionViewDetailPayload;
 }
 
-const CommunityCollectionViewDetails: React.FC<
-  CommunityCollectionViewDetailsProps
-> = ({ record }) => {
+const CommunityCollectionViewDetails: React.FC<CommunityCollectionViewDetailsProps> = ({ record }) => {
   return (
     <div className="block" data-testid="community-collection-view-details">
       <div className="flex justify-between items-center">
@@ -22,10 +20,7 @@ const CommunityCollectionViewDetails: React.FC<
       </p>
       <div className="mt-2">
         <h3 className="text-sm font-semibold leading-6">Description</h3>
-        <div
-          className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap"
-          dangerouslySetInnerHTML={{ __html: record.description || "" }}
-        />
+        <div className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: record.description || '' }} />
       </div>
     </div>
   );

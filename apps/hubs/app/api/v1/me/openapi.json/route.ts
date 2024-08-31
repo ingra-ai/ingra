@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getAuthSwaggerSpec } from "../swagger/config";
-import { APP_AUTH_LOGIN_URL, APP_URL } from "@repo/shared/lib/constants";
-import { ActionError } from "@v1/types/api-response";
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import { RedirectType, redirect } from "next/navigation";
+import { NextRequest, NextResponse } from 'next/server';
+import { getAuthSwaggerSpec } from '../swagger/config';
+import { APP_AUTH_LOGIN_URL, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { ActionError } from '@v1/types/api-response';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { RedirectType, redirect } from 'next/navigation';
 
 /**
  * Returns OpenAPI json file when in development
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
 
   if (!swaggerSpec) {
-    throw new ActionError("error", 400, `No specifications found.`);
+    throw new ActionError('error', 400, `No specifications found.`);
   }
 
   /**
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   Object.assign(swaggerSpec, {
     servers: [
       {
-        url: APP_URL,
+        url: HUBS_APP_URL,
       },
     ],
   });

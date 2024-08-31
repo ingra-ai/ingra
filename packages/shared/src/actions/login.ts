@@ -1,32 +1,22 @@
-"use server";
+'use server';
 
-import * as z from "zod";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { MagicLoginSchema } from "../schemas/auth";
-import { getOrCreateUserByEmail } from "../data/user";
-import { ActionError } from "../types/api-response";
-import {
-  createActiveSession,
-  createMagicLink,
-  expireMagicLinkByToken,
-  getMagicLinkByOtp,
-} from "../data/auth";
-import { sendMagicLinkEmail } from "../lib/mail/sendMagicLinkEmail";
-import {
-  APP_LANDING_PAGE_URI,
-  APP_SESSION_COOKIE_NAME,
-} from "../lib/constants";
-import { actionTryCatch } from "../utils/actionTryCatch";
+import * as z from 'zod';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { MagicLoginSchema } from '../schemas/auth';
+import { getOrCreateUserByEmail } from '../data/user';
+import { ActionError } from '../types/api-response';
+import { createActiveSession, createMagicLink, expireMagicLinkByToken, getMagicLinkByOtp } from '../data/auth';
+import { sendMagicLinkEmail } from '../lib/mail/sendMagicLinkEmail';
+import { APP_LANDING_PAGE_URI, APP_SESSION_COOKIE_NAME } from '../lib/constants';
+import { actionTryCatch } from '../utils/actionTryCatch';
 
-export const magicLoginEmail = async (
-  values: z.infer<typeof MagicLoginSchema>,
-) => {
+export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) => {
   const validatedFields = MagicLoginSchema.safeParse(values);
 
   return actionTryCatch(async () => {
     if (!validatedFields.success) {
-      throw new ActionError("error", 400, "Invalid fields.");
+      throw new ActionError('error', 400, 'Invalid fields.');
     }
 
     const { email, otpCode } = validatedFields.data;
@@ -34,7 +24,7 @@ export const magicLoginEmail = async (
     const existingUser = await getOrCreateUserByEmail(email);
 
     if (!existingUser || !existingUser.email) {
-      throw new ActionError("error", 400, "Failed in login operation.");
+      throw new ActionError('error', 400, 'Failed in login operation.');
     }
 
     if (!otpCode) {
@@ -44,18 +34,18 @@ export const magicLoginEmail = async (
       const magicLink = await createMagicLink(existingUser);
 
       if (!magicLink) {
-        throw new ActionError("error", 400, "Failed to generate magic link.");
+        throw new ActionError('error', 400, 'Failed to generate magic link.');
       }
 
       const res = await sendMagicLinkEmail(existingUser.email, magicLink);
 
       if (!res) {
-        throw new ActionError("error", 400, "Failed to send magic link.");
+        throw new ActionError('error', 400, 'Failed to send magic link.');
       }
 
       return {
-        status: "ok",
-        message: "Magic link has been sent.",
+        status: 'ok',
+        message: 'Magic link has been sent.',
         data: null,
       };
     } else if (otpCode) {
@@ -65,22 +55,21 @@ export const magicLoginEmail = async (
       const magicLinkWithUser = await getMagicLinkByOtp(existingUser, otpCode);
 
       if (!magicLinkWithUser) {
-        throw new ActionError(
-          "error",
-          400,
-          "Failed to validate your OTP code. Please try again.",
-        );
+        throw new ActionError('error', 400, 'Failed to validate your OTP code. Please try again.');
       }
 
       const session = await createActiveSession(magicLinkWithUser.user);
 
       if (!session) {
-        throw new ActionError("error", 500, "Failed to create session.");
+        throw new ActionError('error', 500, 'Failed to create session.');
       }
 
       // Set session cookies
       const cookieStore = cookies();
       cookieStore.set(APP_SESSION_COOKIE_NAME, session.jwt, {
+        domain: '.ingra.ai',
+        path: '/',
+        sameSite: 'lax',
         expires: session.expiresAt,
         httpOnly: true,
         secure: true,
@@ -93,10 +82,10 @@ export const magicLoginEmail = async (
       try {
         redirect(APP_LANDING_PAGE_URI);
       } catch (error: any) {
-        if (error?.message === "NEXT_REDIRECT") {
+        if (error?.message === 'NEXT_REDIRECT') {
           return {
-            status: "ok",
-            message: "I think all is well",
+            status: 'ok',
+            message: 'I think all is well',
             data: null,
           };
         }
@@ -106,8 +95,8 @@ export const magicLoginEmail = async (
     }
 
     return {
-      status: "ok",
-      message: "I think all is well",
+      status: 'ok',
+      message: 'I think all is well',
       data: null,
     };
   });

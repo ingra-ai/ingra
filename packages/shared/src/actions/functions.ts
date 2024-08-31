@@ -1,26 +1,16 @@
-"use server";
+'use server';
 
-import * as z from "zod";
-import { ActionError } from "../types/api-response";
-import { FunctionSchema } from "../schemas/function";
-import { validateAction } from "../lib/action-helpers";
-import db from "@repo/db/client";
-import { actionAuthTryCatch } from "../utils/actionAuthTryCatch";
-import {
-  upsertFunction as dataUpsertFunctions,
-  deleteFunction as dataDeleteFunctions,
-  cloneFunction as dataCloneFunction,
-  toggleFunctionSubscription,
-} from "../data/functions";
-import {
-  addFunctionToCollection,
-  removeFunctionFromCollection,
-} from "../data/collections";
-import { getUserRepoFunctionsEditUri } from "../lib/constants/repo";
+import * as z from 'zod';
+import { ActionError } from '../types/api-response';
+import { FunctionSchema } from '../schemas/function';
+import { validateAction } from '../lib/action-helpers';
+import db from '@repo/db/client';
+import { actionAuthTryCatch } from '../utils/actionAuthTryCatch';
+import { upsertFunction as dataUpsertFunctions, deleteFunction as dataDeleteFunctions, cloneFunction as dataCloneFunction, toggleFunctionSubscription } from '../data/functions';
+import { addFunctionToCollection, removeFunctionFromCollection } from '../data/collections';
+import { getUserRepoFunctionsEditUri } from '../lib/constants/repo';
 
-export const upsertFunction = async (
-  values: z.infer<typeof FunctionSchema>,
-) => {
+export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
   const validatedValues = await validateAction(FunctionSchema, values);
   const { data } = validatedValues;
 
@@ -28,8 +18,8 @@ export const upsertFunction = async (
     const result = await dataUpsertFunctions(data, authSession.user.id);
 
     return {
-      status: "ok",
-      message: `Function "${result.slug}" has been ${data.id ? "updated" : "created"}.`,
+      status: 'ok',
+      message: `Function "${result.slug}" has been ${data.id ? 'updated' : 'created'}.`,
       data: result,
     };
   });
@@ -45,16 +35,13 @@ export const deleteFunction = async (functionId: string) => {
     });
 
     if (!functionRecord) {
-      throw new ActionError("error", 404, "Function not found");
+      throw new ActionError('error', 404, 'Function not found');
     }
 
-    const result = await dataDeleteFunctions(
-      functionRecord.id,
-      authSession.user.id,
-    );
+    const result = await dataDeleteFunctions(functionRecord.id, authSession.user.id);
 
     return {
-      status: "ok",
+      status: 'ok',
       message: `Function "${functionRecord.slug}" deleted!`,
       data: result,
     };
@@ -63,14 +50,11 @@ export const deleteFunction = async (functionId: string) => {
 
 export const cloneFunction = async (functionId: string) => {
   return await actionAuthTryCatch(async (authSession) => {
-    const clonedFunction = await dataCloneFunction(
-        functionId,
-        authSession.user.id,
-      ),
+    const clonedFunction = await dataCloneFunction(functionId, authSession.user.id),
       ownerUsername = authSession.user.profile?.userName;
 
     return {
-      status: "ok",
+      status: 'ok',
       message: `Function "${clonedFunction.slug}" has been cloned!`,
       data: {
         ...clonedFunction,
@@ -84,51 +68,34 @@ export const cloneFunction = async (functionId: string) => {
 
 export const subscribeToggleFunction = async (functionId: string) => {
   return await actionAuthTryCatch(async (authSession) => {
-    const subscribedFunction = await toggleFunctionSubscription(
-      functionId,
-      authSession.user.id,
-    );
+    const subscribedFunction = await toggleFunctionSubscription(functionId, authSession.user.id);
 
     return {
-      status: "ok",
-      message: subscribedFunction.isSubscribed
-        ? `Function "${subscribedFunction.functionSlug}" has been subscribed!`
-        : `Function "${subscribedFunction.functionSlug}" has been unsubscribed!`,
+      status: 'ok',
+      message: subscribedFunction.isSubscribed ? `Function "${subscribedFunction.functionSlug}" has been subscribed!` : `Function "${subscribedFunction.functionSlug}" has been unsubscribed!`,
       data: subscribedFunction,
     };
   });
 };
 
-export const collectionToggleFunction = async (
-  functionId: string,
-  collectionId: string,
-  action: "add" | "remove",
-) => {
+export const collectionToggleFunction = async (functionId: string, collectionId: string, action: 'add' | 'remove') => {
   return await actionAuthTryCatch(async (authSession) => {
-    if (action === "add") {
-      await addFunctionToCollection(
-        functionId,
-        collectionId,
-        authSession.user.id,
-      );
+    if (action === 'add') {
+      await addFunctionToCollection(functionId, collectionId, authSession.user.id);
       return {
-        status: "ok",
-        message: "Successfully added function to collection",
+        status: 'ok',
+        message: 'Successfully added function to collection',
         data: null,
       };
-    } else if (action === "remove") {
-      await removeFunctionFromCollection(
-        functionId,
-        collectionId,
-        authSession.user.id,
-      );
+    } else if (action === 'remove') {
+      await removeFunctionFromCollection(functionId, collectionId, authSession.user.id);
       return {
-        status: "ok",
-        message: "Successfully removed function to collection",
+        status: 'ok',
+        message: 'Successfully removed function to collection',
         data: null,
       };
     } else {
-      throw new ActionError("error", 400, "Invalid action");
+      throw new ActionError('error', 400, 'Invalid action');
     }
   });
 };

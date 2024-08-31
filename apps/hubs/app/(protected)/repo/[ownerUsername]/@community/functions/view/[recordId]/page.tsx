@@ -1,15 +1,11 @@
-import { generateUserVars } from "@repo/shared/utils/vm/generateUserVars";
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import db from "@repo/db/client";
-import { isUuid } from "@repo/shared/lib/utils";
-import { CommunityFunctionReadOnlyView } from "@repo/components/data/functions/community/CommunityFunctionReadOnlyView";
-import { notFound } from "next/navigation";
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import db from '@repo/db/client';
+import { isUuid } from '@repo/shared/lib/utils';
+import { CommunityFunctionReadOnlyView } from '@repo/components/data/functions/community/CommunityFunctionReadOnlyView';
+import { notFound } from 'next/navigation';
 
-export default async function Page({
-  params,
-}: {
-  params: { ownerUsername: string; recordId: string };
-}) {
+export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const { recordId, ownerUsername } = params;
   const authSession = await getAuthSession();
 

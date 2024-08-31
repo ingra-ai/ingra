@@ -1,6 +1,6 @@
-import { BaseMessage } from "@langchain/core/messages";
-import { RunnableConfig, RunnableLike } from "@langchain/core/runnables";
-import { Prisma } from "@repo/db/prisma";
+import { BaseMessage } from '@langchain/core/messages';
+import { RunnableConfig, RunnableLike } from '@langchain/core/runnables';
+import { Prisma } from '@repo/db/prisma';
 
 export interface AgentStateChannels {
   messages: BaseMessage[];
@@ -15,10 +15,7 @@ export interface AgentStateChannels {
 export type ReturnAgentNode<T = unknown> = {
   agentName: string;
   description: string;
-  node: (
-    state: AgentStateChannels,
-    config?: RunnableConfig,
-  ) => RunnableLike<AgentStateChannels, T>;
+  node: (state: AgentStateChannels, config?: RunnableConfig) => RunnableLike<AgentStateChannels, T>;
 };
 
 export type CollectionForToolsGetPayload = Prisma.CollectionGetPayload<{

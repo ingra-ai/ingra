@@ -1,13 +1,8 @@
-"use server";
-import db from "@repo/db/client";
-import { Logger } from "../../lib/logger";
+'use server';
+import db from '@repo/db/client';
+import { Logger } from '../../lib/logger';
 
-export async function addNewCollection(
-  name: string,
-  slug: string,
-  description: string,
-  userId: string,
-) {
+export async function addNewCollection(name: string, slug: string, description: string, userId: string) {
   const record = await db.collection.create({
     data: {
       name,
@@ -20,13 +15,7 @@ export async function addNewCollection(
   return record;
 }
 
-export async function editCollection(
-  collectionId: string,
-  name: string,
-  slug: string,
-  description: string,
-  userId: string,
-) {
+export async function editCollection(collectionId: string, name: string, slug: string, description: string, userId: string) {
   const record = await db.collection.update({
     where: {
       id: collectionId,
@@ -42,11 +31,7 @@ export async function editCollection(
   return record;
 }
 
-export async function addFunctionToCollection(
-  collectionId: string,
-  functionId: string,
-  userId: string,
-) {
+export async function addFunctionToCollection(collectionId: string, functionId: string, userId: string) {
   const record = await db.collection.update({
     where: {
       id: collectionId,
@@ -64,11 +49,7 @@ export async function addFunctionToCollection(
   return record;
 }
 
-export async function removeFunctionFromCollection(
-  collectionId: string,
-  functionId: string,
-  userId: string,
-) {
+export async function removeFunctionFromCollection(collectionId: string, functionId: string, userId: string) {
   const record = await db.collection.update({
     where: {
       id: collectionId,
@@ -86,10 +67,7 @@ export async function removeFunctionFromCollection(
   return record;
 }
 
-export async function toggleCollectionSubscription(
-  collectionId: string,
-  userId: string,
-) {
+export async function toggleCollectionSubscription(collectionId: string, userId: string) {
   const existingSubscription = await db.collectionSubscription.findUnique({
     where: {
       collectionId_userId: {
@@ -108,10 +86,7 @@ export async function toggleCollectionSubscription(
   }
 }
 
-export async function subscribeToCollection(
-  collectionId: string,
-  userId: string,
-) {
+export async function subscribeToCollection(collectionId: string, userId: string) {
   const collectionRecord = await db.collection.findUnique({
     where: {
       id: collectionId,
@@ -119,7 +94,7 @@ export async function subscribeToCollection(
   });
 
   if (!collectionRecord) {
-    throw new Error("Collection not found");
+    throw new Error('Collection not found');
   }
 
   // Check if user has a collection with the same name
@@ -131,7 +106,7 @@ export async function subscribeToCollection(
   });
 
   if (existingCollection) {
-    throw new Error("Collection with the same name already exists");
+    throw new Error('Collection with the same name already exists');
   }
 
   const record = await db.collectionSubscription.create({
@@ -147,10 +122,7 @@ export async function subscribeToCollection(
   };
 }
 
-export async function unsubscribeToCollection(
-  collectionId: string,
-  userId: string,
-) {
+export async function unsubscribeToCollection(collectionId: string, userId: string) {
   // Check if user is already subscribed to collection
   const existingSubscription = await db.collectionSubscription.findFirst({
     where: {
@@ -160,9 +132,7 @@ export async function unsubscribeToCollection(
   });
 
   if (!existingSubscription) {
-    throw new Error(
-      "Unable to unsubscribe as the user is not subscribed to the collection.",
-    );
+    throw new Error('Unable to unsubscribe as the user is not subscribed to the collection.');
   }
 
   await db.collectionSubscription.delete({
@@ -231,14 +201,10 @@ export async function deleteCollection(collectionId: string, userId: string) {
       return record;
     });
 
-    await Logger.withTag("action|deleteCollection")
-      .withTag(`user|${userId}`)
-      .info("Collection and all related records deleted successfully.");
+    await Logger.withTag('action|deleteCollection').withTag(`user|${userId}`).info('Collection and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag("action|deleteCollection")
-      .withTag(`user|${userId}`)
-      .error("Error deleting collection and related records", { error });
+    await Logger.withTag('action|deleteCollection').withTag(`user|${userId}`).error('Error deleting collection and related records', { error });
     return false;
   }
 }

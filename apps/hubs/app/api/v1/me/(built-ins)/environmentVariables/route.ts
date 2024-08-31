@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import db from "@repo/db/client"; // Assuming you have a db instance for interacting with your database
-import { upsertEnvVar } from "@repo/shared/data/envVars";
-import { clearAuthCaches } from "@repo/shared/data/auth/session/caches";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import db from '@repo/db/client'; // Assuming you have a db instance for interacting with your database
+import { upsertEnvVar } from '@repo/shared/data/envVars';
+import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -54,27 +54,24 @@ export async function GET(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "getEnvironmentVariablesList",
+      operationId: 'getEnvironmentVariablesList',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("envVars")
-      .withTag(`user|${authSession.user.id}`)
-      .info("Fetching environment variables");
+    Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Fetching environment variables');
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Discovered ${envVars.length} environment variables set.`,
         data: envVars,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }
@@ -133,9 +130,7 @@ export async function POST(req: NextRequest) {
     const { key, value } = requestArgs;
 
     if (!key || !value) {
-      throw new Error(
-        "Key and value are required to create a new environment variable",
-      );
+      throw new Error('Key and value are required to create a new environment variable');
     }
 
     const record = await upsertEnvVar(key, value, authSession.user.id);
@@ -145,21 +140,18 @@ export async function POST(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "createEnvironmentVariable",
+      operationId: 'createEnvironmentVariable',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("envVars")
-      .withTag(`user|${authSession.user.id}`)
-      .info("Upserted environment variable");
+    Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Upserted environment variable');
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Environment variable "${key}" created successfully`,
         data: {
           id: record.id,
@@ -168,7 +160,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }
@@ -222,9 +214,7 @@ export async function DELETE(req: NextRequest) {
     const { key, id } = await req.json();
 
     if (!key || !id) {
-      throw new Error(
-        "Both environment variable record ID and key are required to delete an environment variable",
-      );
+      throw new Error('Both environment variable record ID and key are required to delete an environment variable');
     }
 
     const deletedEnvVar = await db.envVars.delete({
@@ -242,27 +232,24 @@ export async function DELETE(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "deleteEnvironmentVariable",
+      operationId: 'deleteEnvironmentVariable',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|envVars")
-      .withTag(`user|${authSession.user.id}`)
-      .info(`Deleted env var: ${key}`);
+    Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Deleted env var: ${key}`);
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Environment variable "${key}" removed successfully`,
         data: deletedEnvVar,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }
@@ -320,9 +307,7 @@ export async function PATCH(req: NextRequest) {
     const { id, key, value } = await req.json();
 
     if (!id || !key || !value) {
-      throw new Error(
-        "To update an environment variable, provide the record ID, key, and value.",
-      );
+      throw new Error('To update an environment variable, provide the record ID, key, and value.');
     }
 
     const updatedEnvVar = await db.envVars.update({
@@ -344,27 +329,24 @@ export async function PATCH(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "updateEnvironmentVariable",
+      operationId: 'updateEnvironmentVariable',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|envVars")
-      .withTag(`user|${authSession.user.id}`)
-      .info(`Updated env var: ${key}`);
+    Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Updated env var: ${key}`);
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Environment variable "${key}" updated successfully`,
         data: updatedEnvVar,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

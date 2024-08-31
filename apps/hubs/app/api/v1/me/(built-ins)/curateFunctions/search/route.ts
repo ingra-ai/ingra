@@ -1,10 +1,10 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { Prisma } from "@repo/db/prisma";
-import db from "@repo/db/client";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { type NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { Prisma } from '@repo/db/prisma';
+import db from '@repo/db/client';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -55,11 +55,10 @@ import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") || "";
-  const take = parseInt(searchParams.get("take") || "50") || 50;
-  const skip = parseInt(searchParams.get("skip") || "0") || 0;
-  const fieldsToRetrieveParams: string[] =
-    searchParams.getAll("fieldsToRetrieve") || [];
+  const q = searchParams.get('q') || '';
+  const take = parseInt(searchParams.get('take') || '50') || 50;
+  const skip = parseInt(searchParams.get('skip') || '0') || 0;
+  const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
 
   const selectFields: Prisma.FunctionSelect = {
     id: true,
@@ -68,23 +67,12 @@ export async function GET(req: NextRequest) {
 
   // Populate Function select fields
   if (fieldsToRetrieveParams.length) {
-    const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = [
-      "description",
-      "code",
-      "httpVerb",
-      "isPrivate",
-      "isPublished",
-      "arguments",
-      "tags",
-    ];
+    const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
     acceptableFieldNames.forEach((acceptableFieldName) => {
-      if (
-        fieldsToRetrieveParams.length === 0 ||
-        fieldsToRetrieveParams.includes(acceptableFieldName)
-      ) {
+      if (fieldsToRetrieveParams.length === 0 || fieldsToRetrieveParams.includes(acceptableFieldName)) {
         // Non relational fields;
         switch (acceptableFieldName) {
-          case "arguments":
+          case 'arguments':
             selectFields[acceptableFieldName] = {
               select: {
                 id: true,
@@ -96,7 +84,7 @@ export async function GET(req: NextRequest) {
               },
             };
             break;
-          case "tags":
+          case 'tags':
             selectFields[acceptableFieldName] = {
               select: {
                 id: true,
@@ -155,13 +143,13 @@ export async function GET(req: NextRequest) {
                 {
                   slug: {
                     contains: q,
-                    mode: "insensitive",
+                    mode: 'insensitive',
                   },
                 },
                 {
                   description: {
                     contains: q,
-                    mode: "insensitive",
+                    mode: 'insensitive',
                   },
                 },
                 {
@@ -169,7 +157,7 @@ export async function GET(req: NextRequest) {
                     some: {
                       name: {
                         contains: q,
-                        mode: "insensitive",
+                        mode: 'insensitive',
                       },
                     },
                   },
@@ -182,34 +170,31 @@ export async function GET(req: NextRequest) {
       take,
       skip,
       orderBy: {
-        updatedAt: "desc",
+        updatedAt: 'desc',
       },
     });
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Search Executed", {
+    mixpanel.track('Function Search Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "searchFunctions",
+      operationId: 'searchFunctions',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|curateFunctions-list")
-      .withTag(`user|${authSession.user.id}`)
-      .info("Listing some recent user functions", { fieldsToRetrieveParams });
+    Logger.withTag('api|builtins').withTag('operation|curateFunctions-list').withTag(`user|${authSession.user.id}`).info('Listing some recent user functions', { fieldsToRetrieveParams });
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Successfully retrieved list of searched functions.`,
         data: functionRecords,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }
