@@ -1,24 +1,12 @@
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import {
-  APP_AUTH_LOGIN_URL,
-  APP_SETTINGS_API_URI,
-  APP_SETTINGS_INTEGRATIONS_URI,
-} from "@repo/shared/lib/constants";
-import { redirect, RedirectType } from "next/navigation";
-import { SuggestionsList } from "./SuggestionsList";
-import { LayoutDashboardIcon } from "lucide-react";
-import {
-  KeyIcon,
-  SquareFunctionIcon,
-  LibraryIcon,
-  KeyRoundIcon,
-} from "lucide-react";
-import db from "@repo/db/client";
-import { StatCard } from "./StatCard";
-import {
-  getUserRepoCollectionsUri,
-  getUserRepoFunctionsUri,
-} from "@repo/shared/lib/constants/repo";
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, APP_SETTINGS_INTEGRATIONS_URI } from '@repo/shared/lib/constants';
+import { redirect, RedirectType } from 'next/navigation';
+import { SuggestionsList } from './SuggestionsList';
+import { LayoutDashboardIcon } from 'lucide-react';
+import { KeyIcon, SquareFunctionIcon, LibraryIcon, KeyRoundIcon } from 'lucide-react';
+import db from '@repo/db/client';
+import { StatCard } from './StatCard';
+import { getUserRepoCollectionsUri, getUserRepoFunctionsUri } from '@repo/shared/lib/constants/repo';
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();
@@ -31,14 +19,7 @@ export default async function Dashboard() {
     user: { id: userId, profile, oauthTokens },
   } = authSession;
 
-  const [
-    totalApiKeys,
-    totalOAuthTokens,
-    totalFunctions,
-    totalCollections,
-    totalSubscribedFunctions,
-    totalSubscribedCollections,
-  ] = await Promise.all([
+  const [totalApiKeys, totalOAuthTokens, totalFunctions, totalCollections, totalSubscribedFunctions, totalSubscribedCollections] = await Promise.all([
     // Fetch the total count of api keys
     db.apiKey.count({
       where: {
@@ -89,11 +70,7 @@ export default async function Dashboard() {
         Dashboard
       </h1>
       <div className="">
-        <SuggestionsList
-          className=""
-          authSession={authSession}
-          totalApiKeys={totalApiKeys}
-        />
+        <SuggestionsList className="" authSession={authSession} totalApiKeys={totalApiKeys} />
       </div>
       <div className="space-y-8">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-8">
@@ -103,12 +80,12 @@ export default async function Dashboard() {
             icon={KeyRoundIcon}
             stats={[
               {
-                name: "Mine",
+                name: 'Mine',
                 stat: totalApiKeys.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
                 href: APP_SETTINGS_API_URI,
-                linkText: "Manage API Keys",
+                linkText: 'Manage API Keys',
               },
             ]}
           />
@@ -118,12 +95,12 @@ export default async function Dashboard() {
             icon={KeyIcon}
             stats={[
               {
-                name: "Integrated Apps",
+                name: 'Integrated Apps',
                 stat: totalOAuthTokens.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
                 href: APP_SETTINGS_INTEGRATIONS_URI,
-                linkText: "Manage OAuth Integrations",
+                linkText: 'Manage OAuth Integrations',
               },
             ]}
           />
@@ -133,19 +110,19 @@ export default async function Dashboard() {
             icon={SquareFunctionIcon}
             stats={[
               {
-                name: "Mine",
+                name: 'Mine',
                 stat: totalFunctions.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
-                href: getUserRepoFunctionsUri(profile?.userName || ""),
+                href: getUserRepoFunctionsUri(profile?.userName || ''),
               },
               {
-                name: "Subscribed",
+                name: 'Subscribed',
                 stat: totalSubscribedFunctions.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
-                href: "/marketplace/functions",
-                linkText: "Visit Marketplace",
+                href: '/marketplace/functions',
+                linkText: 'Visit Marketplace',
               },
             ]}
           />
@@ -155,19 +132,19 @@ export default async function Dashboard() {
             icon={LibraryIcon}
             stats={[
               {
-                name: "Mine",
+                name: 'Mine',
                 stat: totalCollections.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
-                href: getUserRepoCollectionsUri(profile?.userName || ""),
+                href: getUserRepoCollectionsUri(profile?.userName || ''),
               },
               {
-                name: "Subscribed",
+                name: 'Subscribed',
                 stat: totalSubscribedCollections.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
-                href: "/marketplace/collections",
-                linkText: "Visit Marketplace",
+                href: '/marketplace/collections',
+                linkText: 'Visit Marketplace',
               },
             ]}
           />

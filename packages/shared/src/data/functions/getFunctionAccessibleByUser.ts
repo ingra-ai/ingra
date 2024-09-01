@@ -1,27 +1,22 @@
-import db from "@repo/db/client";
-import { Prisma } from "@repo/db/prisma";
-import { isUuid } from "../../lib/utils";
+import db from '@repo/db/client';
+import { Prisma } from '@repo/db/prisma';
+import { isUuid } from '../../lib/utils';
 
 export type FunctionAccessType =
   // User is the owner of the function
-  | "owner"
+  | 'owner'
 
   // Other user's function where user is a subscriber and the function is not private
-  | "subscriber"
+  | 'subscriber'
 
   // Function is part of a collection that user is subscribed to
-  | "subscribedCollection";
+  | 'subscribedCollection';
 
-type GetFunctionAccessibleByUserDefaultArgsType = Pick<
-  Prisma.FunctionFindFirstArgs,
-  "include" | "select"
-> & {
-  where?: Prisma.FunctionFindFirstArgs["where"];
+type GetFunctionAccessibleByUserDefaultArgsType = Pick<Prisma.FunctionFindFirstArgs, 'include' | 'select'> & {
+  where?: Prisma.FunctionFindFirstArgs['where'];
 };
 
-type GetFunctionAccessibleByUserOptionsType<
-  T extends GetFunctionAccessibleByUserDefaultArgsType,
-> = {
+type GetFunctionAccessibleByUserOptionsType<T extends GetFunctionAccessibleByUserDefaultArgsType> = {
   accessTypes?: FunctionAccessType[];
   findFirstArgs?: T;
 };
@@ -34,28 +29,23 @@ type GetFunctionAccessibleByUserOptionsType<
  * @param {GetFunctionAccessibleByUserOptionsType<T>} options - Optional. Specifies the access types and findFirstArgs.
  * @returns {Promise<Prisma.FunctionGetPayload<T> | null>} - Returns the function record accessible by the user. If not found, returns null.
  */
-export const getFunctionAccessibleByUser = async <
-  T extends GetFunctionAccessibleByUserDefaultArgsType,
->(
+export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibleByUserDefaultArgsType>(
   userId: string,
   functionIdOrSlug: string,
-  options?: GetFunctionAccessibleByUserOptionsType<T>,
+  options?: GetFunctionAccessibleByUserOptionsType<T>
 ): Promise<Prisma.FunctionGetPayload<T> | null> => {
   const useUuid = isUuid(functionIdOrSlug),
-    defaultOptions: GetFunctionAccessibleByUserOptionsType<GetFunctionAccessibleByUserDefaultArgsType> =
-      {
-        accessTypes: ["owner", "subscriber", "subscribedCollection"],
-        findFirstArgs: {
-          where: {},
-          include: {
-            arguments: true,
-            tags: true,
-          },
+    defaultOptions: GetFunctionAccessibleByUserOptionsType<GetFunctionAccessibleByUserDefaultArgsType> = {
+      accessTypes: ['owner', 'subscriber', 'subscribedCollection'],
+      findFirstArgs: {
+        where: {},
+        include: {
+          arguments: true,
+          tags: true,
         },
       },
-    accessTypes = Array.isArray(options?.accessTypes)
-      ? options.accessTypes
-      : defaultOptions.accessTypes,
+    },
+    accessTypes = Array.isArray(options?.accessTypes) ? options.accessTypes : defaultOptions.accessTypes,
     findFirstArgs = options?.findFirstArgs || defaultOptions.findFirstArgs;
 
   if (!accessTypes?.length || !findFirstArgs) {
@@ -65,7 +55,7 @@ export const getFunctionAccessibleByUser = async <
   // Define the query conditions based on the accessType
   const whereConditions: Prisma.FunctionWhereInput[] = [];
 
-  if (accessTypes.indexOf("owner") >= 0) {
+  if (accessTypes.indexOf('owner') >= 0) {
     /**
      * Case 1 - User is the owner
      */
@@ -78,11 +68,11 @@ export const getFunctionAccessibleByUser = async <
         : {
             slug: functionIdOrSlug,
             ownerUserId: userId,
-          },
+          }
     );
   }
 
-  if (accessTypes.indexOf("subscriber") >= 0) {
+  if (accessTypes.indexOf('subscriber') >= 0) {
     /**
      * Case 2 - User is a subscriber and its other user's function
      */
@@ -110,7 +100,7 @@ export const getFunctionAccessibleByUser = async <
     });
   }
 
-  if (accessTypes.indexOf("subscribedCollection") >= 0) {
+  if (accessTypes.indexOf('subscribedCollection') >= 0) {
     /**
      * Case 3 - Function is part of a collection that user is subscribed to.
      */

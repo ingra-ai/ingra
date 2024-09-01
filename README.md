@@ -1,7 +1,7 @@
 # Ingra
 
 Ingra is an open-source platform designed to enrich developer experience to curate and hook AI function tool calling capabilities.
-Seamlessly integrate to any LLMs by providing capabilities to curate, manage, and host functions or workflows that can be used to create your own personal assistant suite tailored to your needs.
+Seamlessly integrate to any LLMs by providing capabilities to curate, manage, and host functions that can be used to create your own personal assistant suite tailored to your needs.
 
 Our goal is to make these tool freely available for everyone, and enabling a community-driven approach to personal assistant development.
 
@@ -77,12 +77,15 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 
 3. **Set up your environment variables:**
 
-   Go to `./apps/hubs/` and copy the `.env.example` file to a new file named `.env.local` and fill in your database connection details and any other environment variables required.
+   ```bash
+   cp .env.example apps/hubs/.env
+   ```
 
+   Copy the `.env.example` file to a new file named `./apps/hubs/.env` and fill in your database connection details and any other environment variables required.
 
 ## Environment Variables
 
-The Ingra Hubs utilizes several environment variables for its configuration. You will need to set these up in your `.env.local` file. Here's a guide to the required environment variables:
+The Ingra Hubs utilizes several environment variables for its configuration. You will need to set these up in your `.env` file. Here's a guide to the required environment variables:
 
 ### Database Setup with Prisma
 
@@ -90,7 +93,7 @@ To understand how to play around with Prisma, view the [Prisma readme](https://g
 
 1. Configure your database connection:
 
-   Ensure your `.env.local` file includes the database connection string for your PostgreSQL database:
+   Ensure your `.env` file includes the database connection string for your PostgreSQL database:
 
    ```bash
    DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase?schema=public"
@@ -101,7 +104,7 @@ To understand how to play around with Prisma, view the [Prisma readme](https://g
    To set up your database schema or apply any updates, run the Prisma migration command:
 
    ```bash
-   npx prisma migrate dev
+   pnpm db:migrate:dev
    ```
 
    This command creates the tables in your database according to the schema defined in **prisma/schema.prisma**.
@@ -111,7 +114,7 @@ To understand how to play around with Prisma, view the [Prisma readme](https://g
    Generate the Prisma client to interact with your database:
 
    ```bash
-   npx prisma generate
+   pnpm db:generate
    ```
 
 ## Authentication
@@ -150,7 +153,6 @@ For more detailed instructions and additional configurations, refer to the [Amaz
 ```bash
 pnpm dev
 ```
-
 
 ### Turborepo Remote Caching
 
@@ -192,8 +194,7 @@ To further enhance your development with Ingra Hubs, explore the documentation a
 - [AWS SES Documentation](https://docs.aws.amazon.com/ses/latest/dg/welcome.html) - Get started with Amazon Simple Email Service for email sending.
 - [jsonwebtoken GitHub Repository](https://github.com/auth0/node-jsonwebtoken) - Learn about creating and verifying JWTs with this popular library.
 
-
-## Turborepo Useful Links
+### Turborepo Useful Links
 
 Learn more about the power of Turborepo:
 

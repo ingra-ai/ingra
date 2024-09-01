@@ -1,7 +1,7 @@
-"use client";
-import { FC } from "react";
-import { HOTJAR_ID, IS_PROD } from "@repo/shared/lib/constants";
-import Script from "next/script";
+'use client';
+import { FC } from 'react';
+import { HOTJAR_ID, IS_PROD } from '@repo/shared/lib/constants';
+import Script from 'next/script';
 
 type HotjarAnalyticsProps = {};
 

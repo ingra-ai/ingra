@@ -1,17 +1,15 @@
-"use server";
-import type { FC } from "react";
-import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import { OAuthToken } from "@repo/db/prisma";
-import db from "@repo/db/client";
-import OAuthList from "@protected/settings/integrations/OAuthList";
+'use server';
+import type { FC } from 'react';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { OAuthToken } from '@repo/db/prisma';
+import db from '@repo/db/client';
+import OAuthList from '@protected/settings/integrations/OAuthList';
 
 type IntegrationsSectionProps = {
   authSession: AuthSessionResponse;
 };
 
-export const IntegrationsSection: FC<IntegrationsSectionProps> = async (
-  props,
-) => {
+export const IntegrationsSection: FC<IntegrationsSectionProps> = async (props) => {
   const { authSession } = props;
 
   const oAuthTokens: OAuthToken[] = authSession
@@ -20,7 +18,7 @@ export const IntegrationsSection: FC<IntegrationsSectionProps> = async (
           userId: authSession.user.id,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       })
     : [];

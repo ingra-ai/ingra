@@ -1,18 +1,14 @@
-import clamp from "lodash/clamp";
-import db from "@repo/db/client";
-import type { FetchMineCollectionListPaginationType } from "@repo/components/data/collections/mine/types";
+import clamp from 'lodash/clamp';
+import db from '@repo/db/client';
+import type { FetchMineCollectionListPaginationType } from '@repo/components/data/collections/mine/types';
 
-export const fetchPaginationData = async (
-  searchParams: Record<string, string | string[] | undefined> = {},
-  userId: string,
-) => {
+export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
   // Parse the query parameteres
-  let { page = "1" } = searchParams;
+  let { page = '1' } = searchParams;
   page = Array.isArray(page) ? page[0] : page;
 
   // Validate and sanitize page and pageSize
-  const pageInt =
-    Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
+  const pageInt = Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
   const pageSizeInt = 20;
 
   // Calculate skip value based on page and pageSize
@@ -32,7 +28,7 @@ export const fetchPaginationData = async (
         userId,
       },
       orderBy: {
-        updatedAt: "desc",
+        updatedAt: 'desc',
       },
       select: {
         id: true,

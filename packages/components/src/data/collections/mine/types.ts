@@ -1,5 +1,5 @@
-import type { BakaPaginationType } from "../../../BakaPagination";
-import { Prisma } from "@repo/db/prisma";
+import type { BakaPaginationType } from '../../../BakaPagination';
+import { Prisma } from '@repo/db/prisma';
 
 export type MineCollectionListGetPayload = Prisma.CollectionGetPayload<{
   select: {

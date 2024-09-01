@@ -1,6 +1,6 @@
-import { AuthSessionResponse } from "../../data/auth/session/types";
-import { FunctionArgument } from "@repo/db/prisma";
-import { generateUserVars } from "./generateUserVars";
+import { AuthSessionResponse } from '../../data/auth/session/types';
+import { FunctionArgument } from '@repo/db/prisma';
+import { generateUserVars } from './generateUserVars';
 
 export type VmContextArgs = {
   // Known user variables
@@ -14,27 +14,12 @@ export type VmContextArgs = {
   [key: string]: any;
 };
 
-export function generateVmContextArgs(
-  authSession: AuthSessionResponse,
-  functionArguments: FunctionArgument[] = [],
-  requestArgs: Record<string, any> = {},
-) {
+export function generateVmContextArgs(authSession: AuthSessionResponse, functionArguments: FunctionArgument[] = [], requestArgs: Record<string, any> = {}) {
   // Fill requestArgs with default values if not provided.
-  if (
-    functionArguments &&
-    Array.isArray(functionArguments) &&
-    functionArguments.length > 0
-  ) {
+  if (functionArguments && Array.isArray(functionArguments) && functionArguments.length > 0) {
     for (const arg of functionArguments) {
-      if (
-        requestArgs?.[arg.name] === undefined ||
-        requestArgs?.[arg.name] === "" ||
-        requestArgs?.[arg.name] === null
-      ) {
-        if (
-          (typeof arg.defaultValue === "string" && arg.defaultValue.length) ||
-          (typeof arg.defaultValue === "number" && !isNaN(arg.defaultValue))
-        ) {
+      if (requestArgs?.[arg.name] === undefined || requestArgs?.[arg.name] === '' || requestArgs?.[arg.name] === null) {
+        if ((typeof arg.defaultValue === 'string' && arg.defaultValue.length) || (typeof arg.defaultValue === 'number' && !isNaN(arg.defaultValue))) {
           requestArgs[arg.name] = arg.defaultValue;
         }
       }
@@ -49,7 +34,7 @@ export function generateVmContextArgs(
         acc[envVar.key] = envVar.value;
         return acc;
       },
-      {} as Record<string, string>,
+      {} as Record<string, string>
     ),
 
     ...(requestArgs || {}),

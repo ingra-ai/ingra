@@ -1,4 +1,4 @@
-import { Prisma } from "@repo/db/prisma";
+import { Prisma } from '@repo/db/prisma';
 
 export type CollectionListGetPayload = Prisma.CollectionGetPayload<{
   select: {

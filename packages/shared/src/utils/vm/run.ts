@@ -1,25 +1,18 @@
-"use server";
-import { ActionError } from "../../types/api-response";
-import { setTimeout } from "timers/promises";
-import type { VmContextArgs } from "./generateVmContextArgs";
-import * as vm from "vm";
-import { SandboxAnalytics, getVmSandbox } from "./getVmSandbox";
-import { VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS } from "../../lib/constants";
+'use server';
+import { ActionError } from '../../types/api-response';
+import { setTimeout } from 'timers/promises';
+import type { VmContextArgs } from './generateVmContextArgs';
+import * as vm from 'vm';
+import { SandboxAnalytics, getVmSandbox } from './getVmSandbox';
+import { VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS } from '../../lib/constants';
 
 // In run.ts, refine the withTimeout function for better error handling and type safety
-async function withTimeout<T>(
-  promise: Promise<T>,
-  timeoutSeconds = VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS,
-): Promise<T> {
+async function withTimeout<T>(promise: Promise<T>, timeoutSeconds = VM_SANDBOX_EXECUTION_TIMEOUT_SECONDS): Promise<T> {
   const controller = new AbortController();
   const timeoutPromise = setTimeout(timeoutSeconds * 1e3, null, {
     signal: controller.signal,
   }).then(() => {
-    throw new ActionError(
-      "error",
-      408,
-      "Execution timed out exceeded " + timeoutSeconds + " seconds",
-    );
+    throw new ActionError('error', 408, 'Execution timed out exceeded ' + timeoutSeconds + ' seconds');
   });
 
   return Promise.race([promise, timeoutPromise]).finally(() => {
@@ -48,8 +41,8 @@ export async function run(code: string, ctx: VmContextArgs) {
     });
   } catch (err: any) {
     analytics.outputs.push({
-      type: "error",
-      message: err?.stack || err?.message || "Failed to execute code.",
+      type: 'error',
+      message: err?.stack || err?.message || 'Failed to execute code.',
     });
 
     return {
@@ -65,32 +58,32 @@ export async function run(code: string, ctx: VmContextArgs) {
 
     const result = await withTimeout(sandbox.handler(ctx)).catch((err: any) => {
       analytics.outputs.push({
-        type: "error",
-        message: err.message || "Failed to execute function",
+        type: 'error',
+        message: err.message || 'Failed to execute function',
       });
       return void 0;
     });
 
     analytics.outputs.push(
       {
-        type: "metric",
-        metric: "executionTime",
+        type: 'metric',
+        metric: 'executionTime',
         value: Date.now() - start,
       },
       {
-        type: "metric",
-        metric: "memoryUsed",
+        type: 'metric',
+        metric: 'memoryUsed',
         value: process.memoryUsage().heapUsed - memoryUsageBefore,
       },
       {
-        type: "metric",
-        metric: "apiCallCount",
+        type: 'metric',
+        metric: 'apiCallCount',
         value: analytics.apiCallCount || 0,
       },
       {
-        type: "output",
-        message: typeof result === "object" ? JSON.stringify(result) : result,
-      },
+        type: 'output',
+        message: typeof result === 'object' ? JSON.stringify(result) : result,
+      }
     );
 
     return {
@@ -98,6 +91,6 @@ export async function run(code: string, ctx: VmContextArgs) {
       result,
     };
   } else {
-    throw new ActionError("error", 400, "Handler function is not defined.");
+    throw new ActionError('error', 400, 'Handler function is not defined.');
   }
 }

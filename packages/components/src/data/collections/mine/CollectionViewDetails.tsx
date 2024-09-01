@@ -1,34 +1,23 @@
-"use client";
-import React, { useCallback, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { PencilIcon } from "@heroicons/react/24/outline";
-import { MoreVertical, TrashIcon } from "lucide-react";
-import { deleteCollection } from "@repo/shared/actions/collections";
-import { getUserRepoCollectionsUri } from "@repo/shared/lib/constants/repo";
-import { FormSlideOver } from "../../../slideovers/FormSlideOver";
-import { Button } from "../../../ui/button";
-import { useToast } from "../../../ui/use-toast";
-import { CollectionForm } from "../../../data/collections/mine/CollectionForm";
-import { MineCollectionViewDetailPayload } from "../../../data/collections/mine/types";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../../ui/dropdown-menu";
+'use client';
+import React, { useCallback, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { PencilIcon } from '@heroicons/react/24/outline';
+import { MoreVertical, TrashIcon } from 'lucide-react';
+import { deleteCollection } from '@repo/shared/actions/collections';
+import { getUserRepoCollectionsUri } from '@repo/shared/lib/constants/repo';
+import { FormSlideOver } from '../../../slideovers/FormSlideOver';
+import { Button } from '../../../ui/button';
+import { useToast } from '../../../ui/use-toast';
+import { CollectionForm } from '../../../data/collections/mine/CollectionForm';
+import { MineCollectionViewDetailPayload } from '../../../data/collections/mine/types';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../ui/dropdown-menu';
 
 interface CollectionViewDetailsProps {
   ownerUsername: string;
   record: MineCollectionViewDetailPayload;
 }
 
-const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({
-  ownerUsername,
-  record,
-}) => {
+const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ ownerUsername, record }) => {
   const [open, setOpen] = React.useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -36,21 +25,18 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({
 
   const handleDelete = useCallback(() => {
     // Prompt user
-    const confirmed = confirm(
-      `Are you sure to delete this collection? Removing this will just remove the collection and your functions will only be disconnected from it.`,
-    );
+    const confirmed = confirm(`Are you sure to delete this collection? Removing this will just remove the collection and your functions will only be disconnected from it.`);
 
     if (confirmed) {
       deleteCollection(record.id)
         .then((result) => {
-          if (result.status !== "ok") {
+          if (result.status !== 'ok') {
             throw new Error(result.message);
           }
 
           toast({
-            title: "Success!",
-            description:
-              result.message || "Collection has been deleted successfully.",
+            title: 'Success!',
+            description: result.message || 'Collection has been deleted successfully.',
           });
 
           startTransition(() => {
@@ -59,9 +45,9 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({
         })
         .catch((error) => {
           toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: error?.message || "Failed to delete collection!",
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: error?.message || 'Failed to delete collection!',
           });
         });
     }
@@ -85,21 +71,13 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="hover:bg-secondary hover:text-secondary-foreground cursor-pointer p-2">
-                <button
-                  type="button"
-                  onClick={() => setOpen(true)}
-                  className="flex items-center w-full"
-                >
+                <button type="button" onClick={() => setOpen(true)} className="flex items-center w-full">
                   <PencilIcon className="w-4 h-4 mr-2" />
                   Edit
                 </button>
               </DropdownMenuItem>
               <DropdownMenuItem className="text-destructive hover:bg-secondary hover:text-secondary-foreground cursor-pointer p-2">
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  className="flex items-center w-full"
-                >
+                <button type="button" onClick={handleDelete} className="flex items-center w-full">
                   <TrashIcon className="w-4 h-4 mr-2" />
                   Delete
                 </button>
@@ -113,20 +91,10 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({
       </p>
       <div className="mt-2">
         <h3 className="text-sm font-semibold leading-6">Description</h3>
-        <div
-          className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap"
-          dangerouslySetInnerHTML={{ __html: record.description || "" }}
-        />
+        <div className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: record.description || '' }} />
       </div>
-      <FormSlideOver
-        title={`Edit collection '${record.name}'`}
-        open={open}
-        setOpen={setOpen}
-      >
-        <CollectionForm
-          collectionRecord={record}
-          onCancel={() => setOpen(false)}
-        />
+      <FormSlideOver title={`Edit collection '${record.name}'`} open={open} setOpen={setOpen}>
+        <CollectionForm collectionRecord={record} onCancel={() => setOpen(false)} />
       </FormSlideOver>
     </div>
   );

@@ -1,18 +1,15 @@
-import {
-  createActiveSession,
-  expireMagicLinkByToken,
-} from "@repo/shared/data/auth";
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { APP_SESSION_COOKIE_NAME, APP_URL } from "@repo/shared/lib/constants";
-import db from "@repo/db/client";
+import { createActiveSession, expireMagicLinkByToken } from '@repo/shared/data/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { APP_AUTH_COOKIE_DOMAIN, APP_SESSION_COOKIE_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import db from '@repo/db/client';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type") || "";
-  const token = searchParams.get("token") || "";
+  const type = searchParams.get('type') || '';
+  const token = searchParams.get('token') || '';
 
-  if (type === "magic" && token.length > 0) {
+  if (type === 'magic' && token.length > 0) {
     const magicLinkWithUser = await db.magicLinkToken.findUnique({
       select: {
         token: true,
@@ -34,10 +31,10 @@ export async function GET(request: NextRequest) {
 
     if (!magicLinkWithUser) {
       return NextResponse.json(
-        { error: "Invalid token" },
+        { error: 'Invalid token' },
         {
           status: 400,
-        },
+        }
       );
     }
 
@@ -45,16 +42,19 @@ export async function GET(request: NextRequest) {
 
     if (!session) {
       return NextResponse.json(
-        { error: "Failed to create session" },
+        { error: 'Failed to create session' },
         {
           status: 500,
-        },
+        }
       );
     }
 
     // Set session cookies
     const cookieStore = cookies();
     cookieStore.set(APP_SESSION_COOKIE_NAME, session.jwt, {
+      domain: APP_AUTH_COOKIE_DOMAIN,
+      path: '/',
+      sameSite: 'lax',
       expires: session.expiresAt,
       httpOnly: true,
       secure: true,
@@ -64,13 +64,13 @@ export async function GET(request: NextRequest) {
     await expireMagicLinkByToken(magicLinkWithUser.token);
 
     // Redirect to the app
-    return NextResponse.redirect(APP_URL, { status: 302 });
+    return NextResponse.redirect(HUBS_APP_URL, { status: 302 });
   } else {
     return NextResponse.json(
-      { error: "Invalid request" },
+      { error: 'Invalid request' },
       {
         status: 400,
-      },
+      }
     );
   }
 }
@@ -78,9 +78,9 @@ export async function GET(request: NextRequest) {
 // Notice the funciton definiton:
 export async function POST(request: NextRequest) {
   return NextResponse.json(
-    { error: "Method not allowed" },
+    { error: 'Method not allowed' },
     {
       status: 405,
-    },
+    }
   );
 }

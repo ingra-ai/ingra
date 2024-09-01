@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { generateUserVars } from "@repo/shared/utils/vm/generateUserVars";
-import { generateCodeDefaultTemplate } from "@repo/shared/utils/vm/functions/generateCodeDefaultTemplate";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -46,36 +46,30 @@ export async function GET(req: NextRequest) {
         value: envVar.value,
       })),
       userVarsRecord = generateUserVars(authSession),
-      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(
-        optionalEnvVars.map((envVar) => envVar.key),
-      ),
+      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map((envVar) => envVar.key)),
       codeTemplate = generateCodeDefaultTemplate(allUserAndEnvKeys);
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "getCodeTemplate",
+      operationId: 'getCodeTemplate',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|curateFunctions-getCodeTemplate")
-      .withTag(`user|${authSession.user.id}`)
-      .info("Retrieved code template for the user.");
+    Logger.withTag('api|builtins').withTag('operation|curateFunctions-getCodeTemplate').withTag(`user|${authSession.user.id}`).info('Retrieved code template for the user.');
 
     return NextResponse.json(
       {
-        status: "success",
-        message:
-          'Successfully retrieved the code template ready to be curated for a function suits your need. You can utilize "environmentVariables" endpoint in case you need more customization.',
+        status: 'success',
+        message: 'Successfully retrieved the code template ready to be curated for a function suits your need. You can utilize "environmentVariables" endpoint in case you need more customization.',
         data: codeTemplate,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

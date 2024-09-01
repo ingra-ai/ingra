@@ -1,19 +1,11 @@
-"use client";
-import React from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "./ui/pagination";
-import { cn } from "@repo/shared/lib/utils";
-import clamp from "lodash/clamp";
-import inRange from "lodash/inRange";
-import range from "lodash/range";
-import { usePathname } from "next/navigation";
+'use client';
+import React from 'react';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from './ui/pagination';
+import { cn } from '@repo/shared/lib/utils';
+import clamp from 'lodash/clamp';
+import inRange from 'lodash/inRange';
+import range from 'lodash/range';
+import { usePathname } from 'next/navigation';
 
 export type BakaPaginationType = {
   page: number;
@@ -93,15 +85,7 @@ function generatePagesArray(currentPage: number, lastPage: number) {
 }
 
 export const BakaPagination: React.FC<BakaPaginationProps> = (props) => {
-  const {
-    className,
-    page,
-    pageSize,
-    totalRecords,
-    nbPages,
-    hasNext,
-    hasPrevious,
-  } = props;
+  const { className, page, pageSize, totalRecords, nbPages, hasNext, hasPrevious } = props;
   const pathname = usePathname();
 
   const lastPage = Math.ceil(totalRecords / pageSize),
