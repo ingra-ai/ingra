@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { MagicLoginSchema } from '@repo/shared/schemas/auth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { magicLoginEmail } from '@repo/shared/actions/login';
+import { magicLoginEmail } from '../(actions)/login';
 import { useState } from 'react';
 import { useToast } from '@repo/components/ui/use-toast';
 import { Button } from '@repo/components/ui/button';
