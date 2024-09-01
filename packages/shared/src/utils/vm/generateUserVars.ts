@@ -1,13 +1,11 @@
-import { AuthSessionResponse } from "../../data/auth/session/types";
+import { AuthSessionResponse } from '../../data/auth/session/types';
 
 /**
  * Generates necessary user variables to run VM from the user's profile.
  * @param { AuthSessionResponse } authSession - The authentication session response object.
  * @returns { Record<string, any> } A record of user variables.
  */
-export const generateUserVars = (
-  authSession: AuthSessionResponse,
-): Record<string, string> => {
+export const generateUserVars = (authSession: AuthSessionResponse): Record<string, string> => {
   /**
    * Generate necessary user variables to run VM from the user's profile
    * 1. OAuthTokens - e.g. GOOGLE_OAUTH_ACCESS_TOKEN
@@ -25,7 +23,7 @@ export const generateUserVars = (
         const prefix = token.service
           .split(/[^a-zA-Z0-9]/g)
           .filter(Boolean)
-          .join("_")
+          .join('_')
           .toUpperCase();
 
         /**
@@ -35,26 +33,25 @@ export const generateUserVars = (
 
         if (token.isDefault) {
           userVars[`${prefix}_ACCESS_TOKEN`] = token.accessToken;
-          userVars[`${prefix}_ID_TOKEN`] = token.idToken || "";
-          userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || "";
+          userVars[`${prefix}_ID_TOKEN`] = token.idToken || '';
+          userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || '';
         } else if (
-        /**
-         * If user has no default set, then set the first token as default.
-         */
+          /**
+           * If user has no default set, then set the first token as default.
+           */
           !userVars[`${prefix}_ACCESS_TOKEN`]
         ) {
           userVars[`${prefix}_ACCESS_TOKEN`] = token.accessToken;
-          userVars[`${prefix}_ID_TOKEN`] = token.idToken || "";
-          userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || "";
+          userVars[`${prefix}_ID_TOKEN`] = token.idToken || '';
+          userVars[`${prefix}_EMAIL_ADDRESS`] = token.primaryEmailAddress || '';
         }
       }
     }
   }
 
   if (authSession.user?.profile) {
-    userVars["USER_NAME"] = authSession.user.profile.userName || "";
-    userVars["USER_TIMEZONE"] =
-      authSession.user.profile.timeZone || "America/New_York";
+    userVars['USER_NAME'] = authSession.user.profile.userName || '';
+    userVars['USER_TIMEZONE'] = authSession.user.profile.timeZone || 'America/New_York';
   }
 
   return userVars;

@@ -1,22 +1,14 @@
-import { convertFunctionRecordToOpenApiSchema } from "@repo/shared/utils/functions/convertFunctionRecordToOpenApiSchema";
-import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import {
-  USERS_API_FUNCTION_URI,
-  USERS_API_COLLECTION_FUNCTION_URI,
-} from "@repo/shared/lib/constants";
-import db from "@repo/db/client";
+import { convertFunctionRecordToOpenApiSchema } from '@repo/shared/utils/functions/convertFunctionRecordToOpenApiSchema';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { USERS_API_FUNCTION_URI, USERS_API_COLLECTION_FUNCTION_URI } from '@repo/shared/lib/constants';
+import db from '@repo/db/client';
 
 export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   if (!authSession || !authSession.user.id) {
     return null;
   }
 
-  const [
-    functionRecords,
-    collectionRecords,
-    subscribedFunctionRecords,
-    subscribedCollectionRecords,
-  ] = await Promise.all([
+  const [functionRecords, collectionRecords, subscribedFunctionRecords, subscribedCollectionRecords] = await Promise.all([
     // 1. Fetch all functions from user's own repository.
     db.function.findMany({
       where: {
@@ -141,102 +133,58 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   /**
    * User own functions and collections
    */
-  const userFunctionsOpenApiSchema = functionRecords.reduce(
-    (acc, functionRecord) => {
-      const functionSchema = convertFunctionRecordToOpenApiSchema(
-        functionRecord as any,
-        {
-          transformHitUrl: (functionSlug) =>
-            USERS_API_FUNCTION_URI.replace(
-              ":userName",
-              authSession.user.profile?.userName || "",
-            ).replace(":functionSlug", functionSlug),
-        },
-      );
-      return { ...acc, ...functionSchema };
-    },
-    {},
-  );
+  const userFunctionsOpenApiSchema = functionRecords.reduce((acc, functionRecord) => {
+    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
+      transformHitUrl: (functionSlug) => USERS_API_FUNCTION_URI.replace(':userName', authSession.user.profile?.userName || '').replace(':functionSlug', functionSlug),
+    });
+    return { ...acc, ...functionSchema };
+  }, {});
 
-  const userCollectionsOpenApiSchema = collectionRecords.reduce(
-    (acc1, collection) => {
-      const ownerUsername = collection.owner.profile?.userName || "";
-      const collectionSlug = collection.slug;
-      const collectionFunctions = collection.functions || [];
+  const userCollectionsOpenApiSchema = collectionRecords.reduce((acc1, collection) => {
+    const ownerUsername = collection.owner.profile?.userName || '';
+    const collectionSlug = collection.slug;
+    const collectionFunctions = collection.functions || [];
 
-      if (!ownerUsername || !collectionSlug || collectionFunctions.length === 0)
-        return {};
+    if (!ownerUsername || !collectionSlug || collectionFunctions.length === 0) return {};
 
-      return collectionFunctions.reduce((acc2, functionRecord) => {
-        const functionSchema = convertFunctionRecordToOpenApiSchema(
-          functionRecord as any,
-          {
-            transformHitUrl: (functionSlug) =>
-              USERS_API_COLLECTION_FUNCTION_URI.replace(
-                ":userName",
-                ownerUsername,
-              )
-                .replace(":collectionSlug", collectionSlug)
-                .replace(":functionSlug", functionSlug),
-          },
-        );
-        return { ...acc1, ...acc2, ...functionSchema };
-      }, {});
-    },
-    {},
-  );
+    return collectionFunctions.reduce((acc2, functionRecord) => {
+      const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
+        transformHitUrl: (functionSlug) => USERS_API_COLLECTION_FUNCTION_URI.replace(':userName', ownerUsername).replace(':collectionSlug', collectionSlug).replace(':functionSlug', functionSlug),
+      });
+      return { ...acc1, ...acc2, ...functionSchema };
+    }, {});
+  }, {});
 
   /**
    * User subscribed functions and collections
    */
-  const userSubscribedFunctionsOpenApiSchema = subscribedFunctionRecords.reduce(
-    (acc, functionRecord) => {
-      const functionOwnerUsername =
-        functionRecord.owner.profile?.userName || "";
+  const userSubscribedFunctionsOpenApiSchema = subscribedFunctionRecords.reduce((acc, functionRecord) => {
+    const functionOwnerUsername = functionRecord.owner.profile?.userName || '';
 
-      if (!functionOwnerUsername) {
-        return {};
-      }
+    if (!functionOwnerUsername) {
+      return {};
+    }
 
-      const functionSchema = convertFunctionRecordToOpenApiSchema(
-        functionRecord as any,
-        {
-          transformHitUrl: (functionSlug) =>
-            USERS_API_FUNCTION_URI.replace(
-              ":userName",
-              functionOwnerUsername,
-            ).replace(":functionSlug", functionSlug),
-        },
-      );
-      return { ...acc, ...functionSchema };
-    },
-    {},
-  );
+    const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
+      transformHitUrl: (functionSlug) => USERS_API_FUNCTION_URI.replace(':userName', functionOwnerUsername).replace(':functionSlug', functionSlug),
+    });
+    return { ...acc, ...functionSchema };
+  }, {});
 
-  const userSubscribedCollectionssOpenApiSchema =
-    subscribedCollectionRecords.reduce((acc1, collection) => {
-      const ownerUsername = collection.owner.profile?.userName || "";
-      const collectionSlug = collection.slug;
-      const collectionFunctions = collection.functions || [];
+  const userSubscribedCollectionssOpenApiSchema = subscribedCollectionRecords.reduce((acc1, collection) => {
+    const ownerUsername = collection.owner.profile?.userName || '';
+    const collectionSlug = collection.slug;
+    const collectionFunctions = collection.functions || [];
 
-      if (!ownerUsername || collectionFunctions.length === 0) return {};
+    if (!ownerUsername || collectionFunctions.length === 0) return {};
 
-      return collectionFunctions.reduce((acc2, functionRecord) => {
-        const functionSchema = convertFunctionRecordToOpenApiSchema(
-          functionRecord as any,
-          {
-            transformHitUrl: (functionSlug) =>
-              USERS_API_COLLECTION_FUNCTION_URI.replace(
-                ":userName",
-                ownerUsername,
-              )
-                .replace(":collectionSlug", collectionSlug)
-                .replace(":functionSlug", functionSlug),
-          },
-        );
-        return { ...acc1, ...acc2, ...functionSchema };
-      }, {});
+    return collectionFunctions.reduce((acc2, functionRecord) => {
+      const functionSchema = convertFunctionRecordToOpenApiSchema(functionRecord as any, {
+        transformHitUrl: (functionSlug) => USERS_API_COLLECTION_FUNCTION_URI.replace(':userName', ownerUsername).replace(':collectionSlug', collectionSlug).replace(':functionSlug', functionSlug),
+      });
+      return { ...acc1, ...acc2, ...functionSchema };
     }, {});
+  }, {});
 
   return {
     ...userFunctionsOpenApiSchema,

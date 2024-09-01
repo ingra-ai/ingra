@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { RESERVED_SLUGS, SLUG_REGEX } from "./schema-constants";
+import { z } from 'zod';
+import { RESERVED_SLUGS, SLUG_REGEX } from './schema-constants';
 
 /**
  * Maximum length constraint for collection name.
@@ -56,32 +56,30 @@ export const CollectionSchema = z.object({
   name: z
     .string()
     .min(6, {
-      message: "Name must be at least 6 characters long.",
+      message: 'Name must be at least 6 characters long.',
     })
     .max(MAX_COLLECTION_NAME_LENGTH, {
-      message: "Name must be less than 120 characters long.",
+      message: 'Name must be less than 120 characters long.',
     })
     .regex(COLLECTION_NAME_REGEX, {
-      message:
-        "Invalid name format. Names must consist of alphanumeric characters, spaces, hyphens, and underscores only.",
+      message: 'Invalid name format. Names must consist of alphanumeric characters, spaces, hyphens, and underscores only.',
     }),
   slug: z
     .string()
     .min(6, {
-      message: "Slug must be at least 6 characters long.",
+      message: 'Slug must be at least 6 characters long.',
     })
     .max(64, {
-      message: "Slug must be less than 64 characters long.",
+      message: 'Slug must be less than 64 characters long.',
     })
     .regex(SLUG_REGEX, {
-      message:
-        "Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.",
+      message: 'Invalid slug format. Slugs must consist of alphanumeric characters and hyphens only, and cannot start or end with a hyphen.',
     })
     .refine(
       (value) => RESERVED_SLUGS.indexOf(value) === -1,
       (value) => ({
         message: `The collection slug "${value}" is reserved and cannot be used.`,
-      }),
+      })
     ),
   description: z
     .string()
@@ -89,7 +87,7 @@ export const CollectionSchema = z.object({
       message: `Description must be less than ${MAX_COLLECTION_DESCRIPTION_LENGTH} characters.`,
     })
     .optional()
-    .default(""),
+    .default(''),
   userId: z.string().optional(),
 });
 

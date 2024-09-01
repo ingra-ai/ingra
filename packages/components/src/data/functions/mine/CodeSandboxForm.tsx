@@ -1,25 +1,17 @@
-"use client";
-import type { FC } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Button } from "../../../ui/button";
-import { CircleDot, PlayCircleIcon, SortAscIcon } from "lucide-react";
-import { useCallback, useState } from "react";
-import { useToast } from "../../../ui/use-toast";
-import { runCodeSandbox } from "@repo/shared/actions/runCodeSandbox";
-import { cn } from "@repo/shared/lib/utils";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import FunctionArgumentInputSwitchField from "./FunctionArgumentInputSwitchField";
-import type { Prisma } from "@repo/db/prisma";
-import type {
-  MetricSandboxOutput,
-  SandboxOutput,
-  UserSandboxOutput,
-} from "@repo/shared/utils/vm/types";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../../../ui/collapsible";
+'use client';
+import type { FC } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { Button } from '../../../ui/button';
+import { CircleDot, PlayCircleIcon, SortAscIcon } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useToast } from '../../../ui/use-toast';
+import { runCodeSandbox } from '@repo/shared/actions/runCodeSandbox';
+import { cn } from '@repo/shared/lib/utils';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import FunctionArgumentInputSwitchField from './FunctionArgumentInputSwitchField';
+import type { Prisma } from '@repo/db/prisma';
+import type { MetricSandboxOutput, SandboxOutput, UserSandboxOutput } from '@repo/shared/utils/vm/types';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../../ui/collapsible';
 
 type CodeSandboxFormProps = {
   isMarketplace?: boolean;
@@ -38,11 +30,7 @@ type RunState = {
 };
 
 export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
-  const {
-    isMarketplace = false,
-    functionRecord,
-    onClose = () => void 0,
-  } = props;
+  const { isMarketplace = false, functionRecord, onClose = () => void 0 } = props;
   const { arguments: functionArguments = [] } = functionRecord;
   const { toast } = useToast();
   const [runState, setRunState] = useState<RunState>({
@@ -56,14 +44,14 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    reValidateMode: "onSubmit",
+    reValidateMode: 'onSubmit',
     shouldUnregister: true,
     defaultValues: functionArguments.reduce(
       (acc, arg) => {
         acc[arg.name] = arg.defaultValue;
         return acc;
       },
-      {} as Record<string, any>,
+      {} as Record<string, any>
     ),
   });
 
@@ -77,11 +65,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
 
       // execute code
       try {
-        const { outputs, result } = await runCodeSandbox(
-          functionRecord.id,
-          values,
-          isMarketplace,
-        );
+        const { outputs, result } = await runCodeSandbox(functionRecord.id, values, isMarketplace);
         setRunState({
           isRunning: false,
           outputs,
@@ -89,9 +73,9 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
         });
       } catch (error: any) {
         toast({
-          variant: "destructive",
-          title: "Code execution failed!",
-          description: error?.message || "Failed to execute function!",
+          variant: 'destructive',
+          title: 'Code execution failed!',
+          description: error?.message || 'Failed to execute function!',
         });
 
         setRunState({
@@ -101,7 +85,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
         });
       }
     },
-    [functionRecord.id, isMarketplace],
+    [functionRecord.id, isMarketplace]
   );
 
   const onLogboxClose = useCallback(() => {
@@ -111,34 +95,18 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
     });
   }, [runState]);
 
-  const inputClasses = cn(
-    "block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6",
-  );
+  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
 
-  const userOutputs: UserSandboxOutput[] = runState.outputs.filter(
-    (output) => ["log", "error", "output"].indexOf(output.type) >= 0,
-  ) as UserSandboxOutput[];
-  const metricOutputs: MetricSandboxOutput[] = runState.outputs.filter(
-    (output) => ["metric"].indexOf(output.type) >= 0,
-  ) as MetricSandboxOutput[];
+  const userOutputs: UserSandboxOutput[] = runState.outputs.filter((output) => ['log', 'error', 'output'].indexOf(output.type) >= 0) as UserSandboxOutput[];
+  const metricOutputs: MetricSandboxOutput[] = runState.outputs.filter((output) => ['metric'].indexOf(output.type) >= 0) as MetricSandboxOutput[];
 
   return (
-    <form
-      className="block space-y-6 mt-4 mb-20"
-      method="POST"
-      onSubmit={handleSubmit(onRun)}
-    >
+    <form className="block space-y-6 mt-4 mb-20" method="POST" onSubmit={handleSubmit(onRun)}>
       <div className="block w-full rounded-md border shadow py-4 bg-black/10">
         <Collapsible defaultOpen className="block">
           <CollapsibleTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex w-full justify-between items-center"
-            >
-              <p className="text-sm font-bold text-gray-100 leading-7">
-                Arguments
-              </p>
+            <Button variant="ghost" size="sm" className="flex w-full justify-between items-center">
+              <p className="text-sm font-bold text-gray-100 leading-7">Arguments</p>
               <SortAscIcon className="h-4 w-4" />
               <span className="sr-only">Toggle</span>
             </Button>
@@ -147,37 +115,18 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
             {functionArguments.length ? (
               functionArguments.map((arg) => (
                 <div key={arg.id} className="grid grid-cols-12 items-start">
-                  <label
-                    htmlFor={arg.name}
-                    className="col-span-4 lg:col-span-3 text-sm font-medium text-right px-4 py-3"
-                  >
-                    {arg.isRequired ? "*" : ""}&nbsp;{arg.name}
+                  <label htmlFor={arg.name} className="col-span-4 lg:col-span-3 text-sm font-medium text-right px-4 py-3">
+                    {arg.isRequired ? '*' : ''}&nbsp;{arg.name}
                   </label>
                   <div className="col-span-8 lg:col-span-9">
                     <Controller
                       control={control}
                       name={arg.name}
                       rules={{ required: arg.isRequired }}
-                      render={({ field }) => (
-                        <FunctionArgumentInputSwitchField
-                          id={arg.name}
-                          type={arg.type as any}
-                          className={`${arg.type === "boolean" ? "" : inputClasses}`}
-                          field={field as any}
-                        />
-                      )}
+                      render={({ field }) => <FunctionArgumentInputSwitchField id={arg.name} type={arg.type as any} className={`${arg.type === 'boolean' ? '' : inputClasses}`} field={field as any} />}
                     />
-                    {errors?.[arg.name] &&
-                      typeof errors?.[arg.name]?.message === "string" && (
-                        <p className="text-xs font-medium text-destructive-foreground mt-3">
-                          {errors?.[arg.name]?.message?.toString()}
-                        </p>
-                      )}
-                    {arg.description && (
-                      <p className="text-xs text-gray-500 pt-2">
-                        {arg.description}
-                      </p>
-                    )}
+                    {errors?.[arg.name] && typeof errors?.[arg.name]?.message === 'string' && <p className="text-xs font-medium text-destructive-foreground mt-3">{errors?.[arg.name]?.message?.toString()}</p>}
+                    {arg.description && <p className="text-xs text-gray-500 pt-2">{arg.description}</p>}
                   </div>
                   <div className="col-span-2 lg:col-span-3"></div>
                 </div>
@@ -215,24 +164,17 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
                 </button>
               </div>
             </div>
-            <div
-              id="logbox"
-              className="relative w-full min-h-[240px] max-h-[50vh] overflow-y-auto p-2 text-xs font-mono bg-gray-800 text-gray-100 rounded"
-            >
-              <div
-                className="overflow-wrap break-word"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
+            <div id="logbox" className="relative w-full min-h-[240px] max-h-[50vh] overflow-y-auto p-2 text-xs font-mono bg-gray-800 text-gray-100 rounded">
+              <div className="overflow-wrap break-word" style={{ whiteSpace: 'pre-wrap' }}>
                 {userOutputs.map((output, idx) => {
                   const spanClasses = cn({
-                    "text-gray-500": output.type === "log",
-                    "text-red-500": output.type === "error",
-                    "text-green-500": output.type === "output",
+                    'text-gray-500': output.type === 'log',
+                    'text-red-500': output.type === 'error',
+                    'text-green-500': output.type === 'output',
                   });
                   return (
                     <div key={`runState-output-${idx}`}>
-                      <span className="text-gray-300">[{output.type}]:</span>{" "}
-                      <span className={spanClasses}>{output.message}</span>
+                      <span className="text-gray-300">[{output.type}]:</span> <span className={spanClasses}>{output.message}</span>
                     </div>
                   );
                 })}
@@ -242,27 +184,12 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
         )}
       </div>
       <div className="flex w-full justify-end items-center space-x-4">
-        <Button
-          variant={"outline"}
-          type="button"
-          disabled={runState.isRunning}
-          className="flex w-[120px] justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm"
-          onClick={onClose}
-        >
+        <Button variant={'outline'} type="button" disabled={runState.isRunning} className="flex w-[120px] justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm" onClick={onClose}>
           Close
         </Button>
-        <Button
-          variant={"default"}
-          type="submit"
-          disabled={runState.isRunning}
-          className="flex w-[160px] justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm"
-        >
-          {runState.isRunning ? (
-            <CircleDot className="animate-spin inline-block mr-2" />
-          ) : (
-            <PlayCircleIcon className="inline-block mr-2" />
-          )}
-          {runState.isRunning ? "Running..." : "Run"}
+        <Button variant={'default'} type="submit" disabled={runState.isRunning} className="flex w-[160px] justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-8 shadow-sm">
+          {runState.isRunning ? <CircleDot className="animate-spin inline-block mr-2" /> : <PlayCircleIcon className="inline-block mr-2" />}
+          {runState.isRunning ? 'Running...' : 'Run'}
         </Button>
       </div>
     </form>

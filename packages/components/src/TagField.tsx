@@ -1,8 +1,8 @@
-"use client";
-import type { FC, KeyboardEvent } from "react";
-import { useState, ChangeEvent } from "react";
-import { Input } from "./ui/input";
-import { Badge } from "./ui/badge";
+'use client';
+import type { FC, KeyboardEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
+import { Input } from './ui/input';
+import { Badge } from './ui/badge';
 
 type TagFieldProps = {
   id?: string;
@@ -17,7 +17,7 @@ export const TagField: FC<TagFieldProps> = (props) => {
   const { id, className, tags, addTag, removeTag, maxTags } = props;
 
   // track the use input
-  const [userInput, setUserInput] = useState<string>(" ");
+  const [userInput, setUserInput] = useState<string>(' ');
 
   // Handle input onChange
 
@@ -28,17 +28,17 @@ export const TagField: FC<TagFieldProps> = (props) => {
   // handle Enter key press
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault(); // Prevent form submission or new line creation
 
-      if (userInput.trim() !== "" && tags.length < maxTags) {
-        const sanitizedUserInput = userInput.trim().replace(/\s[2,]/g, " ");
+      if (userInput.trim() !== '' && tags.length < maxTags) {
+        const sanitizedUserInput = userInput.trim().replace(/\s[2,]/g, ' ');
 
         if (tags.indexOf(sanitizedUserInput) === -1) {
           addTag(sanitizedUserInput);
         }
 
-        setUserInput(""); // Clear the input after adding a tag
+        setUserInput(''); // Clear the input after adding a tag
       }
     }
   };
@@ -49,11 +49,7 @@ export const TagField: FC<TagFieldProps> = (props) => {
         id={id}
         name="keyword_tags"
         type="text"
-        placeholder={
-          tags.length < maxTags
-            ? "Add a tag"
-            : `You can only enter max. of ${maxTags} tags`
-        }
+        placeholder={tags.length < maxTags ? 'Add a tag' : `You can only enter max. of ${maxTags} tags`}
         onKeyDown={handleKeyPress}
         onChange={handleInputChange}
         value={userInput}
@@ -64,17 +60,9 @@ export const TagField: FC<TagFieldProps> = (props) => {
 
       <div className="flex flex-row flex-wrap gap-3 mt-4">
         {tags.map((tag: string, index: number) => (
-          <Badge
-            className="cursor-default"
-            variant="outline"
-            key={`${index}-${tag}`}
-          >
+          <Badge className="cursor-default" variant="outline" key={`${index}-${tag}`}>
             {tag}
-            <button
-              className="ml-2 hover:text-blue-500"
-              onClick={() => removeTag(tag, index)}
-              title={`Remove ${tag}`}
-            >
+            <button className="ml-2 hover:text-blue-500" onClick={() => removeTag(tag, index)} title={`Remove ${tag}`}>
               &times;
             </button>
           </Badge>

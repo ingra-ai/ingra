@@ -1,19 +1,14 @@
-import type { FetchCommunityFunctionListPaginationType } from "@repo/components/data/functions/community/types";
-import clamp from "lodash/clamp";
-import db from "@repo/db/client";
+import type { FetchCommunityFunctionListPaginationType } from '@repo/components/data/functions/community/types';
+import clamp from 'lodash/clamp';
+import db from '@repo/db/client';
 
-export const fetchPaginationData = async (
-  searchParams: Record<string, string | string[] | undefined> = {},
-  ownerUserId: string,
-  callerUserId?: string,
-) => {
+export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, ownerUserId: string, callerUserId?: string) => {
   // Parse the query parameteres
-  let { page = "1" } = searchParams;
+  let { page = '1' } = searchParams;
   page = Array.isArray(page) ? page[0] : page;
 
   // Validate and sanitize page and pageSize
-  const pageInt =
-    Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
+  const pageInt = Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
   const pageSizeInt = 20;
 
   // Calculate skip value based on page and pageSize
@@ -37,7 +32,7 @@ export const fetchPaginationData = async (
         isPrivate: false,
       },
       orderBy: {
-        updatedAt: "desc",
+        updatedAt: 'desc',
       },
       select: {
         id: true,
@@ -97,14 +92,10 @@ export const fetchPaginationData = async (
   ]);
 
   // Transform the `subscribers` field into a boolean `isSubscribed`
-  const functionsWithSubscriptionStatus = allFunctions.map(
-    (functionRecord) => ({
-      ...functionRecord,
-      isSubscribed:
-        Array.isArray(functionRecord?.subscribers) &&
-        functionRecord.subscribers.length > 0,
-    }),
-  );
+  const functionsWithSubscriptionStatus = allFunctions.map((functionRecord) => ({
+    ...functionRecord,
+    isSubscribed: Array.isArray(functionRecord?.subscribers) && functionRecord.subscribers.length > 0,
+  }));
 
   // Calculate pagination details
   const totalRecords = totalCount;

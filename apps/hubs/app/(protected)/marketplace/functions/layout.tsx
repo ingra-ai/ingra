@@ -1,10 +1,10 @@
-import { Suspense, type ReactNode, type PropsWithChildren } from "react";
-import MarketplaceFunctionLayout from "./loading";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import type { Metadata } from "next";
+import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
+import MarketplaceFunctionLayout from './loading';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: ["Functon Marketplace", APP_NAME].join(" | "),
+  title: ['Functon Marketplace', APP_NAME].join(' | '),
 };
 
 async function Layout({ children }: { children: ReactNode }) {

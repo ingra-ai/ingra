@@ -3,24 +3,18 @@
  * @see https://langchain-ai.github.io/langgraphjs/tutorials/multi_agent/agent_supervisor
  */
 
-import { NextRequest } from "next/server";
-import { StreamingTextResponse } from "ai";
-import {
-  convertLangChainMessageToVercelMessage,
-  convertVercelMessageToLangChainMessage,
-} from "./helpers/utils";
-import { Message as VercelChatMessage } from "ai";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { createToolsGraph } from "./helpers/toolsGraph";
-import { END } from "@langchain/langgraph";
-import { AgentStateChannels } from "./helpers/types";
-import {
-  APP_SESSION_COOKIE_NAME,
-  LANGCHAIN_CHAT_RECURSION_LIMIT,
-} from "@repo/shared/lib/constants";
-import { createSimpleGraph } from "./helpers/simpleGraph";
-import { createToolsAgentsByAuthSession } from "./helpers/createToolsAgents";
-import { cookies } from "next/headers";
+import { NextRequest } from 'next/server';
+import { StreamingTextResponse } from 'ai';
+import { convertLangChainMessageToVercelMessage, convertVercelMessageToLangChainMessage } from './helpers/utils';
+import { Message as VercelChatMessage } from 'ai';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { createToolsGraph } from './helpers/toolsGraph';
+import { END } from '@langchain/langgraph';
+import { AgentStateChannels } from './helpers/types';
+import { APP_SESSION_COOKIE_NAME, LANGCHAIN_CHAT_RECURSION_LIMIT } from '@repo/shared/lib/constants';
+import { createSimpleGraph } from './helpers/simpleGraph';
+import { createToolsAgentsByAuthSession } from './helpers/createToolsAgents';
+import { cookies } from 'next/headers';
 
 // export const runtime = 'nodejs';
 // export const dynamic = 'force-dynamic';
@@ -33,14 +27,8 @@ export async function POST(req: NextRequest) {
   const { returnIntermediateSteps = false } = body || {};
 
   return await apiAuthTryCatch(async (authSession) => {
-    console.log(" ------------ START --------------");
-    const messages: ReturnType<typeof convertVercelMessageToLangChainMessage> =
-      (body.messages ?? [])
-        .filter(
-          (message: VercelChatMessage) =>
-            ["user", "assistant"].indexOf(message.role) >= 0,
-        )
-        .map(convertVercelMessageToLangChainMessage);
+    console.log(' ------------ START --------------');
+    const messages: ReturnType<typeof convertVercelMessageToLangChainMessage> = (body.messages ?? []).filter((message: VercelChatMessage) => ['user', 'assistant'].indexOf(message.role) >= 0).map(convertVercelMessageToLangChainMessage);
 
     // const app = await createSimpleGraph(authSession);
     const app = await createToolsGraph(authSession, {
@@ -59,7 +47,7 @@ export async function POST(req: NextRequest) {
           {
             debug: false,
             configurable: {
-              threadId: "test-threadid",
+              threadId: 'test-threadid',
             },
             recursionLimit: LANGCHAIN_CHAT_RECURSION_LIMIT,
             callbacks: [
@@ -69,16 +57,16 @@ export async function POST(req: NextRequest) {
                   controller.enqueue(textEncoder.encode(token));
                 },
                 handleToolStart(tool) {
-                  console.log("\n| Tool Start: ", { tool });
+                  console.log('\n| Tool Start: ', { tool });
                 },
                 handleToolEnd(tool) {
-                  console.log("\n| Tool End: ", { tool });
+                  console.log('\n| Tool End: ', { tool });
                 },
                 handleAgentAction(agentAction) {
-                  console.log("\n| Agent Action: ", { agentAction });
+                  console.log('\n| Agent Action: ', { agentAction });
                 },
                 handleText(text, runId) {
-                  console.log("\n| Text: ", { text, runId });
+                  console.log('\n| Text: ', { text, runId });
                   // controller.enqueue(textEncoder.encode(text));
                 },
               },
@@ -88,23 +76,17 @@ export async function POST(req: NextRequest) {
              * 'updates': Example output for each streamResults iteration { output: { GoogleSuiteAgent: { messages: [Array] } } }
              * 'values': Example output for each streamResults iteration { output: { messages: [Array] } }
              */
-            streamMode: "updates",
-          },
+            streamMode: 'updates',
+          }
         );
 
         for await (const output of graphStream) {
-          for (const [
-            nodeName,
-            stateValue,
-          ] of Object.entries<AgentStateChannels>(output)) {
+          for (const [nodeName, stateValue] of Object.entries<AgentStateChannels>(output)) {
             const lastMessage = stateValue?.messages.slice(-1)[0];
-            const messageContent =
-              typeof lastMessage?.content === "string"
-                ? lastMessage.content
-                : "";
+            const messageContent = typeof lastMessage?.content === 'string' ? lastMessage.content : '';
             console.log(`:: nodeName|${nodeName} `, {
               stateValue,
-              messageContent: messageContent ?? "No content",
+              messageContent: messageContent ?? 'No content',
             });
 
             if (messageContent) {

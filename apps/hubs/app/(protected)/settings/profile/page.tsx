@@ -1,18 +1,13 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@repo/components/ui/tooltip";
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import { UserProfileForm } from "@protected/settings/profile/UserProfileForm";
-import { notFound } from "next/navigation";
-import { DeleteAccountButtonForm } from "./DeleteAccountButtonForm";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import type { Metadata } from "next";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/components/ui/tooltip';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
+import { notFound } from 'next/navigation';
+import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: ["Profile", APP_NAME].join(" | "),
+  title: ['Profile', APP_NAME].join(' | '),
 };
 
 /**
@@ -31,13 +26,9 @@ export default async function Page() {
     <div className="container mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 py-16 w-full">
         <div className="md:col-span-1 text-right">
-          <h2 className="text-base font-semibold leading-7 text-white">
-            Personal Information
-          </h2>
+          <h2 className="text-base font-semibold leading-7 text-white">Personal Information</h2>
           <p className="text-sm mt-2 leading-6 text-gray-400">
-            View and update your personal details, including your name, and
-            timezone. Keeping your information up-to-date ensures that you
-            receive important notifications and improves your user experience.
+            View and update your personal details, including your name, and timezone. Keeping your information up-to-date ensures that you receive important notifications and improves your user experience.
           </p>
         </div>
         <div className="md:col-span-2">
@@ -47,14 +38,9 @@ export default async function Page() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 py-16 w-full">
         <div className="md:col-span-1 text-right">
-          <h2 className="text-base font-semibold leading-7 text-white">
-            Log out other sessions
-          </h2>
+          <h2 className="text-base font-semibold leading-7 text-white">Log out other sessions</h2>
           <p className="text-sm mt-2 leading-6 text-gray-400">
-            Secure your account by logging out of all other active sessions.
-            This action will terminate access from all devices except the one
-            you are currently using, protecting your information from
-            unauthorized access.
+            Secure your account by logging out of all other active sessions. This action will terminate access from all devices except the one you are currently using, protecting your information from unauthorized access.
           </p>
         </div>
 
@@ -62,10 +48,7 @@ export default async function Page() {
           <div className="block">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger
-                  type="button"
-                  className="rounded-md bg-gray-500 px-3 py-2 text-sm font-semibold text-white shadow-sm"
-                >
+                <TooltipTrigger type="button" className="rounded-md bg-gray-500 px-3 py-2 text-sm font-semibold text-white shadow-sm">
                   Log out other sessions
                 </TooltipTrigger>
                 <TooltipContent>
@@ -79,14 +62,10 @@ export default async function Page() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 py-16 w-full">
         <div className="md:col-span-1 text-right">
-          <h2 className="text-base font-semibold leading-7 text-white">
-            Delete account
-          </h2>
+          <h2 className="text-base font-semibold leading-7 text-white">Delete account</h2>
           <p className="text-sm mt-2 leading-6 text-gray-400">
-            Permanently delete your account and all associated data. This action
-            cannot be undone. If you proceed, your personal information,
-            preferences, and history will be irretrievably removed in accordance
-            with our data retention policy
+            Permanently delete your account and all associated data. This action cannot be undone. If you proceed, your personal information, preferences, and history will be irretrievably removed in accordance with our data retention
+            policy
           </p>
         </div>
 

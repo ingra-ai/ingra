@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
-import { APP_NAME } from "@repo/shared/lib/constants";
-import type { Metadata } from "next";
+import type { ReactNode } from 'react';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: ["My Collections", APP_NAME].join(" | "),
+  title: ['My Collections', APP_NAME].join(' | '),
 };
 
 type FunctionLayoutProps = {

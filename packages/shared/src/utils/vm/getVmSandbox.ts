@@ -1,12 +1,12 @@
-import type { VmContextArgs } from "../vm/generateVmContextArgs";
-import { parseStartAndEnd, parseDate } from "../chronoUtils";
-import nodeFetch, { type RequestInfo, type RequestInit } from "node-fetch";
-import { Octokit } from "@octokit/rest";
-import * as Cheerio from "cheerio";
-import { SandboxOutput } from "./types";
+import type { VmContextArgs } from '../vm/generateVmContextArgs';
+import { parseStartAndEnd, parseDate } from '../chronoUtils';
+import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
+import { Octokit } from '@octokit/rest';
+import * as Cheerio from 'cheerio';
+import { SandboxOutput } from './types';
 
 export interface Sandbox {
-  console: Pick<typeof console, "log" | "error">;
+  console: Pick<typeof console, 'log' | 'error'>;
   handler: ((ctx: VmContextArgs) => Promise<any>) | null;
   fetch: typeof nodeFetch;
   setTimeout: typeof setTimeout;
@@ -28,26 +28,19 @@ export interface SandboxAnalytics {
   [key: string]: any;
 }
 
-export const getVmSandbox = (
-  ctx: VmContextArgs,
-  analytics: SandboxAnalytics,
-): Sandbox => {
+export const getVmSandbox = (ctx: VmContextArgs, analytics: SandboxAnalytics): Sandbox => {
   const sandbox: Sandbox = {
     console: {
       log: (...args: any[]) => {
         analytics.outputs.push({
-          type: "log",
-          message: args
-            .map((arg) => (typeof arg === "object" ? JSON.stringify(arg) : arg))
-            .join(" "),
+          type: 'log',
+          message: args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' '),
         });
       },
       error: (...args: any[]) => {
         analytics.outputs.push({
-          type: "error",
-          message: args
-            .map((arg) => (typeof arg === "object" ? JSON.stringify(arg) : arg))
-            .join(" "),
+          type: 'error',
+          message: args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg) : arg)).join(' '),
         });
       },
     },
