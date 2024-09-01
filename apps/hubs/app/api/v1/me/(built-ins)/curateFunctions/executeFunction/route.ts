@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { ActionError } from "@v1/types/api-response";
-import { runUserFunction } from "@repo/shared/utils/vm/functions/runUserFunction";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getFunctionAccessibleByUser } from "@repo/shared/data/functions";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { ActionError } from '@v1/types/api-response';
+import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 
 /**
  * @swagger
@@ -61,78 +61,59 @@ export async function POST(req: NextRequest) {
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (!functionIdOrSlug) {
-      throw new ActionError(
-        "error",
-        400,
-        "Function ID or slug is required to run this method.",
-      );
+      throw new ActionError('error', 400, 'Function ID or slug is required to run this method.');
     }
 
     // Find the function
-    const functionRecord = await getFunctionAccessibleByUser(
-      authSession.user.id,
-      functionIdOrSlug,
-      {
-        accessTypes: ["owner", "subscriber"],
-        findFirstArgs: {
-          include: {
-            arguments: true,
-            tags: true,
-          },
+    const functionRecord = await getFunctionAccessibleByUser(authSession.user.id, functionIdOrSlug, {
+      accessTypes: ['owner', 'subscriber'],
+      findFirstArgs: {
+        include: {
+          arguments: true,
+          tags: true,
         },
       },
-    );
+    });
 
     if (!functionRecord) {
-      throw new Error(
-        `The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`,
-      );
+      throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
     }
 
     // Run the function
-    const { result, metrics, errors } = await runUserFunction(
-        authSession,
-        functionRecord,
-        requestArgs,
-      ),
-      loggerObj = Logger.withTag("api|builtins")
-        .withTag("operation|curateFunctions-executeFunction")
-        .withTag(`user|${authSession.user.id}`)
-        .withTag(`function|${functionRecord.id}`);
+    const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs),
+      loggerObj = Logger.withTag('api|builtins').withTag('operation|curateFunctions-executeFunction').withTag(`user|${authSession.user.id}`).withTag(`function|${functionRecord.id}`);
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "executeFunction",
+      operationId: 'executeFunction',
       functionId: functionRecord.id,
       functionSlug: functionRecord.slug,
       metrics,
       errors,
     });
 
-    loggerObj.info("Ran a user function");
+    loggerObj.info('Ran a user function');
 
     if (errors.length) {
-      const errorMessage =
-        errors?.[0].message ||
-        "An error occurred while executing the function.";
+      const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
       loggerObj.error(`Errored executing function: ${errorMessage}`);
-      throw new ActionError("error", 400, errorMessage);
+      throw new ActionError('error', 400, errorMessage);
     }
 
     return NextResponse.json(
       {
-        status: "success",
-        message: "Successfully ran the function",
+        status: 'success',
+        message: 'Successfully ran the function',
         data: result,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

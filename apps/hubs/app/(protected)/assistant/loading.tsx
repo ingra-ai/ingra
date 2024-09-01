@@ -1,4 +1,4 @@
-import { Skeleton } from "@repo/components/ui/skeleton";
+import { Skeleton } from '@repo/components/ui/skeleton';
 
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.

@@ -1,5 +1,5 @@
-import { Prisma } from "@repo/db/prisma";
-import { z } from "zod";
+import { Prisma } from '@repo/db/prisma';
+import { z } from 'zod';
 
 type FunctionArgumentPayload = Prisma.FunctionArgumentGetPayload<{
   select: {
@@ -12,9 +12,7 @@ type FunctionArgumentPayload = Prisma.FunctionArgumentGetPayload<{
   };
 }>;
 
-export function functionArgsToZod(
-  functionArguments: FunctionArgumentPayload[],
-) {
+export function functionArgsToZod(functionArguments: FunctionArgumentPayload[]) {
   return z.object(
     functionArguments.reduce(
       (acc, arg) => {
@@ -24,13 +22,13 @@ export function functionArgsToZod(
          * The supported arg.type is from FUNCTION_ARGUMENT_ALLOWED_TYPES at schemas/functions.ts
          */
         switch (arg.type) {
-          case "number":
+          case 'number':
             zodArg = z.number();
             break;
-          case "boolean":
+          case 'boolean':
             zodArg = z.boolean();
             break;
-          case "string":
+          case 'string':
           default:
             zodArg = z.string();
             break;
@@ -51,7 +49,7 @@ export function functionArgsToZod(
         acc[arg.name] = zodArg;
         return acc;
       },
-      {} as Record<string, z.ZodTypeAny>,
-    ),
+      {} as Record<string, z.ZodTypeAny>
+    )
   );
 }

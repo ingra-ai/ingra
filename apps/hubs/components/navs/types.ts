@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type NavItemBase = {
   name: string;
@@ -7,9 +7,7 @@ type NavItemBase = {
 
 export type NavItemChild = NavItemBase & {
   href: string;
-  icon: React.ForwardRefExoticComponent<
-    Omit<React.SVGProps<SVGSVGElement>, "ref">
-  >;
+  icon: React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, 'ref'>>;
 };
 
 export type NavItemParent = NavItemBase & {
@@ -23,4 +21,4 @@ export type NavNotificationItem = {
   href?: string;
 };
 
-export type ACTIVE_SIDE_LAYOUT = "ai" | "wiki";
+export type ACTIVE_SIDE_LAYOUT = 'ai' | 'wiki';

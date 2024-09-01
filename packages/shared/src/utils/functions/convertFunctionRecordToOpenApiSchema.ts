@@ -1,4 +1,4 @@
-import { Prisma } from "@repo/db/prisma";
+import { Prisma } from '@repo/db/prisma';
 
 type FunctionPayload = Prisma.FunctionGetPayload<{
   include: {
@@ -25,40 +25,35 @@ type ConvertFunctionRecordOptions = {
  * @returns {object} The OpenAPI schema.
  * @usedby generateOpenApiSchema
  */
-export function convertFunctionRecordToOpenApiSchema(
-  functionRecord: FunctionPayload,
-  opts: ConvertFunctionRecordOptions,
-) {
+export function convertFunctionRecordToOpenApiSchema(functionRecord: FunctionPayload, opts: ConvertFunctionRecordOptions) {
   const parameters = functionRecord.arguments.map((arg) => ({
     name: arg.name,
-    in: "query",
+    in: 'query',
     description: arg.description,
     required: arg.isRequired,
     schema: {
-      type: arg.type === "number" ? "integer" : arg.type, // Adjust for OpenAPI type
+      type: arg.type === 'number' ? 'integer' : arg.type, // Adjust for OpenAPI type
       default: arg.defaultValue,
     },
   }));
 
   const requestBody = {
     content: {
-      "application/json": {
+      'application/json': {
         schema: {
-          type: "object",
+          type: 'object',
           properties: functionRecord.arguments.reduce(
             (acc, arg) => {
               acc[arg.name] = {
-                type: arg.type === "number" ? "integer" : arg.type,
+                type: arg.type === 'number' ? 'integer' : arg.type,
                 description: arg.description,
                 default: arg.defaultValue,
               };
               return acc;
             },
-            {} as Record<string, any>,
+            {} as Record<string, any>
           ),
-          required: functionRecord.arguments
-            .filter((arg) => arg.isRequired)
-            .map((arg) => arg.name),
+          required: functionRecord.arguments.filter((arg) => arg.isRequired).map((arg) => arg.name),
         },
       },
     },
@@ -69,22 +64,22 @@ export function convertFunctionRecordToOpenApiSchema(
     operationId: functionRecord.slug,
     description: functionRecord.description,
     responses: {
-      "200": {
-        description: "Successfully retrieved records.",
+      '200': {
+        description: 'Successfully retrieved records.',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              $ref: "#/components/schemas/ApiSuccess",
+              $ref: '#/components/schemas/ApiSuccess',
             },
           },
         },
       },
-      "400": {
-        description: "Bad request, such as missing or invalid parameters.",
+      '400': {
+        description: 'Bad request, such as missing or invalid parameters.',
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              $ref: "#/components/schemas/ApiError",
+              $ref: '#/components/schemas/ApiError',
             },
           },
         },
@@ -94,13 +89,13 @@ export function convertFunctionRecordToOpenApiSchema(
   };
 
   switch (functionRecord.httpVerb) {
-    case "DELETE":
-    case "GET":
+    case 'DELETE':
+    case 'GET':
       pathItem.parameters = parameters;
       break;
-    case "POST":
-    case "PUT":
-    case "PATCH":
+    case 'POST':
+    case 'PUT':
+    case 'PATCH':
       pathItem.requestBody = requestBody;
       break;
     default:

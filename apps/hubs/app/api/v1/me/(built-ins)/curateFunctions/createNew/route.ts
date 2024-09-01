@@ -1,20 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { validateAction } from "@repo/shared/lib/action-helpers";
-import {
-  FunctionArgumentSchema,
-  FunctionSchema,
-  FunctionTagsSchema,
-} from "@repo/shared/schemas/function";
-import { upsertFunction as dataUpsertFunctions } from "@repo/shared/data/functions";
-import { generateUserVars } from "@repo/shared/utils/vm/generateUserVars";
-import { generateCodeDefaultTemplate } from "@repo/shared/utils/vm/functions/generateCodeDefaultTemplate";
-import isNil from "lodash/isNil";
-import isBoolean from "lodash/isBoolean";
-import { z } from "zod";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { validateAction } from '@repo/shared/lib/action-helpers';
+import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from '@repo/shared/schemas/function';
+import { upsertFunction as dataUpsertFunctions } from '@repo/shared/data/functions';
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
+import isNil from 'lodash/isNil';
+import isBoolean from 'lodash/isBoolean';
+import { z } from 'zod';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -78,41 +74,26 @@ import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
  */
 export async function POST(req: NextRequest) {
   const requestArgs = await req.json();
-  const functionPayload = requestArgs?.function as z.infer<
-    typeof FunctionSchema
-  >;
+  const functionPayload = requestArgs?.function as z.infer<typeof FunctionSchema>;
 
-  if (
-    !functionPayload ||
-    typeof functionPayload !== "object" ||
-    Object.keys(functionPayload).length === 0
-  ) {
-    throw new Error(
-      'Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?',
-    );
+  if (!functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0) {
+    throw new Error('Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?');
   }
 
   if (functionPayload.id) {
-    throw new Error(
-      "Creating new function doesn't require an ID. Please remove the ID from the function schema.",
-    );
+    throw new Error("Creating new function doesn't require an ID. Please remove the ID from the function schema.");
   }
 
   if (isNil(functionPayload.slug.trim())) {
-    throw new Error("Function slug is required to create a new function.");
+    throw new Error('Function slug is required to create a new function.');
   }
 
   if (isNil(functionPayload.description.trim())) {
-    throw new Error(
-      "Function description is required to create a new function.",
-    );
+    throw new Error('Function description is required to create a new function.');
   }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    const providedFields: (keyof z.infer<typeof FunctionSchema>)[] = [
-      "slug",
-      "description",
-    ];
+    const providedFields: (keyof z.infer<typeof FunctionSchema>)[] = ['slug', 'description'];
 
     /**
      * Populate skeleton function record with user and environment variables as code template.
@@ -124,16 +105,14 @@ export async function POST(req: NextRequest) {
         value: envVar.value,
       })),
       userVarsRecord = generateUserVars(authSession),
-      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(
-        optionalEnvVars.map((envVar) => envVar.key),
-      );
+      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map((envVar) => envVar.key));
 
     const safeFunctionRecord = {
       slug: functionPayload.slug.trim(),
       code: generateCodeDefaultTemplate(allUserAndEnvKeys),
       isPrivate: true,
       isPublished: true,
-      httpVerb: "GET",
+      httpVerb: 'GET',
       description: functionPayload.description.trim(),
       arguments: [] as z.infer<typeof FunctionArgumentSchema>[],
       tags: [] as z.infer<typeof FunctionTagsSchema>[],
@@ -142,49 +121,31 @@ export async function POST(req: NextRequest) {
     /**
      * Populate all the provided fields from the payload. If the field is not provided, it will be populated with the default value.
      */
-    const acceptableFieldNames: (keyof z.infer<typeof FunctionSchema>)[] = [
-      "code",
-      "httpVerb",
-      "isPrivate",
-      "isPublished",
-      "arguments",
-      "tags",
-    ];
+    const acceptableFieldNames: (keyof z.infer<typeof FunctionSchema>)[] = ['code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
     acceptableFieldNames.forEach((acceptableFieldName) => {
       // Check if the field is provided in the payload
-      if (
-        Object.prototype.hasOwnProperty.call(
-          functionPayload,
-          acceptableFieldName,
-        )
-      ) {
+      if (Object.prototype.hasOwnProperty.call(functionPayload, acceptableFieldName)) {
         // Add the field to the provided fields list
         providedFields.push(acceptableFieldName);
 
         // Populate all the fields that are provided
         switch (acceptableFieldName) {
-          case "code":
-            safeFunctionRecord[acceptableFieldName] =
-              functionPayload[acceptableFieldName];
+          case 'code':
+            safeFunctionRecord[acceptableFieldName] = functionPayload[acceptableFieldName];
             break;
-          case "httpVerb":
-            safeFunctionRecord[acceptableFieldName] =
-              functionPayload[acceptableFieldName];
+          case 'httpVerb':
+            safeFunctionRecord[acceptableFieldName] = functionPayload[acceptableFieldName];
             break;
-          case "isPrivate":
-          case "isPublished":
-            safeFunctionRecord[acceptableFieldName] = isBoolean(
-              functionPayload[acceptableFieldName],
-            )
-              ? functionPayload[acceptableFieldName]
-              : safeFunctionRecord[acceptableFieldName];
+          case 'isPrivate':
+          case 'isPublished':
+            safeFunctionRecord[acceptableFieldName] = isBoolean(functionPayload[acceptableFieldName]) ? functionPayload[acceptableFieldName] : safeFunctionRecord[acceptableFieldName];
             break;
-          case "arguments":
+          case 'arguments':
             safeFunctionRecord.arguments = (functionPayload.arguments || [])
               .filter((elem) => elem.name.trim())
               .map((elem) => {
                 const newArgument: z.infer<typeof FunctionArgumentSchema> = {
-                  functionId: "",
+                  functionId: '',
                   name: elem.name,
                   type: elem.type,
                   defaultValue: elem.defaultValue,
@@ -195,12 +156,12 @@ export async function POST(req: NextRequest) {
                 return newArgument;
               });
             break;
-          case "tags":
+          case 'tags':
             safeFunctionRecord.tags = (functionPayload.tags || [])
               .filter((elem) => elem.name.trim())
               .map((elem) => {
                 const newTag: z.infer<typeof FunctionTagsSchema> = {
-                  functionId: "",
+                  functionId: '',
                   name: elem.name,
                 };
 
@@ -219,18 +180,14 @@ export async function POST(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "createNewFunction",
+      operationId: 'createNewFunction',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|curateFunctions-createNew")
-      .withTag(`user|${authSession.user.id}`)
-      .withTag(`function|${result.id}`)
-      .info(`Created new function ${result.slug}`);
+    Logger.withTag('api|builtins').withTag('operation|curateFunctions-createNew').withTag(`user|${authSession.user.id}`).withTag(`function|${result.id}`).info(`Created new function ${result.slug}`);
 
     // Filter the response to include only the provided fields
     const response: Record<string, any> = {
@@ -248,13 +205,13 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        status: "success",
+        status: 'success',
         message: `Function "${result.slug}" with ID of "${result.id}" has been created.`,
         data: response,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

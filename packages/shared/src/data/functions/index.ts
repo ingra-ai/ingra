@@ -1,23 +1,10 @@
-import { z } from "zod";
-import db from "@repo/db/client";
-import { FunctionSchema } from "../../schemas/function";
-import { Logger } from "../../lib/logger";
+import { z } from 'zod';
+import db from '@repo/db/client';
+import { FunctionSchema } from '../../schemas/function';
+import { Logger } from '../../lib/logger';
 
-export const upsertFunction = async (
-  values: z.infer<typeof FunctionSchema>,
-  userId: string,
-) => {
-  const {
-    id: recordId,
-    slug,
-    code,
-    isPrivate,
-    isPublished,
-    httpVerb,
-    description,
-    arguments: functionArguments,
-    tags: functionTags,
-  } = values;
+export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, userId: string) => {
+  const { id: recordId, slug, code, isPrivate, isPublished, httpVerb, description, arguments: functionArguments, tags: functionTags } = values;
   const isEditMode = !!recordId;
   const result = await db.$transaction(async (prisma) => {
     /**
@@ -33,7 +20,7 @@ export const upsertFunction = async (
       });
 
       if (!existingFunction) {
-        throw new Error("Function not found");
+        throw new Error('Function not found');
       }
 
       // Delete existing arguments and tags
@@ -74,7 +61,7 @@ export const upsertFunction = async (
               ...arg,
               functionId: existingFunction.id,
             })),
-          }),
+          })
         );
       }
 
@@ -86,16 +73,16 @@ export const upsertFunction = async (
               ...tag,
               functionId: existingFunction.id,
             })),
-          }),
+          })
         );
       }
 
       await Promise.all(insertArgAndTagPromises);
       return existingFunction;
     } else {
-    /**
-     * Otherwise, create a new record.
-     */
+      /**
+       * Otherwise, create a new record.
+       */
       // Create new function and arguments
       const newFunction = await prisma.function.create({
         data: {
@@ -176,22 +163,15 @@ export const deleteFunction = async (functionId: string, userId: string) => {
       return result;
     });
 
-    await Logger.withTag("action|deleteFunction")
-      .withTag(`user|${userId}`)
-      .info("Function and all related records deleted successfully.");
+    await Logger.withTag('action|deleteFunction').withTag(`user|${userId}`).info('Function and all related records deleted successfully.');
     return true;
   } catch (error) {
-    await Logger.withTag("action|deleteFunction")
-      .withTag(`user|${userId}`)
-      .info("Error deleting function and related records", { error });
+    await Logger.withTag('action|deleteFunction').withTag(`user|${userId}`).info('Error deleting function and related records', { error });
     return false;
   }
 };
 
-export const toggleFunctionSubscription = async (
-  functionId: string,
-  userId: string,
-) => {
+export const toggleFunctionSubscription = async (functionId: string, userId: string) => {
   const existingSubscription = await db.functionSubscription.findFirst({
     where: {
       functionId,
@@ -215,7 +195,7 @@ const subscribeToFunction = async (functionId: string, userId: string) => {
   });
 
   if (!functionRecord) {
-    throw new Error("Function not found");
+    throw new Error('Function not found');
   }
 
   // Check if function with the same "slug" exists on user's functions
@@ -227,7 +207,7 @@ const subscribeToFunction = async (functionId: string, userId: string) => {
   });
 
   if (existingFunction) {
-    throw new Error("Function with the same slug already exists");
+    throw new Error('Function with the same slug already exists');
   }
 
   const subscription = await db.functionSubscription.create({
@@ -260,9 +240,7 @@ const unsubscribeToFunction = async (functionId: string, userId: string) => {
   });
 
   if (!existingSubscription) {
-    throw new Error(
-      "Unable to unsubscribe as the user is not subscribed to the function.",
-    );
+    throw new Error('Unable to unsubscribe as the user is not subscribed to the function.');
   }
 
   const record = await db.functionSubscription.delete({
@@ -310,7 +288,7 @@ export const cloneFunction = async (functionId: string, userId: string) => {
   });
 
   if (!functionRecord) {
-    throw new Error("Function not found");
+    throw new Error('Function not found');
   }
 
   // Create a new slug for the cloned function
@@ -346,4 +324,4 @@ export const cloneFunction = async (functionId: string, userId: string) => {
   return clonedFunction;
 };
 
-export { getFunctionAccessibleByUser } from "./getFunctionAccessibleByUser";
+export { getFunctionAccessibleByUser } from './getFunctionAccessibleByUser';

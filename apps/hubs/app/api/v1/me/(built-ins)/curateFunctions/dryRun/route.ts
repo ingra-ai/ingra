@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import { runUserFunction } from "@repo/shared/utils/vm/functions/runUserFunction";
-import { ActionError } from "@v1/types/api-response";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
+import { ActionError } from '@v1/types/api-response';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -48,11 +48,7 @@ export async function POST(req: NextRequest) {
   const { code, requestArgs = {} } = await req.json();
 
   if (!code) {
-    throw new ActionError(
-      "error",
-      400,
-      'Node.js code is required to run this method. Please follow the guideline by running "getCodeTemplate" API endpoint.',
-    );
+    throw new ActionError('error', 400, 'Node.js code is required to run this method. Please follow the guideline by running "getCodeTemplate" API endpoint.');
   }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
@@ -60,47 +56,43 @@ export async function POST(req: NextRequest) {
     const { result, metrics, errors } = await runUserFunction(
         authSession,
         {
-          id: "dry-run",
+          id: 'dry-run',
           code,
           arguments: [],
         },
-        requestArgs,
+        requestArgs
       ),
-      loggerObj = Logger.withTag("api|builtins")
-        .withTag("operation|curateFunctions-dryRun")
-        .withTag(`user|${authSession.user.id}`);
+      loggerObj = Logger.withTag('api|builtins').withTag('operation|curateFunctions-dryRun').withTag(`user|${authSession.user.id}`);
 
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "dryRunFunction",
+      operationId: 'dryRunFunction',
       metrics,
       errors,
     });
 
-    loggerObj.info("Finished dry run a user function");
+    loggerObj.info('Finished dry run a user function');
 
     if (errors.length) {
-      const errorMessage =
-        errors?.[0].message ||
-        "An error occurred while executing the function.";
+      const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
       loggerObj.error(`Errored executing function: ${errorMessage}`);
-      throw new ActionError("error", 400, errorMessage);
+      throw new ActionError('error', 400, errorMessage);
     }
 
     return NextResponse.json(
       {
-        status: "success",
-        message: "Successfully ran the function",
+        status: 'success',
+        message: 'Successfully ran the function',
         data: result,
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

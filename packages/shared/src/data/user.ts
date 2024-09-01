@@ -1,6 +1,6 @@
-"use server";
-import type { User } from "@repo/db/prisma";
-import db from "@repo/db/client";
+'use server';
+import type { User } from '@repo/db/prisma';
+import db from '@repo/db/client';
 
 /**
  * Fetches a user from the database by their email.
@@ -14,9 +14,7 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
   });
 };
 
-export const getUserIdByProfileName = async (
-  profileName: string,
-): Promise<string | undefined> => {
+export const getUserIdByProfileName = async (profileName: string): Promise<string | undefined> => {
   const user = await db.user.findFirst({
     where: {
       profile: {
@@ -37,9 +35,7 @@ export const getUserIdByProfileName = async (
  * @param email - The email address of the user.
  * @returns A Promise that resolves to the existing user if found, or a newly created user if not found.
  */
-export const getOrCreateUserByEmail = async (
-  email: string,
-): Promise<User | null> => {
+export const getOrCreateUserByEmail = async (email: string): Promise<User | null> => {
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {

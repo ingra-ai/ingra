@@ -1,12 +1,7 @@
-import { MagicLinkToken } from "@repo/db/prisma";
-import { sendEmailHtml } from "./ses";
-import {
-  APP_AUTH_CALLBACK_URL,
-  APP_SUPPORT_MAILTO,
-  APP_URL,
-  IS_PROD,
-} from "../constants";
-import { Logger } from "../logger";
+import { MagicLinkToken } from '@repo/db/prisma';
+import { sendEmailHtml } from './ses';
+import { APP_AUTH_CALLBACK_URL, APP_SUPPORT_MAILTO, AUTH_APP_URL, IS_PROD } from '../constants';
+import { Logger } from '../logger';
 
 /**
  * Generates an HTML template for the magic link email.
@@ -16,9 +11,9 @@ import { Logger } from "../logger";
  */
 const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
   const { token, otpCode } = magicLink;
-  const brandImageUrl = `${APP_URL}/static/brand/ingra-logo.svg`;
+  const brandImageUrl = `${AUTH_APP_URL}/static/brand/ingra-logo.svg`;
   const magicLinkUrl = `${APP_AUTH_CALLBACK_URL}?type=magic&token=${token}`;
-  const linkExpiration = "3 minutes";
+  const linkExpiration = '3 minutes';
   return `
   <html lang="en">
     <head>
@@ -87,32 +82,22 @@ const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
   `;
 };
 
-export const sendMagicLinkEmail = async (
-  recipientEmail: string,
-  magicLink: MagicLinkToken,
-) => {
+export const sendMagicLinkEmail = async (recipientEmail: string, magicLink: MagicLinkToken) => {
   if (!IS_PROD) {
-    Logger.withTag("action|sendMagicLinkEmail").log(
-      `Your OTP Code is ${magicLink.otpCode}`,
-    );
+    Logger.withTag('action|sendMagicLinkEmail').log(`Your OTP Code is ${magicLink.otpCode}`);
     return true;
   }
 
   let htmlTemplate = generateHtmlTemplateWeb(magicLink);
 
-  const res = await sendEmailHtml(
-    null,
-    recipientEmail,
-    "Your Secure Sign-In Options",
-    {
-      Html: {
-        Charset: "UTF-8",
-        Data: htmlTemplate,
-      },
+  const res = await sendEmailHtml(null, recipientEmail, 'Your Secure Sign-In Options', {
+    Html: {
+      Charset: 'UTF-8',
+      Data: htmlTemplate,
     },
-  );
+  });
 
-  Logger.withTag("action|sendMagicLinkEmail").log("Magic link email sent", {
+  Logger.withTag('action|sendMagicLinkEmail').log('Magic link email sent', {
     res,
   });
   return !!res;

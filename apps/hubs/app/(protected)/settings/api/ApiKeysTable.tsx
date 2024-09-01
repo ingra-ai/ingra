@@ -1,30 +1,20 @@
-"use client";
+'use client';
 
-import type { FC } from "react";
-import { useCallback, useState, useTransition } from "react";
-import { useToast } from "@repo/components/ui/use-toast";
-import { RefreshCcw } from "lucide-react";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { deleteApiKey } from "@repo/shared/actions/apiKey";
-import { useRouter } from "next/navigation";
-import formatDistance from "date-fns/formatDistance";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@repo/components/ui/alert-dialog";
-import type { ApiKey } from "@repo/db/prisma";
-import { GenerateApiKeyButton } from "./GenerateApiKeyButton";
-import { APP_SESSION_API_KEY_NAME } from "@repo/shared/lib/constants";
+import type { FC } from 'react';
+import { useCallback, useState, useTransition } from 'react';
+import { useToast } from '@repo/components/ui/use-toast';
+import { RefreshCcw } from 'lucide-react';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { deleteApiKey } from '@repo/shared/actions/apiKey';
+import { useRouter } from 'next/navigation';
+import formatDistance from 'date-fns/formatDistance';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@repo/components/ui/alert-dialog';
+import type { ApiKey } from '@repo/db/prisma';
+import { GenerateApiKeyButton } from './GenerateApiKeyButton';
+import { APP_SESSION_API_KEY_NAME } from '@repo/shared/lib/constants';
 
 type ApiKeysTableProps = {
-  apiKeys: Required<Pick<ApiKey, "key" | "lastUsedAt">>[];
+  apiKeys: Required<Pick<ApiKey, 'key' | 'lastUsedAt'>>[];
 };
 
 export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
@@ -39,13 +29,13 @@ export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
 
     return deleteApiKey(key)
       .then((result) => {
-        if (result.status !== "ok") {
+        if (result.status !== 'ok') {
           throw new Error(result.message);
         }
 
         toast({
-          title: "API key deleted!",
-          description: "API key has been deleted successfully.",
+          title: 'API key deleted!',
+          description: 'API key has been deleted successfully.',
         });
 
         startTransition(() => {
@@ -56,8 +46,8 @@ export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
       })
       .catch((error: Error) => {
         toast({
-          title: "Uh oh! Something went wrong.",
-          description: error?.message || "Failed to delete API key!",
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to delete API key!',
         });
       })
       .finally(() => {
@@ -69,13 +59,9 @@ export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
     <div className="block max-w-[1600px]" data-testid="api-keys-table">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6">
-            Your API Keys ({apiKeys.length})
-          </h1>
+          <h1 className="text-base font-semibold leading-6">Your API Keys ({apiKeys.length})</h1>
           <p className="mt-2 text-sm">
-            Generate API keys to authenticate requests with{" "}
-            <code className="italic uppercase">{APP_SESSION_API_KEY_NAME}</code>{" "}
-            header
+            Generate API keys to authenticate requests with <code className="italic uppercase">{APP_SESSION_API_KEY_NAME}</code> header
           </p>
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -90,69 +76,41 @@ export const ApiKeysTable: FC<ApiKeysTableProps> = (props) => {
         </colgroup>
         <thead className="border-b border-white/10 text-sm leading-6">
           <tr>
-            <th
-              scope="col"
-              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0"
-            >
+            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0">
               API Key
             </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold"
-            >
+            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold">
               Last Used At
             </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-right text-sm font-semibold"
-            ></th>
+            <th scope="col" className="px-3 py-3.5 text-right text-sm font-semibold"></th>
           </tr>
         </thead>
         <tbody>
           {apiKeys.map((apiKey) => (
             <tr key={apiKey.key}>
-              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0">
-                {apiKey.key}
-              </td>
+              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0">{apiKey.key}</td>
               <td className="whitespace-nowrap px-3 py-4 text-sm">
                 {apiKey.lastUsedAt
                   ? formatDistance(apiKey.lastUsedAt, Date.now(), {
                       addSuffix: true,
                     })
-                  : "never"}
+                  : 'never'}
               </td>
               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <button
-                      aria-label="Delete"
-                      title="Delete"
-                      className="p-1 text-destructive hover:text-destructive/80"
-                    >
-                      {isLoading ? (
-                        <RefreshCcw className="animate-spin inline-block mr-2" />
-                      ) : (
-                        <TrashIcon className="h-4 w-4" />
-                      )}
+                    <button aria-label="Delete" title="Delete" className="p-1 text-destructive hover:text-destructive/80">
+                      {isLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TrashIcon className="h-4 w-4" />}
                     </button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you sure to delete this key?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete your API key.
-                      </AlertDialogDescription>
+                      <AlertDialogTitle>Are you sure to delete this key?</AlertDialogTitle>
+                      <AlertDialogDescription>This action cannot be undone. This will permanently delete your API key.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => onDeleteKey(apiKey.key)}
-                      >
-                        Continue
-                      </AlertDialogAction>
+                      <AlertDialogAction onClick={() => onDeleteKey(apiKey.key)}>Continue</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>

@@ -1,17 +1,13 @@
-import { getAuthSession } from "@repo/shared/data/auth/session";
-import db from "@repo/db/client";
-import { isUuid } from "@repo/shared/lib/utils";
-import { CommunityFunctionItem } from "@repo/components/data/functions/community/CommunityFunctionItem";
-import { notFound } from "next/navigation";
-import CommunityCollectionViewDetails from "@repo/components/data/collections/community/CommunityCollectionViewDetails";
-import { getUserProfileByUsername } from "@repo/shared/data/profile";
-import { getUserRepoFunctionsViewUri } from "@repo/shared/lib/constants/repo";
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import db from '@repo/db/client';
+import { isUuid } from '@repo/shared/lib/utils';
+import { CommunityFunctionItem } from '@repo/components/data/functions/community/CommunityFunctionItem';
+import { notFound } from 'next/navigation';
+import CommunityCollectionViewDetails from '@repo/components/data/collections/community/CommunityCollectionViewDetails';
+import { getUserProfileByUsername } from '@repo/shared/data/profile';
+import { getUserRepoFunctionsViewUri } from '@repo/shared/lib/constants/repo';
 
-export default async function Page({
-  params,
-}: {
-  params: { ownerUsername: string; recordId: string };
-}) {
+export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
   const { recordId, ownerUsername } = params;
 
   if (!recordId || !isUuid(recordId)) {
@@ -111,14 +107,10 @@ export default async function Page({
   }
 
   // Transform the `subscribers` field into a boolean `isSubscribed`
-  const functionsWithSubscriptionStatus = collectionRecord.functions.map(
-    (functionRecord) => ({
-      ...functionRecord,
-      isSubscribed:
-        Array.isArray(functionRecord?.subscribers) &&
-        functionRecord.subscribers.length > 0,
-    }),
-  );
+  const functionsWithSubscriptionStatus = collectionRecord.functions.map((functionRecord) => ({
+    ...functionRecord,
+    isSubscribed: Array.isArray(functionRecord?.subscribers) && functionRecord.subscribers.length > 0,
+  }));
 
   return (
     <div className="block" data-testid="community-collection-view-page">
@@ -127,10 +119,7 @@ export default async function Page({
           <CommunityCollectionViewDetails record={collectionRecord} />
         </div>
         <div className="col-span-1 md:col-span-2 xl:col-span-8 space-y-4">
-          <h2
-            className="text-lg font-bold text-gray-100 truncate min-w-0"
-            title={"Functions"}
-          >
+          <h2 className="text-lg font-bold text-gray-100 truncate min-w-0" title={'Functions'}>
             Functions (
             {collectionRecord.functions.length.toLocaleString(undefined, {
               minimumFractionDigits: 0,
@@ -139,14 +128,7 @@ export default async function Page({
           </h2>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3 xl:gap-3 2xl:grid-cols-4 2xl:gap-4">
             {functionsWithSubscriptionStatus.map((functionRecord) => (
-              <CommunityFunctionItem
-                key={functionRecord.id}
-                functionData={functionRecord}
-                href={getUserRepoFunctionsViewUri(
-                  ownerUsername,
-                  functionRecord.id,
-                )}
-              />
+              <CommunityFunctionItem key={functionRecord.id} functionData={functionRecord} href={getUserRepoFunctionsViewUri(ownerUsername, functionRecord.id)} />
             ))}
           </div>
         </div>

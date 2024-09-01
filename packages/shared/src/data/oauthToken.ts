@@ -1,13 +1,9 @@
-"use server";
-import db from "@repo/db/client";
-import type { Credentials } from "../lib/google-oauth/client";
-import { Prisma } from "@repo/db/prisma";
+'use server';
+import db from '@repo/db/client';
+import type { Credentials } from '../lib/google-oauth/client';
+import { Prisma } from '@repo/db/prisma';
 
-export async function createOAuthToken(
-  userId: string,
-  primaryEmailAddress: string,
-  credentials: Credentials,
-) {
+export async function createOAuthToken(userId: string, primaryEmailAddress: string, credentials: Credentials) {
   if (!userId || !primaryEmailAddress || !credentials?.access_token) {
     return null;
   }
@@ -26,13 +22,13 @@ export async function createOAuthToken(
   const oauthToken = await db.oAuthToken.create({
     data: {
       userId: userId,
-      primaryEmailAddress: primaryEmailAddress || "",
-      service: "google-oauth",
-      accessToken: credentials.access_token || "",
-      refreshToken: credentials.refresh_token || "",
-      idToken: credentials.id_token || "",
-      scope: credentials.scope || "",
-      tokenType: credentials.token_type || "",
+      primaryEmailAddress: primaryEmailAddress || '',
+      service: 'google-oauth',
+      accessToken: credentials.access_token || '',
+      refreshToken: credentials.refresh_token || '',
+      idToken: credentials.id_token || '',
+      scope: credentials.scope || '',
+      tokenType: credentials.token_type || '',
       isDefault,
       expiryDate: new Date(credentials.expiry_date || 0),
     },
@@ -41,20 +37,16 @@ export async function createOAuthToken(
   return oauthToken;
 }
 
-export async function updateOAuthToken(
-  userId: string,
-  primaryEmailAddress: string,
-  credentials: Credentials,
-) {
+export async function updateOAuthToken(userId: string, primaryEmailAddress: string, credentials: Credentials) {
   if (!userId || !primaryEmailAddress || !credentials?.access_token) {
     return null;
   }
 
   const updateData: Prisma.OAuthTokenUpdateInput = {
-    idToken: credentials.id_token || "",
-    accessToken: credentials.access_token || "",
-    scope: credentials.scope || "",
-    tokenType: credentials.token_type || "",
+    idToken: credentials.id_token || '',
+    accessToken: credentials.access_token || '',
+    scope: credentials.scope || '',
+    tokenType: credentials.token_type || '',
     expiryDate: new Date(credentials.expiry_date || 0),
     updatedAt: new Date(),
   };
@@ -96,11 +88,7 @@ export async function deleteOAuthToken(recordId: string, userId: string) {
   });
 }
 
-export async function setTokenAsDefault(
-  recordId: string,
-  tokenService: string,
-  userId: string,
-) {
+export async function setTokenAsDefault(recordId: string, tokenService: string, userId: string) {
   // Update all oauth token for the service to be not default
   await db.oAuthToken.updateMany({
     where: {

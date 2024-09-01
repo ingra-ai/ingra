@@ -1,6 +1,6 @@
-"use server";
-import db from "@repo/db/client";
-import { Prisma } from "@repo/db/prisma";
+'use server';
+import db from '@repo/db/client';
+import { Prisma } from '@repo/db/prisma';
 
 export type GetSessionByApiKeyReturnType = Prisma.ApiKeyGetPayload<{
   select: {
@@ -21,9 +21,7 @@ export type GetSessionByApiKeyReturnType = Prisma.ApiKeyGetPayload<{
  * @param {string} apiKey - The API key used to find the user.
  * @returns A Promise that resolves to the user record, or null if the API key is not provided.
  */
-export const getSessionByApiKey = async (
-  apiKey: string,
-): Promise<GetSessionByApiKeyReturnType | null> => {
+export const getSessionByApiKey = async (apiKey: string): Promise<GetSessionByApiKeyReturnType | null> => {
   if (!apiKey) {
     return null;
   }
@@ -52,9 +50,7 @@ export const getSessionByApiKey = async (
  * @param apiKey - The API key to update.
  * @returns A promise that resolves to a boolean indicating whether the update was successful.
  */
-export const updateApiKeyLastUpdatedAt = async (
-  apiKey: string,
-): Promise<boolean> => {
+export const updateApiKeyLastUpdatedAt = async (apiKey: string): Promise<boolean> => {
   if (!apiKey) {
     return false;
   }

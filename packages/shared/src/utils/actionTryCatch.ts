@@ -1,21 +1,17 @@
-import { ActionError, PrismaActionError } from "../types/api-response";
-import { Logger } from "../lib/logger";
-import type { ActionTryCatchReturnType } from "./types";
-import { Prisma } from "@repo/db/prisma";
+import { ActionError, PrismaActionError } from '../types/api-response';
+import { Logger } from '../lib/logger';
+import type { ActionTryCatchReturnType } from './types';
+import { Prisma } from '@repo/db/prisma';
 
-export const actionTryCatch = async <T>(
-  fn: () => Promise<ActionTryCatchReturnType<T>>,
-) => {
+export const actionTryCatch = async <T>(fn: () => Promise<ActionTryCatchReturnType<T>>) => {
   try {
     return await fn();
   } catch (error: any) {
-    Logger.withTag("actionTryCatch").error(
-      error?.message || "Something went wrong.",
-    );
+    Logger.withTag('actionTryCatch').error(error?.message || 'Something went wrong.');
 
     let actionError: ActionTryCatchReturnType<any> = {
-      status: "error",
-      message: error?.message || "Something went wrong.",
+      status: 'error',
+      message: error?.message || 'Something went wrong.',
       data: null,
     };
 

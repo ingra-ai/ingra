@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSwaggerSpec } from "../swagger/config";
-import { APP_URL } from "@repo/shared/lib/constants";
+import { NextRequest, NextResponse } from 'next/server';
+import { getSwaggerSpec } from '../swagger/config';
+import { HUBS_APP_URL } from '@repo/shared/lib/constants';
 
 /**
  * Returns OpenAPI yaml file when in production
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   Object.assign(swaggerSpec, {
     servers: [
       {
-        url: APP_URL,
+        url: HUBS_APP_URL,
       },
     ],
   });

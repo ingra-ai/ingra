@@ -1,10 +1,12 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from 'next/server';
 
 async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   const pathname = request.nextUrl.pathname;
+  
+  requestHeaders.set('X-URL', request.url);
 
-  if (pathname.includes("/api/v1")) {
+  if (pathname.includes('/api/v1')) {
     console.info(`:: [middleware] [api-v1] pathname: ${pathname}`);
   }
 
@@ -24,7 +26,7 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon)
      */
-    "/((?!static|_next/static|_next/image|favicon.ico).*)",
+    '/((?!static|_next/static|_next/image|favicon.ico).*)',
 
     /*
      * Match all request paths except for the ones starting with:

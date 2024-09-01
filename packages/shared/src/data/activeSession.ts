@@ -1,6 +1,6 @@
-"use server";
-import db from "@repo/db/client";
-import { Prisma } from "@repo/db/prisma";
+'use server';
+import db from '@repo/db/client';
+import { Prisma } from '@repo/db/prisma';
 
 export type GetActiveSessionByJwtReturnType = Prisma.ActiveSessionGetPayload<{
   select: {
@@ -25,9 +25,7 @@ export type GetActiveSessionByJwtReturnType = Prisma.ActiveSessionGetPayload<{
  * @param code - The phrase code to search for.
  * @returns A Promise that resolves to the user object containing the user ID, email, role, and profile.
  */
-export const getActiveSessionByJwt = async (
-  jwt: string,
-): Promise<GetActiveSessionByJwtReturnType | null> => {
+export const getActiveSessionByJwt = async (jwt: string): Promise<GetActiveSessionByJwtReturnType | null> => {
   if (!jwt) {
     return null;
   }

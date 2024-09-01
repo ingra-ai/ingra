@@ -1,23 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
-import { Logger } from "@repo/shared/lib/logger";
-import db from "@repo/db/client";
-import { validateAction } from "@repo/shared/lib/action-helpers";
-import {
-  FunctionArgumentSchema,
-  FunctionSchema,
-  FunctionTagsSchema,
-} from "@repo/shared/schemas/function";
-import cloneDeep from "lodash/cloneDeep";
-import {
-  upsertFunction as dataUpsertFunctions,
-  getFunctionAccessibleByUser,
-} from "@repo/shared/data/functions";
-import isEmpty from "lodash/isEmpty";
-import isNil from "lodash/isNil";
-import { z } from "zod";
-import { mixpanel } from "@repo/shared/lib/analytics";
-import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
+import { NextRequest, NextResponse } from 'next/server';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { Logger } from '@repo/shared/lib/logger';
+import db from '@repo/db/client';
+import { validateAction } from '@repo/shared/lib/action-helpers';
+import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from '@repo/shared/schemas/function';
+import cloneDeep from 'lodash/cloneDeep';
+import { upsertFunction as dataUpsertFunctions, getFunctionAccessibleByUser } from '@repo/shared/data/functions';
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
+import { z } from 'zod';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 
 /**
  * @swagger
@@ -85,98 +78,60 @@ import { getAnalyticsObject } from "@repo/shared/lib/utils/getAnalyticsObject";
  */
 export async function PATCH(req: NextRequest) {
   const requestArgs = await req.json();
-  const functionPayload = requestArgs?.function as z.infer<
-    typeof FunctionSchema
-  >;
+  const functionPayload = requestArgs?.function as z.infer<typeof FunctionSchema>;
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    if (
-      !functionPayload ||
-      typeof functionPayload !== "object" ||
-      Object.keys(functionPayload).length === 0
-    ) {
-      throw new Error(
-        'Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?',
-      );
+    if (!functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0) {
+      throw new Error('Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?');
     }
 
     if (!functionPayload.id) {
-      throw new Error(
-        "Function ID is required to edit the function. Consider searching some functions first for your references.",
-      );
+      throw new Error('Function ID is required to edit the function. Consider searching some functions first for your references.');
     }
 
-    const existingFunction = await getFunctionAccessibleByUser(
-      authSession.user.id,
-      functionPayload.id,
-      {
-        accessTypes: ["owner"],
-      },
-    );
+    const existingFunction = await getFunctionAccessibleByUser(authSession.user.id, functionPayload.id, {
+      accessTypes: ['owner'],
+    });
 
     if (!existingFunction) {
-      throw new Error(
-        "Function not found or you do not have permission to edit the function.",
-      );
+      throw new Error('Function not found or you do not have permission to edit the function.');
     }
 
     // Create a safe function record to be edited
-    const safeFunctionRecord = cloneDeep(
-      existingFunction as z.infer<typeof FunctionSchema>,
-    );
+    const safeFunctionRecord = cloneDeep(existingFunction as z.infer<typeof FunctionSchema>);
 
     // Fill only the provided Function values to the safe function record
     const fieldsToUpdate: Partial<typeof safeFunctionRecord> = {};
-    if (
-      !isNil(functionPayload.slug) &&
-      functionPayload.slug !== safeFunctionRecord.slug
-    ) {
+    if (!isNil(functionPayload.slug) && functionPayload.slug !== safeFunctionRecord.slug) {
       fieldsToUpdate.slug = functionPayload.slug;
     }
 
-    if (
-      !isNil(functionPayload.code) &&
-      functionPayload.code !== safeFunctionRecord.code
-    ) {
+    if (!isNil(functionPayload.code) && functionPayload.code !== safeFunctionRecord.code) {
       fieldsToUpdate.code = functionPayload.code;
     }
 
-    if (
-      !isNil(functionPayload.isPrivate) &&
-      functionPayload.isPrivate !== safeFunctionRecord.isPrivate
-    ) {
+    if (!isNil(functionPayload.isPrivate) && functionPayload.isPrivate !== safeFunctionRecord.isPrivate) {
       fieldsToUpdate.isPrivate = functionPayload.isPrivate;
     }
 
-    if (
-      !isNil(functionPayload.isPublished) &&
-      functionPayload.isPublished !== safeFunctionRecord.isPublished
-    ) {
+    if (!isNil(functionPayload.isPublished) && functionPayload.isPublished !== safeFunctionRecord.isPublished) {
       fieldsToUpdate.isPublished = functionPayload.isPublished;
     }
 
-    if (
-      !isNil(functionPayload.httpVerb) &&
-      functionPayload.httpVerb !== safeFunctionRecord.httpVerb
-    ) {
+    if (!isNil(functionPayload.httpVerb) && functionPayload.httpVerb !== safeFunctionRecord.httpVerb) {
       fieldsToUpdate.httpVerb = functionPayload.httpVerb;
     }
 
-    if (
-      !isNil(functionPayload.description) &&
-      functionPayload.description !== safeFunctionRecord.description
-    ) {
+    if (!isNil(functionPayload.description) && functionPayload.description !== safeFunctionRecord.description) {
       fieldsToUpdate.description = functionPayload.description;
     }
 
     // Fill any provided Arguments values to the safe function record
-    const argumentsPayload = (functionPayload.arguments || []).filter((elem) =>
-      elem.name.trim(),
-    );
+    const argumentsPayload = (functionPayload.arguments || []).filter((elem) => elem.name.trim());
     if (!isEmpty(argumentsPayload)) {
       safeFunctionRecord.arguments = argumentsPayload.map((elem) => {
         const newArgument: z.infer<typeof FunctionArgumentSchema> = {
-          functionId: "",
+          functionId: '',
           name: elem.name,
           type: elem.type,
           defaultValue: elem.defaultValue,
@@ -188,13 +143,11 @@ export async function PATCH(req: NextRequest) {
     }
 
     // Fill any provided Tags values to the safe function record
-    const tagsPayload = (functionPayload.tags || []).filter((elem) =>
-      elem.name.trim(),
-    );
+    const tagsPayload = (functionPayload.tags || []).filter((elem) => elem.name.trim());
     if (!isEmpty(tagsPayload)) {
       safeFunctionRecord.tags = tagsPayload.map((elem: any) => {
         const newTag: z.infer<typeof FunctionTagsSchema> = {
-          functionId: "",
+          functionId: '',
           name: elem.name,
         };
         return newTag;
@@ -212,23 +165,19 @@ export async function PATCH(req: NextRequest) {
     /**
      * Analytics & Logging
      */
-    mixpanel.track("Function Executed", {
+    mixpanel.track('Function Executed', {
       distinct_id: authSession.user.id,
-      type: "built-ins",
+      type: 'built-ins',
       ...getAnalyticsObject(req),
-      operationId: "editFunction",
+      operationId: 'editFunction',
     });
 
-    Logger.withTag("api|builtins")
-      .withTag("operation|curateFunctions-edit")
-      .withTag(`user|${authSession.user.id}`)
-      .withTag(`function|${result.id}`)
-      .info(`Editing function ${result.slug}`);
+    Logger.withTag('api|builtins').withTag('operation|curateFunctions-edit').withTag(`user|${authSession.user.id}`).withTag(`function|${result.id}`).info(`Editing function ${result.slug}`);
 
     return NextResponse.json(
       {
-        status: "success",
-        message: `Successfully updated ${allUpdatedFields.join(", ")} fields on "${result.slug}" function.`,
+        status: 'success',
+        message: `Successfully updated ${allUpdatedFields.join(', ')} fields on "${result.slug}" function.`,
         data: {
           id: result.id,
           slug: result.slug,
@@ -237,7 +186,7 @@ export async function PATCH(req: NextRequest) {
       },
       {
         status: 200,
-      },
+      }
     );
   });
 }

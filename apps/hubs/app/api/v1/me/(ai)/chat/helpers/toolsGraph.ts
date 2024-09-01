@@ -1,11 +1,11 @@
-import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
-import { ChatOpenAI } from "@langchain/openai";
-import { createToolsAgentsByAuthSession } from "./createToolsAgents";
-import { createToolsAgentsSupervisor } from "./createToolsAgentsSupervisor";
-import { END, START, StateGraph, StateGraphArgs } from "@langchain/langgraph";
-import { AgentStateChannels } from "./types";
-import { BaseMessage } from "@langchain/core/messages";
-import { RunnableLike } from "@langchain/core/runnables";
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { ChatOpenAI } from '@langchain/openai';
+import { createToolsAgentsByAuthSession } from './createToolsAgents';
+import { createToolsAgentsSupervisor } from './createToolsAgentsSupervisor';
+import { END, START, StateGraph, StateGraphArgs } from '@langchain/langgraph';
+import { AgentStateChannels } from './types';
+import { BaseMessage } from '@langchain/core/messages';
+import { RunnableLike } from '@langchain/core/runnables';
 
 type CreateToolsGraphOptions = {
   headers: Record<string, any>;
@@ -16,34 +16,24 @@ type CreateToolsGraphOptions = {
  * @param {AuthSessionResponse} authSession - The user's authentication session
  * @reference https://github.com/bracesproul/langtool-template/blob/finished/backend/src/index.ts#L58
  */
-export const createToolsGraph = async (
-  authSession: AuthSessionResponse,
-  opts?: CreateToolsGraphOptions,
-) => {
+export const createToolsGraph = async (authSession: AuthSessionResponse, opts?: CreateToolsGraphOptions) => {
   const { headers = {} } = opts ?? {};
 
   /**
    * Generate agents for tools calling
    * @info In LangChain - Tool calling is only available with supported models. https://js.langchain.com/v0.1/docs/integrations/chat/
    */
-  const collectionToolsAgents = await createToolsAgentsByAuthSession(
-      authSession,
-      headers,
-    ),
-    toolAgentNames = collectionToolsAgents.map(
-      (collectionToolsAgent) => collectionToolsAgent.agentName,
-    );
+  const collectionToolsAgents = await createToolsAgentsByAuthSession(authSession, headers),
+    toolAgentNames = collectionToolsAgents.map((collectionToolsAgent) => collectionToolsAgent.agentName);
 
   /**
    * Generate supervisor to handle the tools agents.
    */
-  const toolsSupervisorAgent = await createToolsAgentsSupervisor(
-    collectionToolsAgents,
-  );
+  const toolsSupervisorAgent = await createToolsAgentsSupervisor(collectionToolsAgents);
 
   // This defines the object that is passed between each node
   // in the graph. We will create different nodes for each agent and tool
-  const agentStateChannels: StateGraphArgs<AgentStateChannels>["channels"] = {
+  const agentStateChannels: StateGraphArgs<AgentStateChannels>['channels'] = {
     messages: {
       value: (x?: BaseMessage[], y?: BaseMessage[]) => {
         // console.log('\n-----channels:messages----\n', { x, y }, '\n--------\n')
