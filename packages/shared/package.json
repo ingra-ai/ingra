@@ -47,7 +47,6 @@
     "./actions/functions": "./src/actions/functions.ts",
     "./actions/envVars": "./src/actions/envVars.ts",
     "./actions/collections": "./src/actions/collections.ts",
-    "./actions/login": "./src/actions/login.ts",
     "./actions/apiKey": "./src/actions/apiKey.ts",
 
     "./utils/actionAuthTryCatch": "./src/utils/actionAuthTryCatch.ts",

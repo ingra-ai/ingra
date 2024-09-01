@@ -12,6 +12,7 @@ import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHea
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import { Button } from '@repo/components/ui/button';
 import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
+import { AUTH_APP_URL } from '@repo/shared/lib/constants';
 
 export type SideNavProps = {
   className?: string;
@@ -75,6 +76,7 @@ const SideNav: FC<SideNavProps> = (props) => {
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
   const pathname = usePathname();
   const sideNavRoutes = getSideNavRoutes(authSession);
+  const logoutUrl = [AUTH_APP_URL, '/logout'].join('');
 
   // Type guard to determine if a NavItem is a NavItemParent
   const isNavItemParent = useCallback((item: NavItem): item is NavItemParent => {
@@ -187,7 +189,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                     </MenuSection>
                     {/* <MenuSeparator className="my-1 h-px bg-gray-700" /> */}
                     <MenuItem>
-                      <a href="/auth/logout" className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
+                      <a href={ logoutUrl } className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
                         <span className="">Logout</span>
                       </a>
                     </MenuItem>
