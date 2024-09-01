@@ -6,6 +6,7 @@ import { redirect, RedirectType } from 'next/navigation';
 import { Code, Cpu, Cloud, Rocket, Link, Users } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
 import type { Metadata } from 'next';
+import { isSafeRedirectUrl } from '@repo/shared/lib/utils/isSafeRedirectUrl';
 
 export const metadata: Metadata = {
   title: ['Sign In', APP_NAME].join(' | '),
@@ -15,7 +16,13 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
   const authSession = await getAuthSession();
 
   if (authSession) {
-    redirect(APP_LANDING_PAGE_URL, RedirectType.replace);
+    const { redirectTo } = searchParams;
+
+    if (typeof redirectTo === 'string' && redirectTo.length > 0 && isSafeRedirectUrl(redirectTo)) {
+      redirect(redirectTo, RedirectType.push);
+    } else {
+      redirect(APP_LANDING_PAGE_URL, RedirectType.replace);
+    }
   }
 
   return (

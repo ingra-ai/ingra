@@ -1,7 +1,7 @@
 import { createActiveSession, expireMagicLinkByToken } from '@repo/shared/data/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { APP_SESSION_COOKIE_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { APP_AUTH_COOKIE_DOMAIN, APP_SESSION_COOKIE_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import db from '@repo/db/client';
 
 export async function GET(request: NextRequest) {
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     // Set session cookies
     const cookieStore = cookies();
     cookieStore.set(APP_SESSION_COOKIE_NAME, session.jwt, {
-      domain: '.ingra.ai',
+      domain: APP_AUTH_COOKIE_DOMAIN,
       path: '/',
       sameSite: 'lax',
       expires: session.expiresAt,
