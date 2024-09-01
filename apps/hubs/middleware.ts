@@ -3,6 +3,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   const pathname = request.nextUrl.pathname;
+  
+  requestHeaders.set('X-URL', request.url);
 
   if (pathname.includes('/api/v1')) {
     console.info(`:: [middleware] [api-v1] pathname: ${pathname}`);
