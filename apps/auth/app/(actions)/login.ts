@@ -8,7 +8,7 @@ import { getOrCreateUserByEmail } from '@repo/shared/data/user';
 import { ActionError } from '@repo/shared/types';
 import { createActiveSession, createMagicLink, expireMagicLinkByToken, getMagicLinkByOtp } from '@repo/shared/data/auth';
 import { sendMagicLinkEmail } from '@repo/shared/lib/mail/sendMagicLinkEmail';
-import { APP_AUTH_COOKIE_DOMAIN, APP_LANDING_PAGE_URI, APP_SESSION_COOKIE_NAME } from '@repo/shared/lib/constants';
+import { APP_AUTH_COOKIE_DOMAIN, APP_LANDING_PAGE_URL, APP_SESSION_COOKIE_NAME } from '@repo/shared/lib/constants';
 import { actionTryCatch } from '@repo/shared/utils/actionTryCatch';
 
 export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) => {
@@ -80,7 +80,7 @@ export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) 
 
       // Redirect to the app
       try {
-        redirect(APP_LANDING_PAGE_URI);
+        redirect(APP_LANDING_PAGE_URL);
       } catch (error: any) {
         if (error?.message === 'NEXT_REDIRECT') {
           return {
