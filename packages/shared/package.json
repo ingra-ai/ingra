@@ -32,6 +32,7 @@
     "./lib/constants": "./src/lib/constants/index.ts",
     "./lib/utils": "./src/lib/utils/index.ts",
     "./lib/utils/getAnalyticsObject": "./src/lib/utils/getAnalyticsObject.ts",
+    "./lib/utils/isSafeRedirectUrl": "./src/lib/utils/isSafeRedirectUrl.ts",
     "./lib/mail/ses": "./src/lib/mail/ses.ts",
     "./lib/mail/sendMagicLinkEmail": "./src/lib/mail/sendMagicLinkEmail.ts",
     "./lib/tokens": "./src/lib/tokens.ts",

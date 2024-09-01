@@ -18,8 +18,8 @@ export function censorEmail(email: string) {
     return [email, ''];
   }
 
-  const userPart = parts[0];
-  const domainPart = parts[1];
+  const userPart = parts?.[0] || '';
+  const domainPart = parts?.[1] || '';
 
   // Determine the number of characters to show uncensored
   const showChars = userPart.length > 4 ? 2 : 1;

@@ -14,7 +14,7 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   title: APP_NAME,
-  description: APP_DESCRIPTION,
+  description: `Secure your access to ${APP_NAME}, the open-source personalized AI assistant platform. Experience seamless sign-in with advanced authentication features designed for developers building custom LLM functions and tool integrations.`,
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {

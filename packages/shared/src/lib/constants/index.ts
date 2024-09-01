@@ -10,6 +10,7 @@ export const DOCS_APP_URL = process.env.NEXT_PUBLIC_DOCS_APP_URL || 'https://doc
 
 export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI || '/callback';
 export const APP_AUTH_LOGIN_URI = process.env.NEXT_PUBLIC_AUTH_LOGIN_URI || '/login';
+export const APP_AUTH_COOKIE_DOMAIN = process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN || '.ingra.ai';
 export const APP_LANDING_PAGE_URI = process.env.NEXT_PUBLIC_LANDING_PAGE_URI || '/overview';
 
 export const APP_AUTH_CALLBACK_URL = AUTH_APP_URL + APP_AUTH_CALLBACK_URI;
