@@ -2,28 +2,36 @@ export const IS_PROD = process.env.NODE_ENV === 'production';
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Ingra';
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Open source personalized AI assistant, agents and tools for developers to build customized LLM functions tool calling.';
+
 export const PARENT_APP_URL = process.env.NEXT_PUBLIC_PARENT_APP_URL || 'https://www.ingra.ai';
 export const HUBS_APP_URL = process.env.NEXT_PUBLIC_HUBS_APP_URL || 'https://hubs.ingra.ai';
 export const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://auth.ingra.ai';
 export const CHAT_APP_URL = process.env.NEXT_PUBLIC_CHAT_APP_URL || 'https://chat.ingra.ai';
 export const DOCS_APP_URL = process.env.NEXT_PUBLIC_DOCS_APP_URL || 'https://docs.ingra.ai';
 
-export const APP_AUTH_CALLBACK_URI = process.env.NEXT_PUBLIC_AUTH_CALLBACK_URI || '/callback';
-export const APP_AUTH_LOGIN_URI = process.env.NEXT_PUBLIC_AUTH_LOGIN_URI || '/login';
+/**
+ * Authentication cookie name
+ */
 export const APP_AUTH_COOKIE_DOMAIN = process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN || '.ingra.ai';
-export const APP_LANDING_PAGE_URI = process.env.NEXT_PUBLIC_LANDING_PAGE_URI || '/overview';
 
-export const APP_AUTH_CALLBACK_URL = AUTH_APP_URL + APP_AUTH_CALLBACK_URI;
-export const APP_AUTH_LOGIN_URL = AUTH_APP_URL + APP_AUTH_LOGIN_URI;
-export const APP_LANDING_PAGE_URL = HUBS_APP_URL + APP_LANDING_PAGE_URI;
+/**
+ * The URL to redirect to after login for magic link sent to the user email
+ */
+export const APP_AUTH_CALLBACK_URL = `${ AUTH_APP_URL }/callback`;
 
-const APP_LEGAL_PRIVACY_POLICY_URI = process.env.NEXT_PUBLIC_LEGAL_PRIVACY_POLICY_URI || '/legal/privacy-policy';
-const APP_LEGAL_TOS_URI = process.env.NEXT_PUBLIC_LEGAL_TERMS_OF_SERVICE_URI || '/legal/terms-of-service';
-const APP_LEGAL_COOKPOL_URI = process.env.NEXT_PUBLIC_LEGAL_COOKPOL_URI || '/legal/cookie-policy';
+/**
+ * The URL to redirect to after login for magic link sent to the user email
+ */
+export const APP_AUTH_LOGIN_URL = `${ AUTH_APP_URL }/login`;
 
-export const APP_LEGAL_PRIVACY_POLICY_URL = [PARENT_APP_URL, APP_LEGAL_PRIVACY_POLICY_URI].join('');
-export const APP_LEGAL_TOS_URL = [PARENT_APP_URL, APP_LEGAL_TOS_URI].join('');
-export const APP_LEGAL_COOKPOL_URL = [PARENT_APP_URL, APP_LEGAL_COOKPOL_URI].join('');
+/**
+ * When user is logged in and no idea where to land user to.
+ */
+export const APP_LANDING_PAGE_URL = `${ HUBS_APP_URL }/overview`;
+
+export const APP_LEGAL_PRIVACY_POLICY_URL = 'https://www.ingra.ai/legal/privacy-policy';
+export const APP_LEGAL_TOS_URL = 'https://www.ingra.ai/legal/terms-of-service';
+export const APP_LEGAL_COOKPOL_URL = 'https://www.ingra.ai/legal/cookie-policy';
 
 export const APP_SUPPORT_MAILTO = process.env.NEXT_PUBLIC_APP_SUPPORT_MAILTO || 'support@ingra.ai';
 export const APP_SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_APP_SESSION_COOKIE_NAME || 'ING_SESSION';
