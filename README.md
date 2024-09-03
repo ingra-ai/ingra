@@ -11,7 +11,8 @@ This repository is organized as a Turborepo, containing multiple applications an
 
 ### Applications
 
-- **`hubs`**: A Next.js application serving as the main interface for users.
+- **`hubs`**: FS - Next.js application serving UI for hubs interface and serving LLM api calls for collections and functions.
+- **`auth`**: FE - Next.js application serving auth UI.
 - **`docs`**: Another Next.js application for documentation purposes.
 
 ### Packages
@@ -48,13 +49,14 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
   - Screw it, good enough for now - ill be back later.
 - [x] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
-- [ ] **Assistant**: Provides built-in AI Assistant utilizing LangChain to converse and interact with tools calling.
+- [ ] **Chat**: Provides built-in AI Assistant utilizing LangChain to converse and interact with tools calling. Has Cron.
+- [ ] **Self Hosting**: An option to switch database endpoint, or running local LLMs. This should help users flexibly to host their own data. Configurables would be psql, redis, pinecone and aws ses setup. (google oauth or openai api key are overridable from env variables built-in)
+- [ ] 
 - [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
 - [ ] **Advanced Security Features**: Implement advanced security measures such as encryption, secure access controls, and more to protect user data and function integrity.
 - [ ] **Collaboration Tools**: Develop tools to facilitate collaboration among users and developers, such as version control, code reviews, and more.
 - [ ] **Personalization Options**: Offer advanced personalization options to tailor the assistant’s behavior and responses to individual preferences.
-- [ ] **Cron Features**: Integrate scheduled run for certain function, that will feed to users. Either by web, email or to their own AI Agent.
 
 ### Installation
 
