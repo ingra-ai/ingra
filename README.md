@@ -51,7 +51,7 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
 - [ ] **Chat**: Provides built-in AI Assistant utilizing LangChain to converse and interact with tools calling. Has Cron.
 - [ ] **Self Hosting**: An option to switch database endpoint, or running local LLMs. This should help users flexibly to host their own data. Configurables would be psql, redis, pinecone and aws ses setup. (google oauth or openai api key are overridable from env variables built-in)
-- [ ] 
+- [ ]
 - [ ] **Workflows Hub**: Integrate react-flow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
 - [ ] **Advanced Security Features**: Implement advanced security measures such as encryption, secure access controls, and more to protect user data and function integrity.
