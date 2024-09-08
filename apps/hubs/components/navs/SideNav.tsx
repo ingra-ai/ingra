@@ -5,31 +5,33 @@ import { Fragment, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { NavItem, NavItemParent } from './types';
+import type { NavItem, NavItemChild, NavItemParent } from './types';
 import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { GlobeIcon, Package2Icon, LayoutDashboardIcon, EllipsisIcon, MenuIcon } from 'lucide-react';
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
 import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
 import { Button } from '@repo/components/ui/button';
 import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
-import { AUTH_APP_URL } from '@repo/shared/lib/constants';
+import { APP_AUTH_LOGIN_URL, AUTH_APP_URL } from '@repo/shared/lib/constants';
 
 export type SideNavProps = {
   className?: string;
-  authSession: AuthSessionResponse;
+  authSession?: AuthSessionResponse;
   onMenuClick?: () => void;
 };
 
-const getSideNavRoutes = (authSession: AuthSessionResponse) => {
+const getSideNavRoutes = (authSession?: AuthSessionResponse) => {
   const username = authSession?.user?.profile?.userName || '';
 
   const sideNavRoutes: NavItem[] = [
-    {
-      name: 'Dashboard',
-      description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
-      href: '/overview/dashboard',
-      icon: LayoutDashboardIcon,
-    },
+    username
+      ? {
+          name: 'Dashboard',
+          description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
+          href: '/overview/dashboard',
+          icon: LayoutDashboardIcon,
+        }
+      : false,
     // {
     //   name: 'Assistant',
     //   description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
@@ -46,13 +48,15 @@ const getSideNavRoutes = (authSession: AuthSessionResponse) => {
           href: '/marketplace/collections',
           icon: GlobeIcon,
         },
-        {
-          name: 'Repository',
-          description: 'Manage your collections and functions that you own or have access to.',
-          href: getUserRepoUri(username),
-          icon: Package2Icon,
-        },
-      ],
+        username
+          ? {
+              name: 'Repository',
+              description: 'Manage your collections and functions that you own or have access to.',
+              href: getUserRepoUri(username),
+              icon: Package2Icon,
+            }
+          : false,
+      ].filter(Boolean) as NavItemChild[],
     },
     // {
     //   name: "Workflows",
@@ -66,7 +70,7 @@ const getSideNavRoutes = (authSession: AuthSessionResponse) => {
     //     }
     //   ],
     // },
-  ];
+  ].filter(Boolean) as NavItem[];
 
   return sideNavRoutes;
 };
@@ -152,51 +156,61 @@ const SideNav: FC<SideNavProps> = (props) => {
         </li>
         <li className="mt-auto">
           <ul role="list" className="space-y-1">
-            <li>
-              {/* User Icon */}
-              <Menu as="div" className="relative">
-                <MenuButton className="flex w-full items-center text-sm focus:outline-none p-2 cursor-pointer">
-                  <Image src={`https://ui-avatars.com/api?size=32&name=${censoredUser}`} width={48} height={48} className="h-8 w-8 rounded-full bg-gray-50" alt="user avatar" />
-                  <div className="px-2 text-left w-full overflow-hidden">
-                    {authSession?.user?.profile?.userName && <p className="leading-5 truncate">{authSession?.user?.profile?.userName}</p>}
-                    <p className="text-muted-foreground text-xs truncate">{authSession?.user?.email}</p>
-                  </div>
-                  <EllipsisIcon className="min-w-4 w-4 h-4" />
-                </MenuButton>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <MenuItems className="absolute bg-gray-900 border border-gray-700 right-0 mt-2 w-48 origin-top-right rounded-md py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bottom-full">
-                    <MenuSection>
-                      <MenuHeading className="px-4 pt-3">
-                        <p className="text-xs">You&apos;re signed in as</p>
-                        <p className="text-xs font-semibold leading-8">{authSession?.user?.email}</p>
-                      </MenuHeading>
-                      <MenuSeparator className="my-1 h-px bg-gray-700" />
-                      {SettingsNavRoutes.map((item) => (
-                        <MenuItem key={item.name}>
-                          <Link href={item.href} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title={item.name}>
-                            <span className="">{item.name}</span>
-                          </Link>
-                        </MenuItem>
-                      ))}
-                    </MenuSection>
-                    {/* <MenuSeparator className="my-1 h-px bg-gray-700" /> */}
-                    <MenuItem>
-                      <a href={logoutUrl} className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
-                        <span className="">Logout</span>
-                      </a>
-                    </MenuItem>
-                  </MenuItems>
-                </Transition>
-              </Menu>
-            </li>
+            {authSession ? (
+              <li>
+                {/* User Icon */}
+                <Menu as="div" className="relative">
+                  <MenuButton className="flex w-full items-center text-sm focus:outline-none p-2 cursor-pointer">
+                    <Image src={`https://ui-avatars.com/api?size=32&name=${censoredUser}`} width={48} height={48} className="h-8 w-8 rounded-full bg-gray-50" alt="user avatar" />
+                    <div className="px-2 text-left w-full overflow-hidden">
+                      {authSession?.user?.profile?.userName && <p className="leading-5 truncate">{authSession?.user?.profile?.userName}</p>}
+                      <p className="text-muted-foreground text-xs truncate">{authSession?.user?.email}</p>
+                    </div>
+                    <EllipsisIcon className="min-w-4 w-4 h-4" />
+                  </MenuButton>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <MenuItems className="absolute bg-gray-900 border border-gray-700 right-0 mt-2 w-48 origin-top-right rounded-md py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bottom-full">
+                      <MenuSection>
+                        <MenuHeading className="px-4 pt-3">
+                          <p className="text-xs">You&apos;re signed in as</p>
+                          <p className="text-xs font-semibold leading-8">{authSession?.user?.email}</p>
+                        </MenuHeading>
+                        <MenuSeparator className="my-1 h-px bg-gray-700" />
+                        {SettingsNavRoutes.map((item) => (
+                          <MenuItem key={item.name}>
+                            <Link href={item.href} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title={item.name}>
+                              <span className="">{item.name}</span>
+                            </Link>
+                          </MenuItem>
+                        ))}
+                      </MenuSection>
+                      {/* <MenuSeparator className="my-1 h-px bg-gray-700" /> */}
+                      <MenuItem>
+                        <a href={logoutUrl} className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
+                          <span className="">Logout</span>
+                        </a>
+                      </MenuItem>
+                    </MenuItems>
+                  </Transition>
+                </Menu>
+              </li>
+            ) : (
+              <li>
+                <Button asChild variant={'accent'} className="w-full p-2 text-sm font-semibold text-center">
+                  <Link href={APP_AUTH_LOGIN_URL + '?redirectTo=' + encodeURIComponent(window.location.href)} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title="Login">
+                    <span className="">Login</span>
+                  </Link>
+                </Button>
+              </li>
+            )}
           </ul>
         </li>
       </ul>
