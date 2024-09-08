@@ -10,9 +10,7 @@ const config = {
     },
     extend: {
       screens: {
-        '2xl': '1536px',
-        '3xl': '1792px',
-        '4xl': '2048px',
+        '2xl': '1400px',
       },
       colors: {
         border: 'hsl(var(--border))',
