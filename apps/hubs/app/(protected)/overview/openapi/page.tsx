@@ -3,12 +3,16 @@ import { APP_AUTH_LOGIN_URL, ME_API_ROOT_URL } from '@repo/shared/lib/constants'
 import { redirect, RedirectType } from 'next/navigation';
 import { BracesIcon } from 'lucide-react';
 import { OpenAPISpecLoader } from './OpenAPISpecLoader';
+import { headers } from 'next/headers';
 
 export default async function Page() {
   const authSession = await getAuthSession();
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 
   if (!authSession) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   const userOpenApiUrl = ME_API_ROOT_URL + '/openapi.json';

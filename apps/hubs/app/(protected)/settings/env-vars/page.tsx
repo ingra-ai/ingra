@@ -5,6 +5,7 @@ import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
 import { getAuthSession } from '@repo/shared/data/auth/session';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: ['Environment Variables', APP_NAME].join(' | '),
@@ -12,9 +13,12 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const authSession = await getAuthSession();
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 
   if (!authSession) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   const allEnvVars = await db.envVars.findMany({

@@ -4,6 +4,7 @@ import { APP_AUTH_LOGIN_URL, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import { ActionError } from '@v1/types/api-response';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { RedirectType, redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 /**
  * Returns OpenAPI json file when in development
@@ -11,9 +12,12 @@ import { RedirectType, redirect } from 'next/navigation';
  */
 export async function GET(req: NextRequest) {
   const authSession = await getAuthSession();
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 
   if (!authSession) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
