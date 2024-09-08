@@ -189,7 +189,7 @@ const SideNav: FC<SideNavProps> = (props) => {
                     </MenuSection>
                     {/* <MenuSeparator className="my-1 h-px bg-gray-700" /> */}
                     <MenuItem>
-                      <a href={ logoutUrl } className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
+                      <a href={logoutUrl} className="flex font-semibold space-x-2 px-4 py-3 text-xs text-destructive hover:bg-gray-700 hover:text-destructive-foreground" title="Logout">
                         <span className="">Logout</span>
                       </a>
                     </MenuItem>
