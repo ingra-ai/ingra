@@ -29,7 +29,7 @@ async function Layout(props: LayoutProps) {
   const [authSession, ownerProfile] = await Promise.all([getAuthSession(), getUserProfileByUsername(ownerUsername)]);
 
   // If owner user profile doesn't exist, OR current user profile username is not set, promote user to set profile username
-  if (!ownerProfile?.userId || !ownerUsername || !authSession?.user?.profile?.userName) {
+  if (!ownerProfile?.userId || !ownerUsername) {
     return (
       <div className="flex flex-col w-full h-full justify-center items-center">
         <UserCircleIcon aria-hidden="true" className="h-24 w-24" />
@@ -48,7 +48,7 @@ async function Layout(props: LayoutProps) {
     );
   }
 
-  const itsMe = authSession.user.profile.userName === ownerUsername;
+  const itsMe = authSession?.user.profile?.userName && authSession.user.profile.userName === ownerUsername;
 
   return (
     <div className="relative h-full w-full p-4" data-testid="repo-layout">

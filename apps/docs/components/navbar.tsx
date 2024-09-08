@@ -1,12 +1,14 @@
 import { ModeToggle } from '@/components/theme-toggle';
-import { GithubIcon, TwitterIcon, HexagonIcon, MoveUpRightIcon } from 'lucide-react';
+import { GithubIcon, TwitterIcon, MoveUpRightIcon } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { buttonVariants } from '@repo/components/ui/button';
 import Search from './search';
 import Anchor from './anchor';
 import { SheetLeftbar } from './leftbar';
 import { page_routes } from '@/lib/routes-config';
 import { SheetClose } from '@repo/components/ui/sheet';
+import { HUBS_APP_URL } from '@repo/shared/lib/constants';
 
 export const NAVLINKS = [
   {
@@ -18,16 +20,12 @@ export const NAVLINKS = [
     href: '/blog',
   },
   {
-    title: 'Examples',
-    href: '#',
-  },
-  {
     title: 'Guides',
     href: '#',
   },
   {
-    title: 'Community',
-    href: '#',
+    title: 'Marketplace',
+    href: HUBS_APP_URL + '/marketplace',
     external: true,
   },
 ];
@@ -76,8 +74,8 @@ export function Navbar() {
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5">
-      <HexagonIcon className="w-7 h-7 text-muted-foreground fill-current" />
-      <h2 className="text-md font-bold">AriaDocs</h2>
+      <Image src="/static/brand/ingra.svg" width={50} height={50} className="h-6 w-auto hidden lg:block" alt="Ingra Logo" />
+      <h2 className="text-md font-bold sr-only">Ingra</h2>
     </Link>
   );
 }

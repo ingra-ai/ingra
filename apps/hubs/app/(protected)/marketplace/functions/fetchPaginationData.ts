@@ -2,7 +2,7 @@ import type { FetchCommunityFunctionListPaginationType } from '@repo/components/
 import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
 
-export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
+export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId?: string) => {
   // Parse the query parameteres
   let { page = '1' } = searchParams;
   page = Array.isArray(page) ? page[0] : page;

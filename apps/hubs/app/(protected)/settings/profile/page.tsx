@@ -1,10 +1,11 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/components/ui/tooltip';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
-import { notFound } from 'next/navigation';
+import { RedirectType, redirect } from 'next/navigation';
 import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
-import { APP_NAME } from '@repo/shared/lib/constants';
+import { APP_AUTH_LOGIN_URL, APP_NAME } from '@repo/shared/lib/constants';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: ['Profile', APP_NAME].join(' | '),
@@ -18,8 +19,12 @@ export const metadata: Metadata = {
 export default async function Page() {
   const authSession = await getAuthSession();
 
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
+
   if (!authSession) {
-    return notFound();
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   return (

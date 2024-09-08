@@ -3,14 +3,18 @@ import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
 import { getAuthSwaggerSpec } from './config';
 import { redirect, RedirectType } from 'next/navigation';
 import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
+import { headers } from 'next/headers';
 
 import '@css/swagger.scss';
 
 export default async function Page() {
   const authSession = await getAuthSession();
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 
   if (!authSession) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   const swaggerSpec = await getAuthSwaggerSpec(authSession);
