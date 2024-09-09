@@ -81,6 +81,8 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 
    ```bash
    cp .env.example apps/hubs/.env
+   cp .env.example apps/docs/.env
+   cp .env.example apps/auth/.env
    ```
 
    Copy the `.env.example` file to a new file named `./apps/hubs/.env` and fill in your database connection details and any other environment variables required.
