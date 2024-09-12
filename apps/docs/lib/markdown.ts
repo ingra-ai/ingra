@@ -6,7 +6,7 @@ import rehypePrism from 'rehype-prism-plus';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import rehypeCodeTitles from 'rehype-code-titles';
-import { page_routes } from './routes-config';
+import { DOCS_PAGE_ROUTES } from './routes-config';
 import { visit } from 'unist-util-visit';
 
 // custom components imports
@@ -80,10 +80,10 @@ export async function getDocsTocs(slug: string) {
 }
 
 export function getPreviousNext(path: string) {
-  const index = page_routes.findIndex(({ href }) => href == `/${path}`);
+  const index = DOCS_PAGE_ROUTES.findIndex(({ href }) => href == `/${path}`);
   return {
-    prev: page_routes[index - 1],
-    next: page_routes[index + 1],
+    prev: DOCS_PAGE_ROUTES[index - 1],
+    next: DOCS_PAGE_ROUTES[index + 1],
   };
 }
 
