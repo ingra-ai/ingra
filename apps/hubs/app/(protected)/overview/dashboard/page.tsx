@@ -7,12 +7,16 @@ import { KeyIcon, SquareFunctionIcon, LibraryIcon, KeyRoundIcon } from 'lucide-r
 import db from '@repo/db/client';
 import { StatCard } from './StatCard';
 import { getUserRepoCollectionsUri, getUserRepoFunctionsUri } from '@repo/shared/lib/constants/repo';
+import { headers } from 'next/headers';
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 
   if (!authSession) {
-    redirect(APP_AUTH_LOGIN_URL, RedirectType.replace);
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   const {

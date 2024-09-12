@@ -3,7 +3,6 @@ import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from '@rep
 import { Logo, NavMenu } from './navbar';
 import { Button } from '@repo/components/ui/button';
 import { AlignLeftIcon } from 'lucide-react';
-import { FooterButtons } from './footer';
 import { DialogTitle } from '@repo/components/ui/dialog';
 import DocsMenu from './docs-menu';
 
@@ -39,9 +38,7 @@ export function SheetLeftbar() {
           <div className="mx-2 px-5">
             <DocsMenu isSheet />
           </div>
-          <div className="p-6 pb-4 flex gap-2.5">
-            <FooterButtons />
-          </div>
+          <div className="p-6 pb-4 flex gap-2.5"></div>
         </ScrollArea>
       </SheetContent>
     </Sheet>
