@@ -6,25 +6,25 @@ import { buttonVariants } from '@repo/components/ui/button';
 import Search from './search';
 import Anchor from './anchor';
 import { SheetLeftbar } from './leftbar';
-import { page_routes } from '@/lib/routes-config';
+import { DOCS_PAGE_ROUTES } from '@/lib/routes-config';
 import { SheetClose } from '@repo/components/ui/sheet';
-import { HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { PARENT_APP_URL, HUBS_APP_URL } from '@repo/shared/lib/constants';
 
 export const NAVLINKS = [
   {
     title: 'Documentation',
-    href: `/docs${page_routes[0].href}`,
+    href: `/docs${DOCS_PAGE_ROUTES[0].href}`,
   },
+  // {
+  //   title: 'Blog',
+  //   href: '/blog',
+  // },
+  // {
+  //   title: 'Guides',
+  //   href: '#',
+  // },
   {
-    title: 'Blog',
-    href: '/blog',
-  },
-  {
-    title: 'Guides',
-    href: '#',
-  },
-  {
-    title: 'Marketplace',
+    title: 'Hubs',
     href: HUBS_APP_URL + '/marketplace',
     external: true,
   },
@@ -50,10 +50,10 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <Search />
             <div className="flex ml-2.5 sm:ml-0">
-              <Link href="https://github.com/nisabmohd/NexDocs" className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+              <Link href="https://github.com/ingra-ai/ingra" className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
                 <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
               </Link>
-              <Link
+              {/* <Link
                 href="#"
                 className={buttonVariants({
                   variant: 'ghost',
@@ -61,7 +61,7 @@ export function Navbar() {
                 })}
               >
                 <TwitterIcon className="h-[1.1rem] w-[1.1rem]" />
-              </Link>
+              </Link> */}
               <ModeToggle />
             </div>
           </div>
@@ -73,7 +73,7 @@ export function Navbar() {
 
 export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5">
+    <Link href={PARENT_APP_URL} className="flex items-center gap-2.5">
       <Image src="/static/brand/ingra.svg" width={50} height={50} className="h-6 w-auto hidden lg:block" alt="Ingra Logo" />
       <h2 className="text-md font-bold sr-only">Ingra</h2>
     </Link>
