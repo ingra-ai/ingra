@@ -3,13 +3,13 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Navbar } from '@/components/navbar';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import { Footer } from '@/components/footer';
+import { DOCS_APP_URL, APP_NAME } from '@repo/shared/lib/constants';
 import './globals.scss';
 
 export const metadata: Metadata = {
-  title: 'AriaDocs - Template',
-  metadataBase: new URL('https://ariadocs.vercel.app/'),
-  description: 'This comprehensive documentation template, crafted with Next.js and available as open-source, delivers a sleek and responsive design, tailored to meet all your project documentation requirements.',
+  title: `Docs | ${APP_NAME}`,
+  metadataBase: new URL(DOCS_APP_URL),
+  description: `Welcome to ${APP_NAME} documentation.`,
 };
 
 export default function RootLayout({
@@ -23,7 +23,6 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Navbar />
           <main className="sm:container mx-auto w-[88vw] h-auto">{children}</main>
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

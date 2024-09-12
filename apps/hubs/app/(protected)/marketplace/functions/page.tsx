@@ -8,7 +8,7 @@ import { fetchPaginationData } from './fetchPaginationData';
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();
 
-  const paginationData = await fetchPaginationData(searchParams, authSession?.userId || 'guest'),
+  const paginationData = await fetchPaginationData(searchParams, authSession?.userId),
     { records, ...paginationProps } = paginationData;
 
   const classes = cn('block'),

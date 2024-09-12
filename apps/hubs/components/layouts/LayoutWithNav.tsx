@@ -8,7 +8,7 @@ import { MenuIcon } from 'lucide-react';
 import { Button } from '@repo/components/ui/button';
 
 type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
-  authSession: AuthSessionResponse;
+  authSession?: AuthSessionResponse;
   className?: string;
 };
 

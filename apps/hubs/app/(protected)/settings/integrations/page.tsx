@@ -1,9 +1,11 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { notFound } from 'next/navigation';
+import { RedirectType, redirect } from 'next/navigation';
+import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import { IntegrationsSection } from './IntegrationsSection';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import type { Metadata } from 'next';
 import { GoogleIntegrationButton } from '@repo/components/GoogleIntegrationButton';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: ['Integrations', APP_NAME].join(' | '),
@@ -17,8 +19,12 @@ export const metadata: Metadata = {
 export default async function Page() {
   const authSession = await getAuthSession();
 
+  const headersList = headers(),
+    headerUrl = headersList.get('X-URL') || '',
+    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
+
   if (!authSession) {
-    return notFound();
+    redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
   return (
