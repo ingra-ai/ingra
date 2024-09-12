@@ -27,7 +27,7 @@ export const APP_AUTH_LOGIN_URL = `${AUTH_APP_URL}/login`;
 /**
  * When user is logged in and no idea where to land user to.
  */
-export const APP_LANDING_PAGE_URL = `${HUBS_APP_URL}/overview/dashboard`;
+export const APP_LANDING_PAGE_URL = `${HUBS_APP_URL}/marketplace/collections`;
 
 export const APP_LEGAL_PRIVACY_POLICY_URL = 'https://www.ingra.ai/legal/privacy-policy';
 export const APP_LEGAL_TOS_URL = 'https://www.ingra.ai/legal/terms-of-service';

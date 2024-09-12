@@ -7,7 +7,7 @@ import CommunityCollectionList from '@repo/components/data/collections/community
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();
 
-  const paginationData = await fetchPaginationData(searchParams, authSession?.userId || 'guest'),
+  const paginationData = await fetchPaginationData(searchParams, authSession?.userId),
     { records, ...paginationProps } = paginationData;
 
   const classes = cn('block');
