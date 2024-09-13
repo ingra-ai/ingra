@@ -1,4 +1,5 @@
-import { Leftbar } from '@/components/leftbar';
+import { Leftbar } from '@repo/components/navs/leftbar';
+import DocsMenu from '@/components/docs-menu';
 
 export default function DocsLayout({
   children,
@@ -7,7 +8,9 @@ export default function DocsLayout({
 }>) {
   return (
     <div className="flex items-start gap-14">
-      <Leftbar key="leftbar" />
+      <Leftbar key="leftbar">
+        <DocsMenu />
+      </Leftbar>
       <div className="flex-[4]">{children}</div>{' '}
     </div>
   );
