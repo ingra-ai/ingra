@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
-import { ThemeProvider } from '@/components/theme-provider';
-import { Navbar } from '@/components/navbar';
-import { DOCS_APP_URL, APP_NAME } from '@repo/shared/lib/constants';
+import { ThemeProvider } from '@repo/components/theme/theme-provider';
+import { Navbar } from '@repo/components/navs/navbar';
+import { DOCS_APP_URL, APP_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import { Inter as FontSans } from 'next/font/google';
+import { DOCS_PAGE_ROUTES } from '@/lib/routes-config';
+import DocsMenu from '@/components/docs-menu';
+import Search from '@/components/search';
 import './globals.scss';
 
 export const metadata: Metadata = {
@@ -16,6 +19,18 @@ const fontSans = FontSans({
   variable: '--font-sans',
 });
 
+const NAVLINKS = [
+  {
+    title: 'Docs',
+    href: '/docs',
+  },
+  {
+    title: 'Hubs',
+    href: HUBS_APP_URL + '/marketplace',
+    external: true,
+  },
+];
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +40,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={fontSans.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Navbar />
+          <Navbar 
+            navlinks={ NAVLINKS }
+            sheetChildren={ <DocsMenu /> }
+          >
+            <Search />
+          </Navbar>
           <main className="sm:container mx-auto w-[88vw] h-auto">{children}</main>
         </ThemeProvider>
       </body>
