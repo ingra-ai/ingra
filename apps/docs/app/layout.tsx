@@ -21,8 +21,12 @@ const fontSans = FontSans({
 
 const NAVLINKS = [
   {
-    title: 'Docs',
-    href: '/docs',
+    title: 'Documentation',
+    href: `/docs${DOCS_PAGE_ROUTES[0].href}`,
+  },
+  {
+    title: 'Blog',
+    href: `/blog`,
   },
   {
     title: 'Hubs',
