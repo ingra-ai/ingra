@@ -1,22 +1,27 @@
+import { PropsWithChildren } from 'react';
 import { ScrollArea } from '@repo/components/ui/scroll-area';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTrigger } from '@repo/components/ui/sheet';
 import { Logo, NavMenu } from './navbar';
 import { Button } from '@repo/components/ui/button';
 import { AlignLeftIcon } from 'lucide-react';
 import { DialogTitle } from '@repo/components/ui/dialog';
-import DocsMenu from './docs-menu';
+import { LeftbarProps, SheetLeftbarProps } from './types';
 
-export function Leftbar() {
+export function Leftbar(props: PropsWithChildren<LeftbarProps>) {
+  const { children } = props;
   return (
     <aside className="md:flex hidden flex-[1] min-w-[230px] sticky top-16 flex-col h-[94.5vh] overflow-y-auto">
       <ScrollArea className="py-4">
-        <DocsMenu />
+        {
+          children
+        }
       </ScrollArea>
     </aside>
   );
 }
 
-export function SheetLeftbar() {
+export function SheetLeftbar(props: PropsWithChildren<SheetLeftbarProps>) {
+  const { navlinks, children } = props;
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -33,10 +38,12 @@ export function SheetLeftbar() {
         </SheetHeader>
         <ScrollArea className="flex flex-col gap-4">
           <div className="flex flex-col gap-2.5 mt-3 mx-2 px-5">
-            <NavMenu isSheet />
+            <NavMenu navlinks={navlinks} isSheet />
           </div>
           <div className="mx-2 px-5">
-            <DocsMenu isSheet />
+            {
+              children
+            }
           </div>
           <div className="p-6 pb-4 flex gap-2.5"></div>
         </ScrollArea>

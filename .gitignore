@@ -41,3 +41,7 @@ yarn-error.log*
 .DS_Store
 *.pem
 .env*.local
+
+# Local scripts
+local-scripts/command_execution.log
+local-scripts/.venv/

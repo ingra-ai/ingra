@@ -24,51 +24,33 @@ const getSideNavRoutes = (authSession?: AuthSessionResponse) => {
   const username = authSession?.user?.profile?.userName || '';
 
   const sideNavRoutes: NavItem[] = [
-    username
-      ? {
-          name: 'Dashboard',
-          description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
-          href: '/overview/dashboard',
-          icon: LayoutDashboardIcon,
-        }
-      : false,
+    username ? (
+      {
+        name: 'Dashboard',
+        description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
+        href: '/overview/dashboard',
+        icon: LayoutDashboardIcon,
+      }
+    ) : false,
+    {
+      name: 'Marketplace',
+      description: 'Browse public collections and functions shared by other users.',
+      href: '/marketplace/collections',
+      icon: GlobeIcon,
+    },
+    username ? (
+      {
+        name: 'Repository',
+        description: 'Manage your collections and functions that you own or have access to.',
+        href: getUserRepoUri(username),
+        icon: Package2Icon,
+      }
+    ) : false,
     // {
     //   name: 'Assistant',
     //   description: 'Chat with your AI assistant, to get help with interacting with your available automations.',
     //   href: '/assistant',
     //   icon: BotMessageSquareIcon,
-    // },
-    {
-      name: 'Hubs',
-      description: 'Dynamic hubs that your AI can utilize, including collections, functions, subscriptions, workflows and more.',
-      children: [
-        {
-          name: 'Marketplace',
-          description: 'Browse public collections and functions shared by other users.',
-          href: '/marketplace/collections',
-          icon: GlobeIcon,
-        },
-        username
-          ? {
-              name: 'Repository',
-              description: 'Manage your collections and functions that you own or have access to.',
-              href: getUserRepoUri(username),
-              icon: Package2Icon,
-            }
-          : false,
-      ].filter(Boolean) as NavItemChild[],
-    },
-    // {
-    //   name: "Workflows",
-    //   description: "Generate workflows for automating tasks, including data processing, notifications, and more.",
-    //   children: [
-    //     {
-    //       name: 'Your Flows',
-    //       description: 'Access and manage your collection of workflows.',
-    //       href: '/flows',
-    //       icon: WorkflowIcon,
-    //     }
-    //   ],
     // },
   ].filter(Boolean) as NavItem[];
 

@@ -98,4 +98,4 @@ function getRecurrsiveAllLinks(node: EachRoute) {
   return ans;
 }
 
-export const page_routes = ROUTES.map((it) => getRecurrsiveAllLinks(it)).flat();
+export const DOCS_PAGE_ROUTES = ROUTES.map((it) => getRecurrsiveAllLinks(it)).flat();
