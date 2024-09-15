@@ -13,7 +13,7 @@ export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]
 
 /**
  * A bit of background story for this key.
- * For some reason, swagger jsdoc fails to generate the annotations from files when accessed on /v1/me/swagger.
+ * For some reason, swagger jsdoc fails to generate the annotations from files when accessed on /api/v1/me/swagger.
  * The issue only happens when deployed on vercel, but works fine on local.
  * Therefore, for the approach to work, we need to store the base swagger annotations in KV store, to keep the code cleaner.
  * @todo Remove this key when the issue is resolved.
