@@ -1,11 +1,12 @@
 import { type PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
-import { APP_DESCRIPTION, APP_NAME } from '@repo/shared/lib/constants';
+import { APP_DESCRIPTION, APP_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
-import '@css/globals.scss';
 import { Toaster } from '@repo/components/ui/toaster';
 import { HotjarAnalytics } from '@repo/components/analytics/HotjarAnalytics';
+import { ThemeProvider } from '@repo/components/theme/theme-provider';
+import '@css/globals.scss';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -14,12 +15,11 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   title: APP_NAME,
+  metadataBase: new URL(HUBS_APP_URL),
   description: APP_DESCRIPTION,
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const bodyClasses = cn('dark', fontSans.className);
-
   return (
     <html lang="en">
       <head>
@@ -27,8 +27,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <meta name="robots" content="noindex, nofollow" />
         <HotjarAnalytics />
       </head>
-      <body className={bodyClasses} data-testid="layout-body">
-        {children}
+      <body className={fontSans.className} data-testid="layout-body">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>

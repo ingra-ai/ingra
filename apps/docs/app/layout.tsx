@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
-import { ThemeProvider } from '@/components/theme-provider';
-import { Navbar } from '@/components/navbar';
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
-import { DOCS_APP_URL, APP_NAME } from '@repo/shared/lib/constants';
+import { ThemeProvider } from '@repo/components/theme/theme-provider';
+import { Navbar } from '@repo/components/navs/navbar';
+import { DOCS_APP_URL, APP_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { Inter as FontSans } from 'next/font/google';
+import { DOCS_PAGE_ROUTES } from '@/lib/routes-config';
+import DocsMenu from '@/components/docs-menu';
+import Search from '@/components/search';
 import './globals.scss';
 
 export const metadata: Metadata = {
@@ -12,6 +14,27 @@ export const metadata: Metadata = {
   description: `Welcome to ${APP_NAME} documentation.`,
 };
 
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
+
+const NAVLINKS = [
+  {
+    title: 'Documentation',
+    href: `/docs${DOCS_PAGE_ROUTES[0].href}`,
+  },
+  {
+    title: 'Blog',
+    href: `/blog`,
+  },
+  {
+    title: 'Hubs',
+    href: HUBS_APP_URL + '/marketplace',
+    external: true,
+  },
+];
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,9 +42,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.variable} ${GeistMono.variable} font-regular`} suppressHydrationWarning>
+      <body className={fontSans.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Navbar />
+          <Navbar 
+            navlinks={ NAVLINKS }
+            sheetChildren={ <DocsMenu /> }
+          >
+            <Search />
+          </Navbar>
           <main className="sm:container mx-auto w-[88vw] h-auto">{children}</main>
         </ThemeProvider>
       </body>
