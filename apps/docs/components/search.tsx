@@ -5,7 +5,7 @@ import { Input } from '@repo/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogClose, DialogTitle } from '@repo/components/ui/dialog';
 import { ScrollArea } from '@repo/components/ui/scroll-area';
 import { useEffect, useMemo, useState } from 'react';
-import Anchor from './anchor';
+import Anchor from '@repo/components/navs/anchor';
 import { advanceSearch, cn } from '@/lib/utils';
 
 export default function Search() {

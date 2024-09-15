@@ -1,7 +1,7 @@
 'use client';
 
 import { EachRoute } from '@/lib/routes-config';
-import Anchor from './anchor';
+import Anchor from '@repo/components/navs/anchor';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { SheetClose } from '@repo/components/ui/sheet';
