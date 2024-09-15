@@ -1,0 +1,85 @@
+---
+title: "Using Functions Calling and NGROK to Generate this MDX Page (via ChatGPT)"
+description: "Explore how to unlock the potential of being a software engineer by simply prompting with your voice through LLMs. This guide demonstrates the process of using Ingra functions and ngrok to dynamically generate an MDX blog page via ChatGPT, showcasing the future of hands-free coding and content creation."
+date: 09-15-2024
+authors:
+  - avatar: "https://avatars.githubusercontent.com/u/5223310?v=4"
+    handle: chozzz
+    username: Vadi Taslim
+    handleUrl: "https://github.com/chozzz"
+---
+
+## Introduction: The Future of Coding with Voice and LLMs
+
+Imagine being able to perform complex software engineering tasks with nothing more than your voice. By harnessing the power of large language models (LLMs) like ChatGPT, Ingra functions, and ngrok, you can turn this vision into reality. In this blog post, we explore how you can use voice prompts through ChatGPT to control your local machine, showcasing how this very MDX file was created using remote shell execution and function calling.
+
+## Utilizing Ingra and ChatGPT to Control Your Home Computer
+
+This setup enables remote shell command execution on your local machine using ngrok, Ingra functions, and ChatGPT function calling capabilities. Here’s how it all works:
+
+- **Ngrok Setup**: Using `ngrok`, we expose a local Flask server (`./local-scripts/flask_server.py`) to the internet, enabling secure remote access.
+- **Ingra Functions**: The `executeRemoteShellCommand` function is curated on the Ingra platform, allowing remote execution of shell commands.
+- **ChatGPT Function Calling**: ChatGPT triggers these shell commands to perform actions such as creating utility scripts, committing changes to GitHub, and more.
+
+## Example Workflow: Creating This Blog Post
+
+In this session, I set up `ngrok` on my local computer to point to `./local-scripts/flask_server.py`. By configuring the `LOCAL_NGROK_URL` and `LOCAL_NGROK_BEARER` environment variables in Ingra, we enable secure communication.
+
+### Example Usage
+With this setup, I utilized ChatGPT function calling to:
+
+- **Curate `executeRemoteShellCommand` in Ingra**: This function allows for the execution of remote shell commands.
+- **Trigger Shell Commands via ChatGPT**: Commands such as creating the `local-scripts` utility for the Ingra GitHub repository.
+- **Automate Git Commands**: Trigger `git commit` and `git push` through simple prompts.
+
+Here’s a sample chat session that covered these actions:
+- **ChatGPT Chat Log**: [View the session](https://chatgpt.com/share/66e59238-dddc-8003-a47f-d4460c4e1c54)
+
+### Commands and Outputs
+
+#### Output Function (`executeRemoteShellCommand` at Ingra):
+- [View the function](https://hubs.ingra.ai/repo/bakabit/functions/view/578caac0-1f9e-4c44-bf37-4560a15fa395)
+
+#### Output Pull Request:
+- [View the Pull Request](https://github.com/ingra-ai/ingra/pull/45/commits/2d29c6a947e38899fcc23e6a6eb57d4e732e12bf)
+
+#### Output README: How You Can Remotely Control Your Computer with GPT
+- [View the README](https://github.com/ingra-ai/ingra/blob/3260135f5afac3a92465f7b9cdf0bb8c1ffa21c7/local-scripts/README.md)
+
+## Step-by-Step Guide: From Prompt to Execution
+
+### Step 1: Setting Up Your Environment
+Before diving into the commands, let’s set up the environment:
+
+1. **Ngrok**: Ensure `ngrok` is installed on your local machine to expose a local server securely.
+2. **Ingra Functions**: Set up Ingra functions to execute Node.js functions remotely and securely.
+3. **ChatGPT**: Use ChatGPT’s function calling to trigger shell commands that control your local machine.
+
+### Step 2: Understanding the Components
+#### 1. Ngrok
+Ngrok creates a secure tunnel to your localhost, allowing for remote shell command execution on your local machine.
+
+#### 2. Ingra Functions
+Ingra provides the `executeRemoteShellCommand` function, which allows you to execute shell commands on a remote server exposed via ngrok.
+
+### Step 3: Executing Remote Commands
+With this setup, commands like the following are executed remotely through ChatGPT prompts:
+```bash
+// Command to list files in the blog directory
+executeRemoteShellCommand({ command: ls ./apps/docs/contents/blogs/ });
+
+// Command to read content for the blog
+executeRemoteShellCommand({ command: cat ./local-scripts/README.md });
+
+// Command to create this MDX file
+executeRemoteShellCommand({ command: "echo MDX content here > ./apps/docs/contents/blogs/new-blog.mdx" });
+```
+
+### Step 4: Automating with ChatGPT
+By leveraging ChatGPT, you automate the execution of these commands, generate content, and manage files on your local machine—all through simple voice or text prompts.
+
+## Conclusion: The Future is Voice and Automation
+
+By combining the power of Ingra functions, ngrok, and ChatGPT, we’ve demonstrated how to generate this blog post and manage your local machine without manually writing a single line of code. This approach not only simplifies software engineering tasks but also makes them accessible to everyone, regardless of technical background.
+
+Welcome to the future of software engineering, where complex workflows are just a conversation away. 🚀
