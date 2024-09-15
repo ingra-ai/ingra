@@ -20,42 +20,20 @@ export const ROUTES: EachRoute[] = [
         items: [
           { title: 'Account Setup', href: '/account-setup' },
           { title: 'ChatGPT Setup', href: '/chatgpt-setup' },
-          { title: 'LangChain Setup', href: '/langchain-setup' },
+          // { title: 'LangChain Setup', href: '/langchain-setup' },
         ],
-      },
-      {
-        title: 'Project Structure',
-        href: '/project-structure',
-        items: [
-          { title: 'Layouts', href: '/layouts' },
-          { title: 'Integrations', href: '/integrations' },
-          {
-            title: 'Manual',
-            href: '/manual',
-            items: [
-              { title: 'JavaScript', href: '/javascript' },
-              { title: 'Typescript', href: '/typescript' },
-              { title: 'Golang', href: '/golang' },
-            ],
-          },
-        ],
-      },
-      { title: 'Changelog', href: '/changelog' },
-      {
-        title: 'FAQ',
-        href: '/faq',
-      },
+      }
     ],
   },
-  {
-    title: 'Curating Functions',
-    href: '/curating-functions',
-    noLink: true,
-    items: [
-      { title: 'via Web UI', href: '/via-web-ui' },
-      { title: 'via ChatGPT', href: '/via-chatgpt' },
-    ],
-  },
+  // {
+  //   title: 'Curating Functions',
+  //   href: '/curating-functions',
+  //   noLink: true,
+  //   items: [
+  //     { title: 'via Web UI', href: '/via-web-ui' },
+  //     { title: 'via ChatGPT', href: '/via-chatgpt' },
+  //   ],
+  // },
   {
     title: 'Features',
     href: '/features',
