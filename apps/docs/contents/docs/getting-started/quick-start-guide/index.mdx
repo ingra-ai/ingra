@@ -1,71 +1,44 @@
 ---
-title: Quick Start Guide
-description: This section provides an overview of Quick Start Guide.
+title: Ingra Quick Start Guide
+description: A step-by-step guide to quickly get started with Ingra, exploring curated collections and functions in the Hubs Marketplace, and setting up custom integrations with GPTs and LLMs.
 ---
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam iste dolorum tempore consectetur explicabo tempora provident quia maxime, molestiae, facilis aperiam et, error illum vel ullam? Quis architecto dolore ullam
+# Quick Start Guide
 
-## Overview
 
-Welcome to the `Quick Start Guide` section. Here, you'll find all the information you need to get started with our application.
+<Stepper>
+  <StepperItem title="Visit Hubs Marketplace">
+    <Note title="Sign-in dependency" type="warning">
+      If you're just viewing around marketplace, you don't need to [Sign-in]({CONST.APP_AUTH_LOGIN_URL}).
+    </Note>
 
-## Content
+## View community curated collections or functions.
+    [Hubs Marketplace]({CONST.HUBS_MARKETPLACE_URL}) is community driven, developers may host their own public functions or collections by curating their own and opt-in to make it `Public`.
 
-- **Introduction**: Get to know the basics.
-- **Installation**: Step-by-step guide to set up the application.
-- **Configuration**: Learn how to configure the application.
-- **Examples**: Check out some practical examples.
-- **FAQ**: Frequently Asked Questions.
+    <Note title="Good to know" type="note">
+      - To invoke the functions that you curated or subscribed to, LLMs require your [openapi.json]({CONST.HUBS_OPENAPI_URL}). Therefore you need to [Sign-in]({CONST.APP_AUTH_LOGIN_URL}) with your email.
+    </Note>
 
-## Getting Started
+    Ingra automatically creates an API endpoint for those functions, and provides your [openapi.json]({CONST.HUBS_OPENAPI_URL}) that you can just paste into GPTs / LLMs.
 
-### Step 1: Introduction
+    To setup with Custom ChatGPT, read our documentation at [ChatGPT Setup](/docs/getting-started/quick-start-guide/chatgpt-setup)
 
-The `Quick Start Guide` section introduces you to the core concepts and functionalities of our application. It is designed to help you understand the essentials and get started quickly.
+  </StepperItem>
 
-### Step 2: Installation
+  <StepperItem title="Account Setup">
 
-Follow these steps to install the necessary components:
+    To access these functions from your GPTs, you will need to setup your account at Ingra.
 
-1. **Install Node.js**: Ensure you have Node.js installed.
-2. **Clone the Repository**: Clone our GitHub repository to your local machine.
-   ```bash
-   git clone https://github.com/your-repo/your-project.git
-   ```
-3. **Install Dependencies**: Navigate to the project directory and install dependencies.
-   ```bash
-   cd your-project
-   npm install
-   ```
+    Read more about this at [Account Setup at Ingra](/docs/getting-started/quick-start-guide/account-setup)
+  </StepperItem>
 
-### Step 3: Configuration
+  <StepperItem title="(Optional 1) Integration with ChatGPT">
+    Read more about this at [ChatGPT Setup with Ingra](/docs/getting-started/quick-start-guide/chatgpt-setup)
+  </StepperItem>
 
-Configure your application by creating a `config.json` file and setting the required parameters.
+  <StepperItem title="(Optional 2) Integration with LangChain">
+    Read more about this at [LangChain Setup with Ingra](/docs/getting-started/quick-start-guide/langchain-setup)
+  </StepperItem>
+</Stepper>
 
-### Step 4: Examples
 
-Here is an code block with line highlight and filename:
-
-```jsx:app.jsx showLineNumbers {8}
-// Basic usage example
-import React from 'react';
-import { ExampleComponent } from 'your-library';
-
-function App() {
-  return (
-    <div>
-      <ExampleComponent />
-    </div>
-  );
-}
-
-export default App;
-```
-
-### Step 5: FAQ
-
-Find answers to common questions in our [FAQ section](#).
-
-## Conclusion
-
-The `Quick Start Guide` section is your starting point for exploring the application. Follow the steps above to get started quickly and easily.
