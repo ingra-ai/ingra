@@ -43,6 +43,19 @@ export const APP_SETTINGS_API_URI = '/settings/api';
 export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
 
 /**
+ * Route Helper Constants
+ */
+export const HUBS_MARKETPLACE_URL = APP_LANDING_PAGE_URL;
+export const HUBS_OPENAPI_URI = '/overview/openapi';
+export const HUBS_OPENAPI_URL = `${HUBS_APP_URL}${HUBS_OPENAPI_URI}`;
+
+export const HUBS_SWAGGER_URI = '/api/v1/me/swagger';
+export const HUBS_SWAGGER_URL = `${HUBS_APP_URL}${HUBS_SWAGGER_URI}`;
+
+export const HUBS_APIKEY_SETUP_URI = APP_SETTINGS_API_URI;
+export const HUBS_APIKEY_SETUP_URL = `${HUBS_APP_URL}${HUBS_APIKEY_SETUP_URI}`;
+
+/**
  * The version of the app as defined in package.json
  */
 export const APP_PACKAGE_VERSION = process.env.npm_package_version || '0.0.1';
