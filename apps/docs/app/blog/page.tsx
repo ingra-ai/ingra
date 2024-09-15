@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'AriaDocs - Blog',
+  title: 'Blog | Ingra',
 };
 
 export default async function BlogIndexPage() {
