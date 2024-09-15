@@ -1,0 +1,28 @@
+<Note title="Good to know about built-in" type="info">
+  Everyone has access to built-in functions. This is useful to curate functins from GPTs or LLMs, introducing new variants of coding methodology.
+  
+  Read more about it [here](/docs/features/builtin-functions)
+</Note>
+
+## Setting up API Key at Ingra
+
+### [API Key]({CONST.HUBS_APIKEY_SETUP_URL}) Setup
+
+In order for GPTs to invoke your function from anywhere, it's important to keep it secured.
+
+For example, OpenAI Custom ChatGPT requires this. You can read more about this at [ChatGPT Setup with Ingra](/docs/getting-started/quick-start-guide/chatgpt-setup)
+
+## Setting up Environment Variables and OAuth Integrations at Ingra
+
+Ingra hosts your functions that you own or subscribed to in a form of API which can be accessed by LLMs.
+
+
+### [Environment Variables]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_ENV_VARS_URI}) Setup
+
+Functions are mostly curated with environment variables to complete a task.
+
+Ingra provides a way for your functions to communicate to third-parties. Therefore, you can store these keys at [Environment Variables]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_ENV_VARS_URI}) which Ingra will pass them as `arguments` to said functions.
+
+### [OAuth Integrations]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_INTEGRATIONS_URI}) Setup
+
+Read more about this at [Google API Integration at Ingra](/docs/getting-started/integrations/google-api-integration)
