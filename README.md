@@ -11,7 +11,7 @@ This repository is organized as a Turborepo, containing multiple applications an
 
 ## Documentation
 
-Visit [https://docs.ingra.ai]([https://nextjs.org/docs](https://docs.ingra.ai) to view the full documentation.
+Visit [https://docs.ingra.ai](https://docs.ingra.ai) to view the full documentation.
 
 ### Applications
 
