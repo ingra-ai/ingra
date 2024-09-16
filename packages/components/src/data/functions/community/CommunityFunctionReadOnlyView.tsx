@@ -1,17 +1,22 @@
 'use client';
 import { useCallback, useState, type FC } from 'react';
 import { Button } from '../../../ui/button';
-import { BugPlayIcon } from 'lucide-react';
+import { Logger } from '@repo/shared/lib/logger';
+import { BugPlayIcon, CopyPlusIcon, ListChecksIcon } from 'lucide-react';
 import type { Prisma } from '@repo/db/prisma';
 import CodeEditorInput from '../../../CodeEditorInput';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { useRouter } from 'next/navigation';
+import { useToast } from '../../../ui/use-toast';
 import { FormSlideOver } from '../../../slideovers/FormSlideOver';
 import { EnvVarsSection } from '../../../data/envVars/EnvVarsSection';
 import { EnvVarsOptionalPayload } from '../../../data/envVars/types';
 import { cn } from '@repo/shared/lib/utils';
 import { UserVarsTable } from '../../../data/envVars/UserVarsTable';
 import { CodeSandboxForm } from '../../../data/functions/mine/CodeSandboxForm';
+import { ToastAction } from '../../../ui/toast';
+import { cloneFunction } from '@repo/shared/actions/functions';
+import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 
 type CommunityFunctionReadOnlyViewProps = {
   functionRecord: Prisma.FunctionGetPayload<{
@@ -31,11 +36,75 @@ type CommunityFunctionReadOnlyViewProps = {
 export const CommunityFunctionReadOnlyView: FC<CommunityFunctionReadOnlyViewProps> = (props) => {
   const { functionRecord, authVars } = props;
   const router = useRouter();
+  const { toast } = useToast();
   const [isSandboxOpen, setSandboxOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const isUserAuthed = authVars !== false;
 
   const onCancel = useCallback(() => {
     router.back();
   }, []);
+
+  const onClone = useCallback(async () => {
+    if (!isUserAuthed) {
+      toast({
+        variant: 'destructive',
+        title: 'Unauthorized',
+        description: 'You must be logged in to perform this operation.',
+        action: (
+          <ToastAction altText="Sign in" onClick={() => router.replace(APP_AUTH_LOGIN_URL + '?redirectTo=' + encodeURIComponent(window.location.href))}>
+            Sign in
+          </ToastAction>
+        )
+      });
+      
+      return;
+    }
+
+    const functionId = functionRecord?.id;
+
+    setIsSaving(true);
+
+    const clonedFunction = await cloneFunction(functionId)
+      .then((result) => {
+        if (result.status !== 'ok') {
+          throw new Error(result.message);
+        }
+
+        const toastProps = {
+          title: 'Function cloned!',
+          description: 'Your function has been cloned.',
+          action: (<></>) as JSX.Element,
+        };
+
+        const functionHref = result?.data?.href;
+
+        if (functionHref) {
+          toastProps.action = (
+            <ToastAction altText="Cloned Function" onClick={() => router.replace(functionHref)}>
+              <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
+            </ToastAction>
+          );
+        }
+
+        toast(toastProps);
+        router.refresh();
+      })
+      .catch((error: Error) => {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to perform operation!',
+        });
+
+        Logger.error(error?.message);
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
+
+    return clonedFunction;
+  }, [isUserAuthed]);
 
   return (
     <div className="block min-h-full mt-4" data-testid="function-readonly-view">
@@ -44,6 +113,14 @@ export const CommunityFunctionReadOnlyView: FC<CommunityFunctionReadOnlyViewProp
           <div className="block">
             <div className="flex mb-3 leading-6 justify-between">
               <label className="block text-sm font-medium">Code &#40;Node.js&#41;</label>
+              <div className="relative">
+                <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex flex-col">
+                  <CopyPlusIcon className="h-5 w-5 ml-2" />
+                  <span className="text-xs">
+                     Clone
+                  </span>
+                </button>
+              </div>
             </div>
             <CodeEditorInput id="code-editor" value={functionRecord.code} readOnly={true} />
           </div>

@@ -8,12 +8,16 @@ import rehypeSlug from 'rehype-slug';
 import rehypeCodeTitles from 'rehype-code-titles';
 import { DOCS_PAGE_ROUTES } from './routes-config';
 import { visit } from 'unist-util-visit';
+import * as constants from '@repo/shared/lib/constants';
 
 // custom components imports
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/components/ui/tabs';
 import Pre from '@/components/pre';
 import Note from '@/components/note';
 import { Stepper, StepperItem } from '@repo/components/ui/stepper';
+
+// shared regex
+const CONST_SHORTCODE_REGEX = /{CONST\.([A-Z_]+)}/g;
 
 // add custom components
 const components = {
@@ -34,7 +38,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
     options: {
       parseFrontmatter: true,
       mdxOptions: {
-        rehypePlugins: [preProcess, rehypeCodeTitles, rehypePrism, rehypeSlug, rehypeAutolinkHeadings, postProcess],
+        rehypePlugins: [preProcess, rehypeReplaceVariables, rehypeCodeTitles, rehypePrism, rehypeSlug, rehypeAutolinkHeadings, postProcess],
         remarkPlugins: [remarkGfm],
       },
     },
@@ -64,18 +68,22 @@ export async function getDocsTocs(slug: string) {
   const rawMdx = await fs.readFile(contentPath, 'utf-8');
   // captures between ## - #### can modify accordingly
   const headingsRegex = /^(#{2,4})\s(.+)$/gm;
+
   let match;
   const extractedHeadings = [];
+
   while ((match = headingsRegex.exec(rawMdx)) !== null) {
     const headingLevel = match[1].length;
-    const headingText = match[2].trim();
+    const headingText = match[2].trim().replace(/''/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
     const slug = sluggify(headingText);
+    
     extractedHeadings.push({
       level: headingLevel,
       text: headingText,
       href: `#${slug}`,
     });
   }
+
   return extractedHeadings;
 }
 
@@ -103,6 +111,41 @@ const preProcess = () => (tree: any) => {
       const [codeEl] = node.children;
       if (codeEl.tagName !== 'code') return;
       node.raw = codeEl.children?.[0].value;
+    }
+  });
+};
+
+const rehypeReplaceVariables = () => (tree: any) => {
+  // Function to decode %7B to { and %7D to }
+  const decodeHtmlEntities = (str = '') => {
+    return (str || '').replace(/%7B/g, '{').replace(/%7D/g, '}');
+  };
+
+  // Visit all nodes, including elements and text
+  visit(tree, (node) => {
+    // Process text nodes
+    if (node?.type === 'text') {
+      node.value = decodeHtmlEntities(node.value).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
+        return (constants as any)?.[p1] || match;
+      });
+    }
+
+    // Process element nodes
+    if (node.type === 'element' || node.type === 'jsx') {
+      if (node.children && Array.isArray(node.children)) {
+        node.children.forEach((child: any) => {
+          if (child?.type === 'text') {
+            child.value = decodeHtmlEntities(child.value).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
+              return (constants as any)?.[p1] || match;
+            });
+          }
+          else if (child?.type === 'element' && child?.tagName === 'a' && child?.properties?.href) {
+            child.properties.href = decodeHtmlEntities(child.properties.href).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
+              return (constants as any)?.[p1] || match;
+            });
+          }
+        });
+      }
     }
   });
 };
