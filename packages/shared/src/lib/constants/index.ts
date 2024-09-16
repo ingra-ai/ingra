@@ -1,6 +1,7 @@
 export const IS_PROD = process.env.NODE_ENV === 'production';
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Ingra';
+export const APP_GITHUB_URL = process.env.NEXT_PUBLIC_APP_GITHUB_URL || 'https://github.com/ingra-ai/ingra';
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Open source personalized AI assistant, agents and tools for developers to build customized LLM functions tool calling.';
 
 export const PARENT_APP_URL = process.env.NEXT_PUBLIC_PARENT_APP_URL || 'https://www.ingra.ai';
