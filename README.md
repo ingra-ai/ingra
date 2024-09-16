@@ -9,6 +9,10 @@ Our goal is to make these tool freely available for everyone, and enabling a com
 
 This repository is organized as a Turborepo, containing multiple applications and packages:
 
+## Documentation
+
+Visit [https://docs.ingra.ai]([https://nextjs.org/docs](https://docs.ingra.ai) to view the full documentation.
+
 ### Applications
 
 - **`hubs`**: FS - Next.js application serving UI for hubs interface and serving LLM api calls for collections and functions.
