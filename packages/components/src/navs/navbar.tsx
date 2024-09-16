@@ -6,7 +6,7 @@ import Anchor from './anchor';
 import { SheetLeftbar } from './leftbar';
 import { buttonVariants } from '../ui/button';
 import { SheetClose } from '../ui/sheet';
-import { PARENT_APP_URL } from '@repo/shared/lib/constants';
+import { APP_GITHUB_URL, PARENT_APP_URL } from '@repo/shared/lib/constants';
 import { PropsWithChildren } from 'react';
 import { NavbarProps, NavMenuProps } from './types';
 
@@ -40,7 +40,7 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
               children
             }
             <div className="flex ml-2.5 sm:ml-0">
-              <Link href="https://github.com/ingra-ai/ingra" className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+              <Link href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
                 <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
               </Link>
               {/* <Link

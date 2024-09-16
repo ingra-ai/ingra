@@ -1,0 +1,112 @@
+---
+title: MDX Reference
+description: Cheat sheet for MDX formatting practices.
+---
+
+# MDX Reference Cheat Sheet
+
+## 1. Front Matter
+
+Front matter is used to define metadata for the MDX file such as title and description.
+
+```mdx
+---
+title: Introduction
+description: This section provides an overview of Introduction.
+---
+```
+
+## 2. Headings
+
+Use `#` for main titles, `##` for sections, and so on.
+
+```mdx
+## Overview
+```
+
+## 3. Paragraphs
+
+Standard paragraphs for content or descriptions.
+
+```mdx
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+```
+
+## 4. Lists
+
+Use hyphens (`-`) for unordered lists.
+
+```mdx
+- Node.js installed
+- Basic knowledge of command-line interface (CLI)
+```
+
+## 5. Blockquotes
+
+Use `>` for blockquotes to emphasize key points or quotes.
+
+```mdx
+> "Documentation is a love letter that you write to your future self." - Damian Conway
+```
+
+## 6. Inline Code
+
+Use backticks to highlight inline code or filenames.
+
+```mdx
+`Quick Start Guide`
+```
+
+## 7. Bold Text
+
+Use double asterisks (`**`) to make text bold.
+
+```mdx
+**Introduction**
+```
+
+
+## 8. Stepper
+
+Used for creating step-by-step guides with multiple items.
+
+```mdx
+<Stepper>
+  <StepperItem title="Clone the Repository">
+    Content for cloning the repository.
+  </StepperItem>
+  <StepperItem title="Install Dependencies">
+    Content for installing dependencies.
+  </StepperItem>
+</Stepper>
+```
+
+## 9. Tabs
+
+Used for creating tabbed interfaces with different content sections.
+
+```mdx
+<Tabs defaultValue="js" className="pt-5 pb-1">
+  <TabsList>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+    <TabsTrigger value="ts">TypeScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="js">
+    Content for JavaScript tab.
+  </TabsContent>
+  <TabsContent value="ts">
+    Content for TypeScript tab.
+  </TabsContent>
+</Tabs>
+```
+
+## 10. Note
+
+Used to highlight important information or warnings.
+
+```mdx
+<Note title="Remember" type="danger">
+  Important note content goes here.
+</Note>
+```
+

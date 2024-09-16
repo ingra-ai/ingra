@@ -11,58 +11,116 @@ authors:
 
 ## Introduction: The Future of Coding with Voice and LLMs
 
-Imagine being able to perform complex software engineering tasks with nothing more than your voice. By harnessing the power of large language models (LLMs) like ChatGPT, Ingra functions, and ngrok, you can turn this vision into reality. In this blog post, we explore how you can use voice prompts through ChatGPT to control your local machine, showcasing how this very MDX file was created using remote shell execution and function calling.
+Imagine performing complex software engineering tasks effortlessly with just your voice. By harnessing the power of large language models (LLMs) like ChatGPT, Ingra functions, and ngrok, you can turn this vision into reality. In this blog post, we explore how you can use voice prompts through ChatGPT to control your local machine, showcasing how this very MDX file was created using remote shell execution and function calling.
 
-## Utilizing Ingra and ChatGPT to Control Your Home Computer
+## Utilizing Ingra and ChatGPT to Control Your Local Machine
 
-This setup enables remote shell command execution on your local machine using ngrok, Ingra functions, and ChatGPT function calling capabilities. Here’s how it all works:
+Leverage the power of Ngrok, Ingra functions, and ChatGPT to execute remote shell commands on your local machine seamlessly. Here’s how it all works:
 
-- **Ngrok Setup**: Using `ngrok`, we expose a local Flask server (`./local-scripts/flask_server.py`) to the internet, enabling secure remote access.
+- **Ngrok Setup**: Using [ngrok]((https://ngrok.com/download)), we expose a local Flask server (`./local-scripts/flask_server.py`) to the internet, enabling secure remote access.
 - **Ingra Functions**: The `executeRemoteShellCommand` function is curated on the Ingra platform, allowing remote execution of shell commands.
 - **ChatGPT Function Calling**: ChatGPT triggers these shell commands to perform actions such as creating utility scripts, committing changes to GitHub, and more.
 
-## Example Workflow: Creating This Blog Post
+## Step by step Guide
 
-In this session, I set up `ngrok` on my local computer to point to `./local-scripts/flask_server.py`. By configuring the `LOCAL_NGROK_URL` and `LOCAL_NGROK_BEARER` environment variables in Ingra, we enable secure communication.
+<Stepper>
+  <StepperItem title="Run Flask Server in your local machine">
+    You can view our own [flask_server.py]({CONST.APP_GITHUB_URL}/blob/main/local-scripts/flask_server.py), or you can just copy and paste it to run it in your local.
 
-### Example Usage
-With this setup, I utilized ChatGPT function calling to:
+    ```sh
+    python3 ./flask_server.py
+    ```
 
-- **Curate `executeRemoteShellCommand` in Ingra**: This function allows for the execution of remote shell commands.
-- **Trigger Shell Commands via ChatGPT**: Commands such as creating the `local-scripts` utility for the Ingra GitHub repository.
-- **Automate Git Commands**: Trigger `git commit` and `git push` through simple prompts.
+    Once you run it, remember the `PORT` where Flask server is running on. In my case, it's `5000`
 
-Here’s a sample chat session that covered these actions:
-- **ChatGPT Chat Log**: [View the session](https://chatgpt.com/share/66e59238-dddc-8003-a47f-d4460c4e1c54)
+    <Note title="Bearer Token" type="info">
+      Ingra's [flask_server.py]({CONST.APP_GITHUB_URL}/blob/main/local-scripts/flask_server.py) require a bearer token which will be used at later stage.
+    </Note>
 
-### Commands and Outputs
+  </StepperItem>
+  <StepperItem title="Run Ngrok in your local machine">
+    Setting up ngrok is simple and free, follow their guide [at their page](https://ngrok.com/download)
 
-#### Output Function (`executeRemoteShellCommand` at Ingra):
-- [View the function](https://hubs.ingra.ai/repo/bakabit/functions/view/578caac0-1f9e-4c44-bf37-4560a15fa395)
+    Run Ngrok by specifying the Flask server `PORT` for secure access. In my case, it's `5000`
 
-#### Output Pull Request:
-- [View the Pull Request](https://github.com/ingra-ai/ingra/pull/45/commits/2d29c6a947e38899fcc23e6a6eb57d4e732e12bf)
+    ```sh
+    ngrok http 5000
+    ```
 
-#### Output README: How You Can Remotely Control Your Computer with GPT
-- [View the README](https://github.com/ingra-ai/ingra/blob/3260135f5afac3a92465f7b9cdf0bb8c1ffa21c7/local-scripts/README.md)
+    Once **ngrok** has started, it will provide you a public URL such as `https://11a0-255-55-55-200.ngrok-free.app`.
+  </StepperItem>
+  <StepperItem title="Saving to Ingra Environment Variables">
+    Create new environment variables at Ingra;
 
-## Step-by-Step Guide: From Prompt to Execution
+    | Name | Value |
+    | ---- | ---- |
+    | `LOCAL_NGROK_URL` | https://11a0-255-55-55-200.ngrok-free.app |
+    | `LOCAL_NGROK_BEARER` | Your-Bearer-Token-from-Step1 |
 
-### Step 1: Setting Up Your Environment
-Before diving into the commands, let’s set up the environment:
+    #### Via Web
+    
+    You can add it at your [Environment Variables at Ingra]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_ENV_VARS_URI})
 
-1. **Ngrok**: Ensure `ngrok` is installed on your local machine to expose a local server securely.
-2. **Ingra Functions**: Set up Ingra functions to execute Node.js functions remotely and securely.
-3. **ChatGPT**: Use ChatGPT’s function calling to trigger shell commands that control your local machine.
+    #### Via GPT (ChatGPT)
 
-### Step 2: Understanding the Components
+    To setup ChatGPT with Ingra, you can follow our guide here [Setting up Ingra for Custom ChatGPT](/docs/getting-started/quick-start-guide/chatgpt-setup)
+
+    And you can simply prompt the GPT with;
+
+    ```sh
+      Create new environment variables:
+      - LOCAL_NGROK_URL: https://11a0-255-55-55-200.ngrok-free.app
+      - LOCAL_NGROK_BEARER: Your-Bearer-Token-from-Step1
+    ```
+  </StepperItem>
+  <StepperItem title="Create the function at Ingra">
+    You have 3 options:
+    - Visit and clone this [executeRemoteShellCommand function](https://hubs.ingra.ai/repo/bakabit/functions/view/578caac0-1f9e-4c44-bf37-4560a15fa395) 
+    - Subscribe to function above, or the collection that contains it.
+    - Curate your own function, use above as reference.
+
+    <Note title="Test the function" type="note">
+      Once you have the function, visit your [Swagger]({CONST.HUBS_SWAGGER_URL}) to find the function and test it on the web.
+    </Note>
+  </StepperItem>
+  <StepperItem title="Invoke the function from GPT">
+    Once the function is set up, directly invoke it from ChatGPT by simply searching for the function. Since you already have [Built-in function](/docs/features/builtin-functions)
+
+    Example Prompt:
+    ```sh
+      Search for a function for ngrok
+    ```
+    ```sh
+      Search for a function named executeRemoteShellCommand
+    ```
+    etc..
+
+    Have a look at how I did it here [Shared ChatGPT Session](https://chatgpt.com/share/66e77f99-d910-8003-ba77-1301edee5634)
+
+
+    <Note title="Updating openapi.json" type="note">
+      Optionally, after you own the function - you can visit your [openapi.json]({CONST.HUBS_OPENAPI_URL}) and update to your own Custom ChatGPT.
+
+      Read more about that at [Setting up Ingra for Custom ChatGPT](/docs/getting-started/quick-start-guide/chatgpt-setup)
+    </Note>
+  </StepperItem>
+  <StepperItem title="That's it!">
+    You should now be able to run your home computer remotely, via ChatGPT.
+
+    <Note title="A Fun Note" type="success">
+      Try prompting it with voice command with mobile ChatGPT application.
+    </Note>
+  </StepperItem>
+</Stepper>
+
+### Understanding the Components
 #### 1. Ngrok
-Ngrok creates a secure tunnel to your localhost, allowing for remote shell command execution on your local machine.
+Ngrok creates a secure tunnel to your `localhost`, allowing for remote shell command execution on your local machine.
 
 #### 2. Ingra Functions
 Ingra provides the `executeRemoteShellCommand` function, which allows you to execute shell commands on a remote server exposed via ngrok.
 
-### Step 3: Executing Remote Commands
+### Executing Remote Commands
 With this setup, commands like the following are executed remotely through ChatGPT prompts:
 ```bash
 // Command to list files in the blog directory
@@ -75,8 +133,36 @@ executeRemoteShellCommand({ command: cat ./local-scripts/README.md });
 executeRemoteShellCommand({ command: "echo MDX content here > ./apps/docs/contents/blogs/new-blog.mdx" });
 ```
 
-### Step 4: Automating with ChatGPT
+### Automating with ChatGPT
 By leveraging ChatGPT, you automate the execution of these commands, generate content, and manage files on your local machine—all through simple voice or text prompts.
+
+
+-----
+
+### Example Workflow: Creating This Blog Post
+
+In this session, I set up `ngrok` on my local computer to point to `./local-scripts/flask_server.py`. By configuring the `LOCAL_NGROK_URL` and `LOCAL_NGROK_BEARER` environment variables in Ingra, we enable secure communication.
+
+#### Example Usage
+With this setup, I utilized ChatGPT function calling to:
+
+- **Curate `executeRemoteShellCommand` in Ingra**: This function allows for the execution of remote shell commands.
+- **Trigger Shell Commands via ChatGPT**: Commands such as creating the `local-scripts` utility for the Ingra GitHub repository.
+- **Automate Git Commands**: Trigger `git commit` and `git push` through simple prompts.
+
+Here’s a sample chat session that covered these actions:
+- **ChatGPT Chat Log**: [View the session](https://chatgpt.com/share/66e59238-dddc-8003-a47f-d4460c4e1c54)
+
+#### Commands and Outputs
+
+##### Output Function (`executeRemoteShellCommand` at Ingra):
+- [View the function](https://hubs.ingra.ai/repo/bakabit/functions/view/578caac0-1f9e-4c44-bf37-4560a15fa395)
+
+##### Output Pull Request:
+- [View the Pull Request]({CONST.APP_GITHUB_URL}/pull/45/commits/2d29c6a947e38899fcc23e6a6eb57d4e732e12bf)
+
+##### Output README: How You Can Remotely Control Your Computer with GPT
+- [View the README]({CONST.APP_GITHUB_URL}/blob/3260135f5afac3a92465f7b9cdf0bb8c1ffa21c7/local-scripts/README.md)
 
 ## Conclusion: The Future is Voice and Automation
 

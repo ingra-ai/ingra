@@ -1,6 +1,7 @@
 export const IS_PROD = process.env.NODE_ENV === 'production';
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Ingra';
+export const APP_GITHUB_URL = process.env.NEXT_PUBLIC_APP_GITHUB_URL || 'https://github.com/ingra-ai/ingra';
 export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Open source personalized AI assistant, agents and tools for developers to build customized LLM functions tool calling.';
 
 export const PARENT_APP_URL = process.env.NEXT_PUBLIC_PARENT_APP_URL || 'https://www.ingra.ai';
@@ -41,6 +42,19 @@ export const APP_SETTINGS_PROFILE_URI = '/settings/profile';
 export const APP_SETTINGS_INTEGRATIONS_URI = '/settings/integrations';
 export const APP_SETTINGS_API_URI = '/settings/api';
 export const APP_SETTINGS_ENV_VARS_URI = '/settings/env-vars';
+
+/**
+ * Route Helper Constants
+ */
+export const HUBS_MARKETPLACE_URL = APP_LANDING_PAGE_URL;
+export const HUBS_OPENAPI_URI = '/overview/openapi';
+export const HUBS_OPENAPI_URL = `${HUBS_APP_URL}${HUBS_OPENAPI_URI}`;
+
+export const HUBS_SWAGGER_URI = '/api/v1/me/swagger';
+export const HUBS_SWAGGER_URL = `${HUBS_APP_URL}${HUBS_SWAGGER_URI}`;
+
+export const HUBS_APIKEY_SETUP_URI = APP_SETTINGS_API_URI;
+export const HUBS_APIKEY_SETUP_URL = `${HUBS_APP_URL}${HUBS_APIKEY_SETUP_URI}`;
 
 /**
  * The version of the app as defined in package.json

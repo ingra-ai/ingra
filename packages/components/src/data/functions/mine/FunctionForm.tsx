@@ -260,8 +260,11 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                     {collections.length > 0 && functionRecord?.id && (
                       <ToggleCollectionMenuButton functionId={functionRecord.id || ''} collections={collections} onCheckedChange={onFunctionCollectionToggleChanged} className="p-2 bg-card mx-4" iconClassName="h-5 w-5" />
                     )}
-                    <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500">
+                    <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex flex-col">
                       <CopyPlusIcon className="h-5 w-5 ml-2" />
+                      <span className="text-xs">
+                        Clone
+                      </span>
                     </button>
                   </div>
                 )}
