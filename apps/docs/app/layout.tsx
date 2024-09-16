@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: `Docs | ${APP_NAME}`,
   metadataBase: new URL(DOCS_APP_URL),
   description: `Welcome to ${APP_NAME} documentation.`,
+  robots: 'index, follow',
 };
 
 const fontSans = FontSans({
