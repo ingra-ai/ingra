@@ -11,13 +11,13 @@ authors:
 
 ## Introduction: The Future of Coding with Voice and LLMs
 
-Imagine performing complex software engineering tasks effortlessly with just your voice. By harnessing the power of large language models (LLMs) like ChatGPT, Ingra functions, and ngrok, you can turn this vision into reality. In this blog post, we explore how you can use voice prompts through ChatGPT to control your local machine, showcasing how this very MDX file was created using remote shell execution and function calling.
+Imagine being able to perform complex software engineering tasks with nothing more than your voice. By harnessing the power of large language models (LLMs) like ChatGPT, Ingra functions, and ngrok, you can turn this vision into reality. In this blog post, we explore how you can use voice prompts through ChatGPT to control your local machine, showcasing how this very MDX file was created using remote shell execution and function calling.
 
 ## Utilizing Ingra and ChatGPT to Control Your Local Machine
 
-Leverage the power of Ngrok, Ingra functions, and ChatGPT to execute remote shell commands on your local machine seamlessly. Here’s how it all works:
+This setup enables remote shell command execution on your local machine using ngrok, Ingra functions, and ChatGPT function calling capabilities. Here’s how it all works:
 
-- **Ngrok Setup**: Using [ngrok]((https://ngrok.com/download)), we expose a local Flask server (`./local-scripts/flask_server.py`) to the internet, enabling secure remote access.
+- **Ngrok Setup**: Using `ngrok`, we expose a local Flask server (`./local-scripts/flask_server.py`) to the internet, enabling secure remote access.
 - **Ingra Functions**: The `executeRemoteShellCommand` function is curated on the Ingra platform, allowing remote execution of shell commands.
 - **ChatGPT Function Calling**: ChatGPT triggers these shell commands to perform actions such as creating utility scripts, committing changes to GitHub, and more.
 
@@ -39,9 +39,9 @@ Leverage the power of Ngrok, Ingra functions, and ChatGPT to execute remote shel
 
   </StepperItem>
   <StepperItem title="Run Ngrok in your local machine">
-    Setting up ngrok is simple and free, follow their guide [at their page](https://ngrok.com/download)
+    Setting up ngrok is simple and free, follow their guide [at their Download page](https://ngrok.com/download)
 
-    Run Ngrok by specifying the Flask server `PORT` for secure access. In my case, it's `5000`
+    Run ngrok and provide the Flask server `PORT`. In my case, it's `5000`
 
     ```sh
     ngrok http 5000
@@ -84,7 +84,7 @@ Leverage the power of Ngrok, Ingra functions, and ChatGPT to execute remote shel
     </Note>
   </StepperItem>
   <StepperItem title="Invoke the function from GPT">
-    Once the function is set up, directly invoke it from ChatGPT by simply searching for the function. Since you already have [Built-in function](/docs/features/builtin-functions)
+    Once you have the function, you can invoke it directly from ChatGPT by searching the function first. Since you already have [Built-in function](/docs/features/builtin-functions)
 
     Example Prompt:
     ```sh
@@ -115,7 +115,7 @@ Leverage the power of Ngrok, Ingra functions, and ChatGPT to execute remote shel
 
 ### Understanding the Components
 #### 1. Ngrok
-Ngrok creates a secure tunnel to your `localhost`, allowing for remote shell command execution on your local machine.
+Ngrok creates a secure tunnel to your localhost, allowing for remote shell command execution on your local machine.
 
 #### 2. Ingra Functions
 Ingra provides the `executeRemoteShellCommand` function, which allows you to execute shell commands on a remote server exposed via ngrok.
