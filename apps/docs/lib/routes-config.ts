@@ -22,6 +22,13 @@ export const ROUTES: EachRoute[] = [
           { title: 'ChatGPT Setup', href: '/chatgpt-setup' },
           // { title: 'LangChain Setup', href: '/langchain-setup' },
         ],
+      },
+      { 
+        title: 'Integrations',
+        href: '/integrations',
+        items: [
+          { title: 'Google API Integration', href: '/google-api-integration' },
+        ],
       }
     ],
   },
