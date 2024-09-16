@@ -1,14 +1,35 @@
-# Integrations
 
-Ingra integrates with several third-party services to extend its functionality:
+## Third-Party OAuth Integrations
 
-## Google Services
-- Access Google Calendar, Contacts, Gmail, Drive, and Sheets through various API scopes.
-- Uses OAuth 2.0 for secure access.
+Ingra supports integrations with third-party services to enhance its capabilities and streamline your workflow. Currently, Ingra offers integration through Google OAuth, allowing you to connect with various Google services. In the future, more third-party OAuth integrations will be added to provide even greater flexibility and options.
 
-## AWS SES
-- Utilizes Amazon Simple Email Service for sending emails and notifications.
+### Current Integration: Google OAuth
+- **Google Services**: Connect with Google Calendar, Contacts, Gmail, Drive, and Sheets.
+- **Optional Integration**: This is not required for using Ingra’s core features. Only enable it if you need specific functionalities that interact with Google services.
 
-## Custom APIs
-- Integrate custom APIs with Ingra to extend its capabilities using REST or GraphQL.
+### Upcoming Integrations
+We are actively working on integrating more third-party services to broaden Ingra’s capabilities. Stay tuned for more integrations that will allow you to connect with an even wider range of tools and services to suit your needs.
+
+## Google Services Integration
+
+Ingra offers the ability to integrate with various Google services, such as Calendar, Contacts, Gmail, Drive, and Sheets. This integration is optional and is only required if you want to use specific functions that interact with Google services.
+
+### Why Use Google API Integration?
+- **Optional Feature**: Google API integration is not mandatory for using Ingra. It is provided as an optional feature to enhance your workflow.
+- **Access to Specific Functions**: Certain functions available in the Ingra marketplace require Google API access. For example, automating calendar events, managing contacts, or handling Gmail tasks.
+
+### How It Works
+When you enable Google API integration, Ingra's Function uses your Google OAuth token to perform actions on your behalf. You have full control over the permissions granted and can revoke access at any time.
+
+Read more about specific Google API scopes and permissions in the [Google API Integration Guide](/docs/getting-started/integrations/google-api-integration).
+
+### When Should You Enable Google Integration?
+You should consider enabling Google API integration if:
+- You want to automate or manage tasks related to Google services like Calendar, Contacts, or Gmail using Ingra’s functions.
+- You need to access or modify Google Drive files and Google Sheets as part of your workflow.
+
+### When Google Integration Is Not Required
+- **Basic Ingra Functions**: If you only intend to use Ingra’s core features and functions that do not interact with Google services, you do not need to enable Google API integration.
+- **Privacy and Security**: If you have privacy concerns or do not wish to grant access to your Google data, you can choose not to enable this integration.
+
 
