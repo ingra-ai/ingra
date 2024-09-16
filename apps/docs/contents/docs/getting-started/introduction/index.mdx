@@ -12,14 +12,50 @@ Ingra hosts functions that you own or subscribed to, as an API which can be acce
 
 All the functions that is accessible to user can also be viewed at the following [Swagger]({CONST.HUBS_SWAGGER_URL})
 
+
+#### How Ingra works with LLMs / GPTs (e.g. ChatGPT)
+
+Following is a graph visualizing how Ingra plays a role for any LLMs or GPTs Function Tool Calling.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User
+    participant GPT
+    participant IngraHubs as Ingra Hubs
+    participant VM as Secure VM
+    participant Function as Function Logic
+
+    User->>GPT: Sends Prompt
+    GPT->>IngraHubs: API Request (openapi.json)
+    IngraHubs->>VM: Invoke Function
+    VM->>Function: Load Context (Env Vars, OAuth Tokens, Args)
+    Function-->>VM: Execute Logic
+    VM-->>IngraHubs: Return Result
+    IngraHubs-->>GPT: Send Result
+    GPT-->>User: Provide Output
+
+    %% Add self-feedback loop
+    alt Self-Feedback Needed
+        GPT->>GPT: Self-Feedback & Re-Evaluate
+        GPT->>IngraHubs: Re-Invoke API
+    end
+```
+Lets break down each step in detail:
+1. **User Sends Prompt**: The interaction begins with the user sending a prompt to GPT. This could be a request for information, an action to perform, or any task that GPT can interpret.
+2. **GPT Processes the Prompt**: GPT interprets the users prompt and formulates an API request using the `openapi.json` schema provided by Ingra Hubs.
+3. **Ingra Hubs Receives the Request**: Ingra Hubs takes the API request, identifies the appropriate function, and validates it before proceeding.
+4. **Secure VM Invokes the Function**: Once validated, Ingra Hubs invokes the function within a secure Virtual Machine (VM). This ensures safe and isolated execution of the function.
+5. **Load Function Context**: Within the VM, the function loads its context, which includes environment variables, OAuth tokens, and any arguments necessary for execution.
+6. **Execute Function Logic**: The function logic is executed using the loaded context. This step is where the main processing occurs based on the users initial prompt.
+7. **Return Execution Result**: After execution, the VM returns the result back to Ingra Hubs, which processes the output.
+8. **GPT Provides Output**: Ingra Hubs sends the execution result back to GPT, which then provides the final output to the user.
+## Self-Feedback and Re-Evaluation
+One of the powerful features of this workflow is the self-feedback loop within GPT. After the initial result is provided to the user, GPT can:
+- **Self-Feedback**: Analyze the output to determine if further iterations are needed.
+- **Adjust & Re-Evaluate**: If required, GPT can adjust its prompt or API request and re-invoke the function through Ingra Hubs for improved results.
+This iterative process allows for more dynamic interactions and ensures that the output aligns closely with the users needs.
+
 ## Core Features
 
-Ingra offers a suite of powerful features, summarized as follows:
-- **Functions Hub**: Discover, curate, and manage a diverse set of functions. Supports self-function generation tailored to user needs, empowering LLMs to call and create functions dynamically.
-
-- **OpenAPI and Swagger Specs**: Auto-generated specs for curated functions, simplifying integration with external services.
-- **VM Execution**: Secure virtual machine environment for safe and isolated function execution.
-- **Privacy Controls**: Granular privacy settings to manage data access and interactions with AI.
-- **Function Marketplace**: Community-driven space to share and customize functions, fostering collaboration in AI tool creation.
-
-- **ChatGPT Plugin Integration**: Conversational interface to interact with functions through natural language commands, highlighting the FaaS capabilities of Ingra.
+Read more about it [here](/docs/features/core-features)
