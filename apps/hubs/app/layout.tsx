@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: APP_NAME,
   metadataBase: new URL(HUBS_APP_URL),
   description: APP_DESCRIPTION,
+  robots: 'noindex, nofollow',
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
@@ -24,7 +25,6 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="robots" content="noindex, nofollow" />
         <HotjarAnalytics />
       </head>
       <body className={fontSans.className} data-testid="layout-body">

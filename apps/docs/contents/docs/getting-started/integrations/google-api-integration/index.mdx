@@ -1,9 +1,12 @@
-# Google API Integration
+---
+title: Google API Integration in Ingra
+description: A comprehensive guide to using optional Google API integration in Ingra to enhance productivity. Learn about Google API scopes and how they extend Ingra’s capabilities.
+---
 
-Ingra requires specific permissions to Google services to manage and streamline various tasks effectively. This guide outlines the necessary Google API scopes and their purposes.
+Ingra offers optional Google API integration to enhance its functionality, allowing you to interact with Google services like Calendar, Contacts, Gmail, Drive, and Sheets. This integration is not mandatory but is available for users who want to leverage specific functions that require access to Google services.
 
 <Note title="Important" type="note">
-  Some of these permissions are required to run some functions that are available at marketplace.
+  This integration is optional and only required for functions that need access to Google services.
 </Note>
 
 ## Google API Scopes
@@ -11,7 +14,6 @@ Ingra requires specific permissions to Google services to manage and streamline 
 ### Basic Profile Information
 - `https://www.googleapis.com/auth/userinfo.email`: Access your email address to identify your Google account.
 - `https://www.googleapis.com/auth/userinfo.profile`: Access your basic profile information, such as your name and picture.
-
 
 ### Google Calendar
 - `https://www.googleapis.com/auth/calendar`: Full access to your Google Calendar, allowing the app to manage events and settings.
@@ -31,7 +33,6 @@ Ingra requires specific permissions to Google services to manage and streamline 
 - `https://www.googleapis.com/auth/drive.file`: View and manage Google Drive files and folders that you have opened or created with this app. (Optional scope for app-specific file access)
 - `https://www.googleapis.com/auth/drive.readonly`: View Google Drive files and folders that are shared with you. (Optional scope for read-only access)
 
-
 ### Google Sheets
 - `https://www.googleapis.com/auth/spreadsheets`: Full access to Google Sheets, allowing the app to view and manage your sheets.
 - `https://www.googleapis.com/auth/spreadsheets.readonly`: Read-only access to your Google Sheets. (Optional scope for read-only access)
@@ -39,4 +40,5 @@ Ingra requires specific permissions to Google services to manage and streamline 
 ### People API
 - `https://www.googleapis.com/auth/contacts`: Access to view and manage the contacts in your Google Account, using the People API.
 - `https://www.googleapis.com/auth/contacts.readonly`: Access to view your contacts and their photos. (Optional scope for read-only access)
+
 
