@@ -15,6 +15,7 @@ const fontSans = FontSans({
 export const metadata: Metadata = {
   title: APP_NAME,
   description: `Secure your access to ${APP_NAME}, the open-source personalized AI assistant platform. Experience seamless sign-in with advanced authentication features designed for developers building custom LLM functions and tool integrations.`,
+  robots: 'noindex, nofollow',
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
@@ -24,7 +25,6 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="robots" content="noindex, nofollow" />
         <HotjarAnalytics />
       </head>
       <body className={bodyClasses} data-testid="layout-body">
