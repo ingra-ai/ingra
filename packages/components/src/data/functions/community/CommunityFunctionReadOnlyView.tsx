@@ -55,9 +55,9 @@ export const CommunityFunctionReadOnlyView: FC<CommunityFunctionReadOnlyViewProp
           <ToastAction altText="Sign in" onClick={() => router.replace(APP_AUTH_LOGIN_URL + '?redirectTo=' + encodeURIComponent(window.location.href))}>
             Sign in
           </ToastAction>
-        )
+        ),
       });
-      
+
       return;
     }
 
@@ -116,9 +116,7 @@ export const CommunityFunctionReadOnlyView: FC<CommunityFunctionReadOnlyViewProp
               <div className="relative">
                 <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex flex-col">
                   <CopyPlusIcon className="h-5 w-5 ml-2" />
-                  <span className="text-xs">
-                     Clone
-                  </span>
+                  <span className="text-xs">Clone</span>
                 </button>
               </div>
             </div>
