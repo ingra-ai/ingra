@@ -14,7 +14,7 @@ export const ROUTES: EachRoute[] = [
     noLink: true,
     items: [
       { title: 'Introduction', href: '/introduction' },
-      { 
+      {
         title: 'Quick Start Guide',
         href: '/quick-start-guide',
         items: [
@@ -23,13 +23,11 @@ export const ROUTES: EachRoute[] = [
           // { title: 'LangChain Setup', href: '/langchain-setup' },
         ],
       },
-      { 
+      {
         title: 'Integrations',
         href: '/integrations',
-        items: [
-          { title: 'Google API Integration', href: '/google-api-integration' },
-        ],
-      }
+        items: [{ title: 'Google API Integration', href: '/google-api-integration' }],
+      },
     ],
   },
   // {

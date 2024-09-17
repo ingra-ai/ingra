@@ -31,7 +31,7 @@ const components = {
   Note,
   Stepper,
   StepperItem,
-  mermaid: Mermaid
+  mermaid: Mermaid,
 };
 
 // can be used for other pages like blogs, Guides etc
@@ -42,10 +42,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
       parseFrontmatter: true,
       mdxOptions: {
         rehypePlugins: [preProcess, rehypeReplaceVariables, rehypeCodeTitles, rehypePrism, rehypeSlug, rehypeAutolinkHeadings, postProcess],
-        remarkPlugins: [
-          remarkGfm,
-          [mdxMermaid],
-        ],
+        remarkPlugins: [remarkGfm, [mdxMermaid]],
       },
     },
     components,
@@ -73,16 +70,19 @@ export async function getDocsTocs(slug: string) {
   const contentPath = getDocsContentPath(slug);
   const rawMdx = await fs.readFile(contentPath, 'utf-8');
   // captures between ## - #### can modify accordingly
-  const headingsRegex = /^(#{2,4})\s(.+)$/gm;
+  const headingsRegex = /(#{2,4})\s([^\r\n]+)$/gm;
 
   let match;
   const extractedHeadings = [];
 
   while ((match = headingsRegex.exec(rawMdx)) !== null) {
     const headingLevel = match[1].length;
-    const headingText = match[2].trim().replace(/''/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
+    const headingText = match[2]
+      .trim()
+      .replace(/''/g, '')
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
     const slug = sluggify(headingText);
-    
+
     extractedHeadings.push({
       level: headingLevel,
       text: headingText,
@@ -144,8 +144,7 @@ const rehypeReplaceVariables = () => (tree: any) => {
             child.value = decodeHtmlEntities(child.value).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
               return (constants as any)?.[p1] || match;
             });
-          }
-          else if (child?.type === 'element' && child?.tagName === 'a' && child?.properties?.href) {
+          } else if (child?.type === 'element' && child?.tagName === 'a' && child?.properties?.href) {
             child.properties.href = decodeHtmlEntities(child.properties.href).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
               return (constants as any)?.[p1] || match;
             });
