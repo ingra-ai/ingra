@@ -1,34 +1,56 @@
 ---
 title: Account Setup Guide for Ingra
-
 description: A comprehensive guide on setting up your API Key, Environment Variables, and OAuth Integrations in Ingra. Learn how to secure function invocation and configure your account for seamless integration with GPTs and LLMs.
 ---
 
-<Note title="Good to know about built-in" type="info">
-  Everyone has access to built-in functions. This is useful to curate functins from GPTs or LLMs, introducing new variants of coding methodology.
-  
-  Read more about it [here](/docs/features/builtin-functions)
-</Note>
+# Account Setup Guide
 
-## Setting up API Key at Ingra
+<Stepper>
+  <StepperItem title="Step 1: Setting up Profile name">
+    ## Setting up Profile at Ingra
 
-### [API Key]({CONST.HUBS_APIKEY_SETUP_URL}) Setup
+    - Visit the [Profile]({CONST.HUBS_SETTINGS_PROFILE_URL}) page.
+    - Fill in required information such as `Timezone` and `Username`.
 
-In order for GPTs to invoke your function from anywhere, it's important to keep it secured.
+    <Note title="Usage of Timezone and Username" type="note">
+      **Timezone** and **Username** are utilized in Ingra Functions as part of **User Variables**. These variables are being used to execute functions accurately for user needs.
 
-For example, OpenAI Custom ChatGPT requires this. You can read more about this at [ChatGPT Setup with Ingra](/docs/getting-started/quick-start-guide/chatgpt-setup)
+      **Username** is currently not editable. This is unique per user, and being used as your identifier in your Ingra collections and functions URLs.
+    </Note>
+  </StepperItem>
 
-## Setting up Environment Variables and OAuth Integrations at Ingra
+  <StepperItem title="Step 2: Setting up API Key">
+    ## Setting up API Key at Ingra
 
-Ingra hosts your functions that you own or subscribed to in a form of API which can be accessed by LLMs.
+    - Visit the [API Key Setup]({CONST.HUBS_SETTINGS_APIKEY_URL}) page.
+    - Click on `Generate New API Key`, if you do not have one yet.
 
+    <Note title="Usage" type="note">
+      This API key is what will be used for external caller to consume.
+      For example, in Custom ChatGPT you will need this to set Custom header of `X-API-KEY`
+    </Note>
+  </StepperItem>
 
-### [Environment Variables]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_ENV_VARS_URI}) Setup
+  <StepperItem title="Step 3: Configuring Environment Variables">
+    ## Environment Variable Setup
+    - Navigate to the [Environment Variables]({CONST.HUBS_SETTINGS_ENVVARS_URL}) page.
+    - Add new environment variables required for your functions.
 
-Functions are mostly curated with environment variables to complete a task.
+    <Note title="Usage" type="note">
+    Functions can be curated with environment variables to execute for your needs.
+    </Note>
+  </StepperItem>
 
-Ingra provides a way for your functions to communicate to third-parties. Therefore, you can store these keys at [Environment Variables]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_ENV_VARS_URI}) which Ingra will pass them as `arguments` to said functions.
+  <StepperItem title="Step 4: Setting up OAuth Integrations">
+    ## OAuth Integrations
+    - Visit the [OAuth Integrations]({CONST.HUBS_SETTINGS_INTEGRATIONS_URL}) page.
+    - Follow the instructions to connect and authorize third-party services.
 
-### [OAuth Integrations]({CONST.HUBS_APP_URL}{CONST.APP_SETTINGS_INTEGRATIONS_URI}) Setup
+    <Note title="Usage" type="note">
+      Functions can be curated with environment variables to execute for your needs.
+    </Note>
+    
+    Read more about this at [Google API Integration at {CONST.APP_NAME}](/docs/getting-started/integrations/google-api-integration)
+  </StepperItem>
 
-Read more about this at [Google API Integration at Ingra](/docs/getting-started/integrations/google-api-integration)
+</Stepper>
