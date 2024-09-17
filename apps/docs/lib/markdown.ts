@@ -17,6 +17,9 @@ import Note from '@/components/note';
 import { Mermaid } from '@/components/mermaid';
 import { Stepper, StepperItem } from '@repo/components/ui/stepper';
 
+// shared regex
+const CONST_SHORTCODE_REGEX = /{CONST\.([A-Z_]+)}/g;
+
 // add custom components
 const components = {
   Tabs,
@@ -33,7 +36,7 @@ const components = {
 // can be used for other pages like blogs, Guides etc
 async function parseMdx<Frontmatter>(rawMdx: string) {
   return await compileMDX<Frontmatter>({
-    source: rawMdx,
+    source: replaceConstants(rawMdx),
     options: {
       parseFrontmatter: true,
       mdxOptions: {
@@ -41,7 +44,6 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
         remarkPlugins: [remarkGfm],
       },
       scope: {
-        CONST: constants,
       }
     },
     components,
@@ -66,7 +68,8 @@ export async function getDocsForSlug(slug: string) {
 
 export async function getDocsTocs(slug: string) {
   const contentPath = getDocsContentPath(slug);
-  const rawMdx = await fs.readFile(contentPath, 'utf-8');
+  let rawMdx = await fs.readFile(contentPath, 'utf-8');
+  rawMdx = replaceConstants(rawMdx);
   // captures between ## - #### can modify accordingly
   const headingsRegex = /(#{2,4})\s([^\r\n]+)$/gm;
 
@@ -97,6 +100,12 @@ export function getPreviousNext(path: string) {
     prev: DOCS_PAGE_ROUTES[index - 1],
     next: DOCS_PAGE_ROUTES[index + 1],
   };
+}
+
+function replaceConstants(rawMdx: string) {
+  return rawMdx.replace(CONST_SHORTCODE_REGEX, (match, p1) => {
+    return ( constants as any )?.[p1] || match;
+  });
 }
 
 function sluggify(text: string) {

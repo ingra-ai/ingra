@@ -1,26 +1,26 @@
 ---
-title: Account Setup Guide for Ingra
-description: A comprehensive guide on setting up your API Key, Environment Variables, and OAuth Integrations in Ingra. Learn how to secure function invocation and configure your account for seamless integration with GPTs and LLMs.
+title: Account Setup Guide at {CONST.APP_NAME}
+description: A comprehensive guide on setting up your Profile, API Key, Environment Variables, and OAuth Integrations in {CONST.APP_NAME}. Learn how to secure function invocation and configure your account for seamless integration with GPTs and LLMs.
 ---
 
-# Account Setup Guide
+## Account Setup Guide
 
 <Stepper>
   <StepperItem title="Step 1: Setting up Profile name">
-    ## Setting up Profile at Ingra
+    ### Setting up Profile at {CONST.APP_NAME}
 
     - Visit the [Profile]({CONST.HUBS_SETTINGS_PROFILE_URL}) page.
     - Fill in required information such as `Timezone` and `Username`.
 
     <Note title="Usage of Timezone and Username" type="note">
-      **Timezone** and **Username** are utilized in Ingra Functions as part of **User Variables**. These variables are being used to execute functions accurately for user needs.
+      **Timezone** and **Username** are utilized in {CONST.APP_NAME} Functions as part of **User Variables**. These variables are being used to execute functions accurately for user needs.
 
-      **Username** is currently not editable. This is unique per user, and being used as your identifier in your Ingra collections and functions URLs.
+      **Username** is currently not editable. This is unique per user, used in functions execution, and as your identifier in your {CONST.APP_NAME} collections and functions URLs.
     </Note>
   </StepperItem>
 
   <StepperItem title="Step 2: Setting up API Key">
-    ## Setting up API Key at Ingra
+    ### Setting up API Key at {CONST.APP_NAME}
 
     - Visit the [API Key Setup]({CONST.HUBS_SETTINGS_APIKEY_URL}) page.
     - Click on `Generate New API Key`, if you do not have one yet.
@@ -32,25 +32,27 @@ description: A comprehensive guide on setting up your API Key, Environment Varia
   </StepperItem>
 
   <StepperItem title="Step 3: Configuring Environment Variables">
-    ## Environment Variable Setup
+    ### Environment Variable Setup
     - Navigate to the [Environment Variables]({CONST.HUBS_SETTINGS_ENVVARS_URL}) page.
     - Add new environment variables required for your functions.
 
     <Note title="Usage" type="note">
-    Functions can be curated with environment variables to execute for your needs.
+      Environment variables allow functions to adapt and execute based on the specific user running them.
     </Note>
   </StepperItem>
 
   <StepperItem title="Step 4: Setting up OAuth Integrations">
-    ## OAuth Integrations
+    ### OAuth Integrations
     - Visit the [OAuth Integrations]({CONST.HUBS_SETTINGS_INTEGRATIONS_URL}) page.
     - Follow the instructions to connect and authorize third-party services.
 
     <Note title="Usage" type="note">
-      Functions can be curated with environment variables to execute for your needs.
+      OAuth tokens enable functions to run based on the permissions and context of the user executing them.
     </Note>
     
     Read more about this at [Google API Integration at {CONST.APP_NAME}](/docs/getting-started/integrations/google-api-integration)
   </StepperItem>
 
 </Stepper>
+
+And that's it! You're all set up to start using {CONST.APP_NAME} functions with your GPTs and LLMs. If you have any questions or need further assistance, feel free to reach out to our [support team](mailto:{CONST.APP_SUPPORT_MAILTO})

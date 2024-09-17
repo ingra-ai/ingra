@@ -46,6 +46,9 @@ export const HUBS_MARKETPLACE_URL = APP_LANDING_PAGE_URL;
 export const HUBS_OPENAPI_URI = '/overview/openapi';
 export const HUBS_OPENAPI_URL = `${HUBS_APP_URL}${HUBS_OPENAPI_URI}`;
 
+export const HUBS_OPENAPI_JSON_URI = '/api/v1/me/openapi.json';
+export const HUBS_OPENAPI_JSON_URL = `${HUBS_APP_URL}${HUBS_OPENAPI_JSON_URI}`;
+
 export const HUBS_SWAGGER_URI = '/api/v1/me/swagger';
 export const HUBS_SWAGGER_URL = `${HUBS_APP_URL}${HUBS_SWAGGER_URI}`;
 

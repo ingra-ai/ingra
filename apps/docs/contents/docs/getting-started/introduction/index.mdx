@@ -1,60 +1,60 @@
 ---
-title: Introduction to Ingra - Functions as a Service (FaaS)
-description: Learn how Ingra, a Functions as a Service (FaaS) platform, integrates with Large Language Models (LLMs) to enable unlimited function tool calling and seamless automation.
+title: Introduction to {CONST.APP_NAME} - Functions as a Service (FaaS)
+description: Learn how {CONST.APP_NAME}, a Functions as a Service (FaaS) platform, integrates with Large Language Models (LLMs) to enable unlimited function tool calling and seamless automation.
 ---
 # Introduction
 
-Ingra is a highly extensible platform designed as a Functions as a Service (FaaS) to integrate with various Large Language Models (LLMs). Ingra enables LLMs to have unlimited function tool calling and the ability to create functions when they are not present. The platform aims to democratize AI, allowing users to quickly prototype, automate workflows, and integrate diverse services through seamless function execution.
+{CONST.APP_NAME} is a highly extensible platform designed as a Functions as a Service (FaaS) to integrate with various Large Language Models (LLMs). {CONST.APP_NAME} enables LLMs to have unlimited function tool calling and the ability to create functions when they are not present. The platform aims to democratize AI, allowing users to quickly prototype, automate workflows, and integrate diverse services through seamless function execution.
 
-## How Ingra Works
+## How {CONST.APP_NAME} Works
 
-Ingra hosts functions that you own or subscribed to, as an API which can be accessed by GPTs via [openapi.json]({CONST.HUBS_OPENAPI_URL})
+{CONST.APP_NAME} hosts functions that you own or subscribed to, as an API which can be accessed by GPTs via [OpenAPI]({CONST.HUBS_OPENAPI_URL})
 
 All the functions that is accessible to user can also be viewed at the following [Swagger]({CONST.HUBS_SWAGGER_URL})
 
 
-#### How Ingra works with LLMs / GPTs (e.g. ChatGPT)
+#### How {CONST.APP_NAME} works with LLMs / GPTs (e.g. ChatGPT)
 
-Following is a graph visualizing how Ingra plays a role for any LLMs or GPTs Function Tool Calling.
+Following is a graph visualizing how {CONST.APP_NAME} plays a role for any LLMs or GPTs Function Tool Calling.
 
 <Mermaid chart={`
 sequenceDiagram
     autonumber
     participant User
     participant GPT
-    participant IngraHubs as Ingra Hubs
+    participant {CONST.APP_NAME}Hubs as {CONST.APP_NAME} Hubs
     participant VM as Secure VM
     participant Function as Function Logic
 
     User->>GPT: Sends Prompt
-    GPT->>IngraHubs: API Request (openapi.json)
-    IngraHubs->>VM: Invoke Function
+    GPT->>{CONST.APP_NAME}Hubs: API Request (OpenAPI)
+    {CONST.APP_NAME}Hubs->>VM: Invoke Function
     VM->>Function: Load Context (Env Vars, OAuth Tokens, Args)
     Function-->>VM: Execute Logic
-    VM-->>IngraHubs: Return Result
-    IngraHubs-->>GPT: Send Result
+    VM-->>{CONST.APP_NAME}Hubs: Return Result
+    {CONST.APP_NAME}Hubs-->>GPT: Send Result
     GPT-->>User: Provide Output
 
     %% Add self-feedback loop
     alt Self-Feedback Needed
         GPT->>GPT: Self-Feedback & Re-Evaluate
-        GPT->>IngraHubs: Re-Invoke API
+        GPT->>{CONST.APP_NAME}Hubs: Re-Invoke API
     end
 `}/>
 
 Lets break down each step in detail:
 1. **User Sends Prompt**: The interaction begins with the user sending a prompt to GPT. This could be a request for information, an action to perform, or any task that GPT can interpret.
-2. **GPT Processes the Prompt**: GPT interprets the users prompt and formulates an API request using the `openapi.json` schema provided by Ingra Hubs.
-3. **Ingra Hubs Receives the Request**: Ingra Hubs takes the API request, identifies the appropriate function, and validates it before proceeding.
-4. **Secure VM Invokes the Function**: Once validated, Ingra Hubs invokes the function within a secure Virtual Machine (VM). This ensures safe and isolated execution of the function.
+2. **GPT Processes the Prompt**: GPT interprets the users prompt and formulates an API request using the `OpenAPI` schema provided by {CONST.APP_NAME} Hubs.
+3. **{CONST.APP_NAME} Hubs Receives the Request**: {CONST.APP_NAME} Hubs takes the API request, identifies the appropriate function, and validates it before proceeding.
+4. **Secure VM Invokes the Function**: Once validated, {CONST.APP_NAME} Hubs invokes the function within a secure Virtual Machine (VM). This ensures safe and isolated execution of the function.
 5. **Load Function Context**: Within the VM, the function loads its context, which includes environment variables, OAuth tokens, and any arguments necessary for execution.
 6. **Execute Function Logic**: The function logic is executed using the loaded context. This step is where the main processing occurs based on the users initial prompt.
-7. **Return Execution Result**: After execution, the VM returns the result back to Ingra Hubs, which processes the output.
-8. **GPT Provides Output**: Ingra Hubs sends the execution result back to GPT, which then provides the final output to the user.
+7. **Return Execution Result**: After execution, the VM returns the result back to {CONST.APP_NAME} Hubs, which processes the output.
+8. **GPT Provides Output**: {CONST.APP_NAME} Hubs sends the execution result back to GPT, which then provides the final output to the user.
 ## Self-Feedback and Re-Evaluation
 One of the powerful features of this workflow is the self-feedback loop within GPT. After the initial result is provided to the user, GPT can:
 - **Self-Feedback**: Analyze the output to determine if further iterations are needed.
-- **Adjust & Re-Evaluate**: If required, GPT can adjust its prompt or API request and re-invoke the function through Ingra Hubs for improved results.
+- **Adjust & Re-Evaluate**: If required, GPT can adjust its prompt or API request and re-invoke the function through {CONST.APP_NAME} Hubs for improved results.
 This iterative process allows for more dynamic interactions and ensures that the output aligns closely with the users needs.
 
 ## Core Features
