@@ -4,14 +4,13 @@ description: Learn how {CONST.APP_NAME}, a Functions as a Service (FaaS) platfor
 ---
 # Introduction
 
-{CONST.APP_NAME} is a highly extensible platform designed as a Functions as a Service (FaaS) to integrate with various Large Language Models (LLMs). {CONST.APP_NAME} enables LLMs to have unlimited function tool calling and the ability to create functions when they are not present. The platform aims to democratize AI, allowing users to quickly prototype, automate workflows, and integrate diverse services through seamless function execution.
+{CONST.APP_NAME} is a highly extensible platform designed as a Functions as a Service (FaaS) to integrate with various Large Language Models (LLMs). {CONST.APP_NAME} allows LLMs to execute a wide range of functions and even create new ones on the fly. The platform aims to democratize AI, allowing users to quickly prototype, automate workflows, and integrate diverse services through seamless function execution.
 
 ## How {CONST.APP_NAME} Works
 
-{CONST.APP_NAME} hosts functions that you own or subscribed to, as an API which can be accessed by GPTs via [OpenAPI]({CONST.HUBS_OPENAPI_URL})
+{CONST.APP_NAME} hosts functions that you either create or subscribe to. These functions are accessible via an API that can be invoked by any GPT or LLM using an OpenAPI contract.
 
-All the functions that is accessible to user can also be viewed at the following [Swagger]({CONST.HUBS_SWAGGER_URL})
-
+Read more about that here at [OpenAPI and Swagger Specs](/docs/features/core-features#openapi-and-swagger-specs).
 
 #### How {CONST.APP_NAME} works with LLMs / GPTs (e.g. ChatGPT)
 
@@ -44,18 +43,25 @@ sequenceDiagram
 
 Lets break down each step in detail:
 1. **User Sends Prompt**: The interaction begins with the user sending a prompt to GPT. This could be a request for information, an action to perform, or any task that GPT can interpret.
-2. **GPT Processes the Prompt**: GPT interprets the users prompt and formulates an API request using the `OpenAPI` schema provided by {CONST.APP_NAME} Hubs.
-3. **{CONST.APP_NAME} Hubs Receives the Request**: {CONST.APP_NAME} Hubs takes the API request, identifies the appropriate function, and validates it before proceeding.
-4. **Secure VM Invokes the Function**: Once validated, {CONST.APP_NAME} Hubs invokes the function within a secure Virtual Machine (VM). This ensures safe and isolated execution of the function.
+2. **GPT Processes the Prompt**: GPT interprets the users prompt and formulates an API request using the `OpenAPI` schema provided by {CONST.APP_NAME}.
+3. **{CONST.APP_NAME} Receives the Request**: {CONST.APP_NAME} takes the API request, identifies the appropriate function, and validates it before proceeding.
+4. **Secure VM Invokes the Function**: Once validated, {CONST.APP_NAME} invokes the function within a secure Virtual Machine (VM). This ensures safe and isolated execution of the function.
 5. **Load Function Context**: Within the VM, the function loads its context, which includes environment variables, OAuth tokens, and any arguments necessary for execution.
 6. **Execute Function Logic**: The function logic is executed using the loaded context. This step is where the main processing occurs based on the users initial prompt.
-7. **Return Execution Result**: After execution, the VM returns the result back to {CONST.APP_NAME} Hubs, which processes the output.
-8. **GPT Provides Output**: {CONST.APP_NAME} Hubs sends the execution result back to GPT, which then provides the final output to the user.
+7. **Return Execution Result**: After execution, the VM returns the result back to {CONST.APP_NAME}, which processes the output.
+8. **GPT Provides Output**: {CONST.APP_NAME} sends the execution result back to GPT, which then provides the final output to the user.
+
 ## Self-Feedback and Re-Evaluation
-One of the powerful features of this workflow is the self-feedback loop within GPT. After the initial result is provided to the user, GPT can:
-- **Self-Feedback**: Analyze the output to determine if further iterations are needed.
-- **Adjust & Re-Evaluate**: If required, GPT can adjust its prompt or API request and re-invoke the function through {CONST.APP_NAME} Hubs for improved results.
+
+<Note title="Why This Works" type="success">
+    It's simple! Invoked functions always return an output, whether they succeed or fail. Modern LLMs like GPT-3 can interpret these outputs, allowing them to refine and re-evaluate the prompt to achieve the desired result.
+</Note>
+
+A key feature of this workflow is the self-feedback loop within GPT. After providing the initial result, GPT can:
+- **Self-Feedback**: Review the output to decide if further refinement is necessary.
+- **Adjust & Re-Evaluate**: If needed, GPT can modify its prompt or API request and re-invoke the function through {CONST.APP_NAME} to enhance the results.
 This iterative process allows for more dynamic interactions and ensures that the output aligns closely with the users needs.
+
 
 ## Core Features
 
