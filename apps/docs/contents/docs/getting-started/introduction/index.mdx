@@ -17,7 +17,7 @@ All the functions that is accessible to user can also be viewed at the following
 
 Following is a graph visualizing how Ingra plays a role for any LLMs or GPTs Function Tool Calling.
 
-```mermaid
+<Mermaid chart={`
 sequenceDiagram
     autonumber
     participant User
@@ -40,7 +40,8 @@ sequenceDiagram
         GPT->>GPT: Self-Feedback & Re-Evaluate
         GPT->>IngraHubs: Re-Invoke API
     end
-```
+`}/>
+
 Lets break down each step in detail:
 1. **User Sends Prompt**: The interaction begins with the user sending a prompt to GPT. This could be a request for information, an action to perform, or any task that GPT can interpret.
 2. **GPT Processes the Prompt**: GPT interprets the users prompt and formulates an API request using the `openapi.json` schema provided by Ingra Hubs.

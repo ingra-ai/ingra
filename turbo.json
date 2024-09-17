@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
+  "ui": "stream",
   "globalEnv": [
     "NEXT_PUBLIC_APP_NAME",
     "NEXT_PUBLIC_APP_DESCRIPTION",
