@@ -1,18 +1,47 @@
 ---
-title: Setting up Ingra for Custom ChatGPT
-description: Learn how to configure Ingra for custom ChatGPT usage, covering API Key setup and obtaining openapi.json for integration with OpenAI GPTs.
+title: Integrating {CONST.APP_NAME} with Custom ChatGPT
+description: Step-by-step guide to integrate {CONST.APP_NAME} with Custom ChatGPT, including API Key setup, openapi.json, and privacy settings.
 ---
-# Setting up for Custom ChatGPT
 
-### Preparing your API Key and openapi.json
+## How to Integrate {CONST.APP_NAME} with Custom ChatGPT
 
-To hook your Ingra functions into ChatGPT, you need to obtain:
-- **Authentication** - Setup an [API Key at Ingra]({HUBS_APIKEY_SETUP_URL})
-- **Schema** - Visit your account [openapi.json at Ingra]({CONST.HUBS_OPENAPI_URL})
+<Stepper>
 
-They will be required at OpenAI ChatGPT Setup that are highlighted below
-![Screenshot of ChatGPT Setup](/static/docs/chatgpt-custom-setup.png)
+  <StepperItem title="Step 1: Start a New Custom ChatGPT Action">
+    ### Create a Custom ChatGPT
+    
+    Begin by creating a new action in your Custom ChatGPT setup. Click on **Create new action** to get started.
+    ![Screenshot of Create Custom ChatGPT](/static/docs/chatgpt-create-customgpt.png)
+  </StepperItem>
 
-Read more about it at OpenAPI documentation:
-#### - [OpenAI - Creating a GPT](https://help.openai.com/en/articles/8554397-creating-a-gpt)
-#### - [OpenAI - Custom Action](https://platform.openai.com/docs/actions/introduction)
+  <StepperItem title="Step 2: Configure Actions in Ingra">
+    ### Set Up Actions in Ingra
+    
+    Now, configure the actions needed for integration:
+    - **Schema**: Obtain your [openapi.json file]({CONST.HUBS_OPENAPI_JSON_URL}) or use the [OpenAPI Generator]({CONST.HUBS_OPENAPI_JSON_URL}) from {CONST.APP_NAME}.
+    - **Privacy Policy**: Provide a link to your Privacy Policy, or use Ingra's default policy at `{CONST.APP_LEGAL_PRIVACY_POLICY_URL}`.
+    
+    ![Screenshot of ChatGPT Actions Setup](/static/docs/chatgpt-actions-setup.png)
+
+    <Note title="Heads Up!" type="info">
+      Authentication setup will be covered in the next step.
+    </Note>
+  </StepperItem>
+
+  <StepperItem title="Step 3: Set Up API Key Authentication">
+    ### Configure Authentication with an API Key
+
+    Secure your integration by setting up API Key authentication:
+    - **Authentication Type**: Select `API Key`.
+    - **API Key**: Use one of the keys from your [API Key settings]({CONST.HUBS_SETTINGS_APIKEY_URL}) in {CONST.APP_NAME}.
+    - **Auth Type**: Choose `Custom` and set the header name to `X-API-KEY`.
+    
+    ![Screenshot of ChatGPT API Key Setup](/static/docs/chatgpt-apikey-setup.png)
+  </StepperItem>
+
+</Stepper>
+
+## Additional Resources
+
+- [How to Create a GPT - OpenAI Documentation](https://help.openai.com/en/articles/8554397-creating-a-gpt)
+- [Custom Actions Guide - OpenAI Documentation](https://platform.openai.com/docs/actions/introduction)

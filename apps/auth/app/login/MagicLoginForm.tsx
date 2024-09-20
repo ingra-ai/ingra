@@ -1,6 +1,6 @@
 'use client';
 
-import type { FC } from 'react';
+import type { ChangeEvent, FC } from 'react';
 import * as z from 'zod';
 import { MagicLoginSchema } from '@repo/shared/schemas/auth';
 import { useForm } from 'react-hook-form';
@@ -12,7 +12,7 @@ import { Button } from '@repo/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@repo/components/ui/input-otp';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { cn } from '@repo/shared/lib/utils';
+import { censorEmail, cn } from '@repo/shared/lib/utils';
 
 export type FormViewState = 'email' | 'otp' | 'redirect';
 
@@ -26,7 +26,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
   const [formView, setFormView] = useState<FormViewState>('email');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, register, formState, setValue, reset } = useForm<z.infer<typeof MagicLoginSchema>>({
+  const { handleSubmit, register, formState, setValue, reset, watch } = useForm<z.infer<typeof MagicLoginSchema>>({
     resolver: zodResolver(MagicLoginSchema),
     defaultValues: {
       email: '',
@@ -73,6 +73,11 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
       });
   };
 
+  const onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value.toLowerCase();
+    setValue('email', e.target.value.toLowerCase(), { shouldValidate: false });
+  };
+
   const onOtpInputChange = (newValue: string) => {
     setValue('otpCode', newValue, { shouldValidate: true });
   };
@@ -99,14 +104,16 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
     );
   }
 
+  const [censoredUser, censoredEmail] = censorEmail(watch('email') || '');
+
   return (
     <div className={classes} data-testid="magic-login-form">
       {formView === 'email' ? (
-        <p className="mt-2 text-left text-sm text-white/70 max-w">To get started, we will need to send you a magic link and one-time password to your email address.</p>
+        <p className="mt-2 text-center text-sm text-white/70 max-w">To get started, we will need to send you a magic link and one-time password to your email address.</p>
       ) : (
         <>
           <h2 className="text-center text-sm font-bold leading-9 tracking-tight">Check your email for the one-time password</h2>
-          <p className="mt-2 text-center text-sm text-white/70 max-w">We’ve sent a 6-character code to your email address. The code expires shortly, so please enter it soon.</p>
+          <p className="mt-2 text-center text-sm text-white/70 max-w">We’ve sent a 6-character code <strong>{censoredEmail}</strong>. The code expires shortly, so please enter it soon.</p>
         </>
       )}
       <form className="block space-y-6 mt-10" method="POST" onSubmit={handleSubmit(doMagicLogin)} autoComplete="off">
@@ -118,6 +125,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
             <input
               id="email"
               {...register('email')}
+              onChange={onEmailChange}
               placeholder="john.doe@example.com"
               type="text"
               autoComplete=""
@@ -125,7 +133,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               autoFocus
               className="block w-full rounded-md border-0 bg-white/5 py-2 px-4 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-10"
             />
-            {formState.errors.email && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.email.message}</p>}
+            {formState.errors.email && <p className="text-sm font-medium text-destructive mt-3 text-left">{formState.errors.email.message}</p>}
           </div>
         ) : (
           <div>
@@ -144,7 +152,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
                 </InputOTPGroup>
               )}
             />
-            {formState.errors.otpCode && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.otpCode.message}</p>}
+            {formState.errors.otpCode && <p className="text-sm font-medium text-destructive mt-3 text-left">{formState.errors.otpCode.message}</p>}
           </div>
         )}
         <div className="block">

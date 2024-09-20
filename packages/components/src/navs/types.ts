@@ -1,4 +1,3 @@
-
 export type Navlink = {
   title: string;
   href: string;
@@ -15,8 +14,7 @@ export type NavMenuProps = {
   isSheet?: boolean;
 };
 
-export type LeftbarProps = {
-};
+export type LeftbarProps = {};
 
 export type SheetLeftbarProps = {
   navlinks: Navlink[];

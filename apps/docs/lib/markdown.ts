@@ -6,7 +6,6 @@ import rehypePrism from 'rehype-prism-plus';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import rehypeCodeTitles from 'rehype-code-titles';
-import mdxMermaid from 'mdx-mermaid';
 import { DOCS_PAGE_ROUTES } from './routes-config';
 import { visit } from 'unist-util-visit';
 import * as constants from '@repo/shared/lib/constants';
@@ -31,29 +30,27 @@ const components = {
   Note,
   Stepper,
   StepperItem,
-  mermaid: Mermaid
+  Mermaid
 };
 
 // can be used for other pages like blogs, Guides etc
 async function parseMdx<Frontmatter>(rawMdx: string) {
   return await compileMDX<Frontmatter>({
-    source: rawMdx,
+    source: replaceConstants(rawMdx),
     options: {
       parseFrontmatter: true,
       mdxOptions: {
-        rehypePlugins: [preProcess, rehypeReplaceVariables, rehypeCodeTitles, rehypePrism, rehypeSlug, rehypeAutolinkHeadings, postProcess],
-        remarkPlugins: [
-          remarkGfm,
-          [mdxMermaid],
-        ],
+        rehypePlugins: [preProcess, rehypeCodeTitles, rehypePrism, rehypeSlug, rehypeAutolinkHeadings, postProcess],
+        remarkPlugins: [remarkGfm],
       },
+      scope: {
+      }
     },
     components,
   });
 }
 
 // logic for docs
-
 type BaseMdxFrontmatter = {
   title: string;
   description: string;
@@ -71,18 +68,22 @@ export async function getDocsForSlug(slug: string) {
 
 export async function getDocsTocs(slug: string) {
   const contentPath = getDocsContentPath(slug);
-  const rawMdx = await fs.readFile(contentPath, 'utf-8');
+  let rawMdx = await fs.readFile(contentPath, 'utf-8');
+  rawMdx = replaceConstants(rawMdx);
   // captures between ## - #### can modify accordingly
-  const headingsRegex = /^(#{2,4})\s(.+)$/gm;
+  const headingsRegex = /(#{2,4})\s([^\r\n]+)$/gm;
 
   let match;
   const extractedHeadings = [];
 
   while ((match = headingsRegex.exec(rawMdx)) !== null) {
     const headingLevel = match[1].length;
-    const headingText = match[2].trim().replace(/''/g, '').replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
+    const headingText = match[2]
+      .trim()
+      .replace(/''/g, '')
+      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
     const slug = sluggify(headingText);
-    
+
     extractedHeadings.push({
       level: headingLevel,
       text: headingText,
@@ -101,6 +102,12 @@ export function getPreviousNext(path: string) {
   };
 }
 
+function replaceConstants(rawMdx: string) {
+  return rawMdx.replace(CONST_SHORTCODE_REGEX, (match, p1) => {
+    return ( constants as any )?.[p1] || match;
+  });
+}
+
 function sluggify(text: string) {
   const slug = text.toLowerCase().replace(/\s+/g, '-');
   return slug.replace(/[^a-z0-9-]/g, '');
@@ -117,41 +124,6 @@ const preProcess = () => (tree: any) => {
       const [codeEl] = node.children;
       if (codeEl.tagName !== 'code') return;
       node.raw = codeEl.children?.[0].value;
-    }
-  });
-};
-
-const rehypeReplaceVariables = () => (tree: any) => {
-  // Function to decode %7B to { and %7D to }
-  const decodeHtmlEntities = (str = '') => {
-    return (str || '').replace(/%7B/g, '{').replace(/%7D/g, '}');
-  };
-
-  // Visit all nodes, including elements and text
-  visit(tree, (node) => {
-    // Process text nodes
-    if (node?.type === 'text') {
-      node.value = decodeHtmlEntities(node.value).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
-        return (constants as any)?.[p1] || match;
-      });
-    }
-
-    // Process element nodes
-    if (node.type === 'element' || node.type === 'jsx') {
-      if (node.children && Array.isArray(node.children)) {
-        node.children.forEach((child: any) => {
-          if (child?.type === 'text') {
-            child.value = decodeHtmlEntities(child.value).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
-              return (constants as any)?.[p1] || match;
-            });
-          }
-          else if (child?.type === 'element' && child?.tagName === 'a' && child?.properties?.href) {
-            child.properties.href = decodeHtmlEntities(child.properties.href).replace(CONST_SHORTCODE_REGEX, (match: any, p1: any) => {
-              return (constants as any)?.[p1] || match;
-            });
-          }
-        });
-      }
     }
   });
 };
