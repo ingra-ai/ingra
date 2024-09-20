@@ -19,7 +19,8 @@ export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) 
       throw new ActionError('error', 400, 'Invalid fields.');
     }
 
-    const { email, otpCode } = validatedFields.data;
+    const { email: rawEmail, otpCode } = validatedFields.data;
+    const email = rawEmail.toLowerCase();
 
     const existingUser = await getOrCreateUserByEmail(email);
 
