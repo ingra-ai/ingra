@@ -54,4 +54,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 ---
 
 Credits to [Aria Docs](https://github.com/nisabmohd/Aria-Docs) for the original template.
-

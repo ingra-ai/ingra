@@ -262,9 +262,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                     )}
                     <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex flex-col">
                       <CopyPlusIcon className="h-5 w-5 ml-2" />
-                      <span className="text-xs">
-                        Clone
-                      </span>
+                      <span className="text-xs">Clone</span>
                     </button>
                   </div>
                 )}

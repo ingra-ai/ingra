@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { CogIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@repo/components/ui/alert';
 import Link from 'next/link';
-import { APP_SETTINGS_PROFILE_URI, APP_SETTINGS_API_URI, APP_SETTINGS_ENV_VARS_URI, APP_SETTINGS_INTEGRATIONS_URI } from '@repo/shared/lib/constants';
+import { HUBS_SETTINGS_PROFILE_URI, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 
@@ -24,7 +24,7 @@ export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
     allConcerns.push(
       <p className="text-sm font-medium">
         It&apos;s important to have a <code className="text-orange-400">username</code> configured for your account to have seamless experience with your GPT. You can set your <code>username</code> by&nbsp;
-        <Link className="underline underline-offset-2 hover:text-orange-300" href={APP_SETTINGS_PROFILE_URI}>
+        <Link className="underline underline-offset-2 hover:text-orange-300" href={HUBS_SETTINGS_PROFILE_URI}>
           visiting your profile page
         </Link>
         .
@@ -36,7 +36,7 @@ export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
     allConcerns.push(
       <p className="text-sm font-medium">
         Note that some functions require <code className="text-orange-400">Google integration</code> to work properly. You can integrate Google by visiting&nbsp;
-        <Link className="underline underline-offset-2 hover:text-orange-300" href={APP_SETTINGS_INTEGRATIONS_URI}>
+        <Link className="underline underline-offset-2 hover:text-orange-300" href={HUBS_SETTINGS_INTEGRATIONS_URI}>
           visiting your integrations page
         </Link>
         .
@@ -48,7 +48,7 @@ export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
     allConcerns.push(
       <p className="text-sm font-medium">
         You have {totalApiKeys} <code className="text-orange-400">API keys</code> created. Applications like <strong>ChatGPT</strong> require API keys to communicate with your account. You can manage your API keys by&nbsp;
-        <Link className="underline underline-offset-2 hover:text-orange-300" href={APP_SETTINGS_API_URI}>
+        <Link className="underline underline-offset-2 hover:text-orange-300" href={HUBS_SETTINGS_APIKEY_URI}>
           visiting your profile page
         </Link>
         .
@@ -60,7 +60,7 @@ export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
     allConcerns.push(
       <p className="text-sm font-medium">
         You have {envVars.length} <code className="text-orange-400">environment variables</code> set. These variables are usually required to run some functions. You can manage your environment variables by&nbsp;
-        <Link className="underline underline-offset-2 hover:text-orange-300" href={APP_SETTINGS_ENV_VARS_URI}>
+        <Link className="underline underline-offset-2 hover:text-orange-300" href={HUBS_SETTINGS_ENVVARS_URI}>
           visiting your profile page
         </Link>
         . Ignore this if you do not have any functions that require environment variables.

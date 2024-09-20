@@ -45,10 +45,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={fontSans.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Navbar 
-            navlinks={ NAVLINKS }
-            sheetChildren={ <DocsMenu /> }
-          >
+          <Navbar navlinks={NAVLINKS} sheetChildren={<DocsMenu />}>
             <Search />
           </Navbar>
           <main className="sm:container mx-auto w-[88vw] h-auto">{children}</main>
