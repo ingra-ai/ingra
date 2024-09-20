@@ -1,5 +1,5 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { APP_AUTH_LOGIN_URL, APP_SETTINGS_API_URI, APP_SETTINGS_INTEGRATIONS_URI } from '@repo/shared/lib/constants';
+import { APP_AUTH_LOGIN_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_INTEGRATIONS_URI } from '@repo/shared/lib/constants';
 import { redirect, RedirectType } from 'next/navigation';
 import { SuggestionsList } from './SuggestionsList';
 import { LayoutDashboardIcon } from 'lucide-react';
@@ -88,7 +88,7 @@ export default async function Dashboard() {
                 stat: totalApiKeys.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
-                href: APP_SETTINGS_API_URI,
+                href: HUBS_SETTINGS_APIKEY_URI,
                 linkText: 'Manage API Keys',
               },
             ]}
@@ -103,7 +103,7 @@ export default async function Dashboard() {
                 stat: totalOAuthTokens.toLocaleString(undefined, {
                   minimumFractionDigits: 0,
                 }),
-                href: APP_SETTINGS_INTEGRATIONS_URI,
+                href: HUBS_SETTINGS_INTEGRATIONS_URI,
                 linkText: 'Manage OAuth Integrations',
               },
             ]}

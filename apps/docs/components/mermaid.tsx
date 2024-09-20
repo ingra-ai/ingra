@@ -1,19 +1,24 @@
 'use client';
-import dynamic from 'next/dynamic.js';
-import type { MermaidProps } from 'mdx-mermaid/Mermaid';
+import React, { useEffect, useRef } from 'react';
+import mermaid from 'mermaid';
 
-const MdxMermaid = dynamic(
-  () => import('mdx-mermaid/Mermaid').then((res) => res.Mermaid),
-  { ssr: false }
-)
+mermaid.initialize({ startOnLoad: true });
 
-// Workaround for https://github.com/vercel/next.js/discussions/36369
-// Inspired by https://github.com/datopian/datahub/blob/8feb87739ddaeb07272666d4c11d50774a583e57/packages/core/src/ui/Mermaid/Mermaid.tsx#L12
-export const Mermaid: React.FC<MermaidProps> = ({ ...props }) => {
+export const Mermaid = ( props: any ) => {
+  const { chart } = props;
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      mermaid.contentLoaded();
+    }
+  }, [chart]);
 
   return (
-    <div className="dark:bg-zinc-200 p-4 rounded-lg">
-      <MdxMermaid {...props} />
+    <div className="mermaid dark:bg-zinc-200 p-4 rounded-lg" ref={ref}>
+      {chart}
     </div>
   );
-}
+};
+
+export default Mermaid;

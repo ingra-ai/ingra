@@ -1,44 +1,36 @@
 ---
-title: Ingra Quick Start Guide
-description: A step-by-step guide to quickly get started with Ingra, exploring curated collections and functions in the Hubs Marketplace, and setting up custom integrations with GPTs and LLMs.
+title: {CONST.APP_NAME} Quick Start Guide
+description: A step-by-step guide to quickly get started with {CONST.APP_NAME}, exploring curated collections and functions in the Hubs Marketplace, and setting up custom integrations with GPTs and LLMs.
 ---
 
-# Quick Start Guide
-
-
+## Quick Start Guide
 <Stepper>
+  <StepperItem title='Sign In to {CONST.APP_NAME}'>
+    Visit the [Sign-in page]({CONST.APP_AUTH_LOGIN_URL}) and proceed with your email.
+  </StepperItem>
+  <StepperItem title="Account Setup">
+    After signing in, you need to setup your account at {CONST.APP_NAME} to be able to curate or subscribe to any functions and collections.
+    
+    Read more about this at [Account Setup at {CONST.APP_NAME}](/docs/getting-started/quick-start-guide/account-setup)
+  </StepperItem>
   <StepperItem title="Visit Hubs Marketplace">
-    <Note title="Sign-in dependency" type="warning">
-      If you're just viewing around marketplace, you don't need to [Sign-in]({CONST.APP_AUTH_LOGIN_URL}).
-    </Note>
+    ### View community curated collections or functions.
 
-## View community curated collections or functions.
     [Hubs Marketplace]({CONST.HUBS_MARKETPLACE_URL}) is community driven, developers may host their own public functions or collections by curating their own and opt-in to make it `Public`.
 
     <Note title="Good to know" type="note">
-      - To invoke the functions that you curated or subscribed to, LLMs require your [openapi.json]({CONST.HUBS_OPENAPI_URL}). Therefore you need to [Sign-in]({CONST.APP_AUTH_LOGIN_URL}) with your email.
+      - To invoke the functions that you curated or subscribed to, LLMs require your [OpenAPI]({CONST.HUBS_OPENAPI_URL}). Therefore you need to [Sign-in]({CONST.APP_AUTH_LOGIN_URL}) with your email.
     </Note>
 
-    Ingra automatically creates an API endpoint for those functions, and provides your [openapi.json]({CONST.HUBS_OPENAPI_URL}) that you can just paste into GPTs / LLMs.
-
-    To setup with Custom ChatGPT, read our documentation at [ChatGPT Setup](/docs/getting-started/quick-start-guide/chatgpt-setup)
-
+    {CONST.APP_NAME} automatically creates an API endpoint for those functions, and provides your [OpenAPI]({CONST.HUBS_OPENAPI_URL}) that you can just paste into GPTs / LLMs.
+  </StepperItem>
+  <StepperItem title="Integration with ChatGPT">
+    Read more about this at [ChatGPT Setup with {CONST.APP_NAME}](/docs/getting-started/quick-start-guide/chatgpt-setup)
   </StepperItem>
 
-  <StepperItem title="Account Setup">
-
-    To access these functions from your GPTs, you will need to setup your account at Ingra.
-
-    Read more about this at [Account Setup at Ingra](/docs/getting-started/quick-start-guide/account-setup)
-  </StepperItem>
-
-  <StepperItem title="(Optional 1) Integration with ChatGPT">
-    Read more about this at [ChatGPT Setup with Ingra](/docs/getting-started/quick-start-guide/chatgpt-setup)
-  </StepperItem>
-
-  <StepperItem title="(Optional 2) Integration with LangChain">
-    Read more about this at [LangChain Setup with Ingra](/docs/getting-started/quick-start-guide/langchain-setup)
-  </StepperItem>
+  {/* <StepperItem title="(Optional 2) Integration with LangChain">
+    Read more about this at [LangChain Setup with {CONST.APP_NAME}](/docs/getting-started/quick-start-guide/langchain-setup)
+  </StepperItem> */}
 </Stepper>
 
 
