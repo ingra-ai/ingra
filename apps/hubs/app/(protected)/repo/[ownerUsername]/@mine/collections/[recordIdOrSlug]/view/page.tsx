@@ -91,7 +91,7 @@ export default async function Page({ params }: Props) {
           </h2>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3 xl:gap-3 2xl:grid-cols-4 2xl:gap-4">
             {collectionRecord.functions.map((functionRecord) => (
-              <FunctionItem key={functionRecord.id} functionData={functionRecord} href={getUserRepoFunctionsEditUri(ownerUsername, functionRecord.id)} />
+              <FunctionItem key={functionRecord.id} functionData={functionRecord} href={getUserRepoFunctionsEditUri(ownerUsername, functionRecord.slug)} />
             ))}
           </div>
         </div>
