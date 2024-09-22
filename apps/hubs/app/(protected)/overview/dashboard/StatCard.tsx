@@ -17,7 +17,7 @@ interface StatCardProps {
 
 export const StatCard: FC<StatCardProps> = (props) => {
   return (
-    <div key={props.id} className="relative overflow-hidden rounded-lg bg-secondary text-secondary-foreground px-4 border border-gray-500 sm:px-6 sm:pt-6">
+    <div key={props.id} className="relative overflow-hidden rounded-lg bg-secondary text-secondary-foreground p-4 border border-gray-500 sm:px-6 sm:pt-6">
       <dt>
         <div className="absolute rounded-md bg-indigo-500 p-3">
           <props.icon className="h-6 w-6" aria-hidden="true" />
