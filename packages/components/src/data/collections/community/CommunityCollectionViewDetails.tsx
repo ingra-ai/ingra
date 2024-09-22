@@ -8,7 +8,7 @@ interface CommunityCollectionViewDetailsProps {
 }
 
 const CommunityCollectionViewDetails: React.FC<CommunityCollectionViewDetailsProps> = ({ record }) => {
-  const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(record.owner.profile.userName || '', record.slug);
+  const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(record.owner.profile?.userName || '', record.slug);
 
   return (
     <div className="block" data-testid="community-collection-view-details">
@@ -23,12 +23,16 @@ const CommunityCollectionViewDetails: React.FC<CommunityCollectionViewDetailsPro
           <span className="font-medium">Slug: </span>
           <code className="ml-2">{record.slug}</code>
         </p>
-        <p className="">
-          <span className="font-medium">OpenAPI: </span>
-          <a href={openApiJsonUrl} target="_blank">
-            <span className="text-info">openapi.json</span>
-          </a>
-        </p>
+        {
+          record.owner.profile?.userName && openApiJsonUrl && (
+            <p className="">
+              <span className="font-medium">OpenAPI: </span>
+              <a href={openApiJsonUrl} target="_blank">
+                <span className="text-info">openapi.json</span>
+              </a>
+            </p>
+          )
+        }
       </div>
       <div className="mt-2">
         <h3 className="text-sm font-semibold leading-6">Description</h3>
