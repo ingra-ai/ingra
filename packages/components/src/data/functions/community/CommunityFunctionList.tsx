@@ -96,7 +96,7 @@ const CommunityFunctionsList: React.FC<CommunityFunctionsListProps> = (props) =>
   return functionRecords.map((functionRecord) => {
     const isSubscribing = isSubscribeLoading === functionRecord.id,
       isCloning = isCloneLoading === functionRecord.id,
-      href = getUserRepoFunctionsViewUri(functionRecord.owner.profile?.userName || '', functionRecord.id);
+      href = getUserRepoFunctionsViewUri(functionRecord.owner.profile?.userName || '', functionRecord.slug);
 
     return (
       <CommunityFunctionItem key={functionRecord.id} functionData={functionRecord} href={href}>

@@ -59,7 +59,7 @@ export const cloneFunction = async (functionId: string) => {
       data: {
         ...clonedFunction,
         ...(ownerUsername && {
-          href: getUserRepoFunctionsEditUri(ownerUsername, clonedFunction.id),
+          href: getUserRepoFunctionsEditUri(ownerUsername, clonedFunction.slug),
         }),
       },
     };
