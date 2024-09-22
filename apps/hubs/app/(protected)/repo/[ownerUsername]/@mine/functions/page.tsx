@@ -9,19 +9,16 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { APP_NAME } from '@repo/shared/lib/constants';
 
 type Props = {
-  params: { ownerUsername: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { ownerUsername: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
   const { ownerUsername } = params;
- 
+
   return {
     title: ['My Functions', APP_NAME].join(' | '),
-  }
+  };
 }
 
 export default async function Page({ searchParams, params }: Props) {

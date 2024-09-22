@@ -2,9 +2,9 @@ import { notFound, redirect, RedirectType } from 'next/navigation';
 import { getUserRepoCollectionsViewUri } from '@repo/shared/lib/constants/repo';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { ownerUsername: string; recordIdOrSlug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 export default async function Page({ params }: Props) {
   const { recordIdOrSlug, ownerUsername } = params;

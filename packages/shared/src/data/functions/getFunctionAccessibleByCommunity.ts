@@ -23,7 +23,7 @@ export const getFunctionAccessibleByCommunity = async <T extends GetFunctionAcce
   recordIdOrSlug: string,
   options?: GetFunctionAccessibleByUserOptionsType<T>
 ): Promise<Prisma.FunctionGetPayload<T> | null> => {
-  if ( !recordIdOrSlug || !ownerUsername ) {
+  if (!recordIdOrSlug || !ownerUsername) {
     return null;
   }
 
@@ -60,7 +60,7 @@ export const getFunctionAccessibleByCommunity = async <T extends GetFunctionAcce
         : {
             slug: recordIdOrSlug,
           }),
-    }
+    },
   ];
 
   // Append where conditions from the ones that is supplied in options

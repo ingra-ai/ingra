@@ -5,9 +5,9 @@ import { notFound } from 'next/navigation';
 import { getFunctionAccessibleByCommunity } from '@repo/shared/data/functions/getFunctionAccessibleByCommunity';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { ownerUsername: string; recordIdOrSlug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 export default async function Page({ params }: Props) {
   const { recordIdOrSlug, ownerUsername } = params;

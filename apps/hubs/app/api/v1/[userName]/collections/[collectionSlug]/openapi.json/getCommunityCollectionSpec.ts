@@ -7,7 +7,7 @@ import { kv } from '@vercel/kv';
 import isEmpty from 'lodash/isEmpty';
 
 async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: string) {
-  if (!ownerUsername ) {
+  if (!ownerUsername) {
     return null;
   }
   const collectionRecord = await getCollectionAccessibleByCommunity(ownerUsername, recordIdOrSlug, {
@@ -25,10 +25,10 @@ async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: stri
           include: {
             profile: {
               select: {
-                userName: true
+                userName: true,
               },
             },
-          }
+          },
         },
         functions: {
           select: {
@@ -61,7 +61,7 @@ async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: stri
               },
             },
           },
-        }
+        },
       },
     },
   });
@@ -83,10 +83,8 @@ async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: stri
   }, {});
 }
 
-
 export const getCommunityCollectionSpec = async (ownerUsername: string, recordIdOrSlug: string) => {
-  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([
-    generateOpenApiSchema(ownerUsername, recordIdOrSlug), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getSwaggerSpec(false)]);
+  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(ownerUsername, recordIdOrSlug), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getSwaggerSpec(false)]);
 
   const mySwaggerSpec = {
     ...(baseSwaggerSpec || {}),

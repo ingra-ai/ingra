@@ -113,7 +113,9 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
       ) : (
         <>
           <h2 className="text-center text-sm font-bold leading-9 tracking-tight">Check your email for the one-time password</h2>
-          <p className="mt-2 text-center text-sm text-white/70 max-w">We’ve sent a 6-character code <strong>{censoredEmail}</strong>. The code expires shortly, so please enter it soon.</p>
+          <p className="mt-2 text-center text-sm text-white/70 max-w">
+            We’ve sent a 6-character code <strong>{censoredEmail}</strong>. The code expires shortly, so please enter it soon.
+          </p>
         </>
       )}
       <form className="block space-y-6 mt-10" method="POST" onSubmit={handleSubmit(doMagicLogin)} autoComplete="off">

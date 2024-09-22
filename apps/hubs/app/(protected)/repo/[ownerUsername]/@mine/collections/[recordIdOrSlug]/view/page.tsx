@@ -8,19 +8,16 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { APP_NAME } from '@repo/shared/lib/constants';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { ownerUsername: string; recordIdOrSlug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
   const { ownerUsername, recordIdOrSlug } = params;
- 
+
   return {
-    title: [`${ownerUsername}'s ${ recordIdOrSlug } Collection`, APP_NAME].join(' | '),
-  }
+    title: [`${ownerUsername}'s ${recordIdOrSlug} Collection`, APP_NAME].join(' | '),
+  };
 }
 
 export default async function Page({ params }: Props) {
@@ -66,10 +63,10 @@ export default async function Page({ params }: Props) {
               },
             },
           },
-        }
+        },
       },
     },
-  })
+  });
 
   if (!collectionRecord) {
     return notFound();
