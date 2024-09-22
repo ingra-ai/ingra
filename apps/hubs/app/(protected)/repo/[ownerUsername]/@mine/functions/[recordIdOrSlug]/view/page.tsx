@@ -3,9 +3,9 @@ import { getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { ownerUsername: string; recordIdOrSlug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 export default async function Page({ params }: Props) {
   const { ownerUsername, recordIdOrSlug } = params;

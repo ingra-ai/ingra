@@ -19,10 +19,10 @@ async function generateOpenApiSchema(authSession: AuthSessionResponse, recordIdO
           include: {
             profile: {
               select: {
-                userName: true
+                userName: true,
               },
             },
-          }
+          },
         },
         functions: {
           select: {
@@ -55,7 +55,7 @@ async function generateOpenApiSchema(authSession: AuthSessionResponse, recordIdO
               },
             },
           },
-        }
+        },
       },
     },
   });
@@ -78,14 +78,12 @@ async function generateOpenApiSchema(authSession: AuthSessionResponse, recordIdO
   }, {});
 }
 
-
 export const getMyCollectionAuthSpec = async (authSession: AuthSessionResponse, ownerUsername: string, recordIdOrSlug: string) => {
   if (!authSession) {
     return null;
   }
 
-  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([
-    generateOpenApiSchema(authSession, recordIdOrSlug), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getSwaggerSpec(false)]);
+  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(authSession, recordIdOrSlug), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getSwaggerSpec(false)]);
 
   const mySwaggerSpec = {
     ...(baseSwaggerSpec || {}),

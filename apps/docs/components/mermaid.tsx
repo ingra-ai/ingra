@@ -4,7 +4,7 @@ import mermaid from 'mermaid';
 
 mermaid.initialize({ startOnLoad: true });
 
-export const Mermaid = ( props: any ) => {
+export const Mermaid = (props: any) => {
   const { chart } = props;
   const ref = useRef(null);
 

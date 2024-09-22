@@ -94,7 +94,7 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ ownerUser
         </p>
         <p className="">
           <span className="font-medium">OpenAPI: </span>
-          <a href={ openApiJsonUrl } target="_blank">
+          <a href={openApiJsonUrl} target="_blank">
             <span className="text-info">openapi.json</span>
           </a>
         </p>
