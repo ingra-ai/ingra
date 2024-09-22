@@ -23,7 +23,7 @@ export const getCollectionAccessibleByCommunity = async <T extends GetCollection
   recordIdOrSlug: string,
   options?: GetCollectionAccessibleByUserOptionsType<T>
 ): Promise<Prisma.CollectionGetPayload<T> | null> => {
-  if ( !recordIdOrSlug || !ownerUsername ) {
+  if (!recordIdOrSlug || !ownerUsername) {
     return null;
   }
 
@@ -36,7 +36,7 @@ export const getCollectionAccessibleByCommunity = async <T extends GetCollection
             include: {
               arguments: true,
               tags: true,
-            }
+            },
           },
         },
       },

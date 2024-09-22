@@ -30,7 +30,7 @@ const components = {
   Note,
   Stepper,
   StepperItem,
-  Mermaid
+  Mermaid,
 };
 
 // can be used for other pages like blogs, Guides etc
@@ -43,8 +43,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
         rehypePlugins: [preProcess, rehypeCodeTitles, rehypePrism, rehypeSlug, rehypeAutolinkHeadings, postProcess],
         remarkPlugins: [remarkGfm],
       },
-      scope: {
-      }
+      scope: {},
     },
     components,
   });
@@ -104,7 +103,7 @@ export function getPreviousNext(path: string) {
 
 function replaceConstants(rawMdx: string) {
   return rawMdx.replace(CONST_SHORTCODE_REGEX, (match, p1) => {
-    return ( constants as any )?.[p1] || match;
+    return (constants as any)?.[p1] || match;
   });
 }
 

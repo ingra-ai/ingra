@@ -11,19 +11,16 @@ import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
 import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
+  params: { ownerUsername: string; recordIdOrSlug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
   const { ownerUsername, recordIdOrSlug } = params;
- 
+
   return {
-    title: [`${ recordIdOrSlug } - Edit Function`, APP_NAME].join(' | '),
-  }
+    title: [`${recordIdOrSlug} - Edit Function`, APP_NAME].join(' | '),
+  };
 }
 
 export default async function Page({ params }: Props) {

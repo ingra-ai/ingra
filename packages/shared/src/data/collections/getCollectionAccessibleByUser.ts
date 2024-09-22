@@ -7,7 +7,7 @@ export type CollectionAccessType =
   | 'owner'
 
   // Other user's collection where user is a subscriber and the collection is not private
-  | 'subscriber'
+  | 'subscriber';
 
 type GetCollectionAccessibleByUserDefaultArgsType = Pick<Prisma.CollectionFindFirstArgs, 'include' | 'select'> & {
   where?: Prisma.CollectionFindFirstArgs['where'];
@@ -41,7 +41,7 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
             include: {
               arguments: true,
               tags: true,
-            }
+            },
           },
         },
       },
@@ -92,7 +92,7 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
             }
           : {
               slug: recordIdOrSlug,
-            }
+            },
       ],
     });
   }

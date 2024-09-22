@@ -12,11 +12,9 @@ import { getMyCollectionAuthSpec } from './getMyCollectionAuthSpec';
 export async function GET(req: NextRequest, { params }: { params: { userName: string; collectionSlug: string } }) {
   const authSession = await getAuthSession();
   const { userName, collectionSlug } = params;
-  const itsMe = Boolean( authSession?.user.profile?.userName && authSession.user.profile.userName === userName );
+  const itsMe = Boolean(authSession?.user.profile?.userName && authSession.user.profile.userName === userName);
 
-  const swaggerSpec = ( itsMe && authSession ) ? 
-    await getMyCollectionAuthSpec(authSession, userName, collectionSlug) : 
-    await getCommunityCollectionSpec(userName, collectionSlug);
+  const swaggerSpec = itsMe && authSession ? await getMyCollectionAuthSpec(authSession, userName, collectionSlug) : await getCommunityCollectionSpec(userName, collectionSlug);
 
   if (!swaggerSpec) {
     throw new ActionError('error', 400, `No specifications found.`);
