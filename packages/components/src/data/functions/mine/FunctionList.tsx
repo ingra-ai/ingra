@@ -84,7 +84,7 @@ const FunctionsList: React.FC<FunctionsListProps> = ({ ownerUsername, functions,
       <FunctionItemNew ownerUsername={ownerUsername} />
       {functions.map((functionData) => {
         return (
-          <FunctionItem key={functionData.id} functionData={functionData} href={getUserRepoFunctionsEditUri(ownerUsername, functionData.id)}>
+          <FunctionItem key={functionData.id} functionData={functionData} href={getUserRepoFunctionsEditUri(ownerUsername, functionData.slug)}>
             <div className="flex mt-4 bg-card border rounded-[10px] px-3 py-2">
               <ToggleCollectionMenuButton functionId={functionData.id} collections={collections} onCheckedChange={onFunctionCollectionToggleChanged} className="p-2 bg-card" />
               <div className="w-full"></div>

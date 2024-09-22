@@ -8,6 +8,16 @@ export type CommunityCollectionViewDetailPayload = Prisma.CollectionGetPayload<{
     slug: true;
     description: true;
     updatedAt: true;
+    owner: {
+      select: {
+        id: true;
+        profile: {
+          select: {
+            userName: true;
+          };
+        };
+      };
+    };
     functions: {
       select: {
         id: true;

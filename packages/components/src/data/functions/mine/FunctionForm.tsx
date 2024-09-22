@@ -144,7 +144,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
               });
 
               // Go to the created functions
-              redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp.data.id);
+              redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp.data.slug);
             }
           }
 
@@ -256,13 +256,12 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
               <div className="flex mb-3 leading-6 justify-between">
                 <label className="block text-sm font-medium">Code &#40;Node.js&#41;</label>
                 {isEditMode && (
-                  <div className="relative">
+                  <div className="relative flex items-center">
                     {collections.length > 0 && functionRecord?.id && (
                       <ToggleCollectionMenuButton functionId={functionRecord.id || ''} collections={collections} onCheckedChange={onFunctionCollectionToggleChanged} className="p-2 bg-card mx-4" iconClassName="h-5 w-5" />
                     )}
                     <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex flex-col">
                       <CopyPlusIcon className="h-5 w-5 ml-2" />
-                      <span className="text-xs">Clone</span>
                     </button>
                   </div>
                 )}

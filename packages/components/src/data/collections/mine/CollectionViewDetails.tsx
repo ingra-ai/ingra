@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import { MoreVertical, TrashIcon } from 'lucide-react';
 import { deleteCollection } from '@repo/shared/actions/collections';
-import { getUserRepoCollectionsUri } from '@repo/shared/lib/constants/repo';
+import { getUserApiCollectionsOpenApiJsonUri, getUserRepoCollectionsUri } from '@repo/shared/lib/constants/repo';
 import { FormSlideOver } from '../../../slideovers/FormSlideOver';
 import { Button } from '../../../ui/button';
 import { useToast } from '../../../ui/use-toast';
@@ -22,6 +22,7 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ ownerUser
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(ownerUsername, record.slug);
 
   const handleDelete = useCallback(() => {
     // Prompt user
@@ -86,9 +87,18 @@ const CollectionViewDetails: React.FC<CollectionViewDetailsProps> = ({ ownerUser
           </DropdownMenu>
         </div>
       </div>
-      <p className="text-sm mb-6 text-gray-300">
-        Slug: <span className="text-info">{record.slug}</span>
-      </p>
+      <div className="flex flex-col text-sm text-gray-300 mb-6 gap-2">
+        <p className="">
+          <span className="font-medium">Slug: </span>
+          <code className="ml-2">{record.slug}</code>
+        </p>
+        <p className="">
+          <span className="font-medium">OpenAPI: </span>
+          <a href={ openApiJsonUrl } target="_blank">
+            <span className="text-info">openapi.json</span>
+          </a>
+        </p>
+      </div>
       <div className="mt-2">
         <h3 className="text-sm font-semibold leading-6">Description</h3>
         <div className="py-2 rounded-sm min-h-[50vh] text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: record.description || '' }} />

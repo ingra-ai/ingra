@@ -7,6 +7,16 @@ export type MineCollectionListGetPayload = Prisma.CollectionGetPayload<{
     name: true;
     slug: true;
     description: true;
+    owner: {
+      select: {
+        id: true;
+        profile: {
+          select: {
+            userName: true;
+          };
+        };
+      };
+    };
     functions: {
       select: {
         id: true;
