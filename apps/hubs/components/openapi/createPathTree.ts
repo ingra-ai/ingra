@@ -1,5 +1,3 @@
-import { ME_API_ROOT_PATH } from '@repo/shared/lib/constants';
-
 interface PathNode {
   title: string;
   key: string;

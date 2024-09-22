@@ -6,12 +6,15 @@
 
 const USER_REPO_URI = '/repo/:userName';
 const USER_REPO_COLLECTIONS_URI = USER_REPO_URI + '/collections';
-const USER_REPO_COLLECTIONS_VIEW_URI = USER_REPO_COLLECTIONS_URI + '/view/:recordId';
+const USER_REPO_COLLECTIONS_VIEW_URI = USER_REPO_COLLECTIONS_URI + '/:recordIdOrSlug/view';
 
 const USER_REPO_FUNCTIONS_URI = USER_REPO_URI + '/functions';
 const USER_REPO_FUNCTIONS_NEW_URI = USER_REPO_FUNCTIONS_URI + '/new';
-const USER_REPO_FUNCTIONS_VIEW_URI = USER_REPO_FUNCTIONS_URI + '/view/:recordId';
-const USER_REPO_FUNCTIONS_EDIT_URI = USER_REPO_FUNCTIONS_URI + '/edit/:recordId';
+const USER_REPO_FUNCTIONS_VIEW_URI = USER_REPO_FUNCTIONS_URI + '/:recordIdOrSlug/view';
+const USER_REPO_FUNCTIONS_EDIT_URI = USER_REPO_FUNCTIONS_URI + '/:recordIdOrSlug/edit';
+
+const USER_API_COLLECTIONS_OPENAPI_JSON_URI = '/api/v1/:userName/collections/:recordIdOrSlug/openapi.json';
+const USER_API_COLLECTIONS_SWAGGER_URI = '/api/v1/:userName/collections/:recordIdOrSlug/swagger';
 
 /**
  * e.g. "/repo/bakabit"
@@ -28,10 +31,24 @@ export function getUserRepoCollectionsUri(ownerUsername: string): string {
 }
 
 /**
- * e.g. "/repo/bakabit/collections/view/123"
+ * e.g. "/repo/bakabit/collections/123/view"
  */
-export function getUserRepoCollectionsViewUri(ownerUsername: string, recordId: string): string {
-  return USER_REPO_COLLECTIONS_VIEW_URI.replace(':userName', ownerUsername).replace(':recordId', recordId);
+export function getUserRepoCollectionsViewUri(ownerUsername: string, recordIdOrSlug: string): string {
+  return USER_REPO_COLLECTIONS_VIEW_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);
+}
+
+/**
+ * e.g. "/api/v1/bakabit/collections/123/swagger"
+ */
+export function getUserApiCollectionsOpeAapiJsonUri(ownerUsername: string, recordIdOrSlug: string): string {
+  return USER_API_COLLECTIONS_OPENAPI_JSON_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);
+}
+
+/**
+ * e.g. "/api/v1/bakabit/collections/123/openapi.json"
+ */
+export function getUserApiCollectionsSwaggerUri(ownerUsername: string, recordIdOrSlug: string): string {
+  return USER_API_COLLECTIONS_SWAGGER_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);
 }
 
 /**
@@ -49,15 +66,15 @@ export function getUserRepoFunctionsNewUri(ownerUsername: string): string {
 }
 
 /**
- * e.g. "/repo/bakabit/functions/view/123"
+ * e.g. "/repo/bakabit/functions/123/view"
  */
-export function getUserRepoFunctionsViewUri(ownerUsername: string, recordId: string): string {
-  return USER_REPO_FUNCTIONS_VIEW_URI.replace(':userName', ownerUsername).replace(':recordId', recordId);
+export function getUserRepoFunctionsViewUri(ownerUsername: string, recordIdOrSlug: string): string {
+  return USER_REPO_FUNCTIONS_VIEW_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);
 }
 
 /**
- * e.g. "/repo/bakabit/functions/edit/123"
+ * e.g. "/repo/bakabit/functions/123/edit"
  */
-export function getUserRepoFunctionsEditUri(ownerUsername: string, recordId: string): string {
-  return USER_REPO_FUNCTIONS_EDIT_URI.replace(':userName', ownerUsername).replace(':recordId', recordId);
+export function getUserRepoFunctionsEditUri(ownerUsername: string, recordIdOrSlug: string): string {
+  return USER_REPO_FUNCTIONS_EDIT_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);
 }

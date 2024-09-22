@@ -48,7 +48,7 @@ async function Layout(props: LayoutProps) {
     );
   }
 
-  const itsMe = authSession?.user.profile?.userName && authSession.user.profile.userName === ownerUsername;
+  const itsMe = Boolean( authSession?.user.profile?.userName && authSession.user.profile.userName === ownerUsername );
 
   return (
     <div className="relative h-full w-full p-4" data-testid="repo-layout">

@@ -95,7 +95,7 @@ const CommunityCollectionList: React.FC<CommunityCollectionListProps> = (props) 
         <div className={collectionListGridClasses}>
           {collections.map((collection) => {
             const isSubscribing = isSubscribeLoading === collection.id,
-              href = getUserRepoCollectionsViewUri(collection.owner.profile?.userName || '', collection.id);
+              href = getUserRepoCollectionsViewUri(collection.owner.profile?.userName || '', collection.slug);
 
             return (
               <CommunityCollectionCard key={collection.id} collection={collection} href={href}>

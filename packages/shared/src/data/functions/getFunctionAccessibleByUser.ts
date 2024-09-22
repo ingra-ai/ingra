@@ -24,8 +24,8 @@ type GetFunctionAccessibleByUserOptionsType<T extends GetFunctionAccessibleByUse
 /**
  * Get the function record accessible by the user.
  * Whether the user is the owner, subscriber, or the function is part of a collection that the user is subscribed to.
- * @param {string} functionIdOrSlug - The function ID or slug
  * @param {string} userId - The invoker user ID
+ * @param {string} functionIdOrSlug - The function ID or slug
  * @param {GetFunctionAccessibleByUserOptionsType<T>} options - Optional. Specifies the access types and findFirstArgs.
  * @returns {Promise<Prisma.FunctionGetPayload<T> | null>} - Returns the function record accessible by the user. If not found, returns null.
  */

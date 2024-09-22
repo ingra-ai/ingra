@@ -1,27 +1,28 @@
 import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import db from '@repo/db/client';
-import { isUuid } from '@repo/shared/lib/utils';
 import { CommunityFunctionReadOnlyView } from '@repo/components/data/functions/community/CommunityFunctionReadOnlyView';
 import { notFound } from 'next/navigation';
+import { getFunctionAccessibleByCommunity } from '@repo/shared/data/functions/getFunctionAccessibleByCommunity';
 
-export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
-  const { recordId, ownerUsername } = params;
+type Props = {
+  params: { ownerUsername: string; recordIdOrSlug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function Page({ params }: Props) {
+  const { recordIdOrSlug, ownerUsername } = params;
   const authSession = await getAuthSession();
 
-  if (!recordId || !isUuid(recordId)) {
+  if (!recordIdOrSlug) {
     return notFound();
   }
 
-  const functionRecord = await db.function.findUnique({
-    where: {
-      id: recordId,
-      isPublished: true,
-      isPrivate: false,
-    },
-    include: {
-      tags: true,
-      arguments: true,
+  const functionRecord = await getFunctionAccessibleByCommunity(ownerUsername, recordIdOrSlug, {
+    findFirstArgs: {
+      include: {
+        tags: true,
+        arguments: true,
+      },
     },
   });
 

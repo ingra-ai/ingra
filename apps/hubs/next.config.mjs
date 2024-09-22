@@ -8,17 +8,7 @@ const nextConfig = {
         source: '/marketplace',
         destination: '/marketplace/collections',
         permanent: false,
-      },
-      {
-        source: '/subscriptions',
-        destination: '/subscriptions/functions',
-        permanent: false,
-      },
-      {
-        source: '/mine',
-        destination: '/mine/functions',
-        permanent: false,
-      },
+      }
     ];
   },
   headers: async () => {

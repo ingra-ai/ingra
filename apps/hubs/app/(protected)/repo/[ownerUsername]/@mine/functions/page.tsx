@@ -5,8 +5,26 @@ import { BakaPagination } from '@repo/components/BakaPagination';
 import { fetchPaginationData } from './fetchPaginationData';
 import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
 import FunctionsList from '@repo/components/data/functions/mine/FunctionList';
+import { Metadata, ResolvingMetadata } from 'next';
+import { APP_NAME } from '@repo/shared/lib/constants';
 
-export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
+type Props = {
+  params: { ownerUsername: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { ownerUsername } = params;
+ 
+  return {
+    title: ['My Functions', APP_NAME].join(' | '),
+  }
+}
+
+export default async function Page({ searchParams, params }: Props) {
   const authSession = await getAuthSession();
 
   if (!authSession) {

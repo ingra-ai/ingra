@@ -185,13 +185,15 @@ const SideNav: FC<SideNavProps> = (props) => {
                 </Menu>
               </li>
             ) : (
-              <li>
-                <Button asChild variant={'accent'} className="w-full p-2 text-sm font-semibold text-center">
-                  <Link href={APP_AUTH_LOGIN_URL + '?redirectTo=' + encodeURIComponent(window.location.href)} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title="Login">
-                    <span className="">Login</span>
-                  </Link>
-                </Button>
-              </li>
+              typeof window !== 'undefined' && (
+                <li>
+                  <Button asChild variant={'accent'} className="w-full p-2 text-sm font-semibold text-center">
+                    <a href={APP_AUTH_LOGIN_URL + '?redirectTo=' + encodeURIComponent(window.location.href)} className="flex font-semibold space-x-2 px-4 py-3 text-xs hover:bg-gray-700" title="Login">
+                      <span className="">Login</span>
+                    </a>
+                  </Button>
+                </li>
+              )
             )}
           </ul>
         </li>

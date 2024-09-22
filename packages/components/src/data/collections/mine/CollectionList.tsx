@@ -34,7 +34,7 @@ const CollectionList: React.FC<CollectionListProps> = ({ collections, ownerUsern
   };
 
   const handleView = (collection: MineCollectionListGetPayload) => {
-    router.push(getUserRepoCollectionsViewUri(ownerUsername, collection.id));
+    router.push(getUserRepoCollectionsViewUri(ownerUsername, collection.slug));
   };
 
   const handleDelete = (collection: MineCollectionListGetPayload) => {
