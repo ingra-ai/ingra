@@ -35,6 +35,16 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
         name: true,
         slug: true,
         description: true,
+        owner: {
+          select: {
+            id: true,
+            profile: {
+              select: {
+                userName: true,
+              },
+            },
+          },
+        },
         functions: {
           select: {
             id: true,
