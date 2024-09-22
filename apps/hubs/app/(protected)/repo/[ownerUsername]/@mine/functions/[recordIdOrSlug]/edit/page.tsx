@@ -1,37 +1,46 @@
+import type { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from 'next/navigation';
 import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@repo/components/ui/tabs';
-import db from '@repo/db/client';
-import { notFound } from 'next/navigation';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
 import { FunctionForm } from '@repo/components/data/functions/mine/FunctionForm';
 import { UserVarsTable } from '@repo/components/data/envVars/UserVarsTable';
 import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 
-export async function generateMetadata({ params }: { params: { ownerUsername: string; recordId: string } }) {
-  return {
-    title: ['Edit Function', APP_NAME].join(' | '),
-  };
+type Props = {
+  params: { ownerUsername: string; recordIdOrSlug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function Page({ params }: { params: { ownerUsername: string; recordId: string } }) {
-  const authSession = await getAuthSession();
-  const { ownerUsername, recordId } = params;
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { ownerUsername, recordIdOrSlug } = params;
+ 
+  return {
+    title: [`${ recordIdOrSlug } - Edit Function`, APP_NAME].join(' | '),
+  }
+}
 
-  if (!recordId || !authSession) {
+export default async function Page({ params }: Props) {
+  const authSession = await getAuthSession();
+  const { ownerUsername, recordIdOrSlug } = params;
+
+  if (!recordIdOrSlug || !authSession) {
     return notFound();
   }
 
   const [functionRecord, collections] = await Promise.all([
-    db.function.findUnique({
-      where: {
-        id: recordId,
-        ownerUserId: authSession.user.id,
-      },
-      include: {
-        tags: true,
-        arguments: true,
+    getFunctionAccessibleByUser(authSession.user.id, recordIdOrSlug, {
+      findFirstArgs: {
+        include: {
+          tags: true,
+          arguments: true,
+        },
       },
     }),
 

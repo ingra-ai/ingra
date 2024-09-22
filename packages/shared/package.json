@@ -13,6 +13,7 @@
 
     "./data/profile": "./src/data/profile.ts",
     "./data/functions/getFunctionAccessibleByUser": "./src/data/functions/getFunctionAccessibleByUser.ts",
+    "./data/functions/getFunctionAccessibleByCommunity": "./src/data/functions/getFunctionAccessibleByCommunity.ts",
     "./data/functions": "./src/data/functions/index.ts",
     "./data/user": "./src/data/user.ts",
     "./data/envVars": "./src/data/envVars.ts",
@@ -21,6 +22,8 @@
     "./data/auth": "./src/data/auth.ts",
     "./data/auditLog": "./src/data/auditLog.ts",
     "./data/collections/getCollectionsByUserId": "./src/data/collections/getCollectionsByUserId.ts",
+    "./data/collections/getCollectionAccessibleByUser": "./src/data/collections/getCollectionAccessibleByUser.ts",
+    "./data/collections/getCollectionAccessibleByCommunity": "./src/data/collections/getCollectionAccessibleByCommunity.ts",
     "./data/collections": "./src/data/collections/index.ts",
     "./data/apiKey": "./src/data/apiKey.ts",
     "./data/auth/session/types": "./src/data/auth/session/types.ts",
