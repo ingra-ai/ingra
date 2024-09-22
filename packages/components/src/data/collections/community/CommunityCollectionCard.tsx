@@ -26,7 +26,7 @@ const CommunityCollectionCard: React.FC<React.PropsWithChildren<CommunityCollect
       <div className="min-w-0 space-y-2">
         <div className="flex justify-between items-start">
           <Link className="block w-full leading-6" href={href}>
-            <h2 className="text-lg inline-block text-info">{collection.slug}</h2>
+            <h2 className="text-lg inline-block text-info">{collection.name}</h2>
           </Link>
         </div>
         <TooltipProvider>

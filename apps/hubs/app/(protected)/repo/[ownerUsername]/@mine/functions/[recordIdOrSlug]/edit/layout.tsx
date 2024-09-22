@@ -1,8 +1,8 @@
 import { Suspense, type PropsWithChildren } from 'react';
-import LoaderSkeleton from './loading';
+import FunctionEditSkeleton from './loading';
 
 async function Layout({ children }: PropsWithChildren) {
-  return <Suspense fallback={<LoaderSkeleton />}>{children}</Suspense>;
+  return <Suspense fallback={<FunctionEditSkeleton />}>{children}</Suspense>;
 }
 
 export default Layout;

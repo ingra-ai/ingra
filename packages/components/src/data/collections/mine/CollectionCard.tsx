@@ -33,8 +33,8 @@ const CollectionCard: React.FC<CollectionCardProps> = (props) => {
     <div data-testid="collection-card" {...divProps} className={classes}>
       <div className="min-w-0 space-y-2">
         <div className="flex justify-between items-start">
-          <Link className="block w-full leading-6" href={getUserRepoCollectionsViewUri(ownerUsername, collection.id)}>
-            <h2 className="text-lg inline-block text-info">{collection.slug}</h2>
+          <Link className="block w-full leading-6" href={getUserRepoCollectionsViewUri(ownerUsername, collection.slug)}>
+            <h2 className="text-lg inline-block text-info">{collection.name}</h2>
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
