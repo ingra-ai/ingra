@@ -172,12 +172,26 @@ export const deleteFunction = async (functionId: string, userId: string) => {
 };
 
 export const toggleFunctionSubscription = async (functionId: string, userId: string) => {
-  const existingSubscription = await db.functionSubscription.findFirst({
-    where: {
-      functionId,
-      userId,
-    },
-  });
+  const [userProfile, existingSubscription] = await Promise.all([
+    db.profile.findFirst({
+      where: {
+        userId
+      }
+    }),
+    db.functionSubscription.findFirst({
+      where: {
+        functionId,
+        userId,
+      },
+    })
+  ]);
+
+  if ( !userProfile ) {
+    throw new Error('User profile is not configured.');
+  } 
+  else if ( !userProfile?.userName ) {
+    throw new Error('Username is not configured.');
+  }
 
   if (existingSubscription) {
     return await unsubscribeToFunction(functionId, userId);
@@ -187,12 +201,26 @@ export const toggleFunctionSubscription = async (functionId: string, userId: str
 };
 
 const subscribeToFunction = async (functionId: string, userId: string) => {
-  const functionRecord = await db.function.findUnique({
-    where: {
-      id: functionId,
-      isPublished: true,
-    },
-  });
+  const [userProfile, functionRecord] = await Promise.all([
+    db.profile.findFirst({
+      where: {
+        userId
+      }
+    }),
+    db.function.findUnique({
+      where: {
+        id: functionId,
+        isPublished: true,
+      },
+    }),
+  ]);
+
+  if ( !userProfile ) {
+    throw new Error('User profile is not configured.');
+  } 
+  else if ( !userProfile?.userName ) {
+    throw new Error('Username is not configured.');
+  }
 
   if (!functionRecord) {
     throw new Error('Function not found');
@@ -256,36 +284,50 @@ const unsubscribeToFunction = async (functionId: string, userId: string) => {
 };
 
 export const cloneFunction = async (functionId: string, userId: string) => {
-  const functionRecord = await db.function.findUnique({
-    where: {
-      id: functionId,
-      OR: [
-        // User is the sole owner
-        {
-          ownerUserId: userId,
-        },
-
-        // User is a subscriber
-        {
-          subscribers: {
-            some: {
-              userId,
+  const [userProfile, functionRecord] = await Promise.all([
+    db.profile.findFirst({
+      where: {
+        userId
+      }
+    }),
+    db.function.findUnique({
+      where: {
+        id: functionId,
+        OR: [
+          // User is the sole owner
+          {
+            ownerUserId: userId,
+          },
+  
+          // User is a subscriber
+          {
+            subscribers: {
+              some: {
+                userId,
+              },
             },
           },
-        },
+  
+          // Function is in marketplace
+          {
+            isPublished: true,
+            isPrivate: false,
+          },
+        ],
+      },
+      include: {
+        arguments: true,
+        tags: true,
+      },
+    })
+  ]);
 
-        // Function is in marketplace
-        {
-          isPublished: true,
-          isPrivate: false,
-        },
-      ],
-    },
-    include: {
-      arguments: true,
-      tags: true,
-    },
-  });
+  if ( !userProfile ) {
+    throw new Error('User profile is not configured.');
+  } 
+  else if ( !userProfile?.userName ) {
+    throw new Error('Username is not configured.');
+  }
 
   if (!functionRecord) {
     throw new Error('Function not found');
