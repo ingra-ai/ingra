@@ -57,8 +57,6 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
     icon: null,
   };
 
-
-
   switch (token.service) {
     case 'google-oauth':
       return {
