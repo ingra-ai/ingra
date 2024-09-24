@@ -85,7 +85,7 @@ export const SuggestionsList: FC<SuggestionsListProps> = (props) => {
       </AlertDescription>
       <AlertDescription>
         <p >
-          Read more about it at <Link href={ `${DOCS_APP_URL}/docs/getting-started/quick-start-guide/account-setup` } target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Account Setup | Docs</Link>.
+          Read more about it at <a href={ `${DOCS_APP_URL}/docs/getting-started/quick-start-guide/account-setup` } className="underline underline-offset-2">Account Setup | Docs</a>.
         </p>
       </AlertDescription>
     </Alert>
