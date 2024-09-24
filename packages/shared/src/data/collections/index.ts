@@ -68,14 +68,28 @@ export async function removeFunctionFromCollection(collectionId: string, functio
 }
 
 export async function toggleCollectionSubscription(collectionId: string, userId: string) {
-  const existingSubscription = await db.collectionSubscription.findUnique({
-    where: {
-      collectionId_userId: {
-        collectionId,
-        userId,
+  const [userProfile, existingSubscription] = await Promise.all([
+    db.profile.findFirst({
+      where: {
+        userId
+      }
+    }),
+    db.collectionSubscription.findUnique({
+      where: {
+        collectionId_userId: {
+          collectionId,
+          userId,
+        },
       },
-    },
-  });
+    }),
+  ]);
+
+  if ( !userProfile ) {
+    throw new Error('User profile is not configured.');
+  } 
+  else if ( !userProfile?.userName ) {
+    throw new Error('Username is not configured.');
+  }
 
   if (existingSubscription) {
     await unsubscribeToCollection(collectionId, userId);
@@ -87,11 +101,25 @@ export async function toggleCollectionSubscription(collectionId: string, userId:
 }
 
 export async function subscribeToCollection(collectionId: string, userId: string) {
-  const collectionRecord = await db.collection.findUnique({
-    where: {
-      id: collectionId,
-    },
-  });
+  const [userProfile, collectionRecord] = await Promise.all([
+    db.profile.findFirst({
+      where: {
+        userId
+      }
+    }),
+    db.collection.findUnique({
+      where: {
+        id: collectionId,
+      },
+    }),
+  ]);
+
+  if ( !userProfile ) {
+    throw new Error('User profile is not configured.');
+  } 
+  else if ( !userProfile?.userName ) {
+    throw new Error('Username is not configured.');
+  }
 
   if (!collectionRecord) {
     throw new Error('Collection not found');
