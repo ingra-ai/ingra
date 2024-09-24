@@ -115,6 +115,8 @@ async function handlerFn(args: HandlerArgs) {
         status: 200,
       }
     );
+  }, {
+    introspectOAuthTokens: true,
   });
 }
 
