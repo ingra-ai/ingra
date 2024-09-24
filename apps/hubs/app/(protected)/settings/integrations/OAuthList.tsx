@@ -8,11 +8,12 @@ import { Button } from '@repo/components/ui/button';
 import { cn } from '@repo/shared/lib/utils';
 import { useToast } from '@repo/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { RefreshCcw, TentIcon } from 'lucide-react';
+import { RefreshCcw, RocketIcon, TentIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@repo/components/ui/dialog';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { revokeOAuth, setTokenAsDefault } from '@repo/shared/actions/oauth';
 import { Badge } from '@repo/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@repo/components/ui/alert';
 
 type OAuthListProps = {
   oAuthTokens: OAuthToken[];
@@ -20,9 +21,31 @@ type OAuthListProps = {
 
 const getTokenDetail = (token: OAuthToken) => {
   const isActive = new Date() < token.expiryDate;
+  const unableToRenew = !isActive && token.service === 'google-oauth' && !token.refreshToken;
+  const defaultProps = {
+    label: 'Unknown',
+    alert: unableToRenew ? (
+      <Alert variant="warning" className="text-xs">
+        <RocketIcon className="h-4 w-4 text-gray-300 fill-gray-300 fill-border" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          Auto-refresh feature has been disabled for this OAuth. To re-connect your account, you need to&nbsp;
+          <a className="underline" href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">
+            Disconnect <code>{APP_NAME}</code> from your Google Account
+          </a>
+        </AlertDescription>
+      </Alert>
+    ) : null,
+    state: isActive ? 'Active' : 'Inactive',
+    icon: null,
+  };
+
+
+
   switch (token.service) {
     case 'google-oauth':
       return {
+        ...defaultProps,
         label: 'Google',
         state: isActive ? 'Active' : 'Inactive',
         icon: (
@@ -35,11 +58,7 @@ const getTokenDetail = (token: OAuthToken) => {
         ),
       };
     default:
-      return {
-        label: 'Unknown',
-        state: isActive ? 'Active' : 'Inactive',
-        icon: null,
-      };
+      return defaultProps;
   }
 };
 
@@ -120,62 +139,73 @@ const OAuthList: FC<OAuthListProps> = (props) => {
         const stateClasses = cn(tokenDetail.state === 'Active' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-red-50 text-red-700 ring-red-600/20');
 
         return (
-          <li key={token.id} className="col-span-1 divide-y divide-gray-500 rounded-lg border border-gray-600 bg-secondary text-secondary-foreground">
-            <div className="flex w-full items-center justify-between space-x-6 p-6">
-              <div className="flex-1 truncate">
-                <div className="flex items-center space-x-3">
-                  <h3 className="truncate text-sm font-medium text-gray-300">{tokenDetail.label}</h3>
-                  <span className={cn('inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset', stateClasses)}>{tokenDetail.state}</span>
-                  {isTokenDefault && <Badge>Default</Badge>}
+          <li key={token.id}>
+            {
+              tokenDetail.alert && (
+                <div className="mb-2">{tokenDetail.alert}</div>
+              )
+            }
+            <div className="col-span-1 divide-y divide-gray-600 rounded-lg border border-gray-600 bg-secondary text-secondary-foreground">
+              <div className="flex w-full items-center justify-between space-x-6 p-6">
+                <div className="flex-1 truncate">
+                  <div className="flex items-center space-x-3">
+                    <h3 className="truncate text-sm font-medium text-gray-300">{tokenDetail.label}</h3>
+                    <span className={cn('inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset', stateClasses)}>{tokenDetail.state}</span>
+                    {isTokenDefault && <Badge>Default</Badge>}
+                  </div>
+                  <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
+                  <p className="mt-1 truncate text-xs text-gray-400">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
                 </div>
-                <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
-                <p className="mt-1 truncate text-xs text-gray-400">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
+                {tokenDetail.icon}
               </div>
-              {tokenDetail.icon}
-            </div>
-            <div>
-              <div className="-mt-px flex divide-x divide-gray-500">
-                <div className="flex w-0 flex-1">
-                  <Button type="button" onClick={() => onSetDefault(token)} disabled={isTokenLoading} className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-info">
-                    {isTokenLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TentIcon className="h-4 w-4 mr-2" aria-hidden="true" />}
-                    {isTokenLoading ? 'Setting as default...' : 'Set as Default'}
-                  </Button>
-                </div>
-                <div className="flex w-0 flex-1">
-                  <Dialog>
-                    <DialogTrigger className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-destructive" type="button">
-                      <TrashIcon className="h-4 w-4 mr-2" aria-hidden="true" />
-                      Revoke
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Are you absolutely sure?</DialogTitle>
-                        <DialogDescription className="py-4 space-y-4 leading-6">
-                          <p>Your privacy is paramount to us, and we handle it with the utmost seriousness. Should you choose to revoke access, re-authorization of our application for your account access will be necessary.</p>
+              <div>
+                <div className="-mt-px flex divide-x divide-gray-500">
+                  {
+                    !tokenDetail.alert && (
+                      <div className="flex w-0 flex-1">
+                        <Button type="button" onClick={() => onSetDefault(token)} disabled={isTokenLoading} className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-info">
+                          {isTokenLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TentIcon className="h-4 w-4 mr-2" aria-hidden="true" />}
+                          {isTokenLoading ? 'Setting as default...' : 'Set as Default'}
+                        </Button>
+                      </div>
+                    )
+                  }
+                  <div className="flex w-0 flex-1">
+                    <Dialog>
+                      <DialogTrigger className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-destructive" type="button">
+                        <TrashIcon className="h-4 w-4 mr-2" aria-hidden="true" />
+                        Revoke
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Are you absolutely sure?</DialogTitle>
+                          <DialogDescription className="py-4 space-y-4 leading-6">
+                            <p>Your privacy is paramount to us, and we handle it with the utmost seriousness. Should you choose to revoke access, re-authorization of our application for your account access will be necessary.</p>
 
-                          <p>
-                            For enhanced security, we recommend visiting your Google Account&apos;s connections section before proceeding with this step. This allows you to remove <strong>{APP_NAME}</strong> from your list of connected
-                            applications directly.
-                          </p>
+                            <p>
+                              For enhanced security, we recommend visiting your Google Account&apos;s connections section before proceeding with this step. This allows you to remove <strong>{APP_NAME}</strong> from your list of connected
+                              applications directly.
+                            </p>
 
-                          <p>
-                            For convenience, you can follow the link below:
-                            <br />
-                            <a className="underline text-white" href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">
-                              Manage your Google Account connections
-                            </a>
-                            .
-                          </p>
-                        </DialogDescription>
-                        <DialogFooter>
-                          <Button variant="destructive" type="button" onClick={() => onRevoke(token)} disabled={isTokenLoading}>
-                            {isTokenLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
-                            {isTokenLoading ? 'Revoking...' : 'Revoke'}
-                          </Button>
-                        </DialogFooter>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
+                            <p>
+                              For convenience, you can follow the link below:
+                              <br />
+                              <a className="underline text-white" href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">
+                                Manage your Google Account connections
+                              </a>
+                              .
+                            </p>
+                          </DialogDescription>
+                          <DialogFooter>
+                            <Button variant="destructive" type="button" onClick={() => onRevoke(token)} disabled={isTokenLoading}>
+                              {isTokenLoading && <RefreshCcw className="animate-spin inline-block mr-2" />}
+                              {isTokenLoading ? 'Revoking...' : 'Revoke'}
+                            </Button>
+                          </DialogFooter>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </div>
             </div>
