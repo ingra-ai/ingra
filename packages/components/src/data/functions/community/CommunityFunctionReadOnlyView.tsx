@@ -21,6 +21,15 @@ import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 type CommunityFunctionReadOnlyViewProps = {
   functionRecord: Prisma.FunctionGetPayload<{
     include: {
+      owner: {
+        select: {
+          profile: {
+            select: {
+              userName: true;
+            };
+          };
+        };
+      };
       tags: true;
       arguments: true;
     };

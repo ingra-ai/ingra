@@ -18,13 +18,15 @@ type ContextShape = {
 
 type HandlerArgs = ContextShape & {
   requestArgs: Record<string, any>;
+  requestHeaders: Headers;
   analyticsObject: ReturnType<typeof getAnalyticsObject>;
 };
 
 async function handlerFn(args: HandlerArgs) {
   return await apiAuthTryCatch<any>(async (authSession) => {
-    const { params, requestArgs, analyticsObject } = args;
+    const { params, requestArgs, requestHeaders, analyticsObject } = args;
     const { userName, collectionSlug, functionIdOrSlug } = params;
+    const isSandboxDebug = requestHeaders.get('SANDBOX_DEBUG') === 'true';
     const userId = authSession.user.id,
       loggerObj = Logger.withTag('api|collectionFunction').withTag(`user|${userId}`).withTag(`functionIdOrSlug|${functionIdOrSlug}`);
 
@@ -59,7 +61,7 @@ async function handlerFn(args: HandlerArgs) {
       throw new ActionError('error', 404, `Function ${functionIdOrSlug} is not found from ${userName} repository.`);
     }
 
-    const { result, metrics, errors } = await runUserFunction(authSession, functionRecord, requestArgs);
+    const { result, metrics, errors, logs } = await runUserFunction(authSession, functionRecord, requestArgs);
 
     /**
      * Analytics & Logging
@@ -73,6 +75,7 @@ async function handlerFn(args: HandlerArgs) {
       collectionSlug: collectionSlug,
       functionId: functionRecord.id,
       functionIdOrSlug: functionIdOrSlug,
+      isSandboxDebug,
       accessType,
       metrics,
       errors,
@@ -84,6 +87,24 @@ async function handlerFn(args: HandlerArgs) {
       const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
       loggerObj.error(`Errored executing function: ${errorMessage}`);
       throw new ActionError('error', 400, errorMessage);
+    }
+
+    if (isSandboxDebug) {
+      return NextResponse.json(
+        {
+          status: 'success',
+          message: 'Function executed successfully',
+          data: {
+            result: result || null,
+            metrics: metrics || {},
+            errors: errors || [],
+            logs: logs || [],
+          },
+        },
+        {
+          status: 200,
+        }
+      );
     }
 
     return NextResponse.json(

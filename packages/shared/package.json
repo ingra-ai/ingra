@@ -45,7 +45,6 @@
     "./lib/action-helpers": "./src/lib/action-helpers.ts",
 
     "./actions/profile": "./src/actions/profile.ts",
-    "./actions/runCodeSandbox": "./src/actions/runCodeSandbox.ts",
     "./actions/oauth": "./src/actions/oauth.ts",
     "./actions/functions": "./src/actions/functions.ts",
     "./actions/envVars": "./src/actions/envVars.ts",

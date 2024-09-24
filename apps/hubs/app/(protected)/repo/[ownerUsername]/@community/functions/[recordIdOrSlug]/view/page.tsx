@@ -20,6 +20,15 @@ export default async function Page({ params }: Props) {
   const functionRecord = await getFunctionAccessibleByCommunity(ownerUsername, recordIdOrSlug, {
     findFirstArgs: {
       include: {
+        owner: {
+          select: {
+            profile: {
+              select: {
+                userName: true,
+              },
+            },
+          },
+        },
         tags: true,
         arguments: true,
       },

@@ -2,7 +2,7 @@
 import { Prisma } from '@repo/db/prisma';
 import { generateVmContextArgs } from '../../vm/generateVmContextArgs';
 import { run } from '../../vm/run';
-import { MetricSandboxOutput, UserSandboxOutput } from '../../vm/types';
+import { MetricSandboxOutput, MetricValues, UserSandboxOutput } from '../../vm/types';
 import { AuthSessionResponse } from '../../../data/auth/session/types';
 import { ActionError } from '../../../types/api-response';
 
@@ -13,10 +13,6 @@ type RunUserFunctionArgType = Prisma.FunctionGetPayload<{
     arguments: true;
   };
 }>;
-
-type MetricValues = {
-  [key in MetricSandboxOutput['metric']]: number;
-};
 
 export const runUserFunction = async (authSession: AuthSessionResponse, functionRecord: RunUserFunctionArgType, requestArgs: Record<string, any> = {}) => {
   if (!authSession) {
@@ -36,6 +32,7 @@ export const runUserFunction = async (authSession: AuthSessionResponse, function
   const vmOutput = await run(functionRecord.code, vmContext);
 
   const errors = vmOutput.outputs.filter((output) => output.type === 'error') as UserSandboxOutput[],
+    logs = vmOutput.outputs.filter((output) => output.type === 'log') as UserSandboxOutput[],
     metrics = ((vmOutput.outputs || []).filter((output) => output.type === 'metric') as MetricSandboxOutput[]).reduce<Partial<MetricValues>>((acc, metric) => {
       return { ...acc, [metric.metric]: metric.value };
     }, {});
@@ -44,5 +41,6 @@ export const runUserFunction = async (authSession: AuthSessionResponse, function
     result: vmOutput?.result,
     metrics,
     errors,
+    logs,
   };
 };

@@ -9,4 +9,8 @@ export type MetricSandboxOutput = {
   value: number;
 };
 
+export type MetricValues = {
+  [key in MetricSandboxOutput['metric']]: number;
+};
+
 export type SandboxOutput = UserSandboxOutput | MetricSandboxOutput;
