@@ -2,7 +2,7 @@
 import { cookies, headers } from 'next/headers';
 import { APP_SESSION_API_KEY_NAME, APP_SESSION_COOKIE_NAME } from '../../../lib/constants';
 import { Logger } from '../../../lib/logger';
-import { AuthSessionResponse } from './types';
+import { AuthSessionResponse, GetAuthSessionOptions } from './types';
 import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
 import { refreshGoogleOAuthCredentials } from '../../../lib/google-oauth/refreshGoogleOAuthCredentials';
 import { deleteOAuthToken, updateOAuthToken } from '../../oauthToken';
@@ -11,7 +11,8 @@ import { deleteOAuthToken, updateOAuthToken } from '../../oauthToken';
  * Retrieves the authentication session for the current user.
  * @returns A Promise that resolves to an AuthSessionResponse object if a session is found, or null if not found or expired.
  */
-export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
+export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<AuthSessionResponse | null> => {
+  const { introspectOAuthTokens = false } = opts || {};
   const cookieStore = cookies();
   const headersList = headers();
   const jwt = cookieStore.get(APP_SESSION_COOKIE_NAME)?.value;
@@ -27,7 +28,8 @@ export const getAuthSession = async (): Promise<AuthSessionResponse | null> => {
       sessionWithUser = await getApiAuthSession(xApiKey);
     }
 
-    if (sessionWithUser?.user) {
+    // If we have a session with a user, and we need to introspect OAuth tokens, do so.
+    if (sessionWithUser?.user && introspectOAuthTokens ) {
       const { user } = sessionWithUser;
 
       // Attempt to renew OAuth tokens if they exist
