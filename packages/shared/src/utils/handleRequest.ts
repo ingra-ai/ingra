@@ -33,6 +33,7 @@ export async function handleRequest<T extends {}, U extends {}>(method: 'GET' | 
   const args: U = {
     params,
     requestArgs,
+    requestHeaders: req.headers,
     analyticsObject: getAnalyticsObject(req),
   } as unknown as U;
 

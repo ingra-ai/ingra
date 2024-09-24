@@ -36,6 +36,15 @@ type FunctionFormProps = {
   envVars: EnvVarsOptionalPayload[];
   functionRecord?: Prisma.FunctionGetPayload<{
     include: {
+      owner: {
+        select: {
+          profile: {
+            select: {
+              userName: true;
+            };
+          };
+        };
+      };
       tags: true;
       arguments: true;
     };
