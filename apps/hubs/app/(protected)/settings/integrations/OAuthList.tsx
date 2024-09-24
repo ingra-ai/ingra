@@ -19,10 +19,18 @@ type OAuthListProps = {
   oAuthTokens: OAuthToken[];
 };
 
-const getTokenDetail = (token: OAuthToken) => {
+type TokenDetailReturnType = {
+  label: string;
+  alert: React.ReactNode;
+  state: React.ReactNode;
+  autoRenew: React.ReactNode;
+  icon: React.ReactNode;
+};
+
+const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
   const isActive = new Date() < token.expiryDate;
   const unableToRenew = !isActive && token.service === 'google-oauth' && !token.refreshToken;
-  const defaultProps = {
+  const defaultProps: TokenDetailReturnType = {
     label: 'Unknown',
     alert: unableToRenew ? (
       <Alert variant="warning" className="text-xs">
@@ -36,7 +44,16 @@ const getTokenDetail = (token: OAuthToken) => {
         </AlertDescription>
       </Alert>
     ) : null,
-    state: isActive ? 'Active' : 'Inactive',
+    state: isActive ? 'Active' : 'Expired',
+    autoRenew: !unableToRenew && (
+      <div className='flex flex-row items-center justify-start text-info'>
+        <RefreshCcw className='w-4 h-4 mr-2' />
+        <p className="truncate text-xs">
+          Auto-refresh on API calls
+        </p>
+      </div>
+
+    ),
     icon: null,
   };
 
@@ -47,7 +64,7 @@ const getTokenDetail = (token: OAuthToken) => {
       return {
         ...defaultProps,
         label: 'Google',
-        state: isActive ? 'Active' : 'Inactive',
+        state: isActive ? 'Active' : 'Expired',
         icon: (
           <svg className="h-10 w-10 flex-shrink-0 rounded-full" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
             <path
@@ -154,7 +171,8 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                     {isTokenDefault && <Badge>Default</Badge>}
                   </div>
                   <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
-                  <p className="mt-1 truncate text-xs text-gray-400">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
+                  <p className="mt-2 truncate text-xs text-gray-400">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
+                  { tokenDetail.autoRenew && <div className="mt-2">{tokenDetail.autoRenew}</div> }
                 </div>
                 {tokenDetail.icon}
               </div>
