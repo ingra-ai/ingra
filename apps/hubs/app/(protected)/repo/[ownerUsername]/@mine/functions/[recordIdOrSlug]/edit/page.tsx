@@ -35,6 +35,15 @@ export default async function Page({ params }: Props) {
     getFunctionAccessibleByUser(authSession.user.id, recordIdOrSlug, {
       findFirstArgs: {
         include: {
+          owner: {
+            select: {
+              profile: {
+                select: {
+                  userName: true,
+                },
+              },
+            },
+          },
           tags: true,
           arguments: true,
         },
