@@ -24,14 +24,12 @@ const getSideNavRoutes = (authSession?: AuthSessionResponse) => {
   const username = authSession?.user?.profile?.userName || '';
 
   const sideNavRoutes: NavItem[] = [
-    username
-      ? {
-          name: 'Dashboard',
-          description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
-          href: '/overview/dashboard',
-          icon: LayoutDashboardIcon,
-        }
-      : false,
+    {
+      name: 'Dashboard',
+      description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
+      href: '/overview/dashboard',
+      icon: LayoutDashboardIcon,
+    },
     {
       name: 'Marketplace',
       description: 'Browse public collections and functions shared by other users.',
