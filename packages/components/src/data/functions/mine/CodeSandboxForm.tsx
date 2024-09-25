@@ -38,7 +38,7 @@ type RunState = {
   errors: UserSandboxOutput[];
   logs: UserSandboxOutput[];
   metrics: Partial<MetricValues>;
-  result: any;
+  output: any;
 };
 
 export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
@@ -50,7 +50,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
     errors: [],
     logs: [],
     metrics: {},
-    result: null,
+    output: null,
   });
 
   const {
@@ -82,7 +82,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
         errors: [],
         logs: [],
         metrics: {},
-        result: null,
+        output: null,
       });
 
       // execute code
@@ -120,7 +120,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
           errors,
           logs,
           metrics,
-          result,
+          output: result,
         });
       } catch (error: any) {
         toast({
@@ -134,7 +134,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
           errors: [],
           logs: [],
           metrics: {},
-          result: null,
+          output: null,
         });
       }
     },
@@ -144,7 +144,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
   const onLogboxClose = useCallback(() => {
     setRunState({
       ...runState,
-      result: null,
+      output: null,
       errors: [],
       logs: [],
       metrics: {},
@@ -153,7 +153,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
 
   const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
   const metricsEntries = Object.entries(runState.metrics),
-    hasOutput = !!runState.result?.output || runState.errors.length > 0 || runState.logs.length > 0 || metricsEntries.length > 0;
+    hasOutput = !!runState.output || runState.errors.length > 0 || runState.logs.length > 0 || metricsEntries.length > 0;
 
   return (
     <form className="block space-y-6 mt-4 mb-20" method="POST" onSubmit={handleSubmit(onRun)}>
@@ -248,9 +248,9 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
                 ))}
 
               {/* Result Section */}
-              {!!runState.result?.output && (
+              {!!runState.output && (
                 <div className="text-green-500">
-                  <span className="text-gray-300">[output]:</span> {runState.result.output}
+                  <span className="text-gray-300">[output]:</span> {JSON.stringify(runState.output, null, 2)}
                 </div>
               )}
             </div>
