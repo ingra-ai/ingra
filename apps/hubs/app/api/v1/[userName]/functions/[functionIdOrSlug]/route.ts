@@ -109,7 +109,7 @@ async function handlerFn(args: HandlerArgs) {
       {
         status: 'success',
         message: 'Function executed successfully',
-        data: result?.output || null,
+        data: result || null,
       },
       {
         status: 200,
