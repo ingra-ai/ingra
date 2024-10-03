@@ -39,7 +39,7 @@ async function handlerFn(args: HandlerArgs) {
 
     if (authSession.user.profile?.userName === userName) {
       // If the user is the owner of the function
-      accessTypes = 'owner';
+      accessTypes = ['owner'];
     } else {
       // User is probably a subscriber
       accessTypes = ['subscriber', 'subscribedCollection'];
