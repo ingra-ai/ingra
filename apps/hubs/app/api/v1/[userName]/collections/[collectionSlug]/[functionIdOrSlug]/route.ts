@@ -32,7 +32,7 @@ async function handlerFn(args: HandlerArgs) {
 
     loggerObj.info(`Starts executing function: ${functionIdOrSlug}`, requestArgs);
 
-    let accessType: FunctionAccessType = 'owner';
+    let accessTypes: FunctionAccessType[] = ['owner'];
 
     if (!functionIdOrSlug) {
       throw new ActionError('error', 400, 'Function ID or slug is required to run this method.');
@@ -40,15 +40,15 @@ async function handlerFn(args: HandlerArgs) {
 
     if (authSession.user.profile?.userName === userName) {
       // If the user is the owner of the function
-      accessType = 'owner';
+      accessTypes = ['owner'];
     } else {
       // User is probably a subscriber of a collection of this function
-      accessType = 'subscribedCollection';
+      accessTypes = ['subscriber', 'subscribedCollection'];
     }
 
     // Find the function
     const functionRecord = await getFunctionAccessibleByUser(authSession.user.id, functionIdOrSlug, {
-      accessTypes: [accessType],
+      accessTypes,
       findFirstArgs: {
         include: {
           arguments: true,
@@ -76,7 +76,7 @@ async function handlerFn(args: HandlerArgs) {
       functionId: functionRecord.id,
       functionIdOrSlug: functionIdOrSlug,
       isSandboxDebug,
-      accessType,
+      accessTypes,
       metrics,
       errors,
     });
