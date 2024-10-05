@@ -1,5 +1,5 @@
 import { parseDate as chronoParseDate } from 'chrono-node';
-import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 /**
  * Parses the start and end inputs into dates and adjusts them to the user's timezone.
@@ -21,7 +21,7 @@ export function parseStartAndEnd(startInput: string, endInput: string, userTz: s
   const now = Date.now();
 
   // Adjust 'now' to the user's timezone
-  const referenceDate = utcToZonedTime(now, userTz);
+  const referenceDate = toZonedTime(now, userTz);
 
   let startDate = chronoParseDate(startInput, referenceDate, {
     forwardDate: true,
@@ -33,8 +33,8 @@ export function parseStartAndEnd(startInput: string, endInput: string, userTz: s
   }
 
   // Convert parsed dates to UTC for consistent API querying
-  startDate = zonedTimeToUtc(startDate, userTz);
-  endDate = zonedTimeToUtc(endDate, userTz);
+  startDate = fromZonedTime(startDate, userTz);
+  endDate = fromZonedTime(endDate, userTz);
 
   if (endDate <= startDate) {
     endDate = new Date(startDate);
@@ -52,7 +52,7 @@ export function parseStartAndEnd(startInput: string, endInput: string, userTz: s
  */
 export function parseDate(input: string, userTz: string) {
   const now = Date.now();
-  const referenceDate = utcToZonedTime(now, userTz);
+  const referenceDate = toZonedTime(now, userTz);
 
   return chronoParseDate(input, referenceDate, { forwardDate: true });
 }

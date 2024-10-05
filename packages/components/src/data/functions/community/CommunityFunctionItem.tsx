@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import { ClockIcon } from '@heroicons/react/24/outline';
-import formatDistance from 'date-fns/formatDistance';
-import format from 'date-fns/format';
+import { formatDistance } from 'date-fns/formatDistance';
+import { format } from 'date-fns/format';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../ui/tooltip';
 import type { CommunityFunctionListGetPayload } from '../../../data/functions/community/types';

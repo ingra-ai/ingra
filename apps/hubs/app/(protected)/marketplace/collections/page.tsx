@@ -2,7 +2,7 @@ import { getAuthSession } from '@repo/shared/data/auth/session';
 import { BakaPagination } from '@repo/components/BakaPagination';
 import { cn } from '@repo/shared/lib/utils';
 import { fetchPaginationData } from './fetchPaginationData';
-import CommunityCollectionList from '@repo/components/data/collections/community/CommunityCollectionList';
+import CollectionSearchList from '@repo/components/data/collections/CollectionSearchList';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();
@@ -26,11 +26,11 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
             </strong>
           </p>
         </div>
-        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"></div>
+        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"> </div>
       </div>
       <div className="mt-4">
         <BakaPagination className="mb-4" {...paginationProps} />
-        <CommunityCollectionList showControls={!!authSession} collections={records} />
+        <CollectionSearchList authSession={authSession} collections={records} />
       </div>
     </div>
   );

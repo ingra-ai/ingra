@@ -1,6 +1,6 @@
 import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
-import type { FetchMineCollectionListPaginationType } from '@repo/components/data/collections/mine/types';
+import { FetchCollectionSearchListPaginationType } from '@repo/components/data/collections/types';
 
 export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
   // Parse the query parameteres
@@ -14,7 +14,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
   // Calculate skip value based on page and pageSize
   const skip = clamp(pageInt - 1, 0, 1e3) * pageSizeInt;
 
-  const [totalCount, allcollections] = await Promise.all([
+  const [totalCount, allCollections] = await Promise.all([
     // Fetch the total count of collections
     db.collection.count({
       where: {
@@ -37,9 +37,9 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
         description: true,
         owner: {
           select: {
-            id: true,
             profile: {
               select: {
+                id: true,
                 userName: true,
               },
             },
@@ -50,13 +50,13 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
             id: true,
             slug: true,
             code: false,
-            description: false,
-            httpVerb: false,
+            description: true,
+            httpVerb: true,
             isPrivate: true,
             isPublished: true,
-            ownerUserId: false,
+            ownerUserId: true,
             createdAt: false,
-            updatedAt: false,
+            updatedAt: true,
             tags: {
               select: {
                 id: true,
@@ -65,12 +65,32 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
                 function: false,
               },
             },
-            arguments: false,
+            arguments: {
+              select: {
+                id: true,
+                name: true,
+                description: false,
+                type: true,
+                defaultValue: false,
+                isRequired: false,
+              },
+            },
+            owner: {
+              select: {
+                id: true,
+                profile: {
+                  select: {
+                    userName: true,
+                  },
+                },
+              },
+            },
           },
         },
         _count: {
           select: {
             subscribers: true,
+            functions: true,
           },
         },
       },
@@ -79,14 +99,20 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
     }),
   ]);
 
+  // Transform the `subscribers` field into a boolean `isSubscribed`
+  const collectionsWithSubscriptionStatus = allCollections.map((collection) => ({
+    ...collection,
+    isSubscribed: false,
+  }));
+
   // Calculate pagination details
   const totalRecords = totalCount;
   const nbPages = Math.ceil(totalRecords / pageSizeInt);
   const hasNext = skip + pageSizeInt < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchMineCollectionListPaginationType = {
-    records: allcollections,
+  const result: FetchCollectionSearchListPaginationType = {
+    records: collectionsWithSubscriptionStatus,
     page: pageInt,
     pageSize: pageSizeInt,
     totalRecords,

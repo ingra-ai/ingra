@@ -10,7 +10,11 @@ export default async function Page({ params }: { params: { userName: string; col
   const { userName, collectionSlug } = params;
   const itsMe = Boolean(authSession?.user.profile?.userName && authSession.user.profile.userName === userName);
 
-  const swaggerSpec = itsMe && authSession ? await getMyCollectionAuthSpec(authSession, userName, collectionSlug) : await getCommunityCollectionSpec(userName, collectionSlug);
+  if ( !authSession ) {
+    return notFound();
+  }
+
+  const swaggerSpec = ( itsMe && authSession )? await getMyCollectionAuthSpec(authSession, userName, collectionSlug) : await getCommunityCollectionSpec(authSession, userName, collectionSlug);
 
   if (!swaggerSpec) {
     return notFound();
