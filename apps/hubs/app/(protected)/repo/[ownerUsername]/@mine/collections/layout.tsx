@@ -8,7 +8,7 @@ export default function Layout(props: FunctionLayoutProps) {
   const { children } = props;
 
   return (
-    <div className="block px-4" data-testid="collections-layout">
+    <div className="relative" data-testid="collections-layout">
       {children}
     </div>
   );

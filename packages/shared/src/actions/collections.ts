@@ -9,8 +9,7 @@ import {
   editCollection as dataEditCollection,
   deleteCollection as dataDeleteCollection,
   subscribeToCollection as dataSubscribeToCollection,
-  unsubscribeToCollection as dataUnsubscribeToCollection,
-  toggleCollectionSubscription as dataToggleCollectionSubscription,
+  unsubscribeToCollection as dataUnsubscribeToCollection
 } from '../data/collections';
 
 export const createCollection = async (values: z.infer<typeof CollectionSchema>) => {
@@ -24,6 +23,13 @@ export const createCollection = async (values: z.infer<typeof CollectionSchema>)
       status: 'ok',
       message: `Collection "${result.slug}" created!`,
       data: result,
+    };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to create collection!`,
+      data: null,
     };
   });
 };
@@ -40,6 +46,13 @@ export const updateCollection = async (collectionId: string, values: z.infer<typ
       message: `Collection "${result.slug}" updated!`,
       data: result,
     };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to update collection!`,
+      data: null,
+    };
   });
 };
 
@@ -51,6 +64,13 @@ export const deleteCollection = async (collectionId: string) => {
       status: 'ok',
       message: `Collection has been deleted!`,
       data: result,
+    };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to delete collection!`,
+      data: null,
     };
   });
 };
@@ -64,6 +84,13 @@ export const subscribeToCollection = async (collectionId: string) => {
       message: `Subscribed to collection!`,
       data: result,
     };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to subscribe to collection!`,
+      data: null,
+    };
   });
 };
 
@@ -76,15 +103,11 @@ export const unsubscribeToCollection = async (collectionId: string) => {
       message: `Unsubscribed from collection!`,
       data: result,
     };
-  });
-};
-export const subscribeToggleFunction = async (collectionId: string) => {
-  return await actionAuthTryCatch(async (authSession) => {
-    const result = await dataToggleCollectionSubscription(collectionId, authSession.user.id);
-
+  })
+  .catch((error) => {
     return {
-      status: 'ok',
-      message: result ? `Subscribed to collection!` : `Unsubscribed from collection!`,
+      status: error?.status || 'error',
+      message: error?.message || `Failed to unsubscribe to collection!`,
       data: null,
     };
   });

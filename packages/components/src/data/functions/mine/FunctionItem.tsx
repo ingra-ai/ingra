@@ -5,8 +5,8 @@ import { PlusIcon, ClockIcon } from 'lucide-react';
 import type { FunctionListGetPayload } from './types';
 import { Badge } from '../../../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../ui/tooltip';
-import formatDistance from 'date-fns/formatDistance';
-import format from 'date-fns/format';
+import { formatDistance } from 'date-fns/formatDistance';
+import { format } from 'date-fns/format';
 import { getUserRepoFunctionsNewUri } from '@repo/shared/lib/constants/repo';
 
 interface FunctionItemProps {

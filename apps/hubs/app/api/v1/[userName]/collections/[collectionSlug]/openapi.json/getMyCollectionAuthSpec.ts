@@ -60,7 +60,7 @@ async function generateOpenApiSchema(authSession: AuthSessionResponse, recordIdO
 }
 
 export const getMyCollectionAuthSpec = async (authSession: AuthSessionResponse, ownerUsername: string, recordIdOrSlug: string) => {
-  if (!authSession) {
+  if ( !authSession || authSession.user.profile?.userName !== ownerUsername ) {
     return null;
   }
 

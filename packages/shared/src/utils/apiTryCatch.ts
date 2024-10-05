@@ -18,7 +18,7 @@ export const apiTryCatch = async <T>(fn: () => Promise<ApiTryCatchReturnType<T>>
       return NextResponse.json(apiError, {
         status: apiError.status || 500,
       });
-    } else if (error instanceof ActionError) {
+    } else if (typeof error?.toJson === 'function' || error instanceof ActionError) {
       const apiError = error.toJson();
 
       return NextResponse.json(apiError, {

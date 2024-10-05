@@ -48,28 +48,24 @@ export const getCollectionAccessibleByCommunity = async <T extends GetCollection
   }
 
   // Define the query conditions based on the accessType
-  const OrWhereConditions: Prisma.CollectionWhereInput[] = [
-    {
-      owner: {
-        profile: {
-          userName: ownerUsername,
-        },
+  const WhereInput: Prisma.CollectionWhereInput = {
+    owner: {
+      profile: {
+        userName: ownerUsername,
       },
-      ...(useUuid
-        ? {
-            id: recordIdOrSlug,
-          }
-        : {
-            slug: recordIdOrSlug,
-          }),
     },
-  ];
+    ...(useUuid
+      ? {
+          id: recordIdOrSlug,
+        }
+      : {
+          slug: recordIdOrSlug,
+        }),
+  };
 
   // Find the function
   const collectionRecord = (await db.collection.findFirst({
-    where: {
-      OR: OrWhereConditions,
-    },
+    where: WhereInput,
     ...(findFirstArgs.include ? { include: findFirstArgs.include } : {}),
     ...(findFirstArgs.select ? { select: findFirstArgs.select } : {}),
   })) as Prisma.CollectionGetPayload<T> | null;

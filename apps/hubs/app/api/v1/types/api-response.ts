@@ -16,10 +16,10 @@ import { PrismaClientKnownRequestError } from '@repo/db/prisma';
  *        code:
  *          type: string
  *          nullable: true
- *          description: A brief description of the error message.
+ *          description: A short error code or message.
  *        message:
  *          type: string
- *          description: A detailed message describing the error message.
+ *          description: A detailed message describing the error message. Utilize this as a reference for the next steps of user's query.
  */
 export type ApiError = {
   status: number;
@@ -43,6 +43,28 @@ export class ActionError extends Error implements ApiError {
     this.code = code;
     this.status = status || 500;
     this.message = message;
+
+    // Transform generic 'error' based on 'status'
+    switch (status) {
+      case 400:
+        this.code = 'BAD_REQUEST';
+        break;
+      case 401:
+        this.code = 'UNAUTHORIZED';
+        break;
+      case 403:
+        this.code = 'FORBIDDEN';
+        break;
+      case 404:
+        this.code = 'NOT_FOUND';
+        break;
+      case 500:
+        this.code = 'INTERNAL_SERVER_ERROR';
+        break;
+      default:
+        this.code = 'UNCAUGHT_ERROR';
+        break;
+    }
   }
 
   toString(): string {

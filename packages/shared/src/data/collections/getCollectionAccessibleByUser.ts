@@ -14,7 +14,7 @@ type GetCollectionAccessibleByUserDefaultArgsType = Pick<Prisma.CollectionFindFi
 };
 
 type GetCollectionAccessibleByUserOptionsType<T extends GetCollectionAccessibleByUserDefaultArgsType> = {
-  accessTypes?: CollectionAccessType[];
+  accessTypes: CollectionAccessType[];
   findFirstArgs?: T;
 };
 
@@ -75,7 +75,7 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
 
   if (accessTypes.indexOf('subscriber') >= 0) {
     /**
-     * Case 2 - User is a subscriber and its other user's function
+     * Case 2 - User is a subscriber and its other user's collection
      */
     whereConditions.push({
       AND: [
@@ -102,7 +102,7 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
     whereConditions.push(findFirstArgs.where);
   }
 
-  // Find the function
+  // Find the collection
   const collectionRecord = (await db.collection.findFirst({
     where: {
       OR: whereConditions,

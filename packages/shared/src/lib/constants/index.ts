@@ -85,9 +85,9 @@ export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 export const APP_OPENAI_VERIFICATION_TOKEN = process.env.NEXT_PUBLIC_OPENAI_VERIFICATION || '';
 export const APP_OPENAI_MANIFEST_NAME_FOR_MODEL = 'IngraVirtualAssistant';
 export const APP_OPENAI_MANIFEST_NAME_FOR_HUMAN = 'Ingra Assistant';
-export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = 'A portal to curate and manage personal assistant functions and workflows, providing a community-driven approach to personal assistant development.';
+export const APP_OPENAI_MANIFEST_DESC_FOR_MODEL = 'A portal or hubs, for AI or Humans to curate and manage personal assistant functions and workflows, providing a community-driven approach to personal assistant development.';
 export const APP_OPENAI_MANIFEST_DESC_FOR_HUMAN =
-  'Ingra Portal helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.';
+  'Ingra Hubs helps you curate and manage functions or workflows to create your own personal assistant suite tailored to your needs. Our goal is to make these functions freely available for everyone, enabling a community-driven approach to personal assistant development.';
 
 /**
  * Google Plugins
@@ -111,6 +111,10 @@ export const USER_API_ROOT_URL = HUBS_APP_URL + USER_API_ROOT_PATH;
 // !! Requires to replace the ":vars" with actual values,
 export const USERS_API_FUNCTION_URI = [USER_API_ROOT_PATH, ':userName', 'functions', ':functionSlug'].join('/');
 export const USERS_API_COLLECTION_URI = [USER_API_ROOT_PATH, ':userName', 'collections', ':collectionSlug'].join('/');
+
+/**
+ * @example "/api/v1/{userName}/collections/123/functions/456"
+ */
 export const USERS_API_COLLECTION_FUNCTION_URI = [USERS_API_COLLECTION_URI, ':functionSlug'].join('/');
 
 /**

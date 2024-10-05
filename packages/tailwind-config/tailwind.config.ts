@@ -10,7 +10,7 @@ const config = {
     },
     extend: {
       screens: {
-        '2xl': '1400px',
+        // '2xl': '1400px',
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -88,7 +88,10 @@ const config = {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('tailwindcss-animate'),
+  ],
 } satisfies Omit<Config, 'content'>;
 
 export default config;

@@ -1,8 +1,8 @@
-import type { FetchCommunityCollectionListPaginationType } from '@repo/components/data/collections/community/types';
+import type { FetchCollectionSearchListPaginationType } from '@repo/components/data/collections/types';
 import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
 
-export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId?: string) => {
+export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, invokerUserId?: string, ownerUserId?: string) => {
   // Parse the query parameteres
   let { page = '1' } = searchParams;
   page = Array.isArray(page) ? page[0] : page;
@@ -18,9 +18,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
     // Fetch the total count of collections
     db.collection.count({
       where: {
-        NOT: {
-          userId,
-        },
+        ...(ownerUserId ? { userId: ownerUserId } : {}),
         functions: {
           some: {
             isPublished: true,
@@ -33,9 +31,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
     // Fetch paginated collections
     db.collection.findMany({
       where: {
-        NOT: {
-          userId,
-        },
+        ...(ownerUserId ? { userId: ownerUserId } : {}),
         functions: {
           some: {
             isPublished: true,
@@ -55,6 +51,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
           select: {
             profile: {
               select: {
+                id: true,
                 userName: true,
               },
             },
@@ -105,11 +102,12 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
         _count: {
           select: {
             subscribers: true,
+            functions: true,
           },
         },
         subscribers: {
           where: {
-            userId,
+            userId: invokerUserId,
           },
           select: {
             id: true,
@@ -133,7 +131,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
   const hasNext = skip + pageSizeInt < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchCommunityCollectionListPaginationType = {
+  const result: FetchCollectionSearchListPaginationType = {
     records: collectionsWithSubscriptionStatus,
     page: pageInt,
     pageSize: pageSizeInt,

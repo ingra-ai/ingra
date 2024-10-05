@@ -5,31 +5,34 @@ import { USERS_API_COLLECTION_FUNCTION_URI } from '@repo/shared/lib/constants';
 import { getCollectionAccessibleByCommunity } from '@repo/shared/data/collections/getCollectionAccessibleByCommunity';
 import { kv } from '@vercel/kv';
 import isEmpty from 'lodash/isEmpty';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { getCollectionAccessibleByUser } from '@repo/shared/data/collections/getCollectionAccessibleByUser';
 
-async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: string) {
+async function generateCommunityCollectionOpenApiSchema(invokerUserId: string, ownerUsername: string, recordIdOrSlug: string) {
   if (!ownerUsername) {
     return null;
   }
-  const collectionRecord = await getCollectionAccessibleByCommunity(ownerUsername, recordIdOrSlug, {
+
+  const collectionRecord = await getCollectionAccessibleByUser(invokerUserId, recordIdOrSlug, {
+    accessTypes: ['subscriber'],
     findFirstArgs: {
       where: {
+        owner: {
+          profile: {
+            userName: ownerUsername,
+          },
+        },
         functions: {
           some: {
-            isPublished: true,
-            isPrivate: false,
-          },
-        },
-      },
-      include: {
-        owner: {
-          include: {
-            profile: {
-              select: {
-                userName: true,
+            subscribers: {
+              some: {
+                userId: invokerUserId,
               },
             },
-          },
-        },
+          }
+        }
+      },
+      include: {
         functions: {
           select: {
             id: false,
@@ -40,7 +43,7 @@ async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: stri
             slug: true,
             description: true,
             arguments: true,
-            tags: true,
+            tags: true
           },
         },
       },
@@ -64,8 +67,16 @@ async function generateOpenApiSchema(ownerUsername: string, recordIdOrSlug: stri
   }, {});
 }
 
-export const getCommunityCollectionSpec = async (ownerUsername: string, recordIdOrSlug: string) => {
-  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(ownerUsername, recordIdOrSlug), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getSwaggerSpec(false)]);
+export const getCommunityCollectionSpec = async (authSession: AuthSessionResponse, ownerUsername: string, recordIdOrSlug: string) => {
+  if ( !authSession ) {
+    return null;
+  }
+
+  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([
+    generateCommunityCollectionOpenApiSchema(authSession.userId, ownerUsername, recordIdOrSlug), 
+    kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), 
+    getSwaggerSpec(false)
+  ]);
 
   const mySwaggerSpec = {
     ...(baseSwaggerSpec || {}),

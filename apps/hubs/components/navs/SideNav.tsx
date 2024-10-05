@@ -55,6 +55,11 @@ const getSideNavRoutes = (authSession?: AuthSessionResponse) => {
   return sideNavRoutes;
 };
 
+/**
+ * Legacy side nav
+ * @todo Remove this
+ * @deprecated Do not use this.
+ */
 const SideNav: FC<SideNavProps> = (props) => {
   const { className, authSession, onMenuClick } = props;
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');

@@ -3,6 +3,26 @@ import db from '@repo/db/client';
 import { Logger } from '../../lib/logger';
 
 export async function addNewCollection(name: string, slug: string, description: string, userId: string) {
+  // Check if user has a collection with the same name
+  const existingCollection = await db.collection.findFirst({
+    where: {
+      OR: [
+        {
+          userId,
+          name,
+        },
+        {
+          userId,
+          slug,
+        }
+      ],
+    },
+  });
+
+  if (existingCollection) {
+    throw new Error('Collection with the same name or slug already exists');
+  }
+
   const record = await db.collection.create({
     data: {
       name,
@@ -32,6 +52,18 @@ export async function editCollection(collectionId: string, name: string, slug: s
 }
 
 export async function addFunctionToCollection(collectionId: string, functionId: string, userId: string) {
+  // Check if function exists, and owned by userId
+  const functionRecord = await db.function.findFirst({
+    where: {
+      id: functionId,
+      ownerUserId: userId,
+    },
+  });
+
+  if (!functionRecord) {
+    throw new Error('Function not found');
+  }
+
   const record = await db.collection.update({
     where: {
       id: collectionId,
@@ -50,6 +82,18 @@ export async function addFunctionToCollection(collectionId: string, functionId: 
 }
 
 export async function removeFunctionFromCollection(collectionId: string, functionId: string, userId: string) {
+  // Check if function exists, and owned by userId
+  const functionRecord = await db.function.findFirst({
+    where: {
+      id: functionId,
+      ownerUserId: userId,
+    },
+  });
+
+  if (!functionRecord) {
+    throw new Error('Function not found');
+  }
+  
   const record = await db.collection.update({
     where: {
       id: collectionId,
@@ -65,39 +109,6 @@ export async function removeFunctionFromCollection(collectionId: string, functio
   });
 
   return record;
-}
-
-export async function toggleCollectionSubscription(collectionId: string, userId: string) {
-  const [userProfile, existingSubscription] = await Promise.all([
-    db.profile.findFirst({
-      where: {
-        userId
-      }
-    }),
-    db.collectionSubscription.findUnique({
-      where: {
-        collectionId_userId: {
-          collectionId,
-          userId,
-        },
-      },
-    }),
-  ]);
-
-  if ( !userProfile ) {
-    throw new Error('User profile is not configured.');
-  } 
-  else if ( !userProfile?.userName ) {
-    throw new Error('Username is not configured.');
-  }
-
-  if (existingSubscription) {
-    await unsubscribeToCollection(collectionId, userId);
-    return false;
-  } else {
-    await subscribeToCollection(collectionId, userId);
-    return true;
-  }
 }
 
 export async function subscribeToCollection(collectionId: string, userId: string) {
@@ -203,6 +214,10 @@ export async function deleteCollection(collectionId: string, userId: string) {
         },
       });
 
+      if ( !collectionRecord ) {
+        throw new Error('Collection not found');
+      }
+
       if (collectionRecord?.functions.length) {
         // Disconnect all functions in this collection
         await prisma.collection.update({
@@ -233,6 +248,6 @@ export async function deleteCollection(collectionId: string, userId: string) {
     return true;
   } catch (error) {
     await Logger.withTag('action|deleteCollection').withTag(`user|${userId}`).error('Error deleting collection and related records', { error });
-    return false;
+    throw error;
   }
 }
