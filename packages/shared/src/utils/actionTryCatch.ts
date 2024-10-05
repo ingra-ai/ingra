@@ -19,7 +19,7 @@ export const actionTryCatch = async <T>(fn: () => Promise<ActionTryCatchReturnTy
       const prismaError = new PrismaActionError(error);
       const apiError = prismaError.toJson();
       actionError.message = apiError.message;
-    } else if (error instanceof ActionError) {
+    } else if (typeof error?.toJson === 'function' || error instanceof ActionError) {
       const apiError = error.toJson();
       actionError.message = apiError.message;
     }

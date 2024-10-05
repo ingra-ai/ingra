@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@repo/components/BakaPagination';
-import { fetchPaginationData } from './fetchPaginationData';
+import { fetchPaginationData } from '@protected/marketplace/collections/fetchPaginationData';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import CommunityCollectionList from '@repo/components/data/collections/community/CommunityCollectionList';
+import CollectionSearchList from '@repo/components/data/collections/CollectionSearchList';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const { ownerUsername } = params;
@@ -20,7 +20,7 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
     return notFound();
   }
 
-  const paginationData = await fetchPaginationData(searchParams, ownerProfile?.userId, authSession?.userId),
+  const paginationData = await fetchPaginationData(searchParams, authSession?.userId, ownerProfile?.userId),
     { records, ...paginationProps } = paginationData;
 
   return (
@@ -41,7 +41,7 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
       </div>
       <div className="mt-4">
         <BakaPagination className="mb-4" {...paginationProps} />
-        <CommunityCollectionList showControls={!!authSession} collections={records} />
+        <CollectionSearchList authSession={authSession} collections={records} />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { startTransition, useState } from 'react';
 import { OAuthToken } from '@repo/db/prisma';
 import { TrashIcon } from '@heroicons/react/20/solid';
-import format from 'date-fns/format';
+import { format } from 'date-fns/format';
 import { Button } from '@repo/components/ui/button';
 import { cn } from '@repo/shared/lib/utils';
 import { useToast } from '@repo/components/ui/use-toast';

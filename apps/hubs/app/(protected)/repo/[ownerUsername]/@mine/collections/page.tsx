@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { BakaPagination } from '@repo/components/BakaPagination';
 import { fetchPaginationData } from './fetchPaginationData';
 import CollectionList from '@repo/components/data/collections/mine/CollectionList';
+import CollectionSearchList from '@repo/components/data/collections/CollectionSearchList';
+import CreateNewCollectionButton from './CreateNewCollectionButton';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const authSession = await getAuthSession();
@@ -16,7 +18,8 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
 
   return (
     <div className="block" data-testid="collections-list-page">
-      <div className="sm:flex sm:items-center">
+      
+      <div className="flex justify-between items-center mb-4">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6">My Collections</h1>
           <p className="text-xs text-gray-500 font-sans mt-1">
@@ -28,11 +31,11 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
             </strong>
           </p>
         </div>
-        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"></div>
+        <CreateNewCollectionButton />
       </div>
       <div className="mt-4">
         <BakaPagination className="mb-4" {...paginationProps} />
-        <CollectionList ownerUsername={params.ownerUsername} collections={records} />
+        <CollectionSearchList authSession={authSession} collections={records} />
       </div>
     </div>
   );

@@ -1,6 +1,4 @@
 import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
-import { MarketplaceNavRoutes } from './MarketplaceNavRoutes';
-import TopSubNav from '@/components/navs/TopSubNav';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import type { Metadata } from 'next';
 
@@ -10,9 +8,7 @@ export const metadata: Metadata = {
 
 async function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="relative block p-4" data-testid="marketplace-layout">
-      <TopSubNav navItems={MarketplaceNavRoutes} />
-
+    <div className="relative xl:container" data-testid="marketplace-layout">
       <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
     </div>
   );

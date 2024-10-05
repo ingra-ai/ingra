@@ -6,16 +6,21 @@ import Anchor from './anchor';
 import { SheetLeftbar } from './leftbar';
 import { buttonVariants } from '../ui/button';
 import { SheetClose } from '../ui/sheet';
-import { APP_GITHUB_URL, PARENT_APP_URL } from '@repo/shared/lib/constants';
+import { APP_GITHUB_URL, APP_NAME, PARENT_APP_URL } from '@repo/shared/lib/constants';
 import { PropsWithChildren } from 'react';
 import { NavbarProps, NavMenuProps } from './types';
 
 export function Navbar(props: PropsWithChildren<NavbarProps>) {
-  const { navlinks = [], sheetChildren, children } = props;
+  const { 
+    navlinks = [], 
+    sheetChildren,
+    authChildren, 
+    children 
+  } = props;
 
   return (
-    <nav className="w-full border-b h-16 sticky top-0 z-50 lg:px-4 px-2 backdrop-filter backdrop-blur-xl bg-opacity-5">
-      <div className="sm:p-3 p-1 max-w-[1500px] mx-auto h-full flex items-center justify-between md:gap-2">
+    <nav className="w-full border-b h-16 sticky top-0 z-50 backdrop-filter backdrop-blur-xl bg-opacity-5">
+      <div className="xl:container mx-auto h-full flex items-center justify-between md:gap-2">
         <div className="flex items-center gap-5">
           <SheetLeftbar navlinks={navlinks}>{sheetChildren}</SheetLeftbar>
           <div className="flex items-center gap-6">
@@ -29,9 +34,9 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" suppressHydrationWarning>
             {children}
-            <div className="flex ml-2.5 sm:ml-0">
+            <div className="flex ml-2.5 sm:ml-0 items-center">
               <Link href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
                 <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
               </Link>
@@ -45,6 +50,7 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
                 <TwitterIcon className="h-[1.1rem] w-[1.1rem]" />
               </Link> */}
               <ModeToggle />
+              { authChildren }
             </div>
           </div>
         </div>
@@ -56,8 +62,8 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
 export function Logo() {
   return (
     <Link href={PARENT_APP_URL} className="flex items-center gap-2.5">
-      <Image src="/static/brand/ingra.svg" width={50} height={50} className="h-6 w-auto hidden lg:block" alt="Ingra Logo" />
-      <h2 className="text-md font-bold sr-only">Ingra</h2>
+      <Image src="/static/brand/ingra.svg" width={50} height={50} className="h-6 w-auto hidden lg:block" alt={ APP_NAME + ' Logo'} />
+      <h2 className="text-md font-bold sr-only">{APP_NAME}</h2>
     </Link>
   );
 }
@@ -67,7 +73,7 @@ export function NavMenu({ navlinks, isSheet = false }: NavMenuProps) {
     <>
       {navlinks.map((item) => {
         const Comp = (
-          <Anchor key={item.title + item.href} activeClassName="text-primary font-semibold" absolute className="flex items-center gap-1" href={item.href}>
+          <Anchor key={item.title + item.href} activeClassName="text-primary font-semibold" absolute className="flex items-center gap-1" href={item.href} title={item?.description || ''}>
             {item.title} {item.external && <MoveUpRightIcon className="w-3 h-3 align-super" strokeWidth={3} />}
           </Anchor>
         );

@@ -7,7 +7,7 @@ import { RefreshCcw } from 'lucide-react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { deleteApiKey } from '@repo/shared/actions/apiKey';
 import { useRouter } from 'next/navigation';
-import formatDistance from 'date-fns/formatDistance';
+import { formatDistance } from 'date-fns/formatDistance';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@repo/components/ui/alert-dialog';
 import type { ApiKey } from '@repo/db/prisma';
 import { GenerateApiKeyButton } from './GenerateApiKeyButton';
