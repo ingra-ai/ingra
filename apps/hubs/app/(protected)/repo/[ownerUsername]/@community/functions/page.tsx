@@ -2,7 +2,7 @@ import { getAuthSession } from '@repo/shared/data/auth/session';
 import CommunityFunctionList from '@repo/components/data/functions/community/CommunityFunctionList';
 import { cn } from '@repo/shared/lib/utils';
 import { notFound } from 'next/navigation';
-import { BakaPagination } from '@repo/components/BakaPagination';
+import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { fetchPaginationData } from './fetchPaginationData';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 
