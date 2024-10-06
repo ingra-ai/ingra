@@ -5,7 +5,8 @@
   "exports": {
     "./analytics/HotjarAnalytics": "./src/analytics/HotjarAnalytics.tsx",
 
-    "./BakaPagination": "./src/BakaPagination.tsx",
+    "./search/BakaPagination": "./src/search/BakaPagination.tsx",
+    "./search/BakaSearch": "./src/search/BakaSearch.tsx",
 
     "./CodeEditorInput": "./src/CodeEditorInput.tsx",
 
@@ -61,7 +62,7 @@
     "./theme/theme-toggle": "./src/theme/theme-toggle.tsx",
 
     "./slideovers/FormSlideOver": "./src/slideovers/FormSlideOver.tsx",
-    
+
     "./not-found/Interstellar404": "./src/not-found/Interstellar404.tsx",
 
     "./ui/alert-dialog": "./src/ui/alert-dialog.tsx",

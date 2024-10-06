@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from './ui/pagination';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@repo/components/ui/pagination';
 import { cn } from '@repo/shared/lib/utils';
 import clamp from 'lodash/clamp';
 import inRange from 'lodash/inRange';

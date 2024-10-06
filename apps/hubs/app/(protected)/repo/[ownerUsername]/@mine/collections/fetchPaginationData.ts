@@ -1,35 +1,112 @@
 import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
+import { Prisma } from '@repo/db/prisma';
 import { FetchCollectionSearchListPaginationType } from '@repo/components/data/collections/types';
 
-export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, userId: string) => {
+export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, invokerUserId: string) => {
+  // Define available sort keys and orders
+  const availableSortKeys = ['name', 'updatedAt', 'subscribers'],
+    availableSortOrders = ['asc', 'desc'];
+
   // Parse the query parameteres
-  let { page = '1' } = searchParams;
+  let { 
+    q = '',
+    page = '1',
+    pageSize = '20',
+    sortBy = 'updatedAt_desc',
+  } = searchParams;
+  q = Array.isArray(q) ? q[0] : q;
   page = Array.isArray(page) ? page[0] : page;
+  pageSize = Array.isArray(pageSize) ? pageSize[0] : pageSize;
+  sortBy = Array.isArray(sortBy) ? sortBy[0] : sortBy;
 
   // Validate and sanitize page and pageSize
   const pageInt = Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
-  const pageSizeInt = 20;
+  const pageSizeInt = clamp(Number.isInteger(Number(pageSize)) ? parseInt(pageSize, 10) : 20, 1, 40);
 
   // Calculate skip value based on page and pageSize
   const skip = clamp(pageInt - 1, 0, 1e3) * pageSizeInt;
 
+  // Calculate orderBy based on sortBy
+  let [sortKey, sortOrder] = sortBy.split('_');
+  if (!availableSortKeys.includes(sortKey) || !availableSortOrders.includes(sortOrder)) {
+    // Revert to default values if the sortBy query parameter is invalid
+    sortBy = 'updatedAt_desc';
+    sortKey = 'updatedAt';
+    sortOrder = 'desc';
+  }
+
+  // Define whereQuery based on the query parameteres 'q' and argument 'ownerUserId'
+  const whereQuery: Prisma.CollectionWhereInput = {};
+
+  // Apply search query
+  if ( invokerUserId ) {
+    whereQuery.userId = invokerUserId;
+  }
+
+  if ( q ) {
+    whereQuery.OR = [
+      {
+        name: {
+          contains: q,
+          mode: 'insensitive',
+        },
+      },
+      {
+        slug: {
+          contains: q,
+          mode: 'insensitive',
+        },
+      },
+      {
+        description: {
+          contains: q,
+          mode: 'insensitive',
+        },
+      },
+      {
+        functions: {
+          some: {
+            tags: {
+              some: {
+                name: {
+                  contains: q,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          }
+        },
+      },
+    ];
+  }
+
+  // Define orderBy based on the sortBy query parameter
+  const orderByQuery: Prisma.CollectionOrderByWithRelationInput = {};
+
+  if ( sortKey === 'subscribers' ) {
+    Object.assign(orderByQuery, {
+      subscribers: {
+        _count: sortOrder,
+      },
+    });
+  }
+  else {
+    Object.assign(orderByQuery, {
+      [sortKey]: sortOrder,
+    });
+  }
+
   const [totalCount, allCollections] = await Promise.all([
     // Fetch the total count of collections
     db.collection.count({
-      where: {
-        userId,
-      },
+      where: whereQuery,
     }),
 
     // Fetch paginated collections
     db.collection.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        updatedAt: 'desc',
-      },
+      where: whereQuery,
+      orderBy: orderByQuery,
       select: {
         id: true,
         name: true,
@@ -119,6 +196,8 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
     nbPages,
     hasNext,
     hasPrevious,
+    q: q || '',
+    sortBy
   };
 
   return result;

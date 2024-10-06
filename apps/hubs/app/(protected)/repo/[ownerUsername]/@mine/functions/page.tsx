@@ -1,7 +1,7 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { cn } from '@repo/shared/lib/utils';
 import { notFound } from 'next/navigation';
-import { BakaPagination } from '@repo/components/BakaPagination';
+import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { fetchPaginationData } from './fetchPaginationData';
 import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
 import FunctionsList from '@repo/components/data/functions/mine/FunctionList';
