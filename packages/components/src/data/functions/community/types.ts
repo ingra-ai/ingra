@@ -1,4 +1,4 @@
-import type { BakaPaginationType } from '../../../BakaPagination';
+import type { BakaPaginationType } from '@repo/components/search/BakaPagination';
 import { Prisma } from '@repo/db/prisma';
 
 export type CommunityFunctionListGetPayload = Prisma.FunctionGetPayload<{

@@ -16,7 +16,7 @@ interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
   handleDelete?: (collection: CollectionCardPayload) => Promise<void>;
 }
 
-const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProps>> = (props) => {
+export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProps>> = (props) => {
   const { 
     collection, 
     href, 

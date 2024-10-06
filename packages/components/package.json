@@ -19,11 +19,8 @@
     "./ai/AssistantForm": "./src/ai/AssistantForm.tsx",
     "./ai/ChatForm": "./src/ai/ChatForm.tsx",
 
-    "./data/collections/CollectionCard": "./src/data/collections/CollectionCard.tsx",
-    "./data/collections/CollectionSearchList": "./src/data/collections/CollectionSearchList.tsx",
+    "./data/collections": "./src/data/collections/index.ts",
     "./data/collections/types": "./src/data/collections/types.ts",
-    "./data/collections/community/CommunityCollectionCard": "./src/data/collections/community/CommunityCollectionCard.tsx",
-    "./data/collections/community/CommunityCollectionList": "./src/data/collections/community/CommunityCollectionList.tsx",
     "./data/collections/community/CommunityCollectionViewDetails": "./src/data/collections/community/CommunityCollectionViewDetails.tsx",
     "./data/collections/community/types": "./src/data/collections/community/types.ts",
     "./data/collections/mine/CollectionCard": "./src/data/collections/mine/CollectionCard.tsx",
@@ -39,6 +36,7 @@
     "./data/envVars/UserVarsTable": "./src/data/envVars/UserVarsTable.tsx",
     "./data/envVars/types": "./src/data/envVars/types.ts",
 
+    "./data/functions": "./src/data/functions/index.ts",
     "./data/functions/community/CommunityFunctionItem": "./src/data/functions/community/CommunityFunctionItem.tsx",
     "./data/functions/community/CommunityFunctionList": "./src/data/functions/community/CommunityFunctionList.tsx",
     "./data/functions/community/CommunityFunctionReadOnlyView": "./src/data/functions/community/CommunityFunctionReadOnlyView.tsx",
