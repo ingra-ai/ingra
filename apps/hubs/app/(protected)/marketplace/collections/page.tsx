@@ -1,5 +1,6 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { BakaPagination } from '@repo/components/BakaPagination';
+import { BakaPagination } from '@repo/components/search/BakaPagination';
+import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { cn } from '@repo/shared/lib/utils';
 import { fetchPaginationData } from './fetchPaginationData';
 import CollectionSearchList from '@repo/components/data/collections/CollectionSearchList';
@@ -8,7 +9,10 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
   const authSession = await getAuthSession();
 
   const paginationData = await fetchPaginationData(searchParams, authSession?.userId),
-    { records, ...paginationProps } = paginationData;
+    { records, ...otherProps } = paginationData,
+
+    // For Baka Search, the rest is for Baka Pagination
+    { q, sortBy, ...paginationProps } = otherProps;
 
   const classes = cn('block');
 
@@ -29,6 +33,17 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"> </div>
       </div>
       <div className="mt-4">
+        <BakaSearch
+          className="mb-4"
+          q={ q }
+          sortBy={ sortBy }
+          sortItems={[
+            { key: 'updatedAt_desc', title: 'Last Updated' },
+            { key: 'subscribers_desc', title: 'Most Subscribed' },
+            { key: 'name_asc', title: 'Name (A-Z)' },
+            { key: 'name_desc', title: 'Name (Z-A)' },
+          ]}
+        />
         <BakaPagination className="mb-4" {...paginationProps} />
         <CollectionSearchList authSession={authSession} collections={records} />
       </div>

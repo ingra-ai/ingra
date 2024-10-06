@@ -1,4 +1,5 @@
-import type { BakaPaginationType } from '../../BakaPagination';
+import type { BakaPaginationType } from '@repo/components/search/BakaPagination';
+import type { BakaSearchType } from '@repo/components/search/BakaSearch';
 import { Prisma } from '@repo/db/prisma';
 
 export type CollectionCardPayload = Prisma.CollectionGetPayload<{
@@ -71,6 +72,6 @@ export type CollectionSearchListGetPayload = CollectionCardPayload & {
   isSubscribed: boolean;
 };
 
-export type FetchCollectionSearchListPaginationType = BakaPaginationType & {
+export type FetchCollectionSearchListPaginationType = BakaSearchType & BakaPaginationType & {
   records: CollectionSearchListGetPayload[];
 };

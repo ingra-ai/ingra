@@ -1,7 +1,7 @@
 'use server';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { cn } from '@repo/shared/lib/utils';
-import { BakaPagination } from '@repo/components/BakaPagination';
+import { BakaPagination } from '@repo/components/search/BakaPagination';
 import CommunityFunctionList from '@repo/components/data/functions/community/CommunityFunctionList';
 import { fetchPaginationData } from './fetchPaginationData';
 
