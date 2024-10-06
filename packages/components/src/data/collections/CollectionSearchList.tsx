@@ -14,7 +14,7 @@ interface CollectionSearchListProps extends React.HTMLAttributes<HTMLDivElement>
   collections: CollectionSearchListGetPayload[];
 }
 
-const CollectionSearchList: React.FC<CollectionSearchListProps> = (props) => {
+export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props) => {
   const { authSession, collections, ...divProps } = props;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -118,7 +118,7 @@ const CollectionSearchList: React.FC<CollectionSearchListProps> = (props) => {
               refinedCollectionCardProps: Partial<React.ComponentProps<typeof CollectionCard>> = {};
 
             // If user is the owner of this collection, allow deletion
-            if ( authSession?.user.profile.userName === collection.owner.profile.userName ) {
+            if ( authSession?.user?.profile?.userName && authSession.user.profile.userName === collection.owner.profile?.userName ) {
               refinedCollectionCardProps.handleDelete = handleDelete;
             }
             else {

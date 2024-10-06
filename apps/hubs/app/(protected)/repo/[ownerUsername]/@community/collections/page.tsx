@@ -4,7 +4,7 @@ import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { fetchPaginationData } from '@protected/marketplace/collections/fetchPaginationData';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import CollectionSearchList from '@repo/components/data/collections/CollectionSearchList';
+import { CollectionSearchList } from '@repo/components/data/collections';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const { ownerUsername } = params;

@@ -3,7 +3,7 @@ import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { cn } from '@repo/shared/lib/utils';
 import { fetchPaginationData } from './fetchPaginationData';
-import CollectionSearchList from '@repo/components/data/collections/CollectionSearchList';
+import { CollectionSearchList } from '@repo/components/data/collections';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();

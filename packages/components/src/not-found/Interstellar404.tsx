@@ -5,6 +5,7 @@ const Interstellar404: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Get canvas and context
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -15,209 +16,287 @@ const Interstellar404: React.FC = () => {
     let canvasWidth = canvas.width = window.innerWidth;
     let canvasHeight = canvas.height = window.innerHeight;
 
-    // Draw something on the canvas
+    // Fill canvas with black background
     context.fillStyle = 'black';
     context.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Draw initial '404: Not Found' text
     context.fillStyle = 'white';
     context.font = '48px sans-serif';
     context.fillText('404: Not Found', canvas.width / 2 - 150, canvas.height / 2);
 
-    let _x = canvasWidth / 2;
-    let _y = canvasHeight / 2;
+    // Center coordinates
+    let centerX = canvasWidth / 2;
+    let centerY = canvasHeight / 2;
 
-    let sc = 150;
-    let num = 35;
+    // Scaling factor
+    let scale = 150;
+    // Number of rings
+    let numberOfRings = 35;
 
-    let midX = new Array(num);
-    let midY = new Array(num);
-    let rad = new Array(num);
+    // Arrays for ring positions and radii
+    let ringPosX = new Array(numberOfRings);
+    let ringPosY = new Array(numberOfRings);
+    let ringRadius = new Array(numberOfRings);
 
-    let msX = 0.0;
-    let msY = 0.0;
-    let _msX = 0.0;
-    let _msY = 0.0;
+    // Mouse coordinates
+    let mouseX = 0.0;
+    let mouseY = 0.0;
+    let prevMouseX = 0.0;
+    let prevMouseY = 0.0;
 
-    let invX = 0.0;
-    let invY = 0.0;
-    let _invX = 0.0;
-    let _invY = 0.0;
+    // Inertia variables
+    let inertiaX = 0.0;
+    let inertiaY = 0.0;
+    let prevInertiaX = 0.0;
+    let prevInertiaY = 0.0;
 
-    let spr = 0.95;
-    let fric = 0.95;
+    // Spring and friction constants
+    let spring = 0.95;
+    let friction = 0.95;
     let flag = 1;
-    let arr: any = [];
-    let rint = 60;
+    // Array to hold stars
+    let starsArray: Stars[] = [];
+    // Refresh interval
+    let refreshInterval = 60;
 
-    let draw = function () {
+    // Main draw function
+    const draw = function () {
       window.requestAnimationFrame(draw);
-      inv();
-      fill();
-      ring();
-      for (let j = 0; j < arr.length; j++) {
-        arr[j].fade();
-        arr[j].anim();
-        arr[j]._draw();
+      updateInertia();
+      fillBackground();
+      drawRings();
+      for (let j = 0; j < starsArray.length; j++) {
+        starsArray[j].fade();
+        starsArray[j].animate();
+        starsArray[j].drawStar();
       }
-    }
-    let inv = function () {
-      invX = msX;
-      invY = msY;
-      _msX += (_invX - invX) * spr;
-      _msY += (_invY - invY) * spr;
-      _msX *= fric;
-      _msY *= fric;
-      _invX = invX;
-      _invY = invY;
-      invX += _msX;
-      invY += _msY;
-    }
+    };
 
-    let txt = function () {
-      let t0 = "404".split("").join(String.fromCharCode(0x2004));
-      let t1 = "Page Not Found".split("").join(String.fromCharCode(0x2004));
-      context.font = "4em Arial";
+    // Function to update inertia based on mouse movement
+    const updateInertia = function () {
+      inertiaX = mouseX;
+      inertiaY = mouseY;
+      prevMouseX += (prevInertiaX - inertiaX) * spring;
+      prevMouseY += (prevInertiaY - inertiaY) * spring;
+      prevMouseX *= friction;
+      prevMouseY *= friction;
+      prevInertiaX = inertiaX;
+      prevInertiaY = inertiaY;
+      inertiaX += prevMouseX;
+      inertiaY += prevMouseY;
+    };
+
+    // Function to draw text
+    const drawText = function () {
+      if ( !context ) return;
+
+      let text404 = '404'.split('').join(String.fromCharCode(0x2004));
+      let textNotFound = 'Page Not Found'.split('').join(String.fromCharCode(0x2004));
+      context.font = '4em Arial';
       context.fillStyle = 'hsla(220, 95%, 75%, .55)';
-      context.fillText(t0, (canvas.width - context.measureText(t0).width) * 0.5, canvas.height * 0.45);
+      context.fillText(text404, (canvas.width - context.measureText(text404).width) * 0.5, canvas.height * 0.45);
 
-      context.font = "1em Arial";
-      context.fillText(t1, (canvas.width - context.measureText(t1).width) * 0.5, canvas.height * 0.55);
-      return t1;
-    }
+      context.font = '1em Arial';
+      context.fillText(textNotFound, (canvas.width - context.measureText(textNotFound).width) * 0.5, canvas.height * 0.55);
+    };
 
-    let fill = function () {
+    // Function to fill the background with gradient and draw text
+    const fillBackground = function () {
+      if ( !context ) return;
+
       context.globalCompositeOperation = 'source-over';
-      let g_ = context.createLinearGradient(canvas.width + canvas.width, canvas.height + canvas.height * 1.5, canvas.width + canvas.width, 1);
-      g_.addColorStop(0, ' hsla(220, 95%, 10%, .55)');
-      g_.addColorStop(0.5, 'hsla(220, 95%, 30%, .55)');
-      g_.addColorStop(1, 'hsla(0, 0%, 5%, 1)');
-      context.fillStyle = g_;
+      let gradient = context.createLinearGradient(
+        canvas.width * 2,
+        canvas.height * 2.5,
+        canvas.width * 2,
+        1
+      );
+      gradient.addColorStop(0, 'hsla(220, 95%, 10%, .55)');
+      gradient.addColorStop(0.5, 'hsla(220, 95%, 30%, .55)');
+      gradient.addColorStop(1, 'hsla(0, 0%, 5%, 1)');
+      context.fillStyle = gradient;
       context.fillRect(0, 0, canvasWidth, canvasHeight);
       context.globalCompositeOperation = 'lighter';
-      txt();
-    }
+      drawText();
+    };
 
-    let ring = function () {
-      for (let i = 0; i < num; i++) {
-        let currX = midX[i];
-        let currY = midY[i];
-        let currRad = rad[i];
-        let dx = currX + invX;
-        let dy = currY + invY;
-        let s = 1 / (dx * dx + dy * dy - currRad * currRad);
-        let ix = dx * s + (currX * flag);
-        let iy = -dy * s + (currY * flag);
-        let irad = currRad * s;
-        let g = context.createRadialGradient(ix * sc + _x,
-          iy * sc + _y,
+    // Function to draw the rings
+    const drawRings = function () {
+      if ( !context ) return;
+
+      for (let i = 0; i < numberOfRings; i++) {
+        let currX = ringPosX[i];
+        let currY = ringPosY[i];
+        let currRadius = ringRadius[i];
+        let dx = currX + inertiaX;
+        let dy = currY + inertiaY;
+        let s = 1 / (dx * dx + dy * dy - currRadius * currRadius);
+        let ix = dx * s + currX * flag;
+        let iy = -dy * s + currY * flag;
+        let irad = currRadius * s;
+        let gradient = context.createRadialGradient(
+          ix * scale + centerX,
+          iy * scale + centerY,
           irad,
-          ix * sc + _x,
-          iy * sc + _y,
-          irad * sc)
-        g.addColorStop(0, 'hsla(176, 95%, 95%, 1)');
-        g.addColorStop(0.5, 'hsla(201, 95%, 45%, .5)');
-        g.addColorStop(1, 'hsla(0, 0%, 0%, 0)');
-        context.fillStyle = g;
+          ix * scale + centerX,
+          iy * scale + centerY,
+          irad * scale
+        );
+        gradient.addColorStop(0, 'hsla(176, 95%, 95%, 1)');
+        gradient.addColorStop(0.5, 'hsla(201, 95%, 45%, .5)');
+        gradient.addColorStop(1, 'hsla(0, 0%, 0%, 0)');
+        context.fillStyle = gradient;
         context.beginPath();
-        context.arc(ix * sc + _x, iy * sc + _y, irad * sc, 0, Math.PI * 2.0, true);
+        context.arc(ix * scale + centerX, iy * scale + centerY, irad * scale, 0, Math.PI * 2.0, true);
         context.fill();
       }
     };
 
+    // Class representing stars
     class Stars {
-      s: any;
-      x: number;
-      y: number;
-      r: number;
-      dx: number;
-      dy: number;
-      tw: number;
-      rt: number;
-      cs: number;
+      settings: any;
+      x: number = 0;
+      y: number = 0;
+      radius: number = 0;
+      dx: number = 0;
+      dy: number = 0;
+      twinkleDuration: number = 0;
+      rotation: number = 0;
+      colorShift: number = 0;
 
       constructor() {
-        this.s = { tlap: 8000, maxx: 5, maxy: 2, rmax: 5, rt: 1, dx: 960, dy: 540, mvx: 4, mvy: 4, rnd: true, twinkle: true };
+        this.settings = {
+          tlap: 8000,
+          maxx: 5,
+          maxy: 2,
+          rmax: 5,
+          rt: 1,
+          dx: 960,
+          dy: 540,
+          mvx: 4,
+          mvy: 4,
+          rnd: true,
+          twinkle: true,
+        };
         this.reset();
       }
 
+      // Reset star properties
       reset() {
-        this.x = (this.s.rnd ? canvasWidth * Math.random() : this.s.dx);
-        this.y = (this.s.rnd ? canvasHeight * Math.random() : this.s.dy);
-        this.r = ((this.s.rmax - 1) * Math.random()) + .5;
-        this.dx = (Math.random() * this.s.maxx) * (Math.random() < .5 ? -1 : 1);
-        this.dy = (Math.random() * this.s.maxy) * (Math.random() < .5 ? -1 : 1);
-        this.tw = (this.s.tlap / rint) * (this.r / this.s.rmax);
-        this.rt = Math.random() * this.tw;
-        this.s.rt = Math.random() + 1;
-        this.cs = Math.random() * .2 + .4;
-        this.s.mvx *= Math.random() * (Math.random() < .5 ? -1 : 1);
-        this.s.mvy *= Math.random() * (Math.random() < .5 ? -1 : 1);
+        this.x = this.settings.rnd ? canvasWidth * Math.random() : this.settings.dx;
+        this.y = this.settings.rnd ? canvasHeight * Math.random() : this.settings.dy;
+        this.radius = (this.settings.rmax - 1) * Math.random() + 0.5;
+        this.dx = Math.random() * this.settings.maxx * (Math.random() < 0.5 ? -1 : 1);
+        this.dy = Math.random() * this.settings.maxy * (Math.random() < 0.5 ? -1 : 1);
+        this.twinkleDuration = (this.settings.tlap / refreshInterval) * (this.radius / this.settings.rmax);
+        this.rotation = Math.random() * this.twinkleDuration;
+        this.settings.rt = Math.random() + 1;
+        this.colorShift = Math.random() * 0.2 + 0.4;
+        this.settings.mvx *= Math.random() * (Math.random() < 0.5 ? -1 : 1);
+        this.settings.mvy *= Math.random() * (Math.random() < 0.5 ? -1 : 1);
       }
 
+      // Update star rotation
       fade() {
-        this.rt += this.s.rt;
+        this.rotation += this.settings.rt;
       }
 
-      _draw() {
-        if (this.s.twinkle && (this.rt <= 0 || this.rt >= this.tw)) this.s.rt = this.s.rt * -1;
-        else if (this.rt >= this.tw) this.reset();
-        let o = 1 - (this.rt / this.tw);
+      // Draw the star
+      drawStar() {
+        if ( !context ) return;
+      
+        if (this.settings.twinkle && (this.rotation <= 0 || this.rotation >= this.twinkleDuration)) {
+          this.settings.rt = this.settings.rt * -1;
+        } else if (this.rotation >= this.twinkleDuration) {
+          this.reset();
+        }
+        let opacity = 1 - this.rotation / this.twinkleDuration;
         context.beginPath();
-        context.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+        context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
         context.closePath();
-        let rad = this.r * o;
-        let g = context.createRadialGradient(this.x, this.y, 0, this.x, this.y, (rad <= 0 ? 1 : rad));
-        g.addColorStop(0.0, 'hsla(255,255%,255%,' + o + ')');
-        g.addColorStop(this.cs, 'hsla(201, 95%, 25%,' + (o * .6) + ')');
-        g.addColorStop(1.0, 'hsla(201, 95%, 45%,0)');
-        context.fillStyle = g;
+        let rad = this.radius * opacity;
+        let gradient = context.createRadialGradient(
+          this.x,
+          this.y,
+          0,
+          this.x,
+          this.y,
+          rad <= 0 ? 1 : rad
+        );
+        gradient.addColorStop(0.0, `hsla(255,255%,255%,${opacity})`);
+        gradient.addColorStop(this.colorShift, `hsla(201, 95%, 25%,${opacity * 0.6})`);
+        gradient.addColorStop(1.0, 'hsla(201, 95%, 45%,0)');
+        context.fillStyle = gradient;
         context.fill();
       }
 
-      anim() {
-        this.x += (this.rt / this.tw) * this.dx;
-        this.y += (this.rt / this.tw) * this.dy;
+      // Animate star position
+      animate() {
+        this.x += (this.rotation / this.twinkleDuration) * this.dx;
+        this.y += (this.rotation / this.twinkleDuration) * this.dy;
         if (this.x > canvasWidth || this.x < 0) this.dx *= -1;
         if (this.y > canvasHeight || this.y < 0) this.dy *= -1;
       }
     }
 
+    // Initialize stars
     for (let j = 0; j < 150; j++) {
-      arr[j] = new Stars();
-      arr[j].reset();
+      let star = new Stars();
+      star.reset();
+      starsArray[j] = star;
     }
 
-    let set = function () {
-      let radi = Math.PI * 2.0 / num;
-      for (let i = 0; i < num; i++) {
-        midX[i] = Math.cos(radi * i);
-        midY[i] = Math.sin(radi * i);
-        rad[i] = 0.1;
+    // Set up ring positions
+    const setupRings = function () {
+      let angleIncrement = (Math.PI * 2.0) / numberOfRings;
+      for (let i = 0; i < numberOfRings; i++) {
+        ringPosX[i] = Math.cos(angleIncrement * i);
+        ringPosY[i] = Math.sin(angleIncrement * i);
+        ringRadius[i] = 0.1;
       }
       draw();
-    }
+    };
 
-    window.addEventListener('mousemove', function (e) {
-      msX = (e.clientX - _x) / sc;
-      msY = (e.clientY - _y) / sc;
-    }, false);
+    // Event listener for mouse movement
+    window.addEventListener(
+      'mousemove',
+      function (e) {
+        mouseX = (e.clientX - centerX) / scale;
+        mouseY = (e.clientY - centerY) / scale;
+      },
+      false
+    );
 
-    window.addEventListener('touchmove', function (e) {
-      e.preventDefault();
-      msX = (e.touches[0].clientX - _x) / sc;
-      msY = (e.touches[0].clientY - _y) / sc;
-    }, false);
+    // Event listener for touch movement
+    window.addEventListener(
+      'touchmove',
+      function (e) {
+        e.preventDefault();
+        mouseX = (e.touches[0].clientX - centerX) / scale;
+        mouseY = (e.touches[0].clientY - centerY) / scale;
+      },
+      false
+    );
 
-    window.addEventListener('resize', function () {
-      canvas.width = canvasWidth = window.innerWidth;
-      canvas.height = canvasHeight = window.innerHeight;
-      draw();
-    }, true);
+    // Event listener for window resize
+    window.addEventListener(
+      'resize',
+      function () {
+        canvas.width = canvasWidth = window.innerWidth;
+        canvas.height = canvasHeight = window.innerHeight;
+        draw();
+      },
+      true
+    );
 
-    set();
+    // Initialize and start animation
+    setupRings();
 
     // Cleanup on component unmount
     return () => {
+      if ( !context ) return;
+      
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
   }, []);
