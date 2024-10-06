@@ -81,7 +81,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const pathname = usePathname();
   const classes = cn('relative', className);
 
-  const mainClasses = cn('relative z-20 overflow-y-auto', 'transition-padding duration-300 ease-in-out', {
+  const mainClasses = cn('relative z-20 overflow-y-auto px-2 sm:px-0', 'transition-padding duration-300 ease-in-out', {
   });
 
   return (
@@ -98,7 +98,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
       </Navbar>
 
       <BreadcrumbNav
-        className="py-2 my-4 xl:container"
+        className="py-2 my-4 xl:container px-2 sm:px-8"
         items={ generateBreadcrumbItems(pathname, authSession) } 
       />
 

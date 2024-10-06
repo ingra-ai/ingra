@@ -7,7 +7,7 @@ import { Button } from '@repo/components/ui/button';
 
 type CreateNewCollectionButtonProps = React.HTMLAttributes<HTMLDivElement>;
 
-const CreateNewCollectionButton: React.FC<CreateNewCollectionButtonProps> = ( props ) => {
+export const CreateNewCollectionButton: React.FC<CreateNewCollectionButtonProps> = ( props ) => {
   const [open, setOpen] = useState(false);
 
   const handleCancel = () => {

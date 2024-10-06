@@ -73,8 +73,8 @@ export const BakaSearch: React.FC<BakaSearchProps> = (props) => {
   };
 
   return (
-    <div className={cn("flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-4", className)} data-testid="baka-search">
-      <div className="flex-1 w-full sm:w-auto">
+    <div className={cn("flex flex-row justify-between items-start sm:items-center space-y-0 space-x-4 mb-4", className)} data-testid="baka-search">
+      <div className="flex-1 w-auto">
         <form className="block relative" onSubmit={handleOnSearch}>
           <Input
             type="text"
