@@ -1,17 +1,18 @@
 'use client';
 import React, { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '../../ui/use-toast';
+import { useToast } from '@repo/components/ui/use-toast';
 import { unsubscribeToCollection, subscribeToCollection, deleteCollection } from '@repo/shared/actions/collections';
 import { cn } from '@repo/shared/lib/utils';
-import type { CollectionCardPayload, CollectionSearchListGetPayload } from './types';
+import type { CollectionCardPayload } from './types';
 import CollectionCard from './CollectionCard';
 import { getUserRepoCollectionsViewUri } from '@repo/shared/lib/constants/repo';
-import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import type { FetchCollectionPaginationDataReturnType } from '@repo/shared/data/collections';
 
 interface CollectionSearchListProps extends React.HTMLAttributes<HTMLDivElement> {
   authSession?: AuthSessionResponse | null;
-  collections: CollectionSearchListGetPayload[];
+  collections: FetchCollectionPaginationDataReturnType['records'];
 }
 
 export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props) => {
@@ -69,6 +70,8 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
           });
         });
     }
+
+    return Promise.reject();
   };
 
   const handleDelete = (collection: CollectionCardPayload) => {
@@ -95,8 +98,6 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
             title: 'Uh oh! Something went wrong.',
             description: error?.message || 'Failed to delete collection!',
           });
-
-          return Promise.reject();
         });
     }
 
@@ -118,26 +119,17 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
               refinedCollectionCardProps: Partial<React.ComponentProps<typeof CollectionCard>> = {};
 
             // If user is the owner of this collection, allow deletion
-            if ( authSession?.user?.profile?.userName && authSession.user.profile.userName === collection.owner.profile?.userName ) {
+            if (authSession?.user?.profile?.userName && authSession.user.profile.userName === collection.owner.profile?.userName) {
               refinedCollectionCardProps.handleDelete = handleDelete;
-            }
-            else {
-              if ( isSubscribed ) {
+            } else {
+              if (isSubscribed) {
                 refinedCollectionCardProps.handleUnsubscribe = handleUnsubscribe;
-              }
-              else {
+              } else {
                 refinedCollectionCardProps.handleSubscribe = handleSubscribe;
               }
             }
 
-            return (
-              <CollectionCard 
-                key={collection.id}
-                collection={collection}
-                href={href}
-                { ...refinedCollectionCardProps }
-              />
-            );
+            return <CollectionCard key={collection.id} collection={collection} href={href} {...refinedCollectionCardProps} />;
           })}
         </div>
       </div>

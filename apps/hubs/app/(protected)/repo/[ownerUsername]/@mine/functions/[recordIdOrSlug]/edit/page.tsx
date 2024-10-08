@@ -4,7 +4,7 @@ import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@repo/components/ui/tabs';
 import { APP_NAME } from '@repo/shared/lib/constants';
-import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
+import { getCollectionsByUserId } from '@repo/shared/data/collections';
 import { FunctionForm } from '@repo/components/data/functions/mine/FunctionForm';
 import { UserVarsTable } from '@repo/components/data/envVars/UserVarsTable';
 import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
@@ -33,6 +33,7 @@ export default async function Page({ params }: Props) {
 
   const [functionRecord, collections] = await Promise.all([
     getFunctionAccessibleByUser(authSession.user.id, recordIdOrSlug, {
+      accessTypes: ['owner'],
       findFirstArgs: {
         include: {
           owner: {

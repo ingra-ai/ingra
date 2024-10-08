@@ -1,6 +1,5 @@
-'use server';
 import db from '@repo/db/client';
-import { Logger } from '../../lib/logger';
+import { Logger } from '@repo/shared/lib/logger';
 
 export async function addNewCollection(name: string, slug: string, description: string, userId: string) {
   // Check if user has a collection with the same name
@@ -14,7 +13,7 @@ export async function addNewCollection(name: string, slug: string, description: 
         {
           userId,
           slug,
-        }
+        },
       ],
     },
   });
@@ -93,7 +92,7 @@ export async function removeFunctionFromCollection(collectionId: string, functio
   if (!functionRecord) {
     throw new Error('Function not found');
   }
-  
+
   const record = await db.collection.update({
     where: {
       id: collectionId,
@@ -115,8 +114,8 @@ export async function subscribeToCollection(collectionId: string, userId: string
   const [userProfile, collectionRecord] = await Promise.all([
     db.profile.findFirst({
       where: {
-        userId
-      }
+        userId,
+      },
     }),
     db.collection.findUnique({
       where: {
@@ -125,10 +124,9 @@ export async function subscribeToCollection(collectionId: string, userId: string
     }),
   ]);
 
-  if ( !userProfile ) {
+  if (!userProfile) {
     throw new Error('User profile is not configured.');
-  } 
-  else if ( !userProfile?.userName ) {
+  } else if (!userProfile?.userName) {
     throw new Error('Username is not configured.');
   }
 
@@ -214,7 +212,7 @@ export async function deleteCollection(collectionId: string, userId: string) {
         },
       });
 
-      if ( !collectionRecord ) {
+      if (!collectionRecord) {
         throw new Error('Collection not found');
       }
 
@@ -251,3 +249,8 @@ export async function deleteCollection(collectionId: string, userId: string) {
     throw error;
   }
 }
+
+export * from './getCollectionAccessibleByUser';
+export * from './getCollectionsByUserId';
+export * from './fetchCollectionsForFunction';
+export * from './fetchPaginationData';
