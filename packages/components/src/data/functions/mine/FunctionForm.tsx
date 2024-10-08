@@ -151,19 +151,21 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                 title: 'Function created!',
                 description: 'Your function has been created.',
               });
-
-              // Go to the created functions
-              redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp.data.slug);
             }
           }
 
           startTransition(() => {
+            // Go to the created functions
+            redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp.data.slug);
+            
             if (redirectUrl) {
               router.push(redirectUrl);
             } else {
               router.refresh();
             }
           });
+
+          return resp;
         })
         .catch((error: Error) => {
           toast({
