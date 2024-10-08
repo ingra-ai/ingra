@@ -15,6 +15,8 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
       const existingFunction = await prisma.function.findUnique({
         where: {
           id: values.id,
+
+          // Always check if the user is the owner
           ownerUserId: userId,
         },
       });
@@ -34,9 +36,11 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
       ]);
 
       // Update the function
-      await prisma.function.update({
+      const updatedFunction = await prisma.function.update({
         where: {
           id: existingFunction.id,
+
+          // Always check if the user is the owner
           ownerUserId: userId,
         },
         data: {
@@ -78,7 +82,7 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
       }
 
       await Promise.all(insertArgAndTagPromises);
-      return existingFunction;
+      return updatedFunction;
     } else {
       /**
        * Otherwise, create a new record.
