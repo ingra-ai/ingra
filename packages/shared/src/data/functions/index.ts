@@ -175,34 +175,6 @@ export async function deleteFunction(functionId: string, userId: string) {
   }
 }
 
-export async function toggleFunctionSubscription(functionId: string, userId: string) {
-  const [userProfile, existingSubscription] = await Promise.all([
-    db.profile.findFirst({
-      where: {
-        userId,
-      },
-    }),
-    db.functionSubscription.findFirst({
-      where: {
-        functionId,
-        userId,
-      },
-    }),
-  ]);
-
-  if (!userProfile) {
-    throw new Error('User profile is not configured.');
-  } else if (!userProfile?.userName) {
-    throw new Error('Username is not configured.');
-  }
-
-  if (existingSubscription) {
-    return await unsubscribeToFunction(functionId, userId);
-  } else {
-    return await subscribeToFunction(functionId, userId);
-  }
-}
-
 export async function subscribeToFunction(functionId: string, userId: string) {
   const [userProfile, functionRecord] = await Promise.all([
     db.profile.findFirst({
