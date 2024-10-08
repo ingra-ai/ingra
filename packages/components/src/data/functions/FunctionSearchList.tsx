@@ -10,11 +10,10 @@ import type { FunctionCardPayload } from './types';
 import { getUserRepoFunctionsEditUri, getUserRepoFunctionsViewUri } from '@repo/shared/lib/constants/repo';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { cn } from '@repo/shared/lib/utils';
-import { FetchFunctionPaginationDataReturnType } from '@repo/shared/data/functions';
 
 interface FunctionSearchListProps extends React.HTMLAttributes<HTMLDivElement> {
   authSession?: AuthSessionResponse | null;
-  functions: FetchFunctionPaginationDataReturnType['records'];
+  functions: FunctionCardPayload[];
 }
 
 export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => {

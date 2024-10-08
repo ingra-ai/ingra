@@ -1,22 +1,23 @@
 'use client';
 import { useCallback, useState, type FC } from 'react';
-import { Button } from '../../../ui/button';
 import { Logger } from '@repo/shared/lib/logger';
 import { BugPlayIcon, CopyPlusIcon, ListChecksIcon } from 'lucide-react';
 import type { Prisma } from '@repo/db/prisma';
-import CodeEditorInput from '../../../CodeEditorInput';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { useRouter } from 'next/navigation';
-import { useToast } from '../../../ui/use-toast';
-import { FormSlideOver } from '../../../slideovers/FormSlideOver';
-import { EnvVarsSection } from '../../../data/envVars/EnvVarsSection';
-import { EnvVarsOptionalPayload } from '../../../data/envVars/types';
 import { cn } from '@repo/shared/lib/utils';
-import { UserVarsTable } from '../../../data/envVars/UserVarsTable';
-import { CodeSandboxForm } from '../../../data/functions/mine/CodeSandboxForm';
-import { ToastAction } from '../../../ui/toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/components/ui/tabs';
 import { cloneFunction } from '@repo/shared/actions/functions';
 import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
+import { Button } from '@repo/components/ui/button';
+import CodeEditorInput from '@repo/components/CodeEditorInput';
+import { useToast } from '@repo/components/ui/use-toast';
+import { FormSlideOver } from '@repo/components/slideovers/FormSlideOver';
+import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
+import { EnvVarsOptionalPayload } from '@repo/components/data/envVars/types';
+import { UserVarsTable } from '@repo/components/data/envVars/UserVarsTable';
+import { CodeSandboxForm } from '@repo/components/data/functions/mine/CodeSandboxForm';
+import { ToastAction } from '@repo/components/ui/toast';
+
 
 type CommunityFunctionReadOnlyViewProps = {
   functionRecord: Prisma.FunctionGetPayload<{
