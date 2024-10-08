@@ -75,7 +75,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const { className, authSession, children, ...restOfDivProps } = props;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const pathname = usePathname();
-  const classes = cn('relative', className);
+  const classes = cn('relative pb-64', className);
 
   const mainClasses = cn('relative z-20 overflow-y-auto px-2 sm:px-0', 'transition-padding duration-300 ease-in-out', {
   });

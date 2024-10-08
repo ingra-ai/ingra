@@ -110,13 +110,13 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
                   onClick={() => handleTogglePublish(func)}
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 cursor-pointer"
+                  className="h-6 w-6 p-0 cursor-pointer"
                 >
                   {cardState.isPublishing ? (
                     <RefreshCcw className="w-4 h-4 animate-spin inline-block" />
                   ) : (
                     <Badge
-                      variant={func.isPublished ? "success" : "warning"}
+                      variant={func.isPublished ? "outline" : "warning"}
                       className="p-2"
                       title={
                         func.isPublished
@@ -135,7 +135,7 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
                 </Button>
               ) : (
                 <Badge
-                  variant={func.isPrivate ? "warning" : func.isPublished ? "success" : "warning"}
+                  variant={func.isPrivate ? "ghost" : func.isPublished ? "outline" : "warning"}
                   className={cn("px-2 py-1", {
                     "cursor-not-allowed": func.isPrivate,
                   })}

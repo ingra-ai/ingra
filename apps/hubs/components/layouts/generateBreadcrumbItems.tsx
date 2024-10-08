@@ -2,7 +2,7 @@
 import { BreadcrumbNavItem } from "@repo/components/navs/types";
 import type { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 import { HomeIcon } from '@heroicons/react/24/outline';
-import { SquareFunctionIcon, SquareLibraryIcon } from 'lucide-react';
+import { SquareFunctionIcon, FolderIcon } from 'lucide-react';
 
 // Helper function to capitalize the first letter
 const capitalizeFirstLetter = (str: string): string => {
@@ -28,7 +28,7 @@ export const generateBreadcrumbItems = (pathname: string, authSession?: AuthSess
 
   const collectionNavTitle = (
     <div className="flex">
-      <SquareLibraryIcon className="w-5 h-5 mr-2" />
+      <FolderIcon className="w-5 h-5 mr-2" />
       Collections
     </div>
   );
@@ -158,7 +158,7 @@ export const generateBreadcrumbItems = (pathname: string, authSession?: AuthSess
               type: 'page',
               title: repoSection === 'collections' ? (
                 <div className="flex">
-                  <SquareLibraryIcon className="w-5 h-5 mr-2" />
+                  <FolderIcon className="w-5 h-5 mr-2" />
                   { itemSlug }
                 </div>
               ) : (
