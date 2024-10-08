@@ -1,13 +1,15 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { Code, Trash2, Lock, Unlock, ShoppingBag, Tag, List, Bell, RefreshCcw, MoreVertical } from 'lucide-react';
 import type { FunctionCardPayload } from './types';
 import { Badge } from '@repo/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@repo/components/ui/scroll-area';
 import { Button } from '@repo/components/ui/button';
-import { Code, Trash2, Lock, Unlock, ShoppingBag, Tag, List, Bell, RefreshCcw } from 'lucide-react';
-import AddFunctionToCollectionButton from './AddFunctionToCollectionButton';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@repo/components/ui/dropdown-menu";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@repo/components/ui/card";
+import AddFunctionToCollectionButton from './AddFunctionToCollectionButton';
 
 interface FunctionCardProps {
   functionData: FunctionCardPayload;
@@ -30,60 +32,44 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
   });
 
   const handleSubscribe = async (record: FunctionCardPayload) => {
-    if (typeof onHandleSubscribe !== 'function') {
-      return null;
-    }
-
+    if (typeof onHandleSubscribe !== 'function') return null;
     setCardState({ ...cardState, isSubscribing: true });
-
     return onHandleSubscribe(record).finally(() => {
       setCardState({ ...cardState, isSubscribing: false });
     });
   };
 
   const handleUnsubscribe = async (record: FunctionCardPayload) => {
-    if (typeof onHandleUnsubscribe !== 'function') {
-      return null;
-    }
-
+    if (typeof onHandleUnsubscribe !== 'function') return null;
     setCardState({ ...cardState, isSubscribing: true });
-
     return onHandleUnsubscribe(record).finally(() => {
       setCardState({ ...cardState, isSubscribing: false });
     });
   };
 
   const handleDelete = async (record: FunctionCardPayload) => {
-    if (typeof onHandleDelete !== 'function') {
-      return null;
-    }
-
+    if (typeof onHandleDelete !== 'function') return null;
     setCardState({ ...cardState, isDeleting: true });
-
     return onHandleDelete(record).finally(() => {
       setCardState({ ...cardState, isDeleting: false });
     });
   };
 
   const handleClone = async (record: FunctionCardPayload) => {
-    if (typeof onHandleClone !== 'function') {
-      return null;
-    }
-
+    if (typeof onHandleClone !== 'function') return null;
     setCardState({ ...cardState, isCloning: true });
-
     return onHandleClone(record).finally(() => {
       setCardState({ ...cardState, isCloning: false });
     });
   };
 
-  const isInMarketplace = func.isPublished && !func.isPrivate,
-    userIsOwner = authSession?.user?.id && func.owner?.id && authSession?.user?.id === func.owner?.id,
-    canSubscribe = !userIsOwner && typeof onHandleSubscribe === 'function',
-    canUnsubscribe = !userIsOwner && typeof onHandleUnsubscribe === 'function',
-    canDelete = userIsOwner && typeof onHandleDelete === 'function',
-    canClone = typeof onHandleClone === 'function',
-    canCollectionToggle = userIsOwner;
+  const isInMarketplace = func.isPublished && !func.isPrivate;
+  const userIsOwner = authSession?.user?.id && func.owner?.id && authSession?.user?.id === func.owner?.id;
+  const canSubscribe = !userIsOwner && typeof onHandleSubscribe === 'function';
+  const canUnsubscribe = !userIsOwner && typeof onHandleUnsubscribe === 'function';
+  const canDelete = userIsOwner && typeof onHandleDelete === 'function';
+  const canClone = typeof onHandleClone === 'function';
+  const canCollectionToggle = userIsOwner;
 
   return (
     <div className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800 bg-card shadow-md transition-all duration-300 hover:shadow-xl dark:hover:shadow-gray-800">
@@ -98,14 +84,31 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
             </Link>
           </h3>
           <div className="flex items-center space-x-2 flex-shrink-0">
-            {isInMarketplace && (
-              <Badge variant="secondary" className="flex items-center px-2 py-1" title="Available in Marketplace">
-                <ShoppingBag className="mr-1 h-3 w-3" />
-              </Badge>
-            )}
             <Badge variant={func.isPrivate ? 'secondary' : 'default'} className="px-2 py-1">
               {func.isPrivate ? 'Private' : 'Public'}
             </Badge>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <MoreVertical className="h-4 w-4" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {canClone && (
+                  <DropdownMenuItem className="cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300 p-2" onClick={() => handleClone(func)}>
+                    <RefreshCcw className="mr-2 h-4 w-4" />
+                    <span>Clone</span>
+                  </DropdownMenuItem>
+                )}
+                {canDelete && (
+                  <DropdownMenuItem className="text-destructive cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300 p-2" onClick={() => handleDelete(func)}>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    <span>Delete</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <Link href={href} className="cursor-pointer" title={func.description}>
@@ -134,12 +137,11 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
             {func.arguments.length} {func.arguments.length === 1 ? 'argument' : 'arguments'}
           </Badge>
         </div>
-        <div className="flex flex-wrap justify-between gap-2">
-          {canDelete && (
-            <Button type="button" aria-label="Delete function" title="Delete function" variant="destructive" size="sm" onClick={() => handleDelete(func)}>
-              {cardState.isDeleting ? <RefreshCcw className="w-4 h-4 animate-spin inline-block" /> : <Trash2 className="w-4 h-4 inline-block" />}
-              <span className="sr-only">Delete</span>
-            </Button>
+        <div className="flex flex-wrap justify-end gap-2">
+          {isInMarketplace && (
+            <Badge variant="outline" className="flex justify-center items-center mr-auto" title="Available in Marketplace">
+              <ShoppingBag className="h-3 w-3" />
+            </Badge>
           )}
           {canSubscribe && (
             <Button type="button" aria-label="Subscribe to gain access to invoke this function" title="Subscribe to gain access to invoke this function" variant="indigo" size="sm" onClick={() => handleSubscribe(func)}>
@@ -153,7 +155,7 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
               Unsubscribe
             </Button>
           )}
-          {canCollectionToggle && <AddFunctionToCollectionButton functionRecord={func} userId={authSession?.user?.id} />}
+          {canCollectionToggle && <AddFunctionToCollectionButton className="" functionRecord={func} userId={authSession?.user?.id} />}
         </div>
       </div>
     </div>

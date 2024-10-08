@@ -1,12 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { FileJsonIcon, RssIcon, TagIcon, RefreshCcw } from 'lucide-react';
+import { FileJsonIcon, RssIcon, TagIcon, RefreshCcw, MoreVertical, Trash2 } from 'lucide-react';
 import { cn } from '@repo/shared/lib/utils';
 import type { CollectionCardPayload } from './types';
 import { Button } from '@repo/components/ui/button';
 import { Badge } from '@repo/components/ui/badge';
 import { EyeIcon, FolderIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { getUserApiCollectionsOpenApiJsonUri } from '@repo/shared/lib/constants/repo';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../ui/dropdown-menu';
 
 interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
   collection: CollectionCardPayload;
@@ -78,21 +79,41 @@ export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProp
     <div data-testid="collection-card" {...divProps} className={classes}>
       <div className="p-5 flex-grow">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center mr-auto">
             <FolderIcon className="h-6 w-6" />
             <Link className="block w-full leading-6" href={href}>
               <h3 className="ml-2 text-lg font-medium">{collection.name}</h3>
             </Link>
           </div>
-          {
-            openApiJsonUrl && (
-              <Button asChild type="button" aria-label="OpenAPI JSON" title="OpenAPI JSON" variant="ghost" size="sm" className="p-2">
-                <Link className="" href={openApiJsonUrl} target="_blank" prefetch={false}>
-                  <FileJsonIcon className="h-5 w-5" aria-hidden="true" />
-                </Link>
-              </Button>
-            )
-          }
+          <div className="flex items-center text-sm">
+            {
+              openApiJsonUrl && (
+                <Button asChild type="button" aria-label="OpenAPI JSON" title="OpenAPI JSON" variant="" size="icon" className="">
+                  <Link className="" href={openApiJsonUrl} target="_blank" prefetch={false}>
+                    <FileJsonIcon className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              )
+            }
+            {(canDelete) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="" size="icon" className="">
+                    <span className="sr-only">Open menu</span>
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleDelete(collection)} className="text-destructive cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300">
+                    <TrashIcon className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
         <Link className="" href={href}>
           <p className="mt-1 text-sm line-clamp-3">{collection.description}</p>
@@ -116,11 +137,6 @@ export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProp
               <EyeIcon className="h-4 w-4" aria-hidden="true" />
             </Link>
           </Button>
-          {canDelete && (
-            <Button type="button" aria-label="Delete" title="Delete" variant="destructive" size="sm" disabled={cardState.isDeleting} className="p-2 w-8 h-8 border-transparent rounded-full shadow-sm" onClick={() => handleDelete(collection)}>
-              <TrashIcon className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          )}
           {canSubscribe && (
             <Button
               type="button"

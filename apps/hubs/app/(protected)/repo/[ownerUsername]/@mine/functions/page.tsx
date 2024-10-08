@@ -6,6 +6,7 @@ import { APP_NAME } from '@repo/shared/lib/constants';
 import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { fetchPaginationData } from '@repo/shared/data/functions';
+import CreateNewFunctionButton from '../../../../../../../../packages/components/src/data/functions/CreateNewFunctionButton';
 
 type Props = {
   params: { ownerUsername: string };
@@ -50,7 +51,7 @@ export default async function Page({ searchParams, params }: Props) {
             </strong>
           </p>
         </div>
-        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"></div>
+        <CreateNewFunctionButton authSession={authSession} ownerUsername={params.ownerUsername} />
       </div>
       <div className="mt-4">
         <BakaSearch

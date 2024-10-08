@@ -29,6 +29,13 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => 
       message: `Function "${result.slug}" has been ${data.id ? 'updated' : 'created'}.`,
       data: result,
     };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to ${data.id ? 'update' : 'create'} function!`,
+      data: null,
+    };
   });
 };
 
@@ -52,6 +59,13 @@ export const deleteFunction = async (functionId: string) => {
       message: `Function "${functionRecord.slug}" deleted!`,
       data: result,
     };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to delete function!`,
+      data: null,
+    };
   });
 };
 
@@ -70,6 +84,13 @@ export const cloneFunction = async (functionId: string) => {
         }),
       },
     };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to clone function!`,
+      data: null,
+    };
   });
 };
 
@@ -81,6 +102,13 @@ export const subscribeToFunction = async (functionId: string) => {
       status: 'ok',
       message: record.isSubscribed ? `Function "${record.functionSlug}" has been subscribed!` : `Function "${record.functionSlug}" has been unsubscribed!`,
       data: record,
+    };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to subscribe to function!`,
+      data: null,
     };
   });
 };
@@ -94,6 +122,13 @@ export const unsubscribeToFunction = async (functionId: string) => {
       message: record.isSubscribed ? `Function "${record.functionSlug}" has been subscribed!` : `Function "${record.functionSlug}" has been unsubscribed!`,
       data: record,
     };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to unsubscribe to function!`,
+      data: null,
+    };
   });
 };
 
@@ -105,6 +140,13 @@ export const subscribeToggleFunction = async (functionId: string) => {
       status: 'ok',
       message: subscribedFunction.isSubscribed ? `Function "${subscribedFunction.functionSlug}" has been subscribed!` : `Function "${subscribedFunction.functionSlug}" has been unsubscribed!`,
       data: subscribedFunction,
+    };
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to perform operation!`,
+      data: null,
     };
   });
 };
@@ -128,5 +170,12 @@ export const collectionToggleFunction = async (functionId: string, collectionId:
     } else {
       throw new ActionError('error', 400, 'Invalid action');
     }
+  })
+  .catch((error) => {
+    return {
+      status: error?.status || 'error',
+      message: error?.message || `Failed to perform operation!`,
+      data: null,
+    };
   });
 };
