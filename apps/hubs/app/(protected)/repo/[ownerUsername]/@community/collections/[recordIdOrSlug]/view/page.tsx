@@ -1,12 +1,14 @@
 import { ResolvingMetadata, Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { CommunityFunctionItem } from '@repo/components/data/functions/community/CommunityFunctionItem';
-import CommunityCollectionViewDetails from '@repo/components/data/collections/community/CommunityCollectionViewDetails';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
-import { getUserRepoFunctionsViewUri } from '@repo/shared/lib/constants/repo';
 import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { fetchPaginationData } from '@repo/shared/data/functions';
+import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { FunctionSearchList } from '@repo/components/data/functions';
+import { BakaPagination } from '@repo/components/search/BakaPagination';
+import { CollectionDetailView } from '@repo/components/data/collections';
 
 type Props = {
   params: { ownerUsername: string; recordIdOrSlug: string };
@@ -21,10 +23,10 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   };
 }
 
-export default async function Page({ params }: Props) {
-  const { recordIdOrSlug, ownerUsername } = params;
+export default async function Page({ searchParams, params }: Props) {
+  const { ownerUsername, recordIdOrSlug } = params;
 
-  if (!recordIdOrSlug) {
+  if (!recordIdOrSlug || !ownerUsername) {
     return notFound();
   }
 
@@ -36,14 +38,7 @@ export default async function Page({ params }: Props) {
     getAuthSession(),
   ]);
 
-  if (!ownerProfile?.userId || !ownerUsername) {
-    return notFound();
-  }
-
-  const callerUserId = authSession?.user.id,
-    ownerUserId = ownerProfile.userId;
-
-  const collectionRecord = await getCollectionAccessibleByUser(ownerUserId, recordIdOrSlug, {
+  const collectionRecord = await getCollectionAccessibleByUser(ownerUsername, recordIdOrSlug, {
     accessTypes: ['marketplace'],
     findFirstArgs: {
       select: {
@@ -62,95 +57,70 @@ export default async function Page({ params }: Props) {
             },
           },
         },
-        functions: {
-          select: {
-            id: true,
-            slug: true,
-            code: false,
-            description: true,
-            httpVerb: true,
-            isPrivate: true,
-            isPublished: true,
-            ownerUserId: true,
-            createdAt: false,
-            updatedAt: true,
-            tags: {
-              select: {
-                id: true,
-                name: true,
-                functionId: false,
-                function: false,
-              },
-            },
-            arguments: {
-              select: {
-                id: true,
-                name: true,
-                description: false,
-                type: true,
-                defaultValue: false,
-                isRequired: false,
-              },
-            },
-            owner: {
-              select: {
-                id: true,
-                profile: {
-                  select: {
-                    userName: true,
-                  },
-                },
-              },
-            },
-            ...(callerUserId !== ownerUserId
-              ? {
-                  subscribers: {
-                    where: {
-                      userId: callerUserId,
-                    },
-                    select: {
-                      id: true,
-                    },
-                  },
-                }
-              : {}),
-          },
-        },
       },
     },
   });
 
-  if (!collectionRecord) {
+  if (!collectionRecord || !collectionRecord.id) {
     return notFound();
   }
 
-  // Transform the `subscribers` field into a boolean `isSubscribed`
-  const functionsWithSubscriptionStatus = collectionRecord.functions.map((functionRecord) => ({
-    ...functionRecord,
-    isSubscribed: Array.isArray(functionRecord?.subscribers) && functionRecord.subscribers.length > 0,
-  }));
+  const paginationData = await fetchPaginationData(searchParams, {
+      invokerUserId: authSession?.userId || '',
+      where: {
+        isPublished: true,
+        isPrivate: false,
+        ownerUserId: ownerProfile?.userId || '',
+        collectors: {
+          some: {
+            id: collectionRecord.id
+          }
+        }
+      }
+    }),
+    { records, ...otherProps } = paginationData,
+    // For Baka Search, the rest is for Baka Pagination
+    { q, sortBy, ...paginationProps } = otherProps;
 
   return (
-    <div className="block" data-testid="community-collection-view-page">
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-12 gap-6">
-        <div className="col-span-1 md:col-span-1 xl:col-span-4 space-y-4">
-          <CommunityCollectionViewDetails record={collectionRecord} />
+    <div className="block" data-testid="collections-view-page">
+      <div className="flex flex-col space-y-6">
+        <div className="">
+          <CollectionDetailView authSession={authSession} record={collectionRecord} />
         </div>
-        <div className="col-span-1 md:col-span-2 xl:col-span-8 space-y-4">
-          <h2 className="text-lg font-bold text-gray-100 truncate min-w-0" title={'Functions'}>
-            Functions (
-            {collectionRecord.functions.length.toLocaleString(undefined, {
-              minimumFractionDigits: 0,
-            })}
-            )
-          </h2>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3 xl:gap-3 2xl:grid-cols-4 2xl:gap-4">
-            {functionsWithSubscriptionStatus.map((functionRecord) => (
-              <CommunityFunctionItem key={functionRecord.id} functionData={functionRecord} href={getUserRepoFunctionsViewUri(ownerUsername, functionRecord.slug)} />
-            ))}
+        <div className="">
+          <div className="sm:flex sm:items-center">
+            <div className="sm:flex-auto">
+              <h1 className="text-base font-semibold leading-6">Functions</h1>
+              <p className="text-xs text-gray-500 font-sans mt-1">
+                # records:{' '}
+                <strong>
+                  {paginationProps.totalRecords.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                  })}
+                </strong>
+              </p>
+            </div>
+            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"></div>
+          </div>
+          <div className="mt-4">
+            <BakaSearch
+              className="mb-4"
+              q={q}
+              sortBy={sortBy}
+              sortItems={[
+                { key: 'updatedAt_desc', title: 'Last Updated' },
+                { key: 'subscribers_desc', title: 'Most Subscribed' },
+                { key: 'slug_asc', title: 'Slug (A-Z)' },
+                { key: 'slug_desc', title: 'Slug (Z-A)' },
+              ]}
+            />
+            <BakaPagination className="mb-4" {...paginationProps} />
+            <FunctionSearchList authSession={authSession} functions={records} />
           </div>
         </div>
       </div>
     </div>
   );
 }
+
