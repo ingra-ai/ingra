@@ -45,7 +45,7 @@ async function generateOpenApiSchema(authSession: AuthSessionResponse, recordIdO
     return {};
   }
 
-  const ownerUsername = collectionRecord.owner.profile?.userName || '';
+  const ownerUsername = collectionRecord.owner?.profile?.userName || '';
   const collectionSlug = collectionRecord.slug;
   const collectionFunctions = collectionRecord.functions || [];
 

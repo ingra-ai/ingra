@@ -44,7 +44,7 @@ const collectionFunctionsToDynamicTools = (
   const functionDynamicTools = collection.functions.map((functionRecord) => {
     const collectionSlug = collection.slug,
       functionSlug = functionRecord.slug,
-      ownerUsername = collection.owner.profile?.userName;
+      ownerUsername = collection.owner?.profile?.userName;
 
     const tool = new DynamicStructuredTool({
       name: functionRecord.slug,

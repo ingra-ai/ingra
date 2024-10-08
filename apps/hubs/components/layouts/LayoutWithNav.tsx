@@ -1,17 +1,13 @@
 'use client';
 import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
-import { Transition, TransitionChild } from '@headlessui/react';
 import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { Navbar } from '@repo/components/navs/navbar';
-import SideNav from '../navs/SideNav';
 import { cn } from '@repo/shared/lib/utils';
-import { MenuIcon, LogIn, ChevronDownIcon } from 'lucide-react';
-import { Button } from '@repo/components/ui/button';
 import { AuthUserMenu } from '@repo/components/navs/menu/AuthUserMenu';
 import { BreadcrumbNav } from '@repo/components/navs/menu/BreadcrumbNav';
 import { Navlink } from '@repo/components/navs/types';
 import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
-import { APP_AUTH_LOGIN_URL, DOCS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
+import { DOCS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
 import { usePathname } from 'next/navigation';
 import { generateBreadcrumbItems } from './generateBreadcrumbItems';
 

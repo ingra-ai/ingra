@@ -57,7 +57,7 @@ const AddFunctionToCollectionButton: React.FC<AddFunctionToCollectionButtonProps
   const handleCollectionToggle = async (collection: CollectionForFunction) => {
     if (!functionRecord?.id) return;
 
-    const ownerUsername = functionRecord?.owner.profile?.userName || '';
+    const ownerUsername = functionRecord?.owner?.profile?.userName || '';
     if (!ownerUsername) return;
 
     setToggling(true);

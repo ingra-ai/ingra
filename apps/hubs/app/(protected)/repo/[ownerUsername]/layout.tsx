@@ -31,7 +31,7 @@ async function Layout(props: LayoutProps) {
   const itsMe = Boolean(authSession?.user.id && authSession.user.id === ownerProfile?.userId);
 
   // If owner user profile doesn't exist, OR current user profile username is not set, promote user to set profile username
-  if ( itsMe && !authSession?.user.profile?.userName ) {
+  if ( itsMe && !authSession?.user?.profile?.userName ) {
     return (
       <div className="flex flex-col w-full h-full justify-center items-center">
         <UserCircleIcon aria-hidden="true" className="h-24 w-24" />

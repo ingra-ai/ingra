@@ -115,11 +115,12 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
         <div className={collectionListGridClasses}>
           {collections.map((collection) => {
             const isSubscribed = collection.isSubscribed,
-              href = getUserRepoCollectionsViewUri(collection.owner.profile?.userName || '', collection.slug),
+              ownerUsername = collection.owner?.profile?.userName || '',
+              href = getUserRepoCollectionsViewUri(ownerUsername, collection.slug),
               refinedCollectionCardProps: Partial<React.ComponentProps<typeof CollectionCard>> = {};
 
             // If user is the owner of this collection, allow deletion
-            if (authSession?.user?.profile?.userName && authSession.user.profile.userName === collection.owner.profile?.userName) {
+            if (authSession?.user?.profile?.userName && ownerUsername && authSession.user.profile.userName === ownerUsername) {
               refinedCollectionCardProps.handleDelete = handleDelete;
             } else {
               if (isSubscribed) {

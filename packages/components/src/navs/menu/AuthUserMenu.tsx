@@ -1,8 +1,6 @@
 
-import Image from 'next/image';
 import { Fragment } from 'react';
 import Link from 'next/link';
-import { censorEmail } from '@repo/shared/lib/utils';
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
 import { ChevronDown, LogIn } from 'lucide-react';
 import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
@@ -44,8 +42,7 @@ export function AuthUserMenu(props: AuthUserMenuProps) {
     }
   }
 
-  const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
-  const avatarFallbackText = (authSession?.user.profile.userName || authSession?.user?.email).slice(0, 2).toUpperCase();
+  const avatarFallbackText = ((authSession?.user?.profile?.userName || authSession?.user?.email) ?? 'AN').slice(0, 2).toUpperCase();
   const logoutUrl = [AUTH_APP_URL, '/logout'].join('');
 
   return (

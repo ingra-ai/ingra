@@ -66,7 +66,8 @@ export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProp
   const allTags = new Set(...collection.functions.map((fn) => fn.tags.flatMap((tag) => tag.name)));
   // const allTagsText = Array.from(allTags).slice(0, 2).join(', ') + (allTags.size > 2 ? `, and +${allTags.size - 2} more` : '');
 
-  const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(collection.owner.profile?.userName || '', collection.slug);
+  const ownerUsername = collection.owner?.profile?.userName || '';
+  const openApiJsonUrl = ownerUsername ? getUserApiCollectionsOpenApiJsonUri(ownerUsername || '', collection.slug) : '';
 
   const classes = cn('bg-card shadow-md overflow-hidden shadow rounded-lg flex flex-col', divProps.className),
     canSubscribe = typeof onHandleSubscribe === 'function',
@@ -83,11 +84,15 @@ export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProp
               <h3 className="ml-2 text-lg font-medium">{collection.name}</h3>
             </Link>
           </div>
-          <Button asChild type="button" aria-label="OpenAPI JSON" title="OpenAPI JSON" variant="ghost" size="sm" className="p-2">
-            <Link className="" href={openApiJsonUrl} target="_blank" prefetch={false}>
-              <FileJsonIcon className="h-5 w-5" aria-hidden="true" />
-            </Link>
-          </Button>
+          {
+            openApiJsonUrl && (
+              <Button asChild type="button" aria-label="OpenAPI JSON" title="OpenAPI JSON" variant="ghost" size="sm" className="p-2">
+                <Link className="" href={openApiJsonUrl} target="_blank" prefetch={false}>
+                  <FileJsonIcon className="h-5 w-5" aria-hidden="true" />
+                </Link>
+              </Button>
+            )
+          }
         </div>
         <Link className="" href={href}>
           <p className="mt-1 text-sm line-clamp-3">{collection.description}</p>

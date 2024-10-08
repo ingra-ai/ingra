@@ -8,7 +8,7 @@ import '@css/swagger.scss';
 export default async function Page({ params }: { params: { userName: string; collectionSlug: string } }) {
   const authSession = await getAuthSession();
   const { userName, collectionSlug } = params;
-  const itsMe = Boolean(authSession?.user.profile?.userName && authSession.user.profile.userName === userName);
+  const itsMe = Boolean(authSession?.user?.profile?.userName && authSession.user.profile.userName === userName);
 
   if ( !authSession ) {
     return notFound();
