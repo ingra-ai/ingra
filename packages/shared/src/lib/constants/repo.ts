@@ -38,14 +38,14 @@ export function getUserRepoCollectionsViewUri(ownerUsername: string, recordIdOrS
 }
 
 /**
- * e.g. "/api/v1/bakabit/collections/123/swagger"
+ * e.g. "/api/v1/bakabit/collections/123/openapi.json"
  */
 export function getUserApiCollectionsOpenApiJsonUri(ownerUsername: string, recordIdOrSlug: string): string {
   return USER_API_COLLECTIONS_OPENAPI_JSON_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);
 }
 
 /**
- * e.g. "/api/v1/bakabit/collections/123/openapi.json"
+ * e.g. "/api/v1/bakabit/collections/123/swagger"
  */
 export function getUserApiCollectionsSwaggerUri(ownerUsername: string, recordIdOrSlug: string): string {
   return USER_API_COLLECTIONS_SWAGGER_URI.replace(':userName', ownerUsername).replace(':recordIdOrSlug', recordIdOrSlug);

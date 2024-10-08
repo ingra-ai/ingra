@@ -189,3 +189,4 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
 }
 
 export type FetchFunctionPaginationDataReturnType = Awaited<ReturnType<typeof fetchPaginationData>>;
+

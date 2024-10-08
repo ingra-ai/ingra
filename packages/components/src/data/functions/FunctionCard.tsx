@@ -78,7 +78,7 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
   };
 
   const isInMarketplace = func.isPublished && !func.isPrivate,
-    userIsOwner = authSession?.user?.id === func.owner.id,
+    userIsOwner = authSession?.user?.id && func.owner?.id && authSession?.user?.id === func.owner?.id,
     canSubscribe = !userIsOwner && typeof onHandleSubscribe === 'function',
     canUnsubscribe = !userIsOwner && typeof onHandleUnsubscribe === 'function',
     canDelete = userIsOwner && typeof onHandleDelete === 'function',

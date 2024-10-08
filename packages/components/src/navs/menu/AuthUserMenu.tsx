@@ -1,14 +1,15 @@
 
 import Image from 'next/image';
-import React, { Fragment, useCallback } from 'react';
+import { Fragment } from 'react';
 import Link from 'next/link';
-import { censorEmail, cn } from '@repo/shared/lib/utils';
+import { censorEmail } from '@repo/shared/lib/utils';
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
-import { GlobeIcon, Package2Icon, LayoutDashboardIcon, EllipsisIcon, ChevronDown, LogIn } from 'lucide-react';
+import { ChevronDown, LogIn } from 'lucide-react';
 import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 import { Button } from '@repo/components/ui/button';
 import { APP_AUTH_LOGIN_URL, AUTH_APP_URL } from '@repo/shared/lib/constants';
 import type { Navlink } from '../types';
+import { Avatar, AvatarFallback } from '../../ui/avatar';
 
 type AuthUserMenuProps = {
   authSession?: AuthSessionResponse;
@@ -21,10 +22,10 @@ export function AuthUserMenu(props: AuthUserMenuProps) {
     navlinks = [],
   } = props;
 
-  if (!authSession ) {
-    if ( typeof window !== 'undefined' ) {
+  if (!authSession) {
+    if (typeof window !== 'undefined') {
       const loginHref = [APP_AUTH_LOGIN_URL, '?redirectTo=', encodeURIComponent(window.location.href)].join('');
-  
+
       return (
         <Button
           asChild
@@ -44,12 +45,15 @@ export function AuthUserMenu(props: AuthUserMenuProps) {
   }
 
   const [censoredUser, censoredEmail] = censorEmail(authSession?.user?.email || 'unknown@unknown.com');
+  const avatarFallbackText = (authSession?.user.profile.userName || authSession?.user?.email).slice(0, 2).toUpperCase();
   const logoutUrl = [AUTH_APP_URL, '/logout'].join('');
 
   return (
     <Menu as="div" className="relative">
       <MenuButton className="flex w-full items-center text-sm focus:outline-none p-2 cursor-pointer">
-        <Image src={`https://ui-avatars.com/api?size=32&name=${censoredUser}`} width={24} height={24} className="h-6 w-6 rounded-full bg-gray-50" alt="user avatar" />
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>{avatarFallbackText}</AvatarFallback>
+        </Avatar>
         <ChevronDown className="ml-1 w-4 h-4" />
       </MenuButton>
       <Transition
