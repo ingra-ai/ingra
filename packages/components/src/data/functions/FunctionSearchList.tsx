@@ -1,33 +1,37 @@
 'use client';
-import React from 'react';
-import { FunctionCard, FunctionCardNew } from './FunctionCard';
+import React, { useTransition } from 'react';
+import { FunctionCard } from './FunctionCard';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@repo/components/ui/use-toast';
-import { collectionToggleFunction, deleteFunction } from '@repo/shared/actions/functions';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import type { FunctionListGetPayload } from './types';
-import ToggleCollectionMenuButton from '@repo/components/data/collections/mine/ToggleCollectionMenuButton';
-import { getUserRepoFunctionsEditUri, getUserRepoFunctionsUri } from '@repo/shared/lib/constants/repo';
-import type { MineCollectionMenuListGetPayload } from '@repo/components/data/collections/mine/types';
+import { ToastAction } from '@repo/components/ui/toast';
+import { collectionToggleFunction, deleteFunction, cloneFunction, subscribeToFunction, unsubscribeToFunction } from '@repo/shared/actions/functions';
+import { ListChecksIcon } from 'lucide-react';
+import type { FunctionCardPayload } from './types';
+import { getUserRepoFunctionsEditUri, getUserRepoFunctionsViewUri } from '@repo/shared/lib/constants/repo';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { cn } from '@repo/shared/lib/utils';
+import { FetchFunctionPaginationDataReturnType } from '@repo/shared/data/functions';
 
-interface FunctionSearchListProps {
-  ownerUsername: string;
-  functions: FunctionListGetPayload[];
-  collections: MineCollectionMenuListGetPayload[];
+interface FunctionSearchListProps extends React.HTMLAttributes<HTMLDivElement> {
+  authSession?: AuthSessionResponse | null;
+  functions: FetchFunctionPaginationDataReturnType['records'];
 }
 
-export const FunctionSearchList: React.FC<FunctionSearchListProps> = ({ ownerUsername, functions, collections }) => {
+export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => {
+  const { authSession, functions, ...divProps } = props;
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  const handleEdit = (functionId: string) => {
-    router.push(getUserRepoFunctionsEditUri(ownerUsername, functionId));
-  };
-
-  const onFunctionCollectionToggleChanged = (collectionId: string, functionId: string, checked: boolean) => {
+  const handleCollectionToggle = (collectionId: string, functionRecord: FunctionCardPayload, checked: boolean) => {
     const action = checked ? 'add' : 'remove';
+    const ownerUsername = functionRecord?.owner.profile?.userName || '';
 
-    collectionToggleFunction(collectionId, functionId, action)
+    if (!ownerUsername) {
+      return Promise.reject('Owner username not found!');
+    }
+
+    return collectionToggleFunction(collectionId, functionRecord.id, action)
       .then((result) => {
         if (result.status !== 'ok') {
           throw new Error(result.message);
@@ -38,24 +42,29 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = ({ ownerUse
           description: result.message,
         });
 
-        router.replace(getUserRepoFunctionsUri(ownerUsername));
-        router.refresh();
+        startTransition(router.refresh);
       })
       .catch((error) => {
         toast({
           variant: 'destructive',
           title: 'Uh oh! Something went wrong.',
-          description: error?.message || 'Failed to handling collection!',
+          description: error?.message || 'Failed to handle collection!',
         });
       });
   };
 
-  const handleDelete = (functionId: string) => {
+  const handleDelete = (functionRecord: FunctionCardPayload) => {
+    const ownerUsername = functionRecord?.owner.profile?.userName || '';
+
+    if (!ownerUsername) {
+      return Promise.reject('Owner username not found!');
+    }
+
     // Prompt user
     const confirmed = confirm(`Are you sure to delete function? This action cannot be undone. This will permanently delete your function.`);
 
     if (confirmed) {
-      deleteFunction(functionId)
+      return deleteFunction(functionRecord.id)
         .then((result) => {
           if (result.status !== 'ok') {
             throw new Error(result.message);
@@ -66,8 +75,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = ({ ownerUse
             description: 'Function has been deleted successfully.',
           });
 
-          router.replace(getUserRepoFunctionsUri(ownerUsername));
-          router.refresh();
+          startTransition(router.refresh);
         })
         .catch((error) => {
           toast({
@@ -77,28 +85,123 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = ({ ownerUse
           });
         });
     }
+
+    return Promise.reject();
   };
 
+  const handleSubscribe = (functionRecord: FunctionCardPayload) => {
+    return subscribeToFunction(functionRecord.id)
+      .then((result) => {
+        if (result.status !== 'ok') {
+          throw new Error(result.message);
+        }
+
+        toast({
+          title: 'Success!',
+          description: result?.message || 'Function has been subscribed successfully.',
+        });
+
+        startTransition(router.refresh);
+      })
+      .catch((error) => {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to handle subscription!',
+        });
+      });
+  };
+
+  const handleUnsubscribe = (functionRecord: FunctionCardPayload) => {
+    return unsubscribeToFunction(functionRecord.id)
+      .then((result) => {
+        if (result.status !== 'ok') {
+          throw new Error(result.message);
+        }
+
+        toast({
+          title: 'Success!',
+          description: result?.message || 'Function has been unsubscribed successfully.',
+        });
+
+        startTransition(router.refresh);
+      })
+      .catch((error) => {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to handle subscription!',
+        });
+      });
+  };
+
+  const handleClone = (functionRecord: FunctionCardPayload) => {
+    return cloneFunction(functionRecord.id)
+      .then((result) => {
+        if (result.status !== 'ok') {
+          throw new Error(result.message);
+        }
+
+        const toastProps = {
+          title: 'Function cloned!',
+          description: 'Your function has been cloned.',
+          action: (<></>) as React.JSX.Element,
+        };
+
+        const functionHref = result?.data?.href;
+
+        if (functionHref) {
+          toastProps.action = (
+            <ToastAction altText="Cloned Function" onClick={() => router.replace(functionHref)}>
+              <ListChecksIcon className="w-3 h-3 mr-3" /> Cloned Function
+            </ToastAction>
+          );
+        }
+
+        toast(toastProps);
+        router.refresh();
+      })
+      .catch((error: Error) => {
+        toast({
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
+          description: error?.message || 'Failed to perform operation!',
+        });
+      });
+  };
+
+  const classes = cn('relative', divProps.className),
+    gridClasses = cn('grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4');
+
   return (
-    <>
-      <FunctionCardNew ownerUsername={ownerUsername} />
-      {functions.map((functionData) => {
-        return (
-          <FunctionCard key={functionData.id} functionData={functionData} href={getUserRepoFunctionsEditUri(ownerUsername, functionData.slug)}>
-            <div className="flex mt-4 bg-card border rounded-[10px] px-3 py-2">
-              <ToggleCollectionMenuButton functionId={functionData.id} collections={collections} onCheckedChange={onFunctionCollectionToggleChanged} className="p-2 bg-card" />
-              <div className="w-full"></div>
-              <button type="button" onClick={() => handleEdit(functionData.id)} aria-label="Edit" title="Edit" className="text-info hover:text-info-foreground p-2 hover:bg-accent">
-                <PencilIcon className="h-4 w-4" />
-              </button>
-              <button type="button" onClick={() => handleDelete(functionData.id)} aria-label="Delete" title="Delete" className="text-destructive hover:text-destructive-foreground p-2 hover:bg-accent">
-                <TrashIcon className="h-4 w-4" />
-              </button>
-            </div>
-          </FunctionCard>
-        );
-      })}
-    </>
+    <div data-testid="function-search-list" {...divProps} className={classes}>
+      <div className="mx-auto space-y-6">
+        <div className={gridClasses}>
+          {functions.map((functionData) => {
+            const isSubscribed = functionData.isSubscribed,
+              isOwner = authSession?.user?.profile?.userName && authSession.user.profile.userName === functionData.owner.profile?.userName,
+              href = isOwner ? getUserRepoFunctionsEditUri(functionData.owner.profile?.userName || '', functionData.slug) : getUserRepoFunctionsViewUri(functionData.owner.profile?.userName || '', functionData.slug),
+              refinedCardProps: Partial<React.ComponentProps<typeof FunctionCard>> = {};
+
+            // If user is the owner of this function, allow deletion
+            if (isOwner) {
+              refinedCardProps.handleDelete = handleDelete;
+              // refinedCardProps.handleEdit = handleEdit;
+              refinedCardProps.handleClone = handleClone;
+              refinedCardProps.handleCollectionToggle = handleCollectionToggle;
+            } else {
+              if (isSubscribed) {
+                refinedCardProps.handleUnsubscribe = handleUnsubscribe;
+              } else {
+                refinedCardProps.handleSubscribe = handleSubscribe;
+              }
+            }
+
+            return <FunctionCard key={functionData.id} functionData={functionData} href={href} authSession={authSession} {...refinedCardProps} />;
+          })}
+        </div>
+      </div>
+    </div>
   );
 };
 

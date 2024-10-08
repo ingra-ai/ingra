@@ -1,24 +1,36 @@
-import type { FetchCollectionSearchListPaginationType } from '@repo/components/data/collections/types';
+'use server';
 import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 
-export const fetchPaginationData = async (searchParams: Record<string, string | string[] | undefined> = {}, invokerUserId?: string, ownerUserId?: string) => {
+type FetchCollectionPaginationDataOptions = {
+  /**
+   * The invoker user ID
+   * if this value is provided, the function will return the subscription status of the user for each function
+   */
+  invokerUserId?: string;
+
+  /**
+   * The where query to filter the functions
+   */
+  where?: Prisma.CollectionWhereInput;
+}
+
+export async function fetchPaginationData(searchParams: Record<string, string | string[] | undefined> = {}, options: FetchCollectionPaginationDataOptions = {}) {
+  const { 
+    invokerUserId = '',
+    where: argsWhere = {},
+  } = options;
+
   // Define available sort keys and orders
   const availableSortKeys = ['name', 'updatedAt', 'subscribers'],
     availableSortOrders = ['asc', 'desc'];
 
   // Parse the query parameteres
-  let { 
-    q = '',
-    page = '1',
-    pageSize = '20',
-    sortBy = 'updatedAt_desc',
-  } = searchParams;
-  q = Array.isArray(q) ? q[0] : q;
-  page = Array.isArray(page) ? page[0] : page;
-  pageSize = Array.isArray(pageSize) ? pageSize[0] : pageSize;
-  sortBy = Array.isArray(sortBy) ? sortBy[0] : sortBy;
+  const q = ( Array.isArray(searchParams?.q) ? searchParams.q[0] : '' ) || '';
+  const page = ( Array.isArray(searchParams?.page) ? searchParams.page[0] : '1' ) || '1';
+  const pageSize = ( Array.isArray(searchParams?.pageSize) ? searchParams.pageSize[0] : '20' ) || '20';
+  let sortBy = ( Array.isArray(searchParams?.sortBy) ? searchParams.sortBy[0] : 'updatedAt_desc' ) || 'updatedAt_desc';
 
   // Validate and sanitize page and pageSize
   const pageInt = Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
@@ -29,7 +41,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
 
   // Calculate orderBy based on sortBy
   let [sortKey, sortOrder] = sortBy.split('_');
-  if (!availableSortKeys.includes(sortKey) || !availableSortOrders.includes(sortOrder)) {
+  if (!sortKey || !sortOrder || !availableSortKeys.includes(sortKey) || !availableSortOrders.includes(sortOrder)) {
     // Revert to default values if the sortBy query parameter is invalid
     sortBy = 'updatedAt_desc';
     sortKey = 'updatedAt';
@@ -38,21 +50,13 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
 
   // Define whereQuery based on the query parameteres 'q' and argument 'ownerUserId'
   const whereQuery: Prisma.CollectionWhereInput = {
-    functions: {
-      some: {
-        isPublished: true,
-        isPrivate: false,
-      },
-    },
+    ...argsWhere,
   };
 
   // Apply search query
-  if ( ownerUserId ) {
-    whereQuery.userId = ownerUserId;
-  }
-
-  if ( q ) {
+  if (q) {
     whereQuery.OR = [
+      ...(whereQuery?.OR || []),
       {
         name: {
           contains: q,
@@ -82,7 +86,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
                 },
               },
             },
-          }
+          },
         },
       },
     ];
@@ -91,14 +95,13 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
   // Define orderBy based on the sortBy query parameter
   const orderByQuery: Prisma.CollectionOrderByWithRelationInput = {};
 
-  if ( sortKey === 'subscribers' ) {
+  if (sortKey === 'subscribers') {
     Object.assign(orderByQuery, {
       subscribers: {
         _count: sortOrder,
       },
     });
-  }
-  else {
+  } else {
     Object.assign(orderByQuery, {
       [sortKey]: sortOrder,
     });
@@ -177,14 +180,14 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
             functions: true,
           },
         },
-        subscribers: {
+        subscribers: invokerUserId ? {
           where: {
             userId: invokerUserId,
           },
           select: {
             id: true,
           },
-        },
+        } : false,
       },
       skip,
       take: pageSizeInt,
@@ -203,7 +206,7 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
   const hasNext = skip + pageSizeInt < totalRecords;
   const hasPrevious = pageInt > 1;
 
-  const result: FetchCollectionSearchListPaginationType = {
+  const result = {
     records: collectionsWithSubscriptionStatus,
     page: pageInt,
     pageSize: pageSizeInt,
@@ -212,8 +215,11 @@ export const fetchPaginationData = async (searchParams: Record<string, string | 
     hasNext,
     hasPrevious,
     q: q || '',
-    sortBy
+    sortBy,
   };
 
   return result;
-};
+}
+
+export type FetchCollectionPaginationDataReturnType = Awaited<ReturnType<typeof fetchPaginationData>>;
+

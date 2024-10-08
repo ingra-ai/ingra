@@ -3,7 +3,7 @@ import { handleRequest } from '@repo/shared/utils/handleRequest';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
 import { ActionError } from '@v1/types/api-response';
-import { getFunctionAccessibleByUser, type FunctionAccessType } from '@repo/shared/data/functions/getFunctionAccessibleByUser';
+import { getFunctionAccessibleByUser, type FunctionAccessType } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
 import { Logger } from '@repo/shared/lib/logger';

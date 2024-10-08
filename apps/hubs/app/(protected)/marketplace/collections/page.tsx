@@ -2,13 +2,26 @@ import { getAuthSession } from '@repo/shared/data/auth/session';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { cn } from '@repo/shared/lib/utils';
-import { fetchPaginationData } from './fetchPaginationData';
 import { CollectionSearchList } from '@repo/components/data/collections';
+import { fetchPaginationData } from '@repo/shared/data/collections';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();
 
-  const paginationData = await fetchPaginationData(searchParams, authSession?.userId),
+  const paginationData = await fetchPaginationData(searchParams, {
+      invokerUserId: authSession?.userId || '',
+      where: {
+        NOT: {
+          userId: authSession?.userId || ''
+        },
+        functions: {
+          some: {
+            isPublished: true,
+            isPrivate: false,
+          },
+        },
+      }
+    }),
     { records, ...otherProps } = paginationData,
 
     // For Baka Search, the rest is for Baka Pagination

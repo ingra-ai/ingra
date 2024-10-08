@@ -1,6 +1,11 @@
+'use server';
 import db from '@repo/db/client';
 
-export const getCollectionsByUserId = async (userId: string) => {
+export async function getCollectionsByUserId(userId?: string | null) {
+  if (!userId) {
+    return [];
+  }
+
   const records = await db.collection.findMany({
     where: {
       userId: userId,
@@ -20,4 +25,4 @@ export const getCollectionsByUserId = async (userId: string) => {
   });
 
   return records;
-};
+}

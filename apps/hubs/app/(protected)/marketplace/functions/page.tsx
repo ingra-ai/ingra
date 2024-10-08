@@ -2,19 +2,28 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { cn } from '@repo/shared/lib/utils';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
-import CommunityFunctionList from '@repo/components/data/functions/community/CommunityFunctionList';
-import { fetchPaginationData } from './fetchPaginationData';
+import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { FunctionSearchList } from '@repo/components/data/functions';
+import { fetchPaginationData } from '@repo/shared/data/functions';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();
 
-  const paginationData = await fetchPaginationData(searchParams, authSession?.userId),
-    { records, ...paginationProps } = paginationData;
+  const paginationData = await fetchPaginationData(searchParams, {
+      invokerUserId: authSession?.userId || '',
+      where: {
+        NOT: {
+          ownerUserId: authSession?.userId || ''
+        },
+        isPublished: true,
+        isPrivate: false,
+      }
+    }),
+    { records, ...otherProps } = paginationData,
+    // For Baka Search, the rest is for Baka Pagination
+    { q, sortBy, ...paginationProps } = otherProps;
 
-  const classes = cn('block'),
-    gridClasses = cn({
-      'grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6': true,
-    });
+  const classes = cn('block');
 
   return (
     <div className={classes} data-testid="marketplace-functions-page">
@@ -33,8 +42,19 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"></div>
       </div>
       <div className="mt-4">
+        <BakaSearch
+          className="mb-4"
+          q={q}
+          sortBy={sortBy}
+          sortItems={[
+            { key: 'updatedAt_desc', title: 'Last Updated' },
+            { key: 'subscribers_desc', title: 'Most Subscribed' },
+            { key: 'slug_asc', title: 'Slug (A-Z)' },
+            { key: 'slug_desc', title: 'Slug (Z-A)' },
+          ]}
+        />
         <BakaPagination className="mb-4" {...paginationProps} />
-        <div className={gridClasses}>{records.length > 0 && <CommunityFunctionList showControls={!!authSession} functionRecords={records} />}</div>
+        <FunctionSearchList authSession={authSession} functions={records} />
       </div>
     </div>
   );
