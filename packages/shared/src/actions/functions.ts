@@ -13,10 +13,10 @@ import {
   subscribeToFunction as dataSubscribeToFunction,
   unsubscribeToFunction as dataUnsubscribeToFunction
 } from '../data/functions';
-import { addFunctionToCollection, removeFunctionFromCollection } from '../data/collections';
+import { addFunctionToCollection, getCollectionAccessibleByUser, removeFunctionFromCollection } from '../data/collections';
 import { getUserRepoFunctionsEditUri } from '../lib/constants/repo';
 
-export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => {
+export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, collectionRecordIdOrSlug?: string) => {
   const validatedValues = await validateAction(FunctionSchema, values);
   const { data } = validatedValues;
 
@@ -26,7 +26,7 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>) => 
       throw new ActionError('error', 400, 'Profile username is not setup.');
     }
 
-    const result = await dataUpsertFunctions(data, authSession.user.id);
+    const result = await dataUpsertFunctions(data, authSession.user.id, collectionRecordIdOrSlug);
 
     return {
       status: 'ok',

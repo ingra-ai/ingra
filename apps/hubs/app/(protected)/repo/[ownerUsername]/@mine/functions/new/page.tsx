@@ -1,6 +1,5 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { notFound } from 'next/navigation';
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { FunctionForm } from '@repo/components/data/functions/mine/FunctionForm';
 
 export default async function Page({ params }: { params: { ownerUsername: string } }) {
@@ -11,15 +10,6 @@ export default async function Page({ params }: { params: { ownerUsername: string
     return notFound();
   }
 
-  const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
-    id: envVar.id,
-    ownerUserId: envVar.ownerUserId,
-    key: envVar.key,
-    value: envVar.value,
-  }));
-
-  const userVarsRecord = generateUserVars(authSession);
-
   return (
     <div className="block" data-testid="functions-new-page">
       <div className="block">
@@ -27,7 +17,7 @@ export default async function Page({ params }: { params: { ownerUsername: string
           <h1 className="text-base font-semibold leading-10">Add New Function</h1>
         </div>
         <div className="block">
-          <FunctionForm ownerUsername={ownerUsername} envVars={optionalEnvVars} userVars={userVarsRecord} />
+          <FunctionForm authSession={authSession} ownerUsername={ownerUsername} />
         </div>
       </div>
     </div>
