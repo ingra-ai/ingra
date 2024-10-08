@@ -70,13 +70,13 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@turbo/gen": "^2.1.3",
-    "@types/eslint": "^9.6.1",
+    "@types/eslint": "^8.56.5",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.10",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
-    "eslint": "^9.11.1",
+    "eslint": "^8.57.0",
     "typescript": "^5.6.2"
   },
   "dependencies": {

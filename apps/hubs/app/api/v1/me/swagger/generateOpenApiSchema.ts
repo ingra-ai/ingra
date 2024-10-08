@@ -141,7 +141,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   }, {});
 
   const userCollectionsOpenApiSchema = collectionRecords.reduce((acc1, collection) => {
-    const ownerUsername = collection.owner.profile?.userName || '';
+    const ownerUsername = collection.owner?.profile?.userName || '';
     const collectionSlug = collection.slug;
     const collectionFunctions = collection.functions || [];
 
@@ -159,7 +159,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
    * User subscribed functions and collections
    */
   const userSubscribedFunctionsOpenApiSchema = subscribedFunctionRecords.reduce((acc, functionRecord) => {
-    const functionOwnerUsername = functionRecord.owner.profile?.userName || '';
+    const functionOwnerUsername = functionRecord.owner?.profile?.userName || '';
 
     if (!functionOwnerUsername) {
       return {};
@@ -172,7 +172,7 @@ export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   }, {});
 
   const userSubscribedCollectionssOpenApiSchema = subscribedCollectionRecords.reduce((acc1, collection) => {
-    const ownerUsername = collection.owner.profile?.userName || '';
+    const ownerUsername = collection.owner?.profile?.userName || '';
     const collectionSlug = collection.slug;
     const collectionFunctions = collection.functions || [];
 

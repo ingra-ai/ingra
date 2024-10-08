@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: { userName: st
   return await apiTryCatch( async () => {
     const authSession = await getAuthSession();
     const { userName, collectionSlug } = params;
-    const itsMe = Boolean(authSession?.user.profile?.userName && authSession.user.profile.userName === userName);
+    const itsMe = Boolean(authSession?.user?.profile?.userName && authSession.user.profile.userName === userName);
 
     if ( !authSession ) {
       throw new ActionError('error', 403, `Only owner and collection's subscribers can view this collection.`);
