@@ -132,8 +132,6 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
       // save to db and return function
       const savedFunction = await upsertFunction(values)
         .then((resp) => {
-          let redirectUrl = '';
-
           if (resp?.data?.id) {
             if (isEditMode) {
               // If user is editing, stay on the same page but gives option to go back to functions list.
@@ -156,11 +154,11 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
 
           startTransition(() => {
             // Go to the created functions
-            redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp.data.slug);
-            
-            if (redirectUrl) {
+            if ( resp?.data?.slug ) {
+              const redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp?.data?.slug);
               router.push(redirectUrl);
-            } else {
+            }
+            else {
               router.refresh();
             }
           });

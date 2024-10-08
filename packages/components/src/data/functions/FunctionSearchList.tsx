@@ -24,7 +24,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
 
   const handleCollectionToggle = (collectionId: string, functionRecord: FunctionCardPayload, checked: boolean) => {
     const action = checked ? 'add' : 'remove';
-    const ownerUsername = functionRecord?.owner.profile?.userName || '';
+    const ownerUsername = functionRecord?.owner?.profile?.userName || '';
 
     if (!ownerUsername) {
       return Promise.reject('Owner username not found!');
@@ -53,7 +53,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
   };
 
   const handleDelete = (functionRecord: FunctionCardPayload) => {
-    const ownerUsername = functionRecord?.owner.profile?.userName || '';
+    const ownerUsername = functionRecord?.owner?.profile?.userName || '';
 
     if (!ownerUsername) {
       return Promise.reject('Owner username not found!');
@@ -178,8 +178,9 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
         <div className={gridClasses}>
           {functions.map((functionData) => {
             const isSubscribed = functionData.isSubscribed,
-              isOwner = authSession?.user?.profile?.userName && authSession.user.profile.userName === functionData.owner.profile?.userName,
-              href = isOwner ? getUserRepoFunctionsEditUri(functionData.owner.profile?.userName || '', functionData.slug) : getUserRepoFunctionsViewUri(functionData.owner.profile?.userName || '', functionData.slug),
+              recordOwnerUsername = functionData.owner?.profile?.userName || '',
+              isOwner = authSession?.user?.profile?.userName && recordOwnerUsername && authSession.user.profile.userName === recordOwnerUsername,
+              href = isOwner ? getUserRepoFunctionsEditUri(recordOwnerUsername, functionData.slug) : getUserRepoFunctionsViewUri(recordOwnerUsername, functionData.slug),
               refinedCardProps: Partial<React.ComponentProps<typeof FunctionCard>> = {};
 
             // If user is the owner of this function, allow deletion
