@@ -2,7 +2,7 @@ import { getAuthSession } from '@repo/shared/data/auth/session';
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
-import { fetchPaginationData } from '@repo/shared/data/functions';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
 import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 
@@ -21,7 +21,7 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
     return notFound();
   }
 
-  const paginationData = await fetchPaginationData(searchParams, {
+  const paginationData = await fetchFunctionPaginationData(searchParams, {
       invokerUserId: authSession?.userId || '',
       where: {
         ownerUserId: ownerProfile.userId,

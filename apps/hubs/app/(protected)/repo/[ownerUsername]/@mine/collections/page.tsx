@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { CollectionSearchList, CreateNewCollectionButton } from '@repo/components/data/collections';
-import { fetchPaginationData } from '@repo/shared/data/collections';
+import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const authSession = await getAuthSession();
@@ -12,7 +12,7 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
     return notFound();
   }
 
-  const paginationData = await fetchPaginationData(searchParams, {
+  const paginationData = await fetchCollectionPaginationData(searchParams, {
       where: {
         userId: authSession.userId,
       },

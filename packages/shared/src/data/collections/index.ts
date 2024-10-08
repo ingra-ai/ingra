@@ -251,6 +251,5 @@ export async function deleteCollection(collectionId: string, userId: string) {
 }
 
 export * from './getCollectionAccessibleByUser';
-export * from './getCollectionsByUserId';
 export * from './fetchCollectionsForFunction';
-export * from './fetchPaginationData';
+export * from './fetchCollectionPaginationData';

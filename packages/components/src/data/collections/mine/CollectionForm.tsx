@@ -51,8 +51,12 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
       if (collectionRecord?.id) {
         // edit mode
         return await updateCollection(collectionRecord.id, values)
-          .then((resp) => {
-            if (resp?.data?.id) {
+          .then((result) => {
+            if (result.status !== 'ok') {
+              throw new Error(result.message);
+            }
+
+            if (result?.data?.id) {
               toast({
                 title: 'Collection updated!',
                 description: 'Your collection has been updated.',
@@ -60,6 +64,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
 
               startTransition(() => {
                 onCancel();
+                onUpdated?.(result.data);
                 router.refresh();
               });
             }
@@ -78,8 +83,12 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
           });
       } else {
         return await createCollection(values)
-          .then((resp) => {
-            if (resp?.data?.id) {
+          .then((result) => {
+            if (result.status !== 'ok') {
+              throw new Error(result.message);
+            }
+            
+            if (result?.data?.id) {
               toast({
                 title: 'Collection created!',
                 description: 'Your collection has been created.',
@@ -87,6 +96,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
 
               startTransition(() => {
                 onCancel();
+                onUpdated?.(result.data);
                 router.refresh();
               });
             }
