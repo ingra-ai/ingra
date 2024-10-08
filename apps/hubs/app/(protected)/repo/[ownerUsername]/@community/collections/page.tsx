@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
-import { fetchPaginationData } from '@protected/marketplace/collections/fetchPaginationData';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { CollectionSearchList } from '@repo/components/data/collections';
+import { fetchPaginationData } from '@repo/shared/data/collections';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const { ownerUsername } = params;
@@ -21,7 +21,18 @@ export default async function Page({ searchParams, params }: { searchParams: Rec
     return notFound();
   }
 
-  const paginationData = await fetchPaginationData(searchParams, authSession?.userId, ownerProfile?.userId),
+  const paginationData = await fetchPaginationData(searchParams, {
+      invokerUserId: authSession?.userId || '',
+      where: {
+        userId: ownerProfile.userId,
+        functions: {
+          some: {
+            isPublished: true,
+            isPrivate: false,
+          },
+        },
+      },
+    }),
     { records, ...otherProps } = paginationData,
 
     // For Baka Search, the rest is for Baka Pagination

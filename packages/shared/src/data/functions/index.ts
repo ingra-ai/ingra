@@ -3,7 +3,7 @@ import db from '@repo/db/client';
 import { FunctionSchema } from '../../schemas/function';
 import { Logger } from '../../lib/logger';
 
-export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, userId: string) => {
+export async function upsertFunction(values: z.infer<typeof FunctionSchema>, userId: string) {
   const { id: recordId, slug, code, isPrivate, isPublished, httpVerb, description, arguments: functionArguments, tags: functionTags } = values;
   const isEditMode = !!recordId;
   const result = await db.$transaction(async (prisma) => {
@@ -115,9 +115,9 @@ export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, use
   });
 
   return result;
-};
+}
 
-export const deleteFunction = async (functionId: string, userId: string) => {
+export async function deleteFunction(functionId: string, userId: string) {
   try {
     await db.$transaction(async (prisma) => {
       // Delete related child records in the correct order
@@ -169,27 +169,26 @@ export const deleteFunction = async (functionId: string, userId: string) => {
     await Logger.withTag('action|deleteFunction').withTag(`user|${userId}`).info('Error deleting function and related records', { error });
     return false;
   }
-};
+}
 
-export const toggleFunctionSubscription = async (functionId: string, userId: string) => {
+export async function toggleFunctionSubscription(functionId: string, userId: string) {
   const [userProfile, existingSubscription] = await Promise.all([
     db.profile.findFirst({
       where: {
-        userId
-      }
+        userId,
+      },
     }),
     db.functionSubscription.findFirst({
       where: {
         functionId,
         userId,
       },
-    })
+    }),
   ]);
 
-  if ( !userProfile ) {
+  if (!userProfile) {
     throw new Error('User profile is not configured.');
-  } 
-  else if ( !userProfile?.userName ) {
+  } else if (!userProfile?.userName) {
     throw new Error('Username is not configured.');
   }
 
@@ -198,14 +197,14 @@ export const toggleFunctionSubscription = async (functionId: string, userId: str
   } else {
     return await subscribeToFunction(functionId, userId);
   }
-};
+}
 
-const subscribeToFunction = async (functionId: string, userId: string) => {
+export async function subscribeToFunction(functionId: string, userId: string) {
   const [userProfile, functionRecord] = await Promise.all([
     db.profile.findFirst({
       where: {
-        userId
-      }
+        userId,
+      },
     }),
     db.function.findUnique({
       where: {
@@ -215,10 +214,9 @@ const subscribeToFunction = async (functionId: string, userId: string) => {
     }),
   ]);
 
-  if ( !userProfile ) {
+  if (!userProfile) {
     throw new Error('User profile is not configured.');
-  } 
-  else if ( !userProfile?.userName ) {
+  } else if (!userProfile?.userName) {
     throw new Error('Username is not configured.');
   }
 
@@ -249,9 +247,9 @@ const subscribeToFunction = async (functionId: string, userId: string) => {
     functionSlug: functionRecord.slug,
     isSubscribed: true,
   };
-};
+}
 
-const unsubscribeToFunction = async (functionId: string, userId: string) => {
+export async function unsubscribeToFunction(functionId: string, userId: string) {
   // Check if the user is already subscribed to the function
   const existingSubscription = await db.functionSubscription.findFirst({
     where: {
@@ -281,14 +279,14 @@ const unsubscribeToFunction = async (functionId: string, userId: string) => {
     functionSlug: existingSubscription.function.slug,
     isSubscribed: false,
   };
-};
+}
 
-export const cloneFunction = async (functionId: string, userId: string) => {
+export async function cloneFunction(functionId: string, userId: string) {
   const [userProfile, functionRecord] = await Promise.all([
     db.profile.findFirst({
       where: {
-        userId
-      }
+        userId,
+      },
     }),
     db.function.findUnique({
       where: {
@@ -298,7 +296,7 @@ export const cloneFunction = async (functionId: string, userId: string) => {
           {
             ownerUserId: userId,
           },
-  
+
           // User is a subscriber
           {
             subscribers: {
@@ -307,7 +305,7 @@ export const cloneFunction = async (functionId: string, userId: string) => {
               },
             },
           },
-  
+
           // Function is in marketplace
           {
             isPublished: true,
@@ -319,13 +317,12 @@ export const cloneFunction = async (functionId: string, userId: string) => {
         arguments: true,
         tags: true,
       },
-    })
+    }),
   ]);
 
-  if ( !userProfile ) {
+  if (!userProfile) {
     throw new Error('User profile is not configured.');
-  } 
-  else if ( !userProfile?.userName ) {
+  } else if (!userProfile?.userName) {
     throw new Error('Username is not configured.');
   }
 
@@ -364,6 +361,7 @@ export const cloneFunction = async (functionId: string, userId: string) => {
   });
 
   return clonedFunction;
-};
+}
 
-export { getFunctionAccessibleByUser } from './getFunctionAccessibleByUser';
+export * from './getFunctionAccessibleByUser';
+export * from './fetchPaginationData';

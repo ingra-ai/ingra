@@ -111,18 +111,19 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
           options.body = JSON.stringify(values);
         }
 
-        const fetchResult = await fetch(functionUrl, options).then((res) => res.json()).catch((error) => {
-          console.log({ error });
-          throw new Error(error);
-        });
-        console.log({ fetchResult })
+        const fetchResult = await fetch(functionUrl, options)
+          .then((res) => res.json())
+          .catch((error) => {
+            throw new Error(error);
+          });
 
-        if ( !fetchResult ) {
-          console.log({ fetchResult })
+        if (!fetchResult) {
           throw new Error('Failed to fetch result');
         }
 
-        const { data: { errors, metrics, logs, result } } = fetchResult;
+        const {
+          data: { errors, metrics, logs, result },
+        } = fetchResult;
 
         setRunState({
           isRunning: false,

@@ -1,13 +1,18 @@
+'use server';
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
-import { isUuid } from '../../lib/utils';
+import { isUuid } from '@repo/shared/lib/utils';
 
 export type CollectionAccessType =
   // User is the owner of the collection
   | 'owner'
 
   // Other user's collection where user is a subscriber and the collection is not private
-  | 'subscriber';
+  | 'subscriber'
+
+  // Collection is part of marketplace
+  | 'marketplace';
+
 
 type GetCollectionAccessibleByUserDefaultArgsType = Pick<Prisma.CollectionFindFirstArgs, 'include' | 'select'> & {
   where?: Prisma.CollectionFindFirstArgs['where'];
@@ -21,18 +26,17 @@ type GetCollectionAccessibleByUserOptionsType<T extends GetCollectionAccessibleB
 /**
  * Get the collection record accessible by the user.
  * Whether the user is the owner, subscriber, or the collection is part of a collection that the user is subscribed to.
- * @param {string} userId - The invoker user ID
+ * @param {string} ownerUserIdOrName - The invoker user ID
  * @param {string} recordIdOrSlug - The collection ID or slug
  * @param {GetCollectionAccessibleByUserOptionsType<T>} options - Optional. Specifies the access types and findFirstArgs.
  * @returns {Promise<Prisma.CollectionGetPayload<T> | null>} - Returns the collection record accessible by the user. If not found, returns null.
  */
-export const getCollectionAccessibleByUser = async <T extends GetCollectionAccessibleByUserDefaultArgsType>(
-  userId: string,
+export async function getCollectionAccessibleByUser<T extends GetCollectionAccessibleByUserDefaultArgsType>(
+  ownerUserIdOrName: string,
   recordIdOrSlug: string,
   options?: GetCollectionAccessibleByUserOptionsType<T>
-): Promise<Prisma.CollectionGetPayload<T> | null> => {
-  const useUuid = isUuid(recordIdOrSlug),
-    defaultOptions: GetCollectionAccessibleByUserOptionsType<GetCollectionAccessibleByUserDefaultArgsType> = {
+): Promise<Prisma.CollectionGetPayload<T> | null> {
+  const defaultOptions: GetCollectionAccessibleByUserOptionsType<GetCollectionAccessibleByUserDefaultArgsType> = {
       accessTypes: ['owner', 'subscriber'],
       findFirstArgs: {
         where: {},
@@ -53,6 +57,13 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
     return null;
   }
 
+  if ( !ownerUserIdOrName || !recordIdOrSlug ) {
+    return null;
+  }
+
+  const isUserUuid = isUuid(ownerUserIdOrName),
+    isRecordUuid = isUuid(recordIdOrSlug);
+
   // Define the query conditions based on the accessType
   const whereConditions: Prisma.CollectionWhereInput[] = [];
 
@@ -60,17 +71,29 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
     /**
      * Case 1 - User is the owner
      */
-    whereConditions.push(
-      useUuid
-        ? {
-            id: recordIdOrSlug,
-            userId,
-          }
-        : {
-            slug: recordIdOrSlug,
-            userId,
-          }
-    );
+    const whereCondition: Prisma.CollectionWhereInput = {};
+
+    // Append the function condition
+    if ( isRecordUuid ) {
+      whereCondition.id = recordIdOrSlug;
+    }
+    else {
+      whereCondition.slug = recordIdOrSlug;
+    }
+
+    // Append the owner condition
+    if ( isUserUuid ) {
+      whereCondition.userId = ownerUserIdOrName;
+    }
+    else {
+      whereCondition.owner = {
+        profile: {
+          userName: ownerUserIdOrName,
+        },
+      };
+    }
+
+    whereConditions.push(whereCondition);
   }
 
   if (accessTypes.indexOf('subscriber') >= 0) {
@@ -81,18 +104,58 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
       AND: [
         {
           subscribers: {
-            some: {
-              userId: userId,
-            },
+            some: isUserUuid ? {
+              userId: ownerUserIdOrName,
+            } : {
+              user: {
+                profile: {
+                  userName: ownerUserIdOrName,
+                },
+              }
+            }
           },
         },
-        useUuid
+        isRecordUuid
           ? {
               id: recordIdOrSlug,
             }
           : {
               slug: recordIdOrSlug,
             },
+      ],
+    });
+  }
+
+  if (accessTypes.indexOf('marketplace') >= 0) {
+    /**
+     * Case 3 - Collection is in marketplace
+     */
+    whereConditions.push({
+      AND: [
+        {
+          functions: {
+            some: {
+              isPublished: true,
+              isPrivate: false,
+            },
+          }
+        },
+        isRecordUuid
+          ? {
+              id: recordIdOrSlug,
+            }
+          : {
+              slug: recordIdOrSlug,
+            },
+        isUserUuid ? {
+          userId: ownerUserIdOrName,
+        } : {
+          owner: {
+            profile: {
+              userName: ownerUserIdOrName,
+            },
+          }
+        }
       ],
     });
   }
@@ -112,4 +175,4 @@ export const getCollectionAccessibleByUser = async <T extends GetCollectionAcces
   })) as Prisma.CollectionGetPayload<T> | null;
 
   return collectionRecord;
-};
+}

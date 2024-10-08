@@ -5,7 +5,7 @@ import { cn } from '@repo/shared/lib/utils';
 import clamp from 'lodash/clamp';
 import inRange from 'lodash/inRange';
 import range from 'lodash/range';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export type BakaPaginationType = {
   page: number;
@@ -87,6 +87,7 @@ function generatePagesArray(currentPage: number, lastPage: number) {
 export const BakaPagination: React.FC<BakaPaginationProps> = (props) => {
   const { className, page, pageSize, totalRecords, nbPages, hasNext, hasPrevious } = props;
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const lastPage = Math.ceil(totalRecords / pageSize),
     currentPage = clamp(page, 1, lastPage),
@@ -99,7 +100,10 @@ export const BakaPagination: React.FC<BakaPaginationProps> = (props) => {
           <PaginationPrevious
             href={{
               pathname,
-              query: { page: hasPrevious ? currentPage - 1 : currentPage },
+              query: { 
+                ...Object.fromEntries(searchParams),
+                page: hasPrevious ? currentPage - 1 : currentPage 
+              },
             }}
             disabled={!hasPrevious}
           />
@@ -115,7 +119,10 @@ export const BakaPagination: React.FC<BakaPaginationProps> = (props) => {
                 <PaginationLink
                   href={{
                     pathname,
-                    query: { page: pageIdx },
+                    query: { 
+                      ...Object.fromEntries(searchParams),
+                      page: pageIdx 
+                    },
                   }}
                   isActive={isActive}
                   disabled={isActive}
@@ -130,7 +137,10 @@ export const BakaPagination: React.FC<BakaPaginationProps> = (props) => {
           <PaginationNext
             href={{
               pathname,
-              query: { page: hasNext ? currentPage + 1 : currentPage },
+              query: { 
+                ...Object.fromEntries(searchParams),
+                page: hasNext ? currentPage + 1 : currentPage 
+              },
             }}
             disabled={!hasNext}
           />

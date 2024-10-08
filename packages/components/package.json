@@ -4,21 +4,14 @@
   "private": true,
   "exports": {
     "./analytics/HotjarAnalytics": "./src/analytics/HotjarAnalytics.tsx",
-
     "./search/BakaPagination": "./src/search/BakaPagination.tsx",
     "./search/BakaSearch": "./src/search/BakaSearch.tsx",
-
     "./CodeEditorInput": "./src/CodeEditorInput.tsx",
-
     "./TagField": "./src/TagField.tsx",
-
     "./GoogleIntegrationButton": "./src/GoogleIntegrationButton.tsx",
-
     "./ValueToggler": "./src/ValueToggler.tsx",
-
     "./ai/AssistantForm": "./src/ai/AssistantForm.tsx",
     "./ai/ChatForm": "./src/ai/ChatForm.tsx",
-
     "./data/collections": "./src/data/collections/index.ts",
     "./data/collections/types": "./src/data/collections/types.ts",
     "./data/collections/community/CommunityCollectionViewDetails": "./src/data/collections/community/CommunityCollectionViewDetails.tsx",
@@ -29,16 +22,14 @@
     "./data/collections/mine/CollectionViewDetails": "./src/data/collections/mine/CollectionViewDetails.tsx",
     "./data/collections/mine/ToggleCollectionMenuButton": "./src/data/collections/mine/ToggleCollectionMenuButton.tsx",
     "./data/collections/mine/types": "./src/data/collections/mine/types.ts",
-
     "./data/envVars/EnvVarsForm": "./src/data/envVars/EnvVarsForm.tsx",
     "./data/envVars/EnvVarsSection": "./src/data/envVars/EnvVarsSection.tsx",
     "./data/envVars/EnvVarsTable": "./src/data/envVars/EnvVarsTable.tsx",
     "./data/envVars/UserVarsTable": "./src/data/envVars/UserVarsTable.tsx",
     "./data/envVars/types": "./src/data/envVars/types.ts",
-
     "./data/functions": "./src/data/functions/index.ts",
+    "./data/functions/types": "./src/data/functions/types.ts",
     "./data/functions/community/CommunityFunctionItem": "./src/data/functions/community/CommunityFunctionItem.tsx",
-    "./data/functions/community/CommunityFunctionList": "./src/data/functions/community/CommunityFunctionList.tsx",
     "./data/functions/community/CommunityFunctionReadOnlyView": "./src/data/functions/community/CommunityFunctionReadOnlyView.tsx",
     "./data/functions/community/types": "./src/data/functions/community/types.ts",
     "./data/functions/mine/CodeSandboxForm": "./src/data/functions/mine/CodeSandboxForm.tsx",
@@ -46,23 +37,17 @@
     "./data/functions/mine/FunctionArgumentInputSwitchField": "./src/data/functions/mine/FunctionArgumentInputSwitchField.tsx",
     "./data/functions/mine/FunctionForm": "./src/data/functions/mine/FunctionForm.tsx",
     "./data/functions/mine/FunctionItem": "./src/data/functions/mine/FunctionItem.tsx",
-    "./data/functions/mine/FunctionList": "./src/data/functions/mine/FunctionList.tsx",
     "./data/functions/mine/types": "./src/data/functions/mine/types.ts",
-
     "./navs/menu/AuthUserMenu": "./src/navs/menu/AuthUserMenu.tsx",
     "./navs/menu/BreadcrumbNav": "./src/navs/menu/BreadcrumbNav.tsx",
     "./navs/anchor": "./src/navs/anchor.tsx",
     "./navs/leftbar": "./src/navs/leftbar.tsx",
     "./navs/navbar": "./src/navs/navbar.tsx",
     "./navs/types": "./src/navs/types.ts",
-
     "./theme/theme-provider": "./src/theme/theme-provider.tsx",
     "./theme/theme-toggle": "./src/theme/theme-toggle.tsx",
-
     "./slideovers/FormSlideOver": "./src/slideovers/FormSlideOver.tsx",
-
     "./not-found/Interstellar404": "./src/not-found/Interstellar404.tsx",
-
     "./ui/alert-dialog": "./src/ui/alert-dialog.tsx",
     "./ui/alert": "./src/ui/alert.tsx",
     "./ui/avatar": "./src/ui/avatar.tsx",
@@ -73,12 +58,14 @@
     "./ui/card": "./src/ui/card.tsx",
     "./ui/checkbox": "./src/ui/checkbox.tsx",
     "./ui/collapsible": "./src/ui/collapsible.tsx",
+    "./ui/command": "./src/ui/command.tsx",
     "./ui/dialog": "./src/ui/dialog.tsx",
     "./ui/dropdown-menu": "./src/ui/dropdown-menu.tsx",
     "./ui/input-otp": "./src/ui/input-otp.tsx",
     "./ui/input": "./src/ui/input.tsx",
     "./ui/label": "./src/ui/label.tsx",
     "./ui/pagination": "./src/ui/pagination.tsx",
+    "./ui/popover": "./src/ui/popover.tsx",
     "./ui/scroll-area": "./src/ui/scroll-area.tsx",
     "./ui/select": "./src/ui/select.tsx",
     "./ui/sheet": "./src/ui/sheet.tsx",
@@ -129,6 +116,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-navigation-menu": "^1.2.1",
+    "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-scroll-area": "^1.2.0",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
@@ -139,6 +127,7 @@
     "ai": "^3.4.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
     "date-fns": "^4.1.0",
     "input-otp": "^1.2.4",
     "lodash": "^4.17.21",

@@ -6,7 +6,14 @@ import { FunctionSchema } from '../schemas/function';
 import { validateAction } from '../lib/action-helpers';
 import db from '@repo/db/client';
 import { actionAuthTryCatch } from '../utils/actionAuthTryCatch';
-import { upsertFunction as dataUpsertFunctions, deleteFunction as dataDeleteFunctions, cloneFunction as dataCloneFunction, toggleFunctionSubscription } from '../data/functions';
+import {
+  upsertFunction as dataUpsertFunctions,
+  deleteFunction as dataDeleteFunctions,
+  cloneFunction as dataCloneFunction,
+  subscribeToFunction as dataSubscribeToFunction,
+  unsubscribeToFunction as dataUnsubscribeToFunction,
+  toggleFunctionSubscription,
+} from '../data/functions';
 import { addFunctionToCollection, removeFunctionFromCollection } from '../data/collections';
 import { getUserRepoFunctionsEditUri } from '../lib/constants/repo';
 
@@ -62,6 +69,30 @@ export const cloneFunction = async (functionId: string) => {
           href: getUserRepoFunctionsEditUri(ownerUsername, clonedFunction.slug),
         }),
       },
+    };
+  });
+};
+
+export const subscribeToFunction = async (functionId: string) => {
+  return await actionAuthTryCatch(async (authSession) => {
+    const record = await dataSubscribeToFunction(functionId, authSession.user.id);
+
+    return {
+      status: 'ok',
+      message: record.isSubscribed ? `Function "${record.functionSlug}" has been subscribed!` : `Function "${record.functionSlug}" has been unsubscribed!`,
+      data: record,
+    };
+  });
+};
+
+export const unsubscribeToFunction = async (functionId: string) => {
+  return await actionAuthTryCatch(async (authSession) => {
+    const record = await dataUnsubscribeToFunction(functionId, authSession.user.id);
+
+    return {
+      status: 'ok',
+      message: record.isSubscribed ? `Function "${record.functionSlug}" has been subscribed!` : `Function "${record.functionSlug}" has been unsubscribed!`,
+      data: record,
     };
   });
 };

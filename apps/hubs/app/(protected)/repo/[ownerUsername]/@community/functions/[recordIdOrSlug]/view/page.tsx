@@ -2,7 +2,7 @@ import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { CommunityFunctionReadOnlyView } from '@repo/components/data/functions/community/CommunityFunctionReadOnlyView';
 import { notFound } from 'next/navigation';
-import { getFunctionAccessibleByCommunity } from '@repo/shared/data/functions/getFunctionAccessibleByCommunity';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 
 type Props = {
   params: { ownerUsername: string; recordIdOrSlug: string };
@@ -17,7 +17,8 @@ export default async function Page({ params }: Props) {
     return notFound();
   }
 
-  const functionRecord = await getFunctionAccessibleByCommunity(ownerUsername, recordIdOrSlug, {
+  const functionRecord = await getFunctionAccessibleByUser(ownerUsername, recordIdOrSlug, {
+    accessTypes: ['marketplace'],
     findFirstArgs: {
       include: {
         owner: {

@@ -1,12 +1,11 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { cn } from '@repo/shared/lib/utils';
 import { notFound } from 'next/navigation';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
-import { fetchPaginationData } from './fetchPaginationData';
-import { getCollectionsByUserId } from '@repo/shared/data/collections/getCollectionsByUserId';
-import FunctionsList from '@repo/components/data/functions/mine/FunctionList';
 import { Metadata, ResolvingMetadata } from 'next';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { FunctionSearchList } from '@repo/components/data/functions';
+import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { fetchPaginationData } from '@repo/shared/data/functions';
 
 type Props = {
   params: { ownerUsername: string };
@@ -28,17 +27,14 @@ export default async function Page({ searchParams, params }: Props) {
     return notFound();
   }
 
-  const [paginationData, collections] = await Promise.all([
-      fetchPaginationData(searchParams, authSession.user.id),
-
-      // Fetch all collections for the user
-      getCollectionsByUserId(authSession.user.id),
-    ]),
-    { records, ...paginationProps } = paginationData;
-
-  const functionListGridClasses = cn({
-    'grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6': true,
-  });
+  const paginationData = await fetchPaginationData(searchParams, {
+      where: {
+        ownerUserId: authSession.userId,
+      }
+    }),
+    { records, ...otherProps } = paginationData,
+    // For Baka Search, the rest is for Baka Pagination
+    { q, sortBy, ...paginationProps } = otherProps;
 
   return (
     <div className="block" data-testid="functions-list-page">
@@ -57,8 +53,19 @@ export default async function Page({ searchParams, params }: Props) {
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none"></div>
       </div>
       <div className="mt-4">
+        <BakaSearch
+          className="mb-4"
+          q={q}
+          sortBy={sortBy}
+          sortItems={[
+            { key: 'updatedAt_desc', title: 'Last Updated' },
+            { key: 'subscribers_desc', title: 'Most Subscribed' },
+            { key: 'slug_asc', title: 'Slug (A-Z)' },
+            { key: 'slug_desc', title: 'Slug (Z-A)' },
+          ]}
+        />
         <BakaPagination className="mb-4" {...paginationProps} />
-        <div className={functionListGridClasses}>{<FunctionsList ownerUsername={params.ownerUsername} functions={records} collections={collections} />}</div>
+        <FunctionSearchList authSession={authSession} functions={records} />
       </div>
     </div>
   );

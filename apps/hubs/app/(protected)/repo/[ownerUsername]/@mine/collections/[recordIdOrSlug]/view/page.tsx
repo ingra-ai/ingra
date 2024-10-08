@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
 import CollectionViewDetails from '@repo/components/data/collections/mine/CollectionViewDetails';
 import { FunctionItem } from '@repo/components/data/functions/mine/FunctionItem';
-import { getCollectionAccessibleByUser } from '@repo/shared/data/collections/getCollectionAccessibleByUser';
+import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
 import { Metadata, ResolvingMetadata } from 'next';
 import { APP_NAME } from '@repo/shared/lib/constants';
 

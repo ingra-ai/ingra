@@ -1,6 +1,7 @@
+'use server';
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
-import { isUuid } from '../../lib/utils';
+import { isUuid } from '@repo/shared/lib/utils';
 
 export type FunctionAccessType =
   // User is the owner of the function
@@ -10,32 +11,34 @@ export type FunctionAccessType =
   | 'subscriber'
 
   // Function is part of a collection that user is subscribed to
-  | 'subscribedCollection';
+  | 'subscribedCollection'
+
+  // Function is part of marketplace
+  | 'marketplace';
 
 type GetFunctionAccessibleByUserDefaultArgsType = Pick<Prisma.FunctionFindFirstArgs, 'include' | 'select'> & {
   where?: Prisma.FunctionFindFirstArgs['where'];
 };
 
 type GetFunctionAccessibleByUserOptionsType<T extends GetFunctionAccessibleByUserDefaultArgsType> = {
-  accessTypes?: FunctionAccessType[];
+  accessTypes: FunctionAccessType[];
   findFirstArgs?: T;
 };
 
 /**
  * Get the function record accessible by the user.
  * Whether the user is the owner, subscriber, or the function is part of a collection that the user is subscribed to.
- * @param {string} userId - The invoker user ID
- * @param {string} functionIdOrSlug - The function ID or slug
+ * @param {string} ownerUserIdOrName - The invoker user ID
+ * @param {string} recordIdOrSlug - The function ID or slug
  * @param {GetFunctionAccessibleByUserOptionsType<T>} options - Optional. Specifies the access types and findFirstArgs.
  * @returns {Promise<Prisma.FunctionGetPayload<T> | null>} - Returns the function record accessible by the user. If not found, returns null.
  */
-export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibleByUserDefaultArgsType>(
-  userId: string,
-  functionIdOrSlug: string,
+export async function getFunctionAccessibleByUser<T extends GetFunctionAccessibleByUserDefaultArgsType>(
+  ownerUserIdOrName: string,
+  recordIdOrSlug: string,
   options?: GetFunctionAccessibleByUserOptionsType<T>
-): Promise<Prisma.FunctionGetPayload<T> | null> => {
-  const useUuid = isUuid(functionIdOrSlug),
-    defaultOptions: GetFunctionAccessibleByUserOptionsType<GetFunctionAccessibleByUserDefaultArgsType> = {
+): Promise<Prisma.FunctionGetPayload<T> | null> {
+  const defaultOptions: GetFunctionAccessibleByUserOptionsType<GetFunctionAccessibleByUserDefaultArgsType> = {
       accessTypes: ['owner', 'subscriber', 'subscribedCollection'],
       findFirstArgs: {
         where: {},
@@ -52,6 +55,13 @@ export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibl
     return null;
   }
 
+  if ( !ownerUserIdOrName || !recordIdOrSlug ) {
+    return null;
+  }
+
+  const isUserUuid = isUuid(ownerUserIdOrName),
+    isRecordUuid = isUuid(recordIdOrSlug);
+
   // Define the query conditions based on the accessType
   const whereConditions: Prisma.FunctionWhereInput[] = [];
 
@@ -59,17 +69,29 @@ export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibl
     /**
      * Case 1 - User is the owner
      */
-    whereConditions.push(
-      useUuid
-        ? {
-            id: functionIdOrSlug,
-            ownerUserId: userId,
-          }
-        : {
-            slug: functionIdOrSlug,
-            ownerUserId: userId,
-          }
-    );
+    const whereCondition: Prisma.FunctionWhereInput = {};
+
+    // Append the function condition
+    if ( isRecordUuid ) {
+      whereCondition.id = recordIdOrSlug;
+    }
+    else {
+      whereCondition.slug = recordIdOrSlug;
+    }
+
+    // Append the owner condition
+    if ( isUserUuid ) {
+      whereCondition.ownerUserId = ownerUserIdOrName;
+    }
+    else {
+      whereCondition.owner = {
+        profile: {
+          userName: ownerUserIdOrName,
+        },
+      };
+    }
+
+    whereConditions.push(whereCondition);
   }
 
   if (accessTypes.indexOf('subscriber') >= 0) {
@@ -80,17 +102,23 @@ export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibl
       AND: [
         {
           subscribers: {
-            some: {
-              userId: userId,
-            },
+            some: isUserUuid ? {
+              userId: ownerUserIdOrName,
+            } : {
+              user: {
+                profile: {
+                  userName: ownerUserIdOrName,
+                },
+              }
+            }
           },
         },
-        useUuid
+        isRecordUuid
           ? {
-              id: functionIdOrSlug,
+              id: recordIdOrSlug,
             }
           : {
-              slug: functionIdOrSlug,
+              slug: recordIdOrSlug,
             },
         {
           isPublished: true,
@@ -110,24 +138,60 @@ export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibl
           collectors: {
             some: {
               subscribers: {
-                some: {
-                  userId: userId,
-                },
+                some: isUserUuid ? {
+                  userId: ownerUserIdOrName,
+                } : {
+                  user: {
+                    profile: {
+                      userName: ownerUserIdOrName,
+                    },
+                  }
+                }
               },
             },
           },
         },
-        useUuid
+        isRecordUuid
           ? {
-              id: functionIdOrSlug,
+              id: recordIdOrSlug,
             }
           : {
-              slug: functionIdOrSlug,
+              slug: recordIdOrSlug,
             },
         {
           isPublished: true,
           isPrivate: false,
         },
+      ],
+    });
+  }
+
+  if (accessTypes.indexOf('marketplace') >= 0) {
+    /**
+     * Case 4 - Function is in marketplace
+     */
+    whereConditions.push({
+      AND: [
+        {
+          isPublished: true,
+          isPrivate: false,
+        },
+        isRecordUuid
+          ? {
+              id: recordIdOrSlug,
+            }
+          : {
+              slug: recordIdOrSlug,
+            },
+        isUserUuid ? {
+          ownerUserId: ownerUserIdOrName,
+        } : {
+          owner: {
+            profile: {
+              userName: ownerUserIdOrName,
+            },
+          }
+        }
       ],
     });
   }
@@ -147,4 +211,4 @@ export const getFunctionAccessibleByUser = async <T extends GetFunctionAccessibl
   })) as Prisma.FunctionGetPayload<T> | null;
 
   return functionRecord;
-};
+}

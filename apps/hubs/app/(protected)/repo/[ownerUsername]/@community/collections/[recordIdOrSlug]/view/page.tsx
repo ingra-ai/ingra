@@ -5,7 +5,7 @@ import { CommunityFunctionItem } from '@repo/components/data/functions/community
 import CommunityCollectionViewDetails from '@repo/components/data/collections/community/CommunityCollectionViewDetails';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { getUserRepoFunctionsViewUri } from '@repo/shared/lib/constants/repo';
-import { getCollectionAccessibleByCommunity } from '@repo/shared/data/collections/getCollectionAccessibleByCommunity';
+import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
 import { APP_NAME } from '@repo/shared/lib/constants';
 
 type Props = {
@@ -43,16 +43,9 @@ export default async function Page({ params }: Props) {
   const callerUserId = authSession?.user.id,
     ownerUserId = ownerProfile.userId;
 
-  const collectionRecord = await getCollectionAccessibleByCommunity(ownerUsername, recordIdOrSlug, {
+  const collectionRecord = await getCollectionAccessibleByUser(ownerUserId, recordIdOrSlug, {
+    accessTypes: ['marketplace'],
     findFirstArgs: {
-      where: {
-        functions: {
-          some: {
-            isPublished: true,
-            isPrivate: false,
-          },
-        },
-      },
       select: {
         id: true,
         name: true,
