@@ -13,11 +13,12 @@ import { createCollection, updateCollection } from '@repo/shared/actions/collect
 import { cn } from '@repo/shared/lib/utils';
 import { Input } from '../../../ui/input';
 import { Textarea } from '../../../ui/textarea';
-import { MineCollectionListGetPayload } from './types';
 import { useRouter } from 'next/navigation';
+import { getUserRepoCollectionsViewUri } from '@repo/shared/lib/constants/repo';
+import { CollectionDetailViewPayload } from '../types';
 
 type CollectionFormProps = {
-  collectionRecord?: Pick<MineCollectionListGetPayload, 'id' | 'name' | 'slug' | 'description'>;
+  collectionRecord?: CollectionDetailViewPayload;
   onCancel: () => void;
 };
 
@@ -26,6 +27,7 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
   const { toast } = useToast();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+  const ownerUsername = collectionRecord?.owner?.profile?.userName || '';
 
   const methods = useForm<z.infer<typeof CollectionSchema>>({
       reValidateMode: 'onSubmit',
@@ -64,8 +66,15 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
 
               startTransition(() => {
                 onCancel();
-                onUpdated?.(result.data);
-                router.refresh();
+                
+                // Go to the updated collection view
+                if ( result?.data?.slug && ownerUsername ) {
+                  const redirectUrl = getUserRepoCollectionsViewUri(ownerUsername, result?.data?.slug);
+                  router.replace(redirectUrl);
+                }
+                else {
+                  router.refresh();
+                }
               });
             }
           })
@@ -96,8 +105,15 @@ export const CollectionForm: FC<CollectionFormProps> = (props) => {
 
               startTransition(() => {
                 onCancel();
-                onUpdated?.(result.data);
-                router.refresh();
+
+                // Go to the updated collection view
+                if ( result?.data?.slug && ownerUsername ) {
+                  const redirectUrl = getUserRepoCollectionsViewUri(ownerUsername, result?.data?.slug);
+                  router.replace(redirectUrl);
+                }
+                else {
+                  router.refresh();
+                }
               });
             }
           })
