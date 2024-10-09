@@ -35,5 +35,3 @@ export const CreateNewFunctionButton: React.FC<CreateNewFunctionButtonProps> = (
     </div>
   );
 };
-
-export default CreateNewFunctionButton;
