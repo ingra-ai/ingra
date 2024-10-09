@@ -2,11 +2,27 @@ import { z } from 'zod';
 import db from '@repo/db/client';
 import { FunctionSchema } from '../../schemas/function';
 import { Logger } from '../../lib/logger';
+import { addFunctionToCollection, getCollectionAccessibleByUser } from '../collections';
 
-export async function upsertFunction(values: z.infer<typeof FunctionSchema>, userId: string) {
+export async function upsertFunction(values: z.infer<typeof FunctionSchema>, userId: string, collectionRecordIdOrSlug?: string) {
   const { id: recordId, slug, code, isPrivate, isPublished, httpVerb, description, arguments: functionArguments, tags: functionTags } = values;
   const isEditMode = !!recordId;
+
+  let targetCollection: Awaited<ReturnType<typeof getCollectionAccessibleByUser>> = null;
+
+  // If collectionRecordIdOrSlug is provided, check if the collection exists
+  if (collectionRecordIdOrSlug) {
+    targetCollection = await getCollectionAccessibleByUser(userId, collectionRecordIdOrSlug, {
+      accessTypes: ['owner'],
+    });
+
+    if (!targetCollection) {
+      throw new Error('Invalid collection provided.');
+    }
+  }
+
   const result = await db.$transaction(async (prisma) => {
+
     /**
      * If recordId presents, it's an edit mode.
      */
@@ -55,11 +71,11 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
       });
 
       // Insert new arguments and tags
-      const insertArgAndTagPromises = [];
+      const postUpdatePromises = [];
 
       // Insert new arguments
       if (functionArguments) {
-        insertArgAndTagPromises.push(
+        postUpdatePromises.push(
           prisma.functionArgument.createMany({
             data: functionArguments.map((arg) => ({
               ...arg,
@@ -71,7 +87,7 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
 
       // Insert new tags
       if (functionTags) {
-        insertArgAndTagPromises.push(
+        postUpdatePromises.push(
           prisma.functionTag.createMany({
             data: functionTags.map((tag) => ({
               ...tag,
@@ -81,7 +97,26 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
         );
       }
 
-      await Promise.all(insertArgAndTagPromises);
+      // Insert to collection
+      if (targetCollection?.id) {
+        postUpdatePromises.push(
+          prisma.collection.update({
+            where: {
+              id: targetCollection.id,
+              userId,
+            },
+            data: {
+              functions: {
+                connect: {
+                  id: updatedFunction.id,
+                },
+              },
+            },
+          })
+        );
+      }
+
+      await Promise.all(postUpdatePromises);
       return updatedFunction;
     } else {
       /**
@@ -113,6 +148,23 @@ export async function upsertFunction(values: z.infer<typeof FunctionSchema>, use
           ownerUserId: userId,
         },
       });
+
+      // Insert to collection
+      if (targetCollection?.id) {
+        await prisma.collection.update({
+          where: {
+            id: targetCollection.id,
+            userId,
+          },
+          data: {
+            functions: {
+              connect: {
+                id: newFunction.id,
+              },
+            },
+          },
+        });
+      }
 
       return newFunction;
     }
