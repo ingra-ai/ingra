@@ -4,7 +4,6 @@ import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@repo/components/ui/tabs';
 import { APP_NAME } from '@repo/shared/lib/constants';
-import { getCollectionsByUserId } from '@repo/shared/data/collections';
 import { FunctionForm } from '@repo/components/data/functions/mine/FunctionForm';
 import { UserVarsTable } from '@repo/components/data/envVars/UserVarsTable';
 import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
@@ -31,29 +30,25 @@ export default async function Page({ params }: Props) {
     return notFound();
   }
 
-  const [functionRecord, collections] = await Promise.all([
-    getFunctionAccessibleByUser(authSession.user.id, recordIdOrSlug, {
-      accessTypes: ['owner'],
-      findFirstArgs: {
-        include: {
-          owner: {
-            select: {
-              profile: {
-                select: {
-                  userName: true,
-                },
+  const functionRecord = await getFunctionAccessibleByUser(authSession.user.id, recordIdOrSlug, {
+    accessTypes: ['owner'],
+    findFirstArgs: {
+      include: {
+        owner: {
+          select: {
+            id: true,
+            profile: {
+              select: {
+                userName: true,
               },
             },
           },
-          tags: true,
-          arguments: true,
         },
+        tags: true,
+        arguments: true,
       },
-    }),
-
-    // Fetch all collections for the user
-    getCollectionsByUserId(authSession.user.id),
-  ]);
+    },
+  });
 
   if (!functionRecord) {
     return notFound();
@@ -80,7 +75,7 @@ export default async function Page({ params }: Props) {
             <TabsTrigger value="vars-tab">Variables</TabsTrigger>
           </TabsList>
           <TabsContent value="function-form-tab" className="block space-y-6 mt-4">
-            <FunctionForm ownerUsername={ownerUsername} functionRecord={functionRecord} envVars={optionalEnvVars} userVars={userVarsRecord} collections={collections} />
+            <FunctionForm authSession={authSession} ownerUsername={ownerUsername} functionRecord={functionRecord} />
           </TabsContent>
           <TabsContent value="vars-tab" className="block space-y-6 mt-4">
             <EnvVarsSection envVars={optionalEnvVars || []} />

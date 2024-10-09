@@ -17,27 +17,27 @@ import FunctionArgumentFormField from './FunctionArgumentFormField';
 import CodeEditorInput from '../../../CodeEditorInput';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { CodeSandboxForm } from './CodeSandboxForm';
 import { TagField } from '../../../TagField';
 import { Input } from '../../../ui/input';
 import { Textarea } from '../../../ui/textarea';
 import { ToastAction } from '../../../ui/toast';
-import type { EnvVarsOptionalPayload } from '../../../data/envVars/types';
 import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
 import { FormSlideOver } from '../../../slideovers/FormSlideOver';
 import { getUserRepoFunctionsUri, getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
-import ToggleCollectionMenuButton from '../../../data/collections/mine/ToggleCollectionMenuButton';
-import type { MineCollectionMenuListGetPayload } from '../../../data/collections/mine/types';
+import AddFunctionToCollectionButton from '../AddFunctionToCollectionButton';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 
 type FunctionFormProps = {
+  authSession?: AuthSessionResponse | null;
   ownerUsername: string;
-  userVars: Record<string, any>;
-  envVars: EnvVarsOptionalPayload[];
   functionRecord?: Prisma.FunctionGetPayload<{
     include: {
       owner: {
         select: {
+          id: true;
           profile: {
             select: {
               userName: true;
@@ -49,16 +49,28 @@ type FunctionFormProps = {
       arguments: true;
     };
   }>;
-  collections?: MineCollectionMenuListGetPayload[];
 };
 
 export const FunctionForm: FC<FunctionFormProps> = (props) => {
-  const { ownerUsername = '', userVars = {}, envVars = [], functionRecord, collections = [] } = props;
+  const { authSession, ownerUsername = '', functionRecord } = props;
   const isEditMode = !!functionRecord && !!functionRecord.id;
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [isSandboxOpen, setSandboxOpen] = useState(false);
+
+  if ( !authSession || !authSession?.user?.profile?.userName ) {
+    return null;
+  }
+
+  const envVars = authSession.user.envVars.map((envVar) => ({
+    id: envVar.id,
+    ownerUserId: envVar.ownerUserId,
+    key: envVar.key,
+    value: envVar.value,
+  }));
+  const userVars = generateUserVars(authSession);
   const allUserAndEnvKeys = Object.keys(userVars).concat(envVars.map((envVar) => envVar.key));
   const methods = useForm<z.infer<typeof FunctionSchema>>({
       reValidateMode: 'onSubmit',
@@ -129,10 +141,17 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
     async (values: z.infer<typeof FunctionSchema>) => {
       setIsSaving(true);
 
+      // get collectionSlug from searchParams
+      const collectionSlug = searchParams.get('collectionSlug') || '';
+
       // save to db and return function
-      const savedFunction = await upsertFunction(values)
-        .then((resp) => {
-          if (resp?.data?.id) {
+      const savedFunction = await upsertFunction(values, collectionSlug)
+        .then((result) => {
+          if (result.status !== 'ok') {
+            throw new Error(result.message);
+          }
+
+          if (result?.data?.id) {
             if (isEditMode) {
               // If user is editing, stay on the same page but gives option to go back to functions list.
               toast({
@@ -154,8 +173,8 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
 
           startTransition(() => {
             // Go to the created functions
-            if ( resp?.data?.slug ) {
-              const redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, resp?.data?.slug);
+            if ( result?.data?.slug ) {
+              const redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, result?.data?.slug);
               router.push(redirectUrl);
             }
             else {
@@ -163,7 +182,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
             }
           });
 
-          return resp;
+          return result;
         })
         .catch((error: Error) => {
           toast({
@@ -231,47 +250,22 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
     return clonedFunction;
   }, [isEditMode, ownerUsername]);
 
-  const onFunctionCollectionToggleChanged = (collectionId: string, functionId: string, checked: boolean) => {
-    const action = checked ? 'add' : 'remove';
-
-    collectionToggleFunction(collectionId, functionId, action)
-      .then((result) => {
-        if (result.status !== 'ok') {
-          throw new Error(result.message);
-        }
-
-        toast({
-          title: 'Success!',
-          description: result.message,
-        });
-
-        router.refresh();
-      })
-      .catch((error) => {
-        toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: error?.message || 'Failed to handling collection!',
-        });
-      });
-  };
-
   return (
     <div className="block min-h-full mt-4" data-testid="function-form">
       <FormProvider {...methods}>
         <form className="grid grid-cols-1 lg:grid-cols-12 gap-8" method="POST" onSubmit={handleSubmit(onSave)}>
           <div className="block space-y-6 col-span-1 order-2 lg:order-1 md:col-span-6 xl:col-span-7 2xl:col-span-8">
             <div className="block">
-              <div className="flex mb-3 leading-6 justify-between">
+              <div className="flex mb-3 leading-6 items-center justify-between">
                 <label className="block text-sm font-medium">Code &#40;Node.js&#41;</label>
                 {isEditMode && (
                   <div className="relative flex items-center">
-                    {collections.length > 0 && functionRecord?.id && (
-                      <ToggleCollectionMenuButton functionId={functionRecord.id || ''} collections={collections} onCheckedChange={onFunctionCollectionToggleChanged} className="p-2 bg-card mx-4" iconClassName="h-5 w-5" />
+                    <Button type="button" variant='outline' onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex items-center">
+                      <CopyPlusIcon className="h-4 w-4" />
+                    </Button>
+                    {functionRecord?.id && (
+                      <AddFunctionToCollectionButton functionRecord={functionRecord} userId={authSession?.userId} className="p-2 bg-card" />
                     )}
-                    <button type="button" onClick={onClone} title="Clone this function" className="hover:text-teal-500 flex flex-col">
-                      <CopyPlusIcon className="h-5 w-5 ml-2" />
-                    </button>
                   </div>
                 )}
               </div>
