@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { CollectionForm } from '@repo/components/data/collections/mine/CollectionForm';
 import { FormSlideOver } from '@repo/components/slideovers/FormSlideOver';
