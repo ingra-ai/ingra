@@ -40,7 +40,7 @@
     "./theme/theme-provider": "./src/theme/theme-provider.tsx",
     "./theme/theme-toggle": "./src/theme/theme-toggle.tsx",
     "./slideovers/FormSlideOver": "./src/slideovers/FormSlideOver.tsx",
-    "./not-found/Interstellar404": "./src/not-found/Interstellar404.tsx",
+    "./not-found/Simple404": "./src/not-found/Simple404.tsx",
     "./ui/alert-dialog": "./src/ui/alert-dialog.tsx",
     "./ui/alert": "./src/ui/alert.tsx",
     "./ui/avatar": "./src/ui/avatar.tsx",

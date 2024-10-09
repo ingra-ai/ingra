@@ -34,7 +34,7 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
     label: 'Unknown',
     alert: unableToRenew ? (
       <Alert variant="warning" className="text-xs">
-        <RocketIcon className="h-4 w-4 text-gray-300 fill-gray-300 fill-border" />
+        <RocketIcon className="h-4 w-4 dark:text-gray-300 text-gray-700 fill-gray-300 dark:fill-gray-700 fill-border" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           Auto-refresh feature has been disabled for this OAuth. To re-connect your account, you need to&nbsp;
@@ -160,16 +160,16 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                 <div className="mb-2">{tokenDetail.alert}</div>
               )
             }
-            <div className="col-span-1 divide-y divide-gray-600 rounded-lg border border-gray-600 bg-secondary text-secondary-foreground">
+            <div className="col-span-1 divide-y rounded-lg border dark:border-gray-600 dark:divide-gray-600 border-gray-400 divide-gray-400 bg-secondary text-secondary-foreground dark:text-secondary-foreground">
               <div className="flex w-full items-center justify-between space-x-6 p-6">
                 <div className="flex-1 truncate">
                   <div className="flex items-center space-x-3">
-                    <h3 className="truncate text-sm font-medium text-gray-300">{tokenDetail.label}</h3>
+                    <h3 className="truncate text-sm font-medium dark:text-gray-300 text-gray-700">{tokenDetail.label}</h3>
                     <span className={cn('inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset', stateClasses)}>{tokenDetail.state}</span>
                     {isTokenDefault && <Badge>Default</Badge>}
                   </div>
                   <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
-                  <p className="mt-2 truncate text-xs text-gray-400">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
+                  <p className="mt-2 truncate text-xs dark:text-gray-400 text-gray-600">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
                   { tokenDetail.autoRenew && <div className="mt-2">{tokenDetail.autoRenew}</div> }
                 </div>
                 {tokenDetail.icon}
