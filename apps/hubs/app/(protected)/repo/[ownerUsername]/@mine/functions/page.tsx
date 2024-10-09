@@ -6,7 +6,7 @@ import { APP_NAME } from '@repo/shared/lib/constants';
 import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
-import CreateNewFunctionButton from '@repo/components/src/data/functions/CreateNewFunctionButton';
+import { CreateNewFunctionButton } from '@repo/components/src/data/functions/CreateNewFunctionButton';
 
 type Props = {
   params: { ownerUsername: string };
