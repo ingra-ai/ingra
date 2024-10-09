@@ -392,4 +392,4 @@ export async function cloneFunction(functionId: string, userId: string) {
 }
 
 export * from './getFunctionAccessibleByUser';
-export * from './fetchPaginationData';
+export * from './fetchFunctionPaginationData';

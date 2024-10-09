@@ -7,7 +7,6 @@ export * from './activeSession';
 export * from './oauthToken';
 export * from './auth';
 export * from './auditLog';
-export * from './collections/getCollectionsByUserId';
 export * from './collections';
 export * from './apiKey';
 export * from './auth/session/types';

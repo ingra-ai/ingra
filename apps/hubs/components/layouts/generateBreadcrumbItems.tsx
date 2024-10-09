@@ -117,19 +117,7 @@ export const generateBreadcrumbItems = (pathname: string, authSession?: AuthSess
           addSeparator();
 
           // Dropdown for Collections and Functions within a repo
-          if (repoSection === 'collections') {
-            items.push({
-              type: 'dropdown',
-              title: `${userName}'s ` + capitalizeFirstLetter(repoSection),
-              items: [
-                {
-                  href: `/repo/${userName}/functions`,
-                  title: functionNavTitle
-                }
-              ]
-            });
-          }
-          else if (repoSection === 'functions') {
+          if (repoSection === 'collections' || repoSection === 'functions') {
             items.push({
               type: 'dropdown',
               title: `${userName}'s ` + capitalizeFirstLetter(repoSection),
@@ -137,6 +125,10 @@ export const generateBreadcrumbItems = (pathname: string, authSession?: AuthSess
                 {
                   href: `/repo/${userName}/collections`,
                   title: collectionNavTitle
+                },
+                {
+                  href: `/repo/${userName}/functions`,
+                  title: functionNavTitle
                 }
               ]
             });

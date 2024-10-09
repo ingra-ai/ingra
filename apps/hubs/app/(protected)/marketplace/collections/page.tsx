@@ -3,12 +3,12 @@ import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { cn } from '@repo/shared/lib/utils';
 import { CollectionSearchList } from '@repo/components/data/collections';
-import { fetchPaginationData } from '@repo/shared/data/collections';
+import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();
 
-  const paginationData = await fetchPaginationData(searchParams, {
+  const paginationData = await fetchCollectionPaginationData(searchParams, {
       invokerUserId: authSession?.userId || '',
       where: {
         NOT: {
