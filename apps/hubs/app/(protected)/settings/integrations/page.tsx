@@ -31,8 +31,8 @@ export default async function Page() {
     <div className="container mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 py-16 w-full">
         <div className="md:col-span-1 text-right">
-          <h2 className="text-base font-semibold leading-7 text-white">Integrations</h2>
-          <p className="text-sm mt-2 leading-6 text-gray-400">
+          <h2 className="text-base font-semibold leading-7 dark:text-gray-100 text-gray-900">Integrations</h2>
+          <p className="text-sm mt-2 leading-6 dark:text-gray-400 text-gray-600">
             Connect your account with trusted third-party applications such as Google to enhance your experience. Integration allows seamless access to additional features and services while ensuring your data is securely managed and
             protected.
           </p>
