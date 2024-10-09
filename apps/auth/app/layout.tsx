@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const bodyClasses = cn('dark', fontSans.className);
+  const bodyClasses = cn(fontSans.className);
 
   return (
     <html lang="en">

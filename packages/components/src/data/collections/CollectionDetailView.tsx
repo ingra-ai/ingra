@@ -112,11 +112,21 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div>
-            <h3 className="text-lg font-semibold mb-2"></h3>
+            <h3 className="text-lg font-semibold mb-2">Owner</h3>
             <div className="flex items-center space-x-4">
               <Avatar>
                 <AvatarFallback>{ownerUsername.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
+              <div>
+                <p className="font-medium">{ownerUsername}</p>
+                {
+                  isOwner ? (
+                    <p className="text-sm text-primary">You</p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Contributor</p>
+                  )
+                }
+              </div>
             </div>
           </div>
           <div>
