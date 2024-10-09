@@ -27,7 +27,7 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 lg:h-svh" data-testid="login-page">
-      <div className="col-span-1 lg:col-span-6 lg:bg-gray-900">
+      <div className="col-span-1 lg:col-span-6 dark:lg:bg-gray-900 lg:bg-gray-100">
         <div className={'flex flex-col items-center justify-center lg:min-h-screen space-y-8 p-8 xl:p-12'}>
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <Image className="mx-auto h-12 w-12 xl:w-20 xl:h-20" src="/static/brand/ingra-logo.svg" alt={APP_NAME} width={96} height={96} />

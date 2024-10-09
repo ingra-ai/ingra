@@ -11,6 +11,7 @@ import { useToast } from '@repo/components/ui/use-toast';
 import { Button } from '@repo/components/ui/button';
 import { RefreshCcw } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@repo/components/ui/input-otp';
+import { Input } from '@repo/components/ui/input';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { censorEmail, cn } from '@repo/shared/lib/utils';
 
@@ -90,11 +91,11 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
         <h2 className="text-center text-sm font-bold leading-9 tracking-tight">Signing You In</h2>
         <div className="flex space-x-2 justify-center items-center my-10">
           <span className="sr-only">Loading...</span>
-          <div className="h-4 w-4 bg-slate-200 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-          <div className="h-4 w-4 bg-slate-200 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-          <div className="h-4 w-4 bg-slate-200 rounded-full animate-bounce"></div>
+          <div className="h-4 w-4 dark:bg-slate-200 bg-slate-800 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+          <div className="h-4 w-4 dark:bg-slate-200 bg-slate-800 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+          <div className="h-4 w-4 dark:bg-slate-200 bg-slate-800 rounded-full animate-bounce"></div>
         </div>
-        <p className="my-5 text-center text-sm text-white/70 max-w leading-6">
+        <p className="my-5 text-center text-sm dark:text-gray-200 text-gray-800 max-w leading-6">
           Please hold on a moment. We&lsquo;re currently working on signing you into your account. This should only take a few seconds. If it&lsquo;s taking longer than expected, please{' '}
           <Button variant={'link'} className="p-0" onClick={() => setFormView('email')}>
             try signing in again
@@ -109,11 +110,11 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
   return (
     <div className={classes} data-testid="magic-login-form">
       {formView === 'email' ? (
-        <p className="mt-2 text-center text-sm text-white/70 max-w">To get started, we will need to send you a magic link and one-time password to your email address.</p>
+        <p className="mt-2 text-center text-sm dark:text-gray-200 text-gray-800 max-w">To get started, we will need to send you a magic link and one-time password to your email address.</p>
       ) : (
         <>
           <h2 className="text-center text-sm font-bold leading-9 tracking-tight">Check your email for the one-time password</h2>
-          <p className="mt-2 text-center text-sm text-white/70 max-w">
+          <p className="mt-2 text-center text-sm dark:text-gray-200 text-gray-800 max-w">
             We’ve sent a 6-character code <strong>{censoredEmail}</strong>. The code expires shortly, so please enter it soon.
           </p>
         </>
@@ -124,7 +125,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
             <label htmlFor="email" className="block text-sm font-medium leading-6 mb-3">
               Email address
             </label>
-            <input
+            <Input
               id="email"
               {...register('email')}
               onChange={onEmailChange}
@@ -133,7 +134,7 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               autoComplete=""
               required
               autoFocus
-              className="block w-full rounded-md border-0 bg-white/5 py-2 px-4 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-10"
+              className="block w-full rounded-md border-0 py-2 px-4 shadow-sm sm:text-sm sm:leading-10"
             />
             {formState.errors.email && <p className="text-sm font-medium text-destructive mt-3 text-left">{formState.errors.email.message}</p>}
           </div>
@@ -149,12 +150,12 @@ export const MagicLoginForm: FC<MagicLoginFormProps> = (props) => {
               render={({ slots }) => (
                 <InputOTPGroup className="mx-auto">
                   {slots.map((slot, index) => (
-                    <InputOTPSlot key={index} className="rounded-md border text-xl mx-1 h-10 w-10 xl:h-15 xl:w-15 xl:mx-2 bg-gray-950" {...slot} />
+                    <InputOTPSlot key={index} className="rounded-md border text-xl mx-1 h-10 w-10 xl:h-15 xl:w-15 xl:mx-2" {...slot} />
                   ))}{' '}
                 </InputOTPGroup>
               )}
             />
-            {formState.errors.otpCode && <p className="text-sm font-medium text-destructive mt-3 text-left">{formState.errors.otpCode.message}</p>}
+            {formState.errors.otpCode && <p className="text-sm font-medium text-destructive mt-3 text-center">{formState.errors.otpCode.message}</p>}
           </div>
         )}
         <div className="block">
