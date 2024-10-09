@@ -4,7 +4,7 @@ import { FunctionCard } from './FunctionCard';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@repo/components/ui/use-toast';
 import { ToastAction } from '@repo/components/ui/toast';
-import { collectionToggleFunction, deleteFunction, cloneFunction, subscribeToFunction, unsubscribeToFunction } from '@repo/shared/actions/functions';
+import { collectionToggleFunction, deleteFunction, cloneFunction, subscribeToFunction, unsubscribeToFunction, togglePublishFunction } from '@repo/shared/actions/functions';
 import { ListChecksIcon } from 'lucide-react';
 import type { FunctionCardPayload } from './types';
 import { getUserRepoFunctionsEditUri, getUserRepoFunctionsViewUri } from '@repo/shared/lib/constants/repo';
@@ -169,6 +169,38 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
       });
   };
 
+  const handleTogglePublish = (functionRecord: FunctionCardPayload) => {
+    // Prompt user
+    const isPublished = functionRecord.isPublished;
+    const confirmed = confirm(`Are you sure to ${isPublished ? 'unpublish' : 'publish'} this function?`);
+
+    if (confirmed) {
+      // Perform action
+      return togglePublishFunction(functionRecord.id)
+        .then((result) => {
+          if (result.status !== 'ok') {
+            throw new Error(result.message);
+          }
+
+          toast({
+            title: 'Success!',
+            description: `Function has been ${isPublished ? 'unpublished' : 'published'} successfully.`,
+          });
+
+          startTransition(router.refresh);
+        })
+        .catch((error: Error) => {
+          toast({
+            variant: 'destructive',
+            title: 'Uh oh! Something went wrong.',
+            description: error?.message || `Failed to ${isPublished ? 'unpublish' : 'publish'} function!`,
+          });
+        });
+    }
+
+    return Promise.reject();
+  }
+
   const classes = cn('relative', divProps.className),
     gridClasses = cn('grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4');
 
@@ -186,7 +218,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
             // If user is the owner of this function, allow deletion
             if (isOwner) {
               refinedCardProps.handleDelete = handleDelete;
-              // refinedCardProps.handleEdit = handleEdit;
+              refinedCardProps.handleTogglePublish = handleTogglePublish;
               refinedCardProps.handleClone = handleClone;
               refinedCardProps.handleCollectionToggle = handleCollectionToggle;
             } else {
