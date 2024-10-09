@@ -4,7 +4,7 @@ import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
 import { Metadata, ResolvingMetadata } from 'next';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { FunctionSearchList } from '@repo/components/data/functions';
-import { fetchPaginationData } from '@repo/shared/data/functions';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { CollectionDetailView } from '@repo/components/data/collections';
@@ -57,7 +57,7 @@ export default async function Page({ searchParams, params }: Props) {
     return notFound();
   }
 
-  const paginationData = await fetchPaginationData(searchParams, {
+  const paginationData = await fetchFunctionPaginationData(searchParams, {
       invokerUserId: authSession?.userId || '',
       where: {
         ownerUserId: authSession?.userId || '',

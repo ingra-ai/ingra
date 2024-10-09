@@ -3,7 +3,7 @@ import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 
-type FetchCollectionPaginationDataOptions = {
+type FetchFunctionPaginationDataOptions = {
   /**
    * The invoker user ID
    * if this value is provided, the function will return the subscription status of the user for each function
@@ -13,24 +13,24 @@ type FetchCollectionPaginationDataOptions = {
   /**
    * The where query to filter the functions
    */
-  where?: Prisma.CollectionWhereInput;
+  where?: Prisma.FunctionWhereInput;
 }
 
-export async function fetchPaginationData(searchParams: Record<string, string | string[] | undefined> = {}, options: FetchCollectionPaginationDataOptions = {}) {
+export async function fetchFunctionPaginationData(searchParams: Record<string, string | string[] | undefined> = {}, options: FetchFunctionPaginationDataOptions = {}) {
   const { 
     invokerUserId = '',
     where: argsWhere = {},
   } = options;
 
   // Define available sort keys and orders
-  const availableSortKeys = ['name', 'updatedAt', 'subscribers'],
+  const availableSortKeys = ['slug', 'updatedAt', 'subscribers'],
     availableSortOrders = ['asc', 'desc'];
 
   // Parse the query parameteres
-  const q = ( Array.isArray(searchParams?.q) ? searchParams.q[0] : '' ) || '';
-  const page = ( Array.isArray(searchParams?.page) ? searchParams.page[0] : '1' ) || '1';
-  const pageSize = ( Array.isArray(searchParams?.pageSize) ? searchParams.pageSize[0] : '20' ) || '20';
-  let sortBy = ( Array.isArray(searchParams?.sortBy) ? searchParams.sortBy[0] : 'updatedAt_desc' ) || 'updatedAt_desc';
+  const q = ( Array.isArray(searchParams?.q) ? searchParams.q[0] : searchParams.q ) || '';
+  const page = ( Array.isArray(searchParams?.page) ? searchParams.page[0] : searchParams.page ) || '1';
+  const pageSize = ( Array.isArray(searchParams?.pageSize) ? searchParams.pageSize[0] : searchParams.pageSize ) || '20';
+  let sortBy = ( Array.isArray(searchParams?.sortBy) ? searchParams.sortBy[0] : searchParams.sortBy ) || 'updatedAt_desc';
 
   // Validate and sanitize page and pageSize
   const pageInt = Number.isInteger(Number(page)) && Number(page) > 0 ? parseInt(page, 10) : 1;
@@ -49,7 +49,7 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
   }
 
   // Define whereQuery based on the query parameteres 'q' and argument 'ownerUserId'
-  const whereQuery: Prisma.CollectionWhereInput = {
+  const whereQuery: Prisma.FunctionWhereInput = {
     ...argsWhere,
   };
 
@@ -58,7 +58,7 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
     whereQuery.OR = [
       ...(whereQuery?.OR || []),
       {
-        name: {
+        slug: {
           contains: q,
           mode: 'insensitive',
         },
@@ -75,25 +75,11 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
           mode: 'insensitive',
         },
       },
-      {
-        functions: {
-          some: {
-            tags: {
-              some: {
-                name: {
-                  contains: q,
-                  mode: 'insensitive',
-                },
-              },
-            },
-          },
-        },
-      },
     ];
   }
 
   // Define orderBy based on the sortBy query parameter
-  const orderByQuery: Prisma.CollectionOrderByWithRelationInput = {};
+  const orderByQuery: Prisma.FunctionOrderByWithRelationInput = {};
 
   if (sortKey === 'subscribers') {
     Object.assign(orderByQuery, {
@@ -107,77 +93,53 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
     });
   }
 
-  const [totalCount, allCollections] = await Promise.all([
-    // Fetch the total count of collections
-    db.collection.count({
+  const [totalCount, allFunctions] = await Promise.all([
+    // Fetch the total count of functions
+    db.function.count({
       where: whereQuery,
     }),
 
-    // Fetch paginated collections
-    db.collection.findMany({
+    // Fetch paginated functions
+    db.function.findMany({
       where: whereQuery,
       orderBy: orderByQuery,
       select: {
         id: true,
-        name: true,
         slug: true,
+        code: false,
         description: true,
+        httpVerb: true,
+        isPrivate: true,
+        isPublished: true,
+        ownerUserId: true,
+        createdAt: false,
+        updatedAt: true,
         owner: {
           select: {
+            id: true,
             profile: {
               select: {
-                id: true,
                 userName: true,
               },
             },
           },
         },
-        functions: {
+        tags: {
           select: {
             id: true,
-            slug: true,
-            code: false,
-            description: true,
-            httpVerb: true,
-            isPrivate: true,
-            isPublished: true,
-            ownerUserId: true,
-            createdAt: false,
-            updatedAt: true,
-            tags: {
-              select: {
-                id: true,
-                name: true,
-                functionId: false,
-                function: false,
-              },
-            },
-            arguments: {
-              select: {
-                id: true,
-                name: true,
-                description: false,
-                type: true,
-                defaultValue: false,
-                isRequired: false,
-              },
-            },
-            owner: {
-              select: {
-                id: true,
-                profile: {
-                  select: {
-                    userName: true,
-                  },
-                },
-              },
-            },
+            name: true,
+            functionId: false,
+            function: false,
           },
         },
-        _count: {
+        arguments: {
           select: {
-            subscribers: true,
-            functions: true,
+            id: true,
+            name: true,
+            description: false,
+            type: true,
+            defaultValue: false,
+            isRequired: false,
           },
         },
         subscribers: invokerUserId ? {
@@ -188,6 +150,11 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
             id: true,
           },
         } : false,
+        _count: {
+          select: {
+            subscribers: true,
+          },
+        },
       },
       skip,
       take: pageSizeInt,
@@ -195,9 +162,9 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
   ]);
 
   // Transform the `subscribers` field into a boolean `isSubscribed`
-  const collectionsWithSubscriptionStatus = allCollections.map((collection) => ({
-    ...collection,
-    isSubscribed: Array.isArray(collection?.subscribers) && collection.subscribers.length > 0,
+  const functionsWithSubscriptionStatus = allFunctions.map((functionRecord) => ({
+    ...functionRecord,
+    isSubscribed: Array.isArray(functionRecord?.subscribers) && functionRecord.subscribers.length > 0,
   }));
 
   // Calculate pagination details
@@ -207,7 +174,7 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
   const hasPrevious = pageInt > 1;
 
   const result = {
-    records: collectionsWithSubscriptionStatus,
+    records: functionsWithSubscriptionStatus,
     page: pageInt,
     pageSize: pageSizeInt,
     totalRecords,
@@ -221,5 +188,5 @@ export async function fetchPaginationData(searchParams: Record<string, string | 
   return result;
 }
 
-export type FetchCollectionPaginationDataReturnType = Awaited<ReturnType<typeof fetchPaginationData>>;
+export type FetchFunctionPaginationDataReturnType = Awaited<ReturnType<typeof fetchFunctionPaginationData>>;
 

@@ -55,10 +55,10 @@ export function BreadcrumbNav(props: BreadcrumbNavProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
                     {elem.items.map((dropdownItem, dropdownIndex) => (
-                      <DropdownMenuItem className="p-0" key={dropdownIndex}>
+                      <DropdownMenuItem className="" key={dropdownIndex}>
                         {
                           dropdownItem.href ? (
-                            <Link href={dropdownItem.href} className="block w-full p-2 font-semibold hover:bg-gray-300 dark:hover:bg-gray-700">
+                            <Link href={dropdownItem.href} className="block w-full pl-2 pr-4 py-2 min-w-[140px] font-semibold hover:bg-gray-300 dark:hover:bg-gray-700">
                               { dropdownItem.title }
                             </Link>
                           ) : dropdownItem.title

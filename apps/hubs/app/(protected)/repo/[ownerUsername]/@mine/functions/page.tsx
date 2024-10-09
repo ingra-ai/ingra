@@ -5,8 +5,8 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
-import { fetchPaginationData } from '@repo/shared/data/functions';
-import CreateNewFunctionButton from '../../../../../../../../packages/components/src/data/functions/CreateNewFunctionButton';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
+import CreateNewFunctionButton from '@repo/components/src/data/functions/CreateNewFunctionButton';
 
 type Props = {
   params: { ownerUsername: string };
@@ -28,7 +28,7 @@ export default async function Page({ searchParams, params }: Props) {
     return notFound();
   }
 
-  const paginationData = await fetchPaginationData(searchParams, {
+  const paginationData = await fetchFunctionPaginationData(searchParams, {
       where: {
         ownerUserId: authSession.userId,
       }

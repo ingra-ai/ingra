@@ -175,7 +175,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
             // Go to the created functions
             if ( result?.data?.slug ) {
               const redirectUrl = getUserRepoFunctionsEditUri(ownerUsername, result?.data?.slug);
-              router.push(redirectUrl);
+              router.replace(redirectUrl);
             }
             else {
               router.refresh();
