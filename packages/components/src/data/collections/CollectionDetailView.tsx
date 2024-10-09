@@ -16,7 +16,7 @@ import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import Link from 'next/link';
 import { Avatar, AvatarFallback } from '../../ui/avatar';
 import { formatDistance } from 'date-fns/formatDistance';
-import { CreateNewFunctionButton } from '../functions';
+import { CreateNewFunctionButton } from '@repo/components/data/functions';
 
 interface CollectionDetailViewsProps {
   authSession?: AuthSessionResponse | null;
