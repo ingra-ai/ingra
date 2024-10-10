@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import type { OnMount } from '@monaco-editor/react';
 import { CODE_DEFAULT_TEMPLATE } from '@repo/shared/schemas/function';
 import { cn } from '@repo/shared/lib/utils';
+import { useTheme } from 'next-themes';
 
 const DynamicCodeEditor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
@@ -21,6 +22,7 @@ type CodeEditorInputProps = {
 const CodeEditorInput: FC<CodeEditorInputProps> = (props) => {
   const { id, className, onChange = () => void 0, value = CODE_DEFAULT_TEMPLATE, readOnly = false } = props;
   const editorRef = useRef<Parameters<OnMount> | null>(null);
+  const { theme } = useTheme();
   const classes = cn(className);
 
   const onEditorMount = useCallback<OnMount>((editor, monaco) => {
@@ -46,7 +48,7 @@ const CodeEditorInput: FC<CodeEditorInputProps> = (props) => {
       id={id || 'code-editor'}
       height="70vh"
       defaultLanguage="javascript"
-      theme="vs-dark"
+      theme={ theme === 'light' ? 'light' : 'vs-dark' }
       keepCurrentModel={false}
       className={classes}
       onChange={onChange}
