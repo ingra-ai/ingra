@@ -24,7 +24,7 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
 export default async function Page({ searchParams, params }: Props) {
   const authSession = await getAuthSession();
 
-  if (!authSession) {
+  if (!authSession || !authSession?.userId) {
     return notFound();
   }
 
