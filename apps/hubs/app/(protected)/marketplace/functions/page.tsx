@@ -12,9 +12,7 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
   const paginationData = await fetchFunctionPaginationData(searchParams, {
       invokerUserId: authSession?.userId || '',
       where: {
-        NOT: {
-          ownerUserId: authSession?.userId || ''
-        },
+        ...(authSession?.userId ? { NOT: { ownerUserId: authSession.userId } } : {}),
         isPublished: true,
         isPrivate: false,
       }

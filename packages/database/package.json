@@ -4,8 +4,9 @@
   "private": true,
   "exports": {
     "./client": "./src/client.ts",
-    "./prisma": "./src/prisma.ts"
-  } ,
+    "./prisma": "./src/prisma.ts",
+    "./pinecone": "./src/pinecone/index.ts"
+  },
   "scripts": {
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
@@ -27,10 +28,11 @@
     "@types/eslint": "^8.56.5",
     "@types/node": "^22.7.4",
     "eslint": "^8.57.0",
-    "typescript": "^5.6.2",
-    "prisma": "^5.20.0"
+    "prisma": "^5.20.0",
+    "typescript": "^5.6.2"
   },
   "dependencies": {
+    "@pinecone-database/pinecone": "^3.0.3",
     "@prisma/client": "^5.20.0"
   }
 }

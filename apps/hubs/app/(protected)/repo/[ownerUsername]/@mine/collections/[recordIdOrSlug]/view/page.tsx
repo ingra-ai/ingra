@@ -53,14 +53,14 @@ export default async function Page({ searchParams, params }: Props) {
     },
   });
 
-  if (!collectionRecord || !collectionRecord.id) {
+  if (!collectionRecord || !collectionRecord.id || !authSession.userId) {
     return notFound();
   }
 
   const paginationData = await fetchFunctionPaginationData(searchParams, {
-      invokerUserId: authSession?.userId || '',
+      invokerUserId: authSession.userId,
       where: {
-        ownerUserId: authSession?.userId || '',
+        ownerUserId: authSession.userId,
         collectors: {
           some: {
             id: collectionRecord.id

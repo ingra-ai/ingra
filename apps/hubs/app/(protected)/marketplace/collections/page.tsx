@@ -11,9 +11,7 @@ export default async function Page({ searchParams }: { searchParams: Record<stri
   const paginationData = await fetchCollectionPaginationData(searchParams, {
       invokerUserId: authSession?.userId || '',
       where: {
-        NOT: {
-          userId: authSession?.userId || ''
-        },
+        ...(authSession?.userId ? { NOT: { userId: authSession.userId } } : {}),
         functions: {
           some: {
             isPublished: true,
