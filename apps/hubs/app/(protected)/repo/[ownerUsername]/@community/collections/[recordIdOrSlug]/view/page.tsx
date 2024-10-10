@@ -61,7 +61,7 @@ export default async function Page({ searchParams, params }: Props) {
     },
   });
 
-  if (!collectionRecord || !collectionRecord.id) {
+  if (!collectionRecord || !collectionRecord.id || !ownerProfile?.userId) {
     return notFound();
   }
 
