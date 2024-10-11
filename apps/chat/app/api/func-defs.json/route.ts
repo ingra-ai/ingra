@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSwaggerSpec } from '../swagger/config';
+import { getSwaggerSpec } from '../../../../hubs/app/api/(internal)/swagger/config';
 import { convertToFunctionDefinitions } from '@app/api/utils/openai/convertToFunctionDefinitions';
 
 /**

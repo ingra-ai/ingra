@@ -1,30 +1,30 @@
 import { handleFetch } from '@repo/shared/utils/handleFetch';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { HUBS_APP_URL } from '@repo/shared/lib/constants';
-import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
+// import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
 import { OpenAI } from 'openai';
 import { Logger } from '@repo/shared/lib/logger';
 import { type DataMessage } from 'ai';
 
 const getApiDetails = async (authSession: AuthSessionResponse, toolName: string) => {
-  const authSwaggerSpec = await getAuthSwaggerSpec(authSession);
+  // const authSwaggerSpec = await getAuthSwaggerSpec(authSession);
 
-  if (!authSwaggerSpec || typeof authSwaggerSpec?.paths !== 'object' || !toolName) {
-    return null;
-  }
+  // if (!authSwaggerSpec || typeof authSwaggerSpec?.paths !== 'object' || !toolName) {
+  //   return null;
+  // }
 
-  for (const [path, pathSchema] of Object.entries<Record<string, any>>(authSwaggerSpec.paths)) {
-    for (const [httpVerb, details] of Object.entries<Record<string, any>>(pathSchema)) {
-      if (details.operationId === toolName) {
-        return {
-          url: HUBS_APP_URL + path,
-          method: httpVerb.toUpperCase(),
-        };
-      }
-    }
-  }
+  // for (const [path, pathSchema] of Object.entries<Record<string, any>>(authSwaggerSpec.paths)) {
+  //   for (const [httpVerb, details] of Object.entries<Record<string, any>>(pathSchema)) {
+  //     if (details.operationId === toolName) {
+  //       return {
+  //         url: HUBS_APP_URL + path,
+  //         method: httpVerb.toUpperCase(),
+  //       };
+  //     }
+  //   }
+  // }
 
-  return null;
+  return null as any;
 };
 
 const toolsHandler = async (authSession: AuthSessionResponse, toolName: string, parameters: Record<string, any> = {}, headers: Record<string, any> = {}) => {
