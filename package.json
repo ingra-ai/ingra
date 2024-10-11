@@ -25,7 +25,6 @@
     "@pinecone-database/pinecone": "^3.0.3"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5",
     "consola": "^3.2.3",
     "prettier": "^3.3.3",
     "prisma": "^5.20.0",
