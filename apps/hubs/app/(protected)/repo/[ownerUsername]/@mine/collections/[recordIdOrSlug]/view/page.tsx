@@ -49,6 +49,16 @@ export default async function Page({ searchParams, params }: Props) {
             },
           },
         },
+        subscribers: authSession?.userId
+          ? {
+              select: {
+                id: true,
+              },
+              where: {
+                userId: authSession.userId,
+              },
+            }
+          : false,
       },
     },
   });

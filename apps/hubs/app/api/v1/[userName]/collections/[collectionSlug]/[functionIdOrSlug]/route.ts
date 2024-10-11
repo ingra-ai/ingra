@@ -83,10 +83,30 @@ async function handlerFn(args: HandlerArgs) {
 
     loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionIdOrSlug}`, metrics);
 
-    if (errors.length) {
+    if (errors?.length) {
       const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
       loggerObj.error(`Errored executing function: ${errorMessage}`);
-      throw new ActionError('error', 400, errorMessage);
+
+      if ( isSandboxDebug ) {
+        return NextResponse.json(
+          {
+            status: 'error',
+            message: 'An error occurred while executing the function in sandbox debug mode.',
+            data: {
+              result: result || null,
+              metrics: metrics || {},
+              errors: errors || [],
+              logs: logs || [],
+            },
+          },
+          {
+            status: 200,
+          }
+        );
+      }
+      else {
+        throw new ActionError('error', 400, errorMessage);
+      }
     }
 
     if (isSandboxDebug) {

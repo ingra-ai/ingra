@@ -161,17 +161,17 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
     });
   }, [runState]);
 
-  const inputClasses = cn('block w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
+  const inputClasses = cn('block w-full rounded-md border-0 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6');
   const metricsEntries = Object.entries(runState.metrics),
     hasOutput = !!runState.output || runState.errors.length > 0 || runState.logs.length > 0 || metricsEntries.length > 0;
 
   return (
     <form className="block space-y-6 mt-4 mb-20" method="POST" onSubmit={handleSubmit(onRun)}>
-      <div className="block w-full rounded-md border shadow py-4 bg-black/10">
+      <div className="block w-full rounded-md border shadow py-4">
         <Collapsible defaultOpen className="block">
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm" className="flex w-full justify-between items-center">
-              <p className="text-sm font-bold text-gray-100 leading-7">Arguments</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-7">Arguments</p>
               <SortAscIcon className="h-4 w-4" />
               <span className="sr-only">Toggle</span>
             </Button>
@@ -198,7 +198,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
               ))
             ) : (
               <div className="block">
-                <p className="text-gray-300">No arguments required</p>
+                <p className="text-gray-700 dark:text-gray-300">No arguments required</p>
               </div>
             )}
           </CollapsibleContent>
@@ -218,7 +218,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
                   </p>
                 ))
               ) : (
-                <p className="text-xs text-gray-400">No metrics available</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">No metrics available</p>
               )}
             </div>
           </div>
@@ -230,7 +230,7 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
               <button
                 type="button"
                 onClick={onLogboxClose} // Implement this function
-                className="text-gray-400 hover:text-gray-200"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-200"
                 aria-label="Close"
               >
                 <TrashIcon className="h-6 w-6" />
@@ -239,13 +239,13 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
           </div>
 
           {/* Logs and Errors Section */}
-          <div id="logbox" className="relative w-full min-h-[240px] max-h-[50vh] overflow-y-auto p-2 text-xs font-mono bg-gray-800 text-gray-100 rounded">
+          <div id="logbox" className="relative w-full min-h-[240px] max-h-[50vh] overflow-y-auto p-2 text-xs font-mono bg-card text-gray-900 dark:text-gray-100 rounded">
             <div className="overflow-wrap break-word" style={{ whiteSpace: 'pre-wrap' }}>
               {/* Logs */}
               {runState.logs.length > 0 &&
                 runState.logs.map((log, idx) => (
                   <div key={`runState-log-${idx}`} className="text-gray-500">
-                    <span className="text-gray-300">[log]:</span> {log.message}
+                    <span className="text-gray-700 dark:text-gray-300">[log]:</span> {log.message}
                   </div>
                 ))}
 
@@ -253,14 +253,14 @@ export const CodeSandboxForm: FC<CodeSandboxFormProps> = (props) => {
               {runState.errors.length > 0 &&
                 runState.errors.map((error, idx) => (
                   <div key={`runState-error-${idx}`} className="text-red-500">
-                    <span className="text-gray-300">[error]:</span> {error.message}
+                    <span className="text-gray-700 dark:text-gray-300">[error]:</span> {error.message}
                   </div>
                 ))}
 
               {/* Result Section */}
               {!!runState.output && (
                 <div className="text-green-500">
-                  <span className="text-gray-300">[output]:</span> {JSON.stringify(runState.output, null, 2)}
+                  <span className="text-gray-700 dark:text-gray-300">[output]:</span> {JSON.stringify(runState.output, null, 2)}
                 </div>
               )}
             </div>
