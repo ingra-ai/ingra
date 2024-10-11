@@ -13,14 +13,12 @@
     "Vadi Taslim <vadz77@hotmail.com>"
   ],
   "dependencies": {
-    "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",
     "@repo/components": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/shared": "workspace:*",
     "input-otp": "^1.2.4",
-    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.447.0",
     "next": "^14.2.14",
@@ -37,7 +35,6 @@
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@types/jest": "^29.5.13",
-    "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.10",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
