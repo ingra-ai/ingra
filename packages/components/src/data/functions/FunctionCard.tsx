@@ -157,32 +157,36 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
                 </Badge>
               )
             }
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <MoreVertical className="h-4 w-4" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {canClone && (
-                  <DropdownMenuItem className="cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300 p-2" onClick={() => handleClone(func)}>
-                    <RefreshCcw className="mr-2 h-4 w-4" />
-                    <span>Clone</span>
-                  </DropdownMenuItem>
-                )}
-                {canDelete && (
-                  <DropdownMenuItem className="text-destructive cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300 p-2" onClick={() => handleDelete(func)}>
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Delete</span>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {
+              ( canClone || canDelete ) && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <MoreVertical className="h-4 w-4" />
+                      <span className="sr-only">Open menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {canClone && (
+                      <DropdownMenuItem className="cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300 p-2" onClick={() => handleClone(func)}>
+                        <RefreshCcw className="mr-2 h-4 w-4" />
+                        <span>Clone</span>
+                      </DropdownMenuItem>
+                    )}
+                    {canDelete && (
+                      <DropdownMenuItem className="text-destructive cursor-pointer dark:hover:bg-gray-700 hover:bg-gray-300 p-2" onClick={() => handleDelete(func)}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )
+            }
           </div>
         </div>
-        <Link href={href} className="cursor-pointer" title={func.description}>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">{func.description}</p>
+        <Link href={href} className="cursor-pointer mb-4" title={func.description}>
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">{func.description}</p>
         </Link>
         <ScrollArea className="mb-4 w-full overflow-x-auto">
           <div className="w-full whitespace-nowrap">
@@ -197,7 +201,7 @@ export const FunctionCard: React.FC<FunctionCardProps> = (props) => {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <div className="flex justify-between items-center mb-4 mt-auto">
+        <div className="flex justify-between items-center py-4 mt-auto">
           <Badge className="flex items-center px-2 py-1">
             <Code className="mr-1 h-3 w-3" />
             {func.httpVerb}

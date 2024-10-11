@@ -21,4 +21,3 @@ export type NavNotificationItem = {
   href?: string;
 };
 
-export type ACTIVE_SIDE_LAYOUT = 'ai' | 'wiki';

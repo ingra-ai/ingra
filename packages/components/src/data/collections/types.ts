@@ -21,4 +21,8 @@ export type CollectionDetailViewPayload = Prisma.CollectionGetPayload<{
       };
     };
   };
-}>;
+}> & {
+  subscribers: {
+    id: string;
+  }[];
+};

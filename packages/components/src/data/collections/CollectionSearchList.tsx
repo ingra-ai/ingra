@@ -1,5 +1,5 @@
 'use client';
-import React, { useTransition } from 'react';
+import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@repo/components/ui/use-toast';
 import { unsubscribeToCollection, subscribeToCollection, deleteCollection } from '@repo/shared/actions/collections';
@@ -20,6 +20,7 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  const isUserAuthed = !!authSession;
 
   const handleSubscribe = async (collection: CollectionCardPayload) => {
     return subscribeToCollection(collection.id)
@@ -117,12 +118,14 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
             const isSubscribed = collection.isSubscribed,
               ownerUsername = collection.owner?.profile?.userName || '',
               href = getUserRepoCollectionsViewUri(ownerUsername, collection.slug),
-              refinedCollectionCardProps: Partial<React.ComponentProps<typeof CollectionCard>> = {};
+              refinedCollectionCardProps: Partial<React.ComponentProps<typeof CollectionCard>> = {},
+              isCurrentUserOwner = authSession?.user?.profile?.userName && ownerUsername && authSession.user.profile.userName === ownerUsername;
 
             // If user is the owner of this collection, allow deletion
-            if (authSession?.user?.profile?.userName && ownerUsername && authSession.user.profile.userName === ownerUsername) {
+            if (isUserAuthed && isCurrentUserOwner) {
               refinedCollectionCardProps.handleDelete = handleDelete;
-            } else {
+            } 
+            else if (isUserAuthed) {
               if (isSubscribed) {
                 refinedCollectionCardProps.handleUnsubscribe = handleUnsubscribe;
               } else {
@@ -130,7 +133,7 @@ export const CollectionSearchList: React.FC<CollectionSearchListProps> = (props)
               }
             }
 
-            return <CollectionCard key={collection.id} collection={collection} href={href} {...refinedCollectionCardProps} />;
+            return <CollectionCard key={collection.id} authSession={authSession} collection={collection} href={href} {...refinedCollectionCardProps} />;
           })}
         </div>
       </div>

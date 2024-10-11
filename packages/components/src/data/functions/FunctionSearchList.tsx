@@ -21,6 +21,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  const isUserAuthed = !!authSession;
 
   const handleCollectionToggle = (collectionId: string, functionRecord: FunctionCardPayload, checked: boolean) => {
     const action = checked ? 'add' : 'remove';
@@ -210,18 +211,19 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
         <div className={gridClasses}>
           {functions.map((functionData) => {
             const isSubscribed = functionData.isSubscribed,
-              recordOwnerUsername = functionData.owner?.profile?.userName || '',
-              isOwner = authSession?.user?.profile?.userName && recordOwnerUsername && authSession.user.profile.userName === recordOwnerUsername,
-              href = isOwner ? getUserRepoFunctionsEditUri(recordOwnerUsername, functionData.slug) : getUserRepoFunctionsViewUri(recordOwnerUsername, functionData.slug),
-              refinedCardProps: Partial<React.ComponentProps<typeof FunctionCard>> = {};
+              ownerUsername = functionData.owner?.profile?.userName || '',
+              refinedCardProps: Partial<React.ComponentProps<typeof FunctionCard>> = {},
+              isCurrentUserOwner = authSession?.user?.profile?.userName && ownerUsername && authSession.user.profile.userName === ownerUsername,
+              href = isCurrentUserOwner ? getUserRepoFunctionsEditUri(ownerUsername, functionData.slug) : getUserRepoFunctionsViewUri(ownerUsername, functionData.slug);
 
-            // If user is the owner of this function, allow deletion
-            if (isOwner) {
+            // If user is the owner of this function, allow these actions
+            if (isUserAuthed && isCurrentUserOwner) {
               refinedCardProps.handleDelete = handleDelete;
               refinedCardProps.handleTogglePublish = handleTogglePublish;
               refinedCardProps.handleClone = handleClone;
               refinedCardProps.handleCollectionToggle = handleCollectionToggle;
-            } else {
+            } 
+            else if (isUserAuthed) {
               if (isSubscribed) {
                 refinedCardProps.handleUnsubscribe = handleUnsubscribe;
               } else {

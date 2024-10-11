@@ -264,7 +264,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
                       <CopyPlusIcon className="h-4 w-4" />
                     </Button>
                     {functionRecord?.id && (
-                      <AddFunctionToCollectionButton functionRecord={functionRecord} userId={authSession?.userId} className="p-2 bg-card" />
+                      <AddFunctionToCollectionButton functionRecord={functionRecord} userId={authSession?.userId} className="p-2" />
                     )}
                   </div>
                 )}

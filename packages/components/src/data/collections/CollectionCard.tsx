@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { FileJsonIcon, RssIcon, TagIcon, RefreshCcw, MoreVertical, Trash2 } from 'lucide-react';
+import { FileJsonIcon, RssIcon, TagIcon, RefreshCcw, MoreVertical } from 'lucide-react';
 import { cn } from '@repo/shared/lib/utils';
 import type { CollectionCardPayload } from './types';
 import { Button } from '@repo/components/ui/button';
@@ -8,8 +8,10 @@ import { Badge } from '@repo/components/ui/badge';
 import { EyeIcon, FolderIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { getUserApiCollectionsOpenApiJsonUri } from '@repo/shared/lib/constants/repo';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../ui/dropdown-menu';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 
 interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  authSession?: AuthSessionResponse | null;
   collection: CollectionCardPayload;
   href: string;
   handleSubscribe?: (collection: CollectionCardPayload) => Promise<void>;
@@ -18,7 +20,10 @@ interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProps>> = (props) => {
-  const { collection, href, children, handleDelete: onHandleDelete, handleSubscribe: onHandleSubscribe, handleUnsubscribe: onHandleUnsubscribe, ...divProps } = props;
+  const { authSession, collection, href, children, handleDelete: onHandleDelete, handleSubscribe: onHandleSubscribe, handleUnsubscribe: onHandleUnsubscribe, ...divProps } = props;
+
+  const isOwner = authSession?.user?.profile?.userName && collection.owner?.profile?.userName && authSession?.user?.profile?.userName === collection.owner?.profile?.userName;
+  const isSubscribed = ( collection?.subscribers || [] ).some((subscriber) => subscriber.id === authSession?.user?.id);
 
   const [cardState, setCardState] = React.useState({
     isSubscribing: false,
@@ -68,12 +73,12 @@ export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProp
   // const allTagsText = Array.from(allTags).slice(0, 2).join(', ') + (allTags.size > 2 ? `, and +${allTags.size - 2} more` : '');
 
   const ownerUsername = collection.owner?.profile?.userName || '';
-  const openApiJsonUrl = ownerUsername ? getUserApiCollectionsOpenApiJsonUri(ownerUsername || '', collection.slug) : '';
 
   const classes = cn('bg-card shadow-md overflow-hidden shadow rounded-lg flex flex-col', divProps.className),
     canSubscribe = typeof onHandleSubscribe === 'function',
     canUnsubscribe = typeof onHandleUnsubscribe === 'function',
-    canDelete = typeof onHandleDelete === 'function';
+    canDelete = ( isOwner ) && typeof onHandleDelete === 'function',
+    openApiJsonUrl = ( ownerUsername && canUnsubscribe ) ? getUserApiCollectionsOpenApiJsonUri(ownerUsername || '', collection.slug) : '';
 
   return (
     <div data-testid="collection-card" {...divProps} className={classes}>

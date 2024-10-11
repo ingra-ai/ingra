@@ -4,7 +4,6 @@ import type { FC, ChangeEvent } from 'react';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
 import { useToast } from '@repo/components/ui/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/components/ui/tooltip';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
@@ -14,9 +13,10 @@ import { updateProfile } from '@repo/shared/actions/profile';
 import { useCallback, useState, useTransition } from 'react';
 import { Input } from '@repo/components/ui/input';
 import timezones from 'timezones-list';
-import { RefreshCcw } from 'lucide-react';
+import { RefreshCcw, Info } from 'lucide-react';
 import { Button } from '@repo/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { Avatar, AvatarFallback } from '@repo/components/ui/avatar';
 
 type UserProfileFormProps = {
   authSession: AuthSessionResponse;
@@ -76,16 +76,20 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
   function onTimezoneChanged(e: ChangeEvent<HTMLSelectElement>) {
     setValue('timeZone', e.target.value);
   }
+  
+  const avatarFallbackText = ((authSession?.user?.profile?.userName || authSession?.user?.email) ?? 'AN').slice(0, 2).toUpperCase();
 
   return (
     <form className="block" method="POST" onSubmit={handleSubmit(onSubmit)} data-testid="user-profile-form" autoComplete="off">
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
         <div className="col-span-full flex items-center gap-x-8">
-          <Image src={`https://ui-avatars.com/api?size=256&name=${censoredUser}`} width={256} height={256} className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover" alt="user avatar" />
+          <Avatar className="h-24 w-24">
+            <AvatarFallback className="text-3xl">{avatarFallbackText}</AvatarFallback>
+          </Avatar>
           <div>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger type="button" className="rounded-md bg-gray-500 px-3 py-2 text-sm font-semibold text-white shadow-sm">
+                <TooltipTrigger type="button" className="rounded-md bg-gray-500 px-3 py-2 font-semibold shadow-sm">
                   Change avatar
                 </TooltipTrigger>
                 <TooltipContent>
@@ -98,7 +102,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
         </div>
 
         <div className="space-y-2 sm:col-span-3">
-          <label htmlFor="firstName" className="block text-sm font-medium leading-6 mb-3">
+          <label htmlFor="firstName" className="block font-medium leading-6 mb-3">
             First name
           </label>
           <input
@@ -109,13 +113,13 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
             autoComplete=""
             required
             autoFocus
-            className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:leading-6"
           />
           {formState.errors.firstName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.firstName.message}</p>}
         </div>
 
         <div className="space-y-2 sm:col-span-3">
-          <label htmlFor="lastName" className="block text-sm font-medium leading-6 mb-3">
+          <label htmlFor="lastName" className="block font-medium leading-6 mb-3">
             Last name
           </label>
           <input
@@ -126,13 +130,13 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
             autoComplete=""
             required
             autoFocus
-            className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:leading-6"
           />
           {formState.errors.lastName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.lastName.message}</p>}
         </div>
 
         <div className="col-span-full">
-          <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
+          <label htmlFor="email" className="block text-sm font-medium leading-6">
             Email address
           </label>
           <div className="mt-2">
@@ -141,12 +145,12 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
         </div>
 
         <div className="col-span-full">
-          <label htmlFor="timeZone" className="block text-sm font-medium leading-6 text-white">
+          <label htmlFor="timeZone" className="block text-sm font-medium leading-6">
             Timezone
           </label>
           <div className="mt-2">
             <select
-              className="bg-gray-50 w-[280px] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-secondary dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="dark:bg-gray-50 bg-gray-950 w-[280px] border border-gray-700 dark:border-gray-300 text-gray-100 dark:text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-secondary dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
               onChange={onTimezoneChanged}
               defaultValue={userProfile?.timeZone}
             >
@@ -161,9 +165,25 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
         </div>
 
         <div className="space-y-2 sm:col-span-full">
-          <label htmlFor="userName" className="block text-sm font-medium leading-6 mb-3">
+          <label htmlFor="userName" className="block font-medium leading-6">
             Username
           </label>
+          { lockUsername && (
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              Username is locked and cannot be changed.
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger type="button" className="ml-2">
+                    <Info className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                      <p>Changing the username may impact existing personalized API endpoints. This feature is currently disabled.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </p> 
+            )
+          }
           <Input
             id="userName"
             {...register('userName')}
@@ -174,18 +194,18 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
             autoComplete=""
             required
             autoFocus
-            className="block w-auto max-w-full rounded-md border-0 bg-white/5 py-2 px-2 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+            className="block w-auto max-w-full rounded-md border-0 py-2 px-2 shadow-sm sm:leading-6 mt-3"
           />
-          {formState.errors.userName && <p className="text-sm font-medium text-destructive-foreground mt-3 text-center">{formState.errors.userName.message}</p>}
+          {formState.errors.userName && <p className="font-medium text-destructive-foreground mt-3">{formState.errors.userName.message}</p>}
         </div>
       </div>
 
       <div className="mt-8 flex">
         <Button
-          variant={'default'}
+          variant={'indigo'}
           type="submit"
           disabled={isSaving}
-          className="flex w-[120px] justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+          className="flex w-[120px] justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm"
         >
           {isSaving && <RefreshCcw className="animate-spin inline-block mr-2" />}
           {isSaving ? 'Saving...' : 'Save'}
