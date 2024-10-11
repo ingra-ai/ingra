@@ -2,11 +2,11 @@
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "@protected/*": [
-        "./app/(protected)/*"
-      ],
       "@app/*": [
         "./app/*"
+      ],
+      "@v1/*": [
+        "./app/api/v1/*"
       ],
       "@css/*": [
         "./styles/*"
