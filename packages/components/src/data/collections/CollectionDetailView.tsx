@@ -14,9 +14,10 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@repo/components/ui/dropdown-menu';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import Link from 'next/link';
-import { Avatar, AvatarFallback } from '../../ui/avatar';
+import { Avatar, AvatarFallback } from '@repo/components/ui/avatar';
 import { formatDistance } from 'date-fns/formatDistance';
 import { CreateNewFunctionButton } from '@repo/components/data/functions';
+import { cn } from '@repo/shared/lib/utils';
 
 interface CollectionDetailViewsProps {
   authSession?: AuthSessionResponse | null;
@@ -29,9 +30,12 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const ownerUsername = record?.owner?.profile?.userName || '';
-  const isOwner = authSession?.user?.profile?.userName && authSession?.user?.profile?.userName === ownerUsername;
+  const isOwner = authSession?.user?.profile?.userName && ownerUsername && authSession?.user?.profile?.userName === ownerUsername;
+  const isSubscribed = ( record?.subscribers || [] ).some((subscriber) => subscriber.id === authSession?.user?.id);
+
   const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(ownerUsername, record.slug);
   const swaggerApiUrl = getUserApiCollectionsSwaggerUri(ownerUsername, record.slug);
+  const isNotOwnerOrSubscriber = !isOwner || !isSubscribed;
 
   const handleDelete = useCallback(() => {
     const confirmed = confirm(`Are you sure you want to delete this collection? This will only remove the collection; your functions will be disconnected from it.`);
@@ -79,10 +83,30 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
                 <CreateNewFunctionButton authSession={authSession} ownerUsername={ownerUsername} collectionSlug={record?.slug} />
               )
             }
-            <Button asChild type="button" aria-label="OpenAPI JSON" title="OpenAPI JSON" variant="outline" size="icon">
-              <Link href={openApiJsonUrl} target="_blank" prefetch={false}>
-                <FileJsonIcon className="h-4 w-4" aria-hidden="true" />
-              </Link>
+            <Button 
+              asChild 
+              type="button" 
+              aria-label="OpenAPI JSON" 
+              title={!isNotOwnerOrSubscriber ? "OpenAPI JSON" : "OpenAPI JSON is not available for a collection you are not subscribed to."} 
+              className={cn({ 
+                'cursor-not-allowed': isNotOwnerOrSubscriber
+              })}
+              variant="outline" 
+              size="icon" 
+              disabled={isNotOwnerOrSubscriber}
+            >
+              {
+                isNotOwnerOrSubscriber ? (
+                  <div>
+                    <span className="sr-only">OpenAPI JSON is not available for a collection you are not subscribed to.</span>
+                    <FileJsonIcon className="h-4 w-4" aria-hidden="true" />
+                  </div>
+                ) : (
+                  <Link href={openApiJsonUrl} target="_blank" prefetch={false}>
+                    <FileJsonIcon className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                )
+              }
             </Button>
             {isOwner && (
               <DropdownMenu>
@@ -133,8 +157,19 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
             <h3 className="text-lg font-semibold mb-2">Details</h3>
             <div className="space-y-2">
               <p>
-                <span className="font-medium mr-2">Swagger: </span> 
-                <Link href={swaggerApiUrl} prefetch={false} target="_blank" className="text-primary hover:underline">{swaggerApiUrl}</Link>
+                <span className="font-medium mr-2">Swagger: </span>
+                {
+                  isNotOwnerOrSubscriber ? (
+                    <span 
+                      className="text-muted-foreground cursor-not-allowed"
+                      title="Swagger is not available for a collection you are not subscribed to."
+                    >
+                      {swaggerApiUrl}
+                    </span>
+                  ) : (
+                    <Link href={swaggerApiUrl} prefetch={false} target="_blank" className="text-primary hover:underline">{swaggerApiUrl}</Link>
+                  )
+                }
               </p>
               <p>
                 <span className="font-medium mr-2">Last Updated: </span> 

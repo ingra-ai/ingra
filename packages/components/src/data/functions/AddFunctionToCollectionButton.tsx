@@ -121,7 +121,7 @@ const AddFunctionToCollectionButton: React.FC<AddFunctionToCollectionButtonProps
               ) : (
                 collections.map((collection) => (
                   <CommandItem key={collection.id} value={collection.name} onSelect={() => handleCollectionToggle(collection)} className="cursor-pointer">
-                    <div className={cn('mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary', collection.isFunctionSubscribed ? 'bg-primary text-primary-foreground' : 'opacity-50')}>
+                    <div className={cn('mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary', collection.isFunctionSubscribed ? '' : 'opacity-50')}>
                       <Check className={cn('h-4 w-4', collection.isFunctionSubscribed ? 'opacity-100' : 'opacity-0')} />
                     </div>
                     {collection.name}
