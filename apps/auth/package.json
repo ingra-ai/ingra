@@ -12,6 +12,10 @@
   "contributors": [
     "Vadi Taslim <vadz77@hotmail.com>"
   ],
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18.19.0"
+  },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",

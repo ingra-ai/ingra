@@ -8,6 +8,10 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18.19.0"
+  },
   "dependencies": {
     "@repo/components": "workspace:*",
     "@repo/shared": "workspace:*",
@@ -27,7 +31,6 @@
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/typography": "^0.5.15",
-    "@types/node": "^22.7.5",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
