@@ -13,6 +13,7 @@
     "Vadi Taslim <vadz77@hotmail.com>"
   ],
   "dependencies": {
+    "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",
     "@langchain/community": "^0.2.18",
