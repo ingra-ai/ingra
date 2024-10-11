@@ -2,7 +2,7 @@ import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { ChatOpenAI } from '@langchain/openai';
 import { createToolsAgentsByAuthSession } from './createToolsAgents';
 import { createToolsAgentsSupervisor } from './createToolsAgentsSupervisor';
-import { END, START, StateGraph, StateGraphArgs } from '@langchain/langgraph';
+import { END, START, StateGraph, Annotation } from '@langchain/langgraph';
 import { AgentStateChannels } from './types';
 import { BaseMessage } from '@langchain/core/messages';
 import { RunnableLike } from '@langchain/core/runnables';
@@ -33,34 +33,23 @@ export const createToolsGraph = async (authSession: AuthSessionResponse, opts?: 
 
   // This defines the object that is passed between each node
   // in the graph. We will create different nodes for each agent and tool
-  const agentStateChannels: StateGraphArgs<AgentStateChannels>['channels'] = {
-    messages: {
-      value: (x?: BaseMessage[], y?: BaseMessage[]) => {
-        // console.log('\n-----channels:messages----\n', { x, y }, '\n--------\n')
-        return (x ?? []).concat(y ?? []);
-      },
+  const agentState = Annotation.Root({
+    messages: Annotation<BaseMessage[]>({
+      reducer: (x, y) => x.concat(y),
       default: () => [],
-    },
-    previous: {
-      value: (x?: string, y?: string) => {
-        // console.log('\n-----channels:previous----\n', { x, y }, '\n--------\n')
-        return y ?? x ?? START;
-      },
+    }),
+    previous: Annotation<string>({
+      reducer: (x, y) => y ?? x ?? START,
       default: () => START,
-    },
-    next: {
-      value: (x?: string, y?: string) => {
-        // console.log('\n-----channels:next----\n', { x, y }, '\n--------\n')
-        return y ?? x ?? END;
-      },
+    }),
+    next: Annotation<string>({
+      reducer: (x, y) => y ?? x ?? END,
       default: () => END,
-    },
-  };
+    })
+  });
 
   // Create the graph
-  const graph = new StateGraph<AgentStateChannels, unknown, string>({
-    channels: agentStateChannels,
-  });
+  const graph = new StateGraph(agentState);
 
   // 1. Add the tool agents nodes
   for (let i = 0, len = collectionToolsAgents.length; i < len; i++) {
@@ -73,11 +62,13 @@ export const createToolsGraph = async (authSession: AuthSessionResponse, opts?: 
 
   // Define the edges, after tool agents done their work, they will report to the supervisor
   toolAgentNames.forEach((toolAgentName) => {
-    // graph.addEdge(toolAgentName, supervisorAgent.agentName);
-    graph.addEdge(toolAgentName, END);
+    // @ts-ignore
+    graph.addEdge(toolAgentName, supervisorAgent.agentName);
+    // graph.addEdge(toolAgentName, END);
   });
 
   // Whenever supervisor is in the act, it will decide who should act next
+    // @ts-ignore
   graph.addConditionalEdges(toolsSupervisorAgent.agentName, (state) => {
     const { previous, next, messages } = state;
     // console.log('\n-----conditionalEdge:supervisor----\n', { previous, next }, '\n--------\n')
@@ -85,6 +76,7 @@ export const createToolsGraph = async (authSession: AuthSessionResponse, opts?: 
   });
 
   // Add the start node
+    // @ts-ignore
   graph.addEdge(START, toolsSupervisorAgent.agentName);
 
   // Compile the graph
