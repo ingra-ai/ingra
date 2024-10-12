@@ -4,6 +4,7 @@ import json
 import logging
 import subprocess
 import tempfile
+import shlex
 from flask import Flask, request, jsonify
 from flask_httpauth import HTTPTokenAuth
 
@@ -20,7 +21,7 @@ def setup_logging(log_file_path):
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
-    logging.info('Logging is set up.')
+    logging.info(f'Logging is set up. Log file path: {log_file_path}')
 
 def load_config():
     """Load configuration from a temporary file."""
@@ -141,19 +142,19 @@ def execute_command():
     # Split the command into arguments
     try:
         # Avoid using shell=True for security reasons
-        command_args = command.strip().split()
+        command_args = shlex.split(command)
     except Exception as e:
         error_message = f'Error parsing command: {e}'
         logging.error(error_message)
         return jsonify({"error": error_message}), 400
+
 
     # Execute the command
     try:
         result = subprocess.check_output(
             command_args,
             stderr=subprocess.STDOUT,
-            text=True,
-            cwd=config['WORKING_DIRECTORY']
+            text=True
         )
         # Log the command output (truncated for safety)
         logging.info(f'Command output: {result[:1000]}')  # Limit output length
