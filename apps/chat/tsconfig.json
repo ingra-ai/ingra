@@ -6,7 +6,7 @@
         "./app/*"
       ],
       "@v1/*": [
-        "app/api/v0/*"
+        "./app/api/v1/*"
       ],
       "@css/*": [
         "./styles/*"
