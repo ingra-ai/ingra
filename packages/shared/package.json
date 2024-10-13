@@ -16,6 +16,7 @@
     "./data/activeSession": "./src/data/activeSession.ts",
     "./data/oauthToken": "./src/data/oauthToken.ts",
     "./data/auth": "./src/data/auth.ts",
+    "./data/chat": "./src/data/chat.ts",
     "./data/auditLog": "./src/data/auditLog.ts",
     "./data/apiKey": "./src/data/apiKey.ts",
     "./data/auth/session/types": "./src/data/auth/session/types.ts",
