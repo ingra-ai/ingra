@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 import { APP_DESCRIPTION, APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
-import '@css/globals.scss';
 import { Toaster } from '@repo/components/ui/toaster';
 import { HotjarAnalytics } from '@repo/components/analytics/HotjarAnalytics';
+import { ThemeProvider } from '@repo/components/theme/theme-provider';
+import '@css/globals.scss';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import LayoutWithNav from '@/components/layouts/LayoutWithNav';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -14,12 +17,13 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   title: APP_NAME,
-  description: `Secure your access to ${APP_NAME}, the open-source personalized AI assistant platform. Experience seamless sign-in with advanced authentication features designed for developers building custom LLM functions and tool integrations.`,
+  description: `${APP_NAME} Chat, unlimited function tool calling AI assistant.`,
   robots: 'noindex, nofollow',
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const bodyClasses = cn(fontSans.className);
+  const authSession = await getAuthSession();
 
   return (
     <html lang="en">
@@ -28,7 +32,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <HotjarAnalytics />
       </head>
       <body className={bodyClasses} data-testid="layout-body">
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <LayoutWithNav authSession={authSession || undefined}>{children}</LayoutWithNav>;
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>

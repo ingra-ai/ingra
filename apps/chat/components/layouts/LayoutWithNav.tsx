@@ -7,7 +7,7 @@ import { AuthUserMenu } from '@repo/components/navs/menu/AuthUserMenu';
 import { BreadcrumbNav } from '@repo/components/navs/menu/BreadcrumbNav';
 import { Navlink } from '@repo/components/navs/types';
 import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
-import { CHAT_APP_URL, DOCS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
+import { CHAT_APP_URL, DOCS_APP_URL, HUBS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
 import { usePathname } from 'next/navigation';
 import { generateBreadcrumbItems } from './generateBreadcrumbItems';
 
@@ -22,20 +22,18 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     {
       title: 'Marketplace',
       description: 'Browse public collections and functions shared by other users.',
-      href: '/marketplace/collections'
+      href: HUBS_APP_URL + '/marketplace/collections'
     },
     {
       title: 'Overview',
       description: 'Provides a summary of user activities, including usage metrics of various utilities and services.',
-      href: '/overview/dashboard'
+      href: HUBS_APP_URL + '/overview/dashboard'
     },
-    /*
     {
       title: 'Chat',
       description: 'Chat with the AI assistant.',
-      href: CHAT_APP_URL
+      href: '/',
     },
-    */
     {
       title: 'Docs',
       description: 'Learn how to use the platform and its features.',
@@ -83,8 +81,13 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const pathname = usePathname();
   const classes = cn('relative pb-64', className);
 
-  const mainClasses = cn('relative z-20 overflow-y-auto px-2 sm:px-0', 'transition-padding duration-300 ease-in-out', {
-  });
+  const mainClasses = cn(
+    'relative z-20 overflow-y-auto px-2 sm:px-0', 
+    'transition-padding duration-300 ease-in-out', 
+    'absolute top-0 left-0 right-0',
+    {
+    }
+  );
 
   return (
     <div className={classes} data-testid="layout-with-nav" {...restOfDivProps}>
@@ -99,10 +102,10 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
         </div>
       </Navbar>
 
-      <BreadcrumbNav
+      {/* <BreadcrumbNav
         className="py-2 my-4 xl:container px-2 sm:px-8"
         items={ generateBreadcrumbItems(pathname, authSession) } 
-      />
+      /> */}
 
       <main className={mainClasses}>{children}</main>
     </div>

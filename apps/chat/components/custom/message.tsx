@@ -4,6 +4,10 @@ import { Attachment, ToolInvocation } from "ai";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+
 import { BotIcon, UserIcon } from "./icons";
 import { Markdown } from "@repo/components/custom";
 import { PreviewAttachment } from "./preview-attachment";
@@ -46,17 +50,18 @@ export const Message = ({
 
                 return (
                   <div key={toolCallId}>
-                    {/* {toolName === "getWeather" ? (
-                      <Weather weatherAtLocation={result} />
-                    ) : null} */}
-                    Result: { JSON.stringify(result) }
+                    {toolName === "getWeather" ? (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} className="prose prose-sm dark:prose-invert">
+                      {`\`\`\`json${JSON.stringify(result, null, 2)}\`\`\`.`}
+                    </ReactMarkdown>
+                    ) : null}
                   </div>
                 );
               } else {
                 return (
                   <div key={toolCallId} className="skeleton">
                     {/* {toolName === "getWeather" ? <Weather /> : null} */}
-                    Other State: { state }
+                    Running Tools: { toolName }
                   </div>
                 );
               }
