@@ -274,6 +274,7 @@ model FunctionExecutionLog {
 
 model Chat {
   id          String   @id @default(uuid()) @db.Uuid
+  name        String?  @db.VarChar(128) @default("")
   messages    Json     @db.JsonB
   userId      String   @db.Uuid
   user        User     @relation(fields: [userId], references: [id])
