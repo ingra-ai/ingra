@@ -1,11 +1,11 @@
 "use client";
 
+import { useScrollToBottom } from "@repo/components/custom";
 import { Attachment, Message } from "ai";
 import { useChat } from "ai/react";
 import { useState } from "react";
 
 import { Message as PreviewMessage } from "@/components/custom/message";
-import { useScrollToBottom } from "@repo/components/custom";
 
 import { MultimodalInput } from "./multimodal-input";
 import { Overview } from "./overview";
@@ -27,9 +27,7 @@ export function Chat({
       },
     });
 
-  const [messagesContainerRef, messagesEndRef] =
-    useScrollToBottom<HTMLDivElement>();
-
+  const [messagesContainerRef, messagesEndRef] = useScrollToBottom<HTMLDivElement>();
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
 
   return (

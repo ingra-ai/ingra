@@ -1,103 +1,38 @@
-import { CoreMessage, CoreToolMessage, Message, ToolInvocation } from "ai";
-import { notFound } from "next/navigation";
-import { Chat as PreviewChat } from "@/components/custom/chat";
-import { getChatById } from "@repo/shared/data/chat";
-import type { Chat } from "@repo/db/prisma";
-import { generateUUID } from "@/lib/utils";
 import { getAuthSession } from "@repo/shared/data/auth/session";
+import { getChatById } from "@repo/shared/data/chat";
+import { isUuid } from "@repo/shared/lib/utils";
+import { CoreMessage } from "ai";
+import { notFound } from "next/navigation";
 
-function addToolMessageToChat({
-  toolMessage,
-  messages,
-}: {
-  toolMessage: CoreToolMessage;
-  messages: Array<Message>;
-}): Array<Message> {
-  return messages.map((message) => {
-    if (message.toolInvocations) {
-      return {
-        ...message,
-        toolInvocations: message.toolInvocations.map((toolInvocation) => {
-          const toolResult = toolMessage.content.find(
-            (tool) => tool.toolCallId === toolInvocation.toolCallId,
-          );
+import { Chat as PreviewChat } from "@/components/custom/chat";
+import { convertToUIMessages } from "@/lib/utils";
 
-          if (toolResult) {
-            return {
-              ...toolInvocation,
-              state: "result",
-              result: toolResult.result,
-            };
-          }
 
-          return toolInvocation;
-        }),
-      };
-    }
+type Props = {
+  params: { chatId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
-    return message;
-  });
-}
-
-function convertToUIMessages(messages: Array<CoreMessage>): Array<Message> {
-  return messages.reduce((chatMessages: Array<Message>, message) => {
-    if (message.role === "tool") {
-      return addToolMessageToChat({
-        toolMessage: message as CoreToolMessage,
-        messages: chatMessages,
-      });
-    }
-
-    let textContent = "";
-    let toolInvocations: Array<ToolInvocation> = [];
-
-    if (typeof message.content === "string") {
-      textContent = message.content;
-    } else if (Array.isArray(message.content)) {
-      for (const content of message.content) {
-        if (content.type === "text") {
-          textContent += content.text;
-        } else if (content.type === "tool-call") {
-          toolInvocations.push({
-            state: "call",
-            toolCallId: content.toolCallId,
-            toolName: content.toolName,
-            args: content.args,
-          });
-        }
-      }
-    }
-
-    chatMessages.push({
-      id: generateUUID(),
-      role: message.role,
-      content: textContent,
-      toolInvocations,
-    });
-
-    return chatMessages;
-  }, []);
-}
-
-export default async function Page({ params }: { params: any }) {
-  const { id } = params;
+export default async function Page(props: Props) {
+  const { params, searchParams } = props;
+  const { chatId } = params;
   const authSession = await getAuthSession();
 
-  if ( !authSession ) {
+  if ( !authSession || !isUuid(chatId) ) {
     return notFound();
   }
 
-  const chatFromDb = await getChatById(id, authSession.userId);
+  const chatFromDb = await getChatById<CoreMessage>(chatId, authSession.userId);
 
-  if (!chatFromDb) {
-    notFound();
+  if (chatFromDb) {
+    const chat = {
+      ...chatFromDb,
+      messages: convertToUIMessages(chatFromDb.messages),
+    };
+
+    return <PreviewChat key={chat.id} id={chat.id} initialMessages={chat.messages} />;
   }
-
-  // type casting
-  const chat = {
-    ...chatFromDb,
-    messages: convertToUIMessages(chatFromDb.messages as Array<CoreMessage>),
-  };
-
-  return <PreviewChat id={chat.id} initialMessages={chat.messages} />;
+  else {
+    return <PreviewChat key={chatId} id={chatId} initialMessages={[]} />;
+  }
 }

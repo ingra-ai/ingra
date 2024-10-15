@@ -1,7 +1,7 @@
-import { convertFunctionRecordToOpenApiSchema } from '@repo/shared/utils/functions/convertFunctionRecordToOpenApiSchema';
+import db from '@repo/db/client';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { USERS_API_FUNCTION_URI, USERS_API_COLLECTION_FUNCTION_URI } from '@repo/shared/lib/constants';
-import db from '@repo/db/client';
+import { convertFunctionRecordToOpenApiSchema } from '@repo/shared/utils/functions/convertFunctionRecordToOpenApiSchema';
 
 export async function generateOpenApiSchema(authSession: AuthSessionResponse) {
   if (!authSession || !authSession.user.id) {

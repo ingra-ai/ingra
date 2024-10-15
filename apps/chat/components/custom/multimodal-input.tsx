@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@repo/components/ui/button";
+import { Textarea } from "@repo/components/ui/textarea";
+import { useToast } from '@repo/components/ui/use-toast';
 import { Attachment, ChatRequestOptions, CreateMessage, Message } from "ai";
 import { motion } from "framer-motion";
 import React, {
@@ -11,12 +14,10 @@ import React, {
   SetStateAction,
   ChangeEvent,
 } from "react";
-import { useToast } from '@repo/components/ui/use-toast';
 
 import { ArrowUpIcon, PaperclipIcon, StopIcon } from "./icons";
 import { PreviewAttachment } from "./preview-attachment";
-import { Button } from "@repo/components/ui/button";
-import { Textarea } from "@repo/components/ui/textarea";
+
 
 const suggestedActions = [
   {

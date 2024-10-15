@@ -1,10 +1,10 @@
-import { handleFetch } from '@repo/shared/utils/handleFetch';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { HUBS_APP_URL } from '@repo/shared/lib/constants';
 // import { getAuthSwaggerSpec } from '@v1/me/swagger/config';
-import { OpenAI } from 'openai';
 import { Logger } from '@repo/shared/lib/logger';
+import { handleFetch } from '@repo/shared/utils/handleFetch';
 import { type DataMessage } from 'ai';
+import { OpenAI } from 'openai';
 
 const getApiDetails = async (authSession: AuthSessionResponse, toolName: string) => {
   // const authSwaggerSpec = await getAuthSwaggerSpec(authSession);

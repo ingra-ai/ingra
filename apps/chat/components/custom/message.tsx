@@ -1,15 +1,14 @@
 "use client";
 
+import { Markdown } from "@repo/components/custom";
 import { Attachment, ToolInvocation } from "ai";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
-
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import remarkGfm from 'remark-gfm';
 
 import { BotIcon, UserIcon } from "./icons";
-import { Markdown } from "@repo/components/custom";
 import { PreviewAttachment } from "./preview-attachment";
 
 export const Message = ({

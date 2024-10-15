@@ -24,10 +24,10 @@
     "@repo/shared": "workspace:*",
     "input-otp": "^1.2.4",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.451.0",
-    "next": "^14.2.15",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "lucide-react": "^0.453.0",
+    "next": "15.0.0-canary.152",
+    "react": "19.0.0-rc-7771d3a7-20240827",
+    "react-dom": "19.0.0-rc-7771d3a7-20240827",
     "react-hook-form": "^7.53.0",
     "sass": "^1.79.5",
     "zod": "^3.23.8"
@@ -40,15 +40,15 @@
     "@testing-library/react": "^16.0.1",
     "@types/jest": "^29.5.13",
     "@types/lodash": "^4.17.10",
-    "@types/node": "^22.7.4",
+    "@types/node": "^22.7.5",
     "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
+    "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-extended": "^3.0.7",
     "postcss": "^8",
-    "tailwindcss": "^3.4.13",
+    "tailwindcss": "^3.4.14",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },
@@ -57,7 +57,6 @@
     "react-dom": "18.3.1"
   },
   "pnpm": {
-    "overrides": {
-    }
+    "overrides": {}
   }
 }

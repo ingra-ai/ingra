@@ -1,15 +1,17 @@
 'use client';
-import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
-import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-import { Navbar } from '@repo/components/navs/navbar';
-import { cn } from '@repo/shared/lib/utils';
 import { AuthUserMenu } from '@repo/components/navs/menu/AuthUserMenu';
 import { BreadcrumbNav } from '@repo/components/navs/menu/BreadcrumbNav';
+import { Navbar } from '@repo/components/navs/navbar';
 import { Navlink } from '@repo/components/navs/types';
-import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
 import { CHAT_APP_URL, DOCS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
+import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
+import { cn } from '@repo/shared/lib/utils';
 import { usePathname } from 'next/navigation';
+import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
+
 import { generateBreadcrumbItems } from './generateBreadcrumbItems';
+
+import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 
 
 type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {

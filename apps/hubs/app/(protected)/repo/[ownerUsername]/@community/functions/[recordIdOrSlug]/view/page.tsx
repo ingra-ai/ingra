@@ -1,8 +1,8 @@
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
-import { getAuthSession } from '@repo/shared/data/auth/session';
 import { CommunityFunctionReadOnlyView } from '@repo/components/data/functions/community/CommunityFunctionReadOnlyView';
-import { notFound } from 'next/navigation';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { ownerUsername: string; recordIdOrSlug: string };

@@ -1,19 +1,20 @@
 'use client';
-import type { FC } from 'react';
-import { startTransition, useState } from 'react';
-import { OAuthToken } from '@repo/db/prisma';
 import { TrashIcon } from '@heroicons/react/20/solid';
-import { format } from 'date-fns/format';
-import { Button } from '@repo/components/ui/button';
-import { cn } from '@repo/shared/lib/utils';
-import { useToast } from '@repo/components/ui/use-toast';
-import { useRouter } from 'next/navigation';
-import { RefreshCcw, RocketIcon, TentIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@repo/components/ui/dialog';
-import { APP_NAME } from '@repo/shared/lib/constants';
-import { revokeOAuth, setTokenAsDefault } from '@repo/shared/actions/oauth';
-import { Badge } from '@repo/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@repo/components/ui/alert';
+import { Badge } from '@repo/components/ui/badge';
+import { Button } from '@repo/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@repo/components/ui/dialog';
+import { useToast } from '@repo/components/ui/use-toast';
+import { OAuthToken } from '@repo/db/prisma';
+import { revokeOAuth, setTokenAsDefault } from '@repo/shared/actions/oauth';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import { cn } from '@repo/shared/lib/utils';
+import { format } from 'date-fns/format';
+import { RefreshCcw, RocketIcon, TentIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { startTransition, useState } from 'react';
+
+import type { FC } from 'react';
 
 type OAuthListProps = {
   oAuthTokens: OAuthToken[];
@@ -34,7 +35,7 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
     label: 'Unknown',
     alert: unableToRenew ? (
       <Alert variant="warning" className="text-xs">
-        <RocketIcon className="h-4 w-4 dark:text-gray-300 text-gray-700 fill-gray-300 dark:fill-gray-700 fill-border" />
+        <RocketIcon className="h-4 w-4 dark:text-gray-300 text-gray-700 fill-gray-300 dark:fill-gray-700" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           Auto-refresh feature has been disabled for this OAuth. To re-connect your account, you need to&nbsp;

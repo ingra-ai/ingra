@@ -1,9 +1,12 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
-import { getAuthSwaggerSpec } from './config';
-import { redirect, RedirectType } from 'next/navigation';
 import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
+import { redirect, RedirectType } from 'next/navigation';
+
+import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
+
+import { getAuthSwaggerSpec } from './config';
+
 
 import '@css/swagger.scss';
 

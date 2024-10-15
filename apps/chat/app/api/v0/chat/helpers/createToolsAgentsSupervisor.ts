@@ -1,10 +1,12 @@
-import { ChatOpenAI } from '@langchain/openai';
-import { JsonOutputToolsParser } from 'langchain/output_parsers';
 import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
-import { END } from '@langchain/langgraph';
-import { AgentStateChannels, ReturnAgentNode } from './types';
 import { RunnableConfig } from '@langchain/core/runnables';
+import { END } from '@langchain/langgraph';
+import { ChatOpenAI } from '@langchain/openai';
 import { IS_PROD } from '@repo/shared/lib/constants';
+import { JsonOutputToolsParser } from 'langchain/output_parsers';
+
+import { AgentStateChannels, ReturnAgentNode } from './types';
+
 
 const systemPrompt =
   'You are a supervisor tasked with managing a conversation between the' +

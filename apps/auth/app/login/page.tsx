@@ -1,12 +1,15 @@
-import { APP_LANDING_PAGE_URL, APP_LEGAL_COOKPOL_URL, APP_LEGAL_PRIVACY_POLICY_URL, APP_LEGAL_TOS_URL, APP_NAME } from '@repo/shared/lib/constants';
-import Image from 'next/image';
-import { MagicLoginForm } from './MagicLoginForm';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { redirect, RedirectType } from 'next/navigation';
-import { Code, Cpu, Cloud, Rocket, Link, Users } from 'lucide-react';
-import { FeatureCard } from './FeatureCard';
-import type { Metadata } from 'next';
+import { APP_LANDING_PAGE_URL, APP_LEGAL_COOKPOL_URL, APP_LEGAL_PRIVACY_POLICY_URL, APP_LEGAL_TOS_URL, APP_NAME } from '@repo/shared/lib/constants';
 import { isSafeRedirectUrl } from '@repo/shared/lib/utils/isSafeRedirectUrl';
+import { Code, Cpu, Cloud, Rocket, Link, Users } from 'lucide-react';
+import Image from 'next/image';
+import { redirect, RedirectType } from 'next/navigation';
+
+import { FeatureCard } from './FeatureCard';
+import { MagicLoginForm } from './MagicLoginForm';
+
+import type { Metadata } from 'next';
+
 
 export const metadata: Metadata = {
   title: ['Sign In', APP_NAME].join(' | '),

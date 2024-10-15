@@ -1,6 +1,6 @@
-import { getAuthSession } from '@repo/shared/data/auth/session';
 import { AssistantForm } from '@repo/components/ai/AssistantForm';
 import { ChatForm } from '@repo/components/ai/ChatForm';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 import { BAKA_ASSISTANT_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, ME_API_ROOT_PATH } from '@repo/shared/lib/constants';
 import { BotMessageSquareIcon } from 'lucide-react';
 import { cookies } from 'next/headers';

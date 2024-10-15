@@ -1,16 +1,17 @@
-import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { AIMessage } from '@langchain/core/messages';
 import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
 import { RunnableConfig } from '@langchain/core/runnables';
-import { AIMessage } from '@langchain/core/messages';
+import { DynamicStructuredTool } from '@langchain/core/tools';
+import { ChatOpenAI } from '@langchain/openai';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { HUBS_APP_URL, USERS_API_COLLECTION_FUNCTION_URI } from '@repo/shared/lib/constants';
 import { Logger } from '@repo/shared/lib/logger';
-import { AgentStateChannels, CollectionForToolsGetPayload, ReturnAgentNode } from './types';
-import { getCollectionsForTools } from './getCollectionsForTools';
-import { DynamicStructuredTool } from '@langchain/core/tools';
 import { functionArgsToZod } from '@repo/shared/utils/functions/functionArgsToZod';
 import { handleFetch } from '@repo/shared/utils/handleFetch';
-import { ChatOpenAI } from '@langchain/openai';
 import { AgentExecutor, createOpenAIToolsAgent } from 'langchain/agents';
+
+import { getCollectionsForTools } from './getCollectionsForTools';
+import { AgentStateChannels, CollectionForToolsGetPayload, ReturnAgentNode } from './types';
 
 // Prompt template must have "input" and "agent_scratchpad input variables"
 const promptTemplate = ChatPromptTemplate.fromMessages([

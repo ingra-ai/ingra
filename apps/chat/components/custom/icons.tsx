@@ -20,7 +20,7 @@ export const BotIcon = () => {
 export const UserIcon = () => {
   return (
     <svg
-      data-testid="geist-icon"
+      data-testid="user-icon"
       height="16"
       strokeLinejoin="round"
       viewBox="0 0 16 16"
@@ -199,7 +199,7 @@ export const LogoOpenAI = ({ size = 16 }: { size?: number }) => {
 export const LogoGoogle = ({ size = 16 }: { size?: number }) => {
   return (
     <svg
-      data-testid="geist-icon"
+      data-testid="logo-google-icon"
       height={size}
       strokeLinejoin="round"
       viewBox="0 0 16 16"
@@ -362,7 +362,7 @@ export const LoaderIcon = ({ size = 16 }: { size?: number }) => {
 export const UploadIcon = ({ size = 16 }: { size?: number }) => {
   return (
     <svg
-      data-testid="geist-icon"
+      data-testid="upload-icon"
       height={size}
       strokeLinejoin="round"
       viewBox="0 0 16 16"

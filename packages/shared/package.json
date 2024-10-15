@@ -78,14 +78,14 @@
     "@types/eslint": "^8.56.5",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.10",
-    "@types/node": "^22.7.4",
+    "@types/node": "^22.7.5",
     "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
+    "@types/react-dom": "^18.3.1",
     "eslint": "^8.57.0",
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.669.0",
+    "@aws-sdk/client-ses": "^3.670.0",
     "@octokit/rest": "^21.0.2",
     "cheerio": "1.0.0",
     "chrono-node": "^2.7.7",
@@ -97,7 +97,7 @@
     "lodash": "^4.17.21",
     "mixpanel": "^0.18.0",
     "node-fetch": "^3.3.2",
-    "tailwind-merge": "^2.5.3",
+    "tailwind-merge": "^2.5.4",
     "zod": "^3.23.8"
   },
   "peerDependencies": {

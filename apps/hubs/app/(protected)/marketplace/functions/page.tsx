@@ -1,10 +1,10 @@
 'use server';
-import { getAuthSession } from '@repo/shared/data/auth/session';
-import { cn } from '@repo/shared/lib/utils';
+import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
-import { FunctionSearchList } from '@repo/components/data/functions';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
+import { cn } from '@repo/shared/lib/utils';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();

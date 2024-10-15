@@ -1,14 +1,13 @@
 'use server';
-import { APP_SESSION_COOKIE_NAME } from '@repo/shared/lib/constants';
-import { cookies } from 'next/headers';
-import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import db from '@repo/db/client';
-import { Logger } from '@repo/shared/lib/logger';
-import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
-import { NextRequest } from 'next/server';
-import { censorEmail } from '@repo/shared/lib/utils';
-import { redirect, RedirectType } from 'next/navigation';
 import { getAuthSession } from '@repo/shared/data/auth/session';
+import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
+import { APP_SESSION_COOKIE_NAME , APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
+import { Logger } from '@repo/shared/lib/logger';
+import { censorEmail } from '@repo/shared/lib/utils';
+import { cookies } from 'next/headers';
+import { redirect, RedirectType } from 'next/navigation';
+import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const jwtCookie = request.cookies.get(APP_SESSION_COOKIE_NAME);

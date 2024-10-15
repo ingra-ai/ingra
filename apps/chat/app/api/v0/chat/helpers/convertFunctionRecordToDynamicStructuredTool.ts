@@ -1,11 +1,11 @@
 import { DynamicStructuredTool } from '@langchain/community/tools/dynamic';
 import { Prisma } from '@repo/db/prisma';
-import { functionArgsToZod } from '@repo/shared/utils/functions/functionArgsToZod';
-import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
-import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
+import { functionArgsToZod } from '@repo/shared/utils/functions/functionArgsToZod';
+import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
 
 type FunctionForLangchainPayload = Prisma.FunctionGetPayload<{
   select: {

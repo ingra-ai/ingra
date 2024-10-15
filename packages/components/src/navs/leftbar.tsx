@@ -6,6 +6,7 @@ import { Button } from '@repo/components/ui/button';
 import { AlignLeftIcon } from 'lucide-react';
 import { DialogTitle } from '@repo/components/ui/dialog';
 import { LeftbarProps, SheetLeftbarProps } from './types';
+import { DialogProps } from '@radix-ui/react-dialog';
 
 export function Leftbar(props: PropsWithChildren<LeftbarProps>) {
   const { children } = props;

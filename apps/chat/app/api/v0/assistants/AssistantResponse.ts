@@ -1,5 +1,6 @@
 import { BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE } from '@repo/shared/lib/constants';
 import { type AssistantResponse as VercelAssistantResponse, AssistantMessage, formatStreamPart, DataMessage } from 'ai';
+
 import type { AssistantStream } from 'openai/lib/AssistantStream.mjs';
 import type { Run } from 'openai/resources/beta/threads/runs/runs.mjs';
 

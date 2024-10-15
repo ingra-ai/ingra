@@ -9,7 +9,7 @@ import { SheetClose } from '../ui/sheet';
 import { APP_GITHUB_URL, APP_NAME, PARENT_APP_URL } from '@repo/shared/lib/constants';
 import { PropsWithChildren } from 'react';
 import { NavbarProps, NavMenuProps } from './types';
-import { useTheme } from 'next-themes';
+import { cn } from '@repo/shared/lib/utils';
 
 export function Navbar(props: PropsWithChildren<NavbarProps>) {
   const { 
@@ -60,9 +60,10 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
   );
 }
 
-export function Logo() {
+export function Logo({ className }: { className?: string }) {
+  const classes = cn('flex items-center gap-2.5', className);
   return (
-    <Link href={PARENT_APP_URL} className="flex items-center gap-2.5">
+    <Link href={PARENT_APP_URL} className={ classes }>
       <Image src={ '/static/brand/ingra-logo-dark.svg' } width={50} height={50} className="h-7 w-auto hidden lg:block" alt={ APP_NAME + ' Logo'} suppressHydrationWarning />
       <h2 className="text-md font-light sr-only">{APP_NAME.toUpperCase()}</h2>
     </Link>

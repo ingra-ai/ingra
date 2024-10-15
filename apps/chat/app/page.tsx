@@ -1,9 +1,12 @@
-import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
-import { RedirectType, redirect } from 'next/navigation';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { generateUUID } from "@/lib/utils";
-import { Chat } from "@/components/custom/chat";
+import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+
+import { Chat } from "@/components/custom/chat";
+import { generateUUID } from "@/lib/utils";
+
+
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();

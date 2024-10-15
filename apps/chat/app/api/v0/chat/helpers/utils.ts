@@ -1,5 +1,5 @@
-import { Message as VercelChatMessage } from 'ai';
 import { HumanMessage, AIMessage, ChatMessage, BaseMessage } from '@langchain/core/messages';
+import { Message as VercelChatMessage } from 'ai';
 
 export const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
   if (message.role === 'user') {

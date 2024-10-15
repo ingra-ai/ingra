@@ -1,10 +1,11 @@
-import type { FC } from 'react';
-import { CogIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@repo/components/ui/alert';
-import Link from 'next/link';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { HUBS_SETTINGS_PROFILE_URI, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, DOCS_APP_URL } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
-import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { CogIcon } from 'lucide-react';
+import Link from 'next/link';
+
+import type { FC } from 'react';
 
 type SuggestionsListProps = {
   authSession: AuthSessionResponse;

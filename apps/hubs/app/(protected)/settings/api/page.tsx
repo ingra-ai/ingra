@@ -1,11 +1,12 @@
-import { getAuthSession } from '@repo/shared/data/auth/session';
 import db from '@repo/db/client';
-import { ApiKeysTable } from './ApiKeysTable';
-import { RedirectType, redirect } from 'next/navigation';
-import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
-import { APP_NAME } from '@repo/shared/lib/constants';
-import type { Metadata } from 'next';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { APP_AUTH_LOGIN_URL , APP_NAME } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+
+import { ApiKeysTable } from './ApiKeysTable';
+
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: ['API Keys', APP_NAME].join(' | '),

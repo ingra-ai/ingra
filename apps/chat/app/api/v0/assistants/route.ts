@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import OpenAI from 'openai';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
 import { APP_SESSION_COOKIE_NAME, BAKA_ASSISTANT_ID, BAKA_ASSISTANT_USER_THREAD_COOKIE_MAX_AGE, BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME, OPENAI_API_KEY } from '@repo/shared/lib/constants';
 import { Logger } from '@repo/shared/lib/logger';
 import { ActionError } from '@repo/shared/types';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
 import { type Message } from 'ai';
+import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
+
 import { AssistantResponse } from './AssistantResponse';
 import { actionToolCalls } from './toolsHandler';
 

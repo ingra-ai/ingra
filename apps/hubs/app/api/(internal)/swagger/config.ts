@@ -5,9 +5,9 @@
  */
 
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_PACKAGE_VERSION } from '@repo/shared/lib/constants';
-import { createSwaggerSpec } from 'next-swagger-doc';
-import { kv } from '@vercel/kv';
 import { Logger } from '@repo/shared/lib/logger';
+import { kv } from '@vercel/kv';
+import { createSwaggerSpec } from 'next-swagger-doc';
 
 export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]>;
 

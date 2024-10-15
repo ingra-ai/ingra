@@ -1,11 +1,12 @@
-import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { AIMessage } from '@langchain/core/messages';
 import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
 import { RunnableConfig } from '@langchain/core/runnables';
-import { AIMessage } from '@langchain/core/messages';
-import { AgentStateChannels, ReturnAgentNode } from './types';
 import { ToolInterface } from '@langchain/core/tools';
 import { ChatOpenAI } from '@langchain/openai';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { AgentExecutor, createReactAgent } from 'langchain/agents';
+
+import { AgentStateChannels, ReturnAgentNode } from './types';
 
 const agentName = 'InternalAgent';
 const agentDescription = '';

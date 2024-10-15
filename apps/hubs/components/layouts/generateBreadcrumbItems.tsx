@@ -1,8 +1,9 @@
 'use client';
-import { BreadcrumbNavItem } from "@repo/components/navs/types";
-import type { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 import { HomeIcon } from '@heroicons/react/24/outline';
+import { BreadcrumbNavItem } from "@repo/components/navs/types";
 import { SquareFunctionIcon, FolderIcon } from 'lucide-react';
+
+import type { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 
 // Helper function to capitalize the first letter
 const capitalizeFirstLetter = (str: string): string => {
