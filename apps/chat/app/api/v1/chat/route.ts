@@ -49,13 +49,11 @@ export async function POST(request: NextRequest) {
           );
 
           const weatherData = await response.json();
-          console.log({ weatherData });
           return weatherData;
         },
       },
     },
     onFinish: async ({ responseMessages }) => {
-      console.log({ responseMessages: JSON.stringify(responseMessages) });
       if (authSession && authSession?.userId) {
         try {
           await saveChat(

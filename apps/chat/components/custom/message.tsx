@@ -8,6 +8,8 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 
+import { Weather } from "@/components/gen/weather";
+
 import { BotIcon, UserIcon } from "./icons";
 import { PreviewAttachment } from "./preview-attachment";
 
@@ -49,18 +51,20 @@ export const Message = ({
 
                 return (
                   <div key={toolCallId}>
-                    {toolName === "getWeather" ? (
+                    {/* {toolName === "getWeather" ? (
                     <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} className="prose prose-sm dark:prose-invert">
                       {`\`\`\`json${JSON.stringify(result, null, 2)}\`\`\`.`}
                     </ReactMarkdown>
+                    ) : null} */}
+                    {toolName === "getWeather" ? (
+                      <Weather weatherAtLocation={result} />
                     ) : null}
                   </div>
                 );
               } else {
                 return (
                   <div key={toolCallId} className="skeleton">
-                    {/* {toolName === "getWeather" ? <Weather /> : null} */}
-                    Running Tools: { toolName }
+                    {toolName === "getWeather" ? <Weather /> : null}
                   </div>
                 );
               }
