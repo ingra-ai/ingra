@@ -1,12 +1,13 @@
 import { ActionError } from "@repo/shared/types";
 import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
 import { put } from "@vercel/blob";
+import { File as NodeFile } from 'formdata-node';
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const FileSchema = z.object({
   file: z
-    .instanceof(File)
+    .instanceof(NodeFile)
     .refine((file) => file.size <= 5 * 1024 * 1024, {
       message: "File size should be less than 5MB",
     })

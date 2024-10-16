@@ -32,6 +32,7 @@
     "ai": "^3.4.10",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
+    "formdata-node": "^6.0.3",
     "framer-motion": "^11.11.9",
     "langchain": "0.3.2",
     "lodash": "^4.17.21",
