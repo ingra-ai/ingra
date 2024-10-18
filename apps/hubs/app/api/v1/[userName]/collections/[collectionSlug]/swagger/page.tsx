@@ -1,8 +1,10 @@
-import { notFound } from 'next/navigation';
 import { getAuthSession } from '@repo/shared/data/auth/session';
+import { notFound } from 'next/navigation';
+
 import SwaggerDocs from '@app/api/(internal)/swagger/SwaggerDocs';
-import { getMyCollectionAuthSpec } from '../openapi.json/getMyCollectionAuthSpec';
+
 import { getCommunityCollectionSpec } from '../openapi.json/getCommunityCollectionSpec';
+import { getMyCollectionAuthSpec } from '../openapi.json/getMyCollectionAuthSpec';
 import '@css/swagger.scss';
 
 export default async function Page({ params }: { params: { userName: string; collectionSlug: string } }) {

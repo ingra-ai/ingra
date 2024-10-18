@@ -5,9 +5,11 @@ const project = resolve(process.cwd(), "tsconfig.json");
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   extends: [
-    "eslint:recommended",
-    "prettier",
+    "next/core-web-vitals",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     require.resolve("@vercel/style-guide/eslint/next"),
+    "prettier",
     "turbo",
   ],
   globals: {
@@ -18,7 +20,30 @@ module.exports = {
     node: true,
     browser: true,
   },
-  plugins: ["only-warn"],
+  plugins: ["import", "tailwindcss"],
+  rules: {
+    "tailwindcss/no-custom-classname": "off",
+    "tailwindcss/classnames-order": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "index",
+          "object",
+          "type"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ]
+  },
   settings: {
     "import/resolver": {
       typescript: {
@@ -31,5 +56,6 @@ module.exports = {
     ".*.js",
     "node_modules/",
   ],
+  ignorePatterns: ["**/components/ui/**"],
   overrides: [{ files: ["*.js?(x)", "*.ts?(x)"] }],
 };

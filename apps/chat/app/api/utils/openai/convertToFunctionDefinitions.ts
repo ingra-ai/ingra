@@ -1,6 +1,7 @@
 // import type { FunctionTool } from "openai/resources/beta/assistants.mjs";
-import type { FunctionDefinition } from 'openai/resources/shared.mjs';
 import get from 'lodash/get';
+
+import type { FunctionDefinition } from 'openai/resources/shared.mjs';
 
 export function convertToFunctionDefinitions(swaggerSpec: Record<string, any>): FunctionDefinition[] {
   if (!swaggerSpec || typeof swaggerSpec !== 'object') {

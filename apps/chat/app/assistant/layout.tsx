@@ -1,8 +1,10 @@
-import type { ReactNode } from 'react';
-import { Suspense } from 'react';
-import AssistantSkeleton from './loading';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { Suspense } from 'react';
+
+import AssistantSkeleton from './loading';
+
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: ['Assistant', APP_NAME].join(' | '),

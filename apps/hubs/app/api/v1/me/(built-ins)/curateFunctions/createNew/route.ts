@@ -1,16 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { Logger } from '@repo/shared/lib/logger';
-import { validateAction } from '@repo/shared/lib/action-helpers';
-import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from '@repo/shared/schemas/function';
 import { upsertFunction as dataUpsertFunctions } from '@repo/shared/data/functions';
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
-import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
-import isNil from 'lodash/isNil';
-import isBoolean from 'lodash/isBoolean';
-import { z } from 'zod';
+import { validateAction } from '@repo/shared/lib/action-helpers';
 import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { FunctionArgumentSchema, FunctionSchema, FunctionTagsSchema } from '@repo/shared/schemas/function';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import isBoolean from 'lodash/isBoolean';
+import isNil from 'lodash/isNil';
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 /**
  * @swagger

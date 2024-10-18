@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getAuthSwaggerSpec } from '../swagger/config';
-import { APP_AUTH_LOGIN_URL, HUBS_APP_URL } from '@repo/shared/lib/constants';
-import { ActionError } from '@v1/types/api-response';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { RedirectType, redirect } from 'next/navigation';
+import { APP_AUTH_LOGIN_URL, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { ActionError } from '@v1/types/api-response';
+
+import { getAuthSwaggerSpec } from '../swagger/config';
+
 
 /**
  * Returns OpenAPI json file when in development

@@ -1,17 +1,19 @@
 'use client';
 
-import type { FC } from 'react';
-import { useCallback, useState, useTransition } from 'react';
-import { useToast } from '@repo/components/ui/use-toast';
-import { RefreshCcw } from 'lucide-react';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { deleteApiKey } from '@repo/shared/actions/apiKey';
-import { useRouter } from 'next/navigation';
-import { formatDistance } from 'date-fns/formatDistance';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@repo/components/ui/alert-dialog';
-import type { ApiKey } from '@repo/db/prisma';
-import { GenerateApiKeyButton } from './GenerateApiKeyButton';
+import { useToast } from '@repo/components/ui/use-toast';
+import { deleteApiKey } from '@repo/shared/actions/apiKey';
 import { APP_SESSION_API_KEY_NAME } from '@repo/shared/lib/constants';
+import { formatDistance } from 'date-fns/formatDistance';
+import { RefreshCcw } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState, useTransition } from 'react';
+
+import { GenerateApiKeyButton } from './GenerateApiKeyButton';
+
+import type { ApiKey } from '@repo/db/prisma';
+import type { FC } from 'react';
 
 type ApiKeysTableProps = {
   apiKeys: Required<Pick<ApiKey, 'key' | 'lastUsedAt'>>[];

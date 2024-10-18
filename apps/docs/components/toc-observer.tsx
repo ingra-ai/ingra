@@ -1,9 +1,10 @@
 'use client';
 
-import { getDocsTocs } from '@/lib/markdown';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
+
+import { getDocsTocs } from '@/lib/markdown';
 
 type Props = { data: Awaited<ReturnType<typeof getDocsTocs>> };
 

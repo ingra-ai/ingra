@@ -1,4 +1,4 @@
-import { ActionError } from '@v1/types/api-response';
+import { ActionError } from '@repo/shared/types';
 import { z } from 'zod';
 
 /**

@@ -1,11 +1,13 @@
-import type { Metadata } from 'next';
-import { ThemeProvider } from '@repo/components/theme/theme-provider';
 import { Navbar } from '@repo/components/navs/navbar';
+import { ThemeProvider } from '@repo/components/theme/theme-provider';
 import { DOCS_APP_URL, APP_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import { Inter as FontSans } from 'next/font/google';
-import { DOCS_PAGE_ROUTES } from '@/lib/routes-config';
+
 import DocsMenu from '@/components/docs-menu';
 import Search from '@/components/search';
+import { DOCS_PAGE_ROUTES } from '@/lib/routes-config';
+
+import type { Metadata } from 'next';
 import './globals.scss';
 
 export const metadata: Metadata = {
@@ -42,8 +44,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={fontSans.className} suppressHydrationWarning>
+    <html lang="en">
+      <body className={fontSans.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Navbar navlinks={NAVLINKS} sheetChildren={<DocsMenu />}>
             <Search />

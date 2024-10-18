@@ -55,6 +55,7 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
   // Calculate the difference in seconds between the expiry date and the current date
   const diffInSeconds = differenceInSeconds(expiryDate, currentDate);
   if (diffInSeconds > 0) {
+    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).info(`Skipping since it has not been expired. ${diffInSeconds} seconds left.`);
     // Skipping since it has not been expired.
     return null;
   }
@@ -81,6 +82,7 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
   const newTokenResponse = await GoogleOAuthClient.refreshAccessToken();
 
   if (!newTokenResponse?.credentials) {
+    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).error('Failed to refresh access token.');
     return null;
   }
 

@@ -1,11 +1,11 @@
 'use server';
 import { cookies, headers } from 'next/headers';
-import { APP_SESSION_API_KEY_NAME, APP_SESSION_COOKIE_NAME } from '../../../lib/constants';
-import { Logger } from '../../../lib/logger';
+import { APP_SESSION_API_KEY_NAME, APP_SESSION_COOKIE_NAME } from '@repo/shared/lib/constants';
+import { Logger } from '@repo/shared/lib/logger';
 import { AuthSessionResponse, GetAuthSessionOptions } from './types';
 import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
-import { refreshGoogleOAuthCredentials } from '../../../lib/google-oauth/refreshGoogleOAuthCredentials';
-import { deleteOAuthToken, updateOAuthToken } from '../../oauthToken';
+import { refreshGoogleOAuthCredentials } from '@repo/shared/lib/google-oauth/refreshGoogleOAuthCredentials';
+import { deleteOAuthToken, updateOAuthToken } from '@repo/shared/data/oauthToken';
 
 /**
  * Retrieves the authentication session for the current user.
@@ -13,6 +13,7 @@ import { deleteOAuthToken, updateOAuthToken } from '../../oauthToken';
  */
 export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<AuthSessionResponse | null> => {
   const { introspectOAuthTokens = false } = opts || {};
+
   const cookieStore = cookies();
   const headersList = headers();
   const jwt = cookieStore.get(APP_SESSION_COOKIE_NAME)?.value;

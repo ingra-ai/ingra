@@ -1,10 +1,10 @@
 'use client';
 import { Button } from '@repo/components/ui/button';
-import React, { startTransition, useCallback, useState } from 'react';
 // import { destroyProfile } from '@repo/shared/actions/profile';
 import { RefreshCcw } from 'lucide-react';
 // import { toast } from '@repo/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
+import React, { startTransition, useCallback, useState } from 'react';
 
 interface DeleteAccountButtonFormProps {}
 

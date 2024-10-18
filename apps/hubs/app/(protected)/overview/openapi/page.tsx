@@ -1,9 +1,11 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { APP_AUTH_LOGIN_URL, ME_API_ROOT_URL } from '@repo/shared/lib/constants';
-import { redirect, RedirectType } from 'next/navigation';
 import { BracesIcon } from 'lucide-react';
-import { OpenAPISpecLoader } from '@/components/openapi/OpenAPISpecLoader';
 import { headers } from 'next/headers';
+import { redirect, RedirectType } from 'next/navigation';
+
+import { OpenAPISpecLoader } from '@/components/openapi/OpenAPISpecLoader';
+
 
 export default async function Page() {
   const authSession = await getAuthSession();

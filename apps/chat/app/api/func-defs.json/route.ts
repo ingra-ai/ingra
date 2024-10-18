@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSwaggerSpec } from '../../../../hubs/app/api/(internal)/swagger/config';
+
 import { convertToFunctionDefinitions } from '@app/api/utils/openai/convertToFunctionDefinitions';
+
+import { getSwaggerSpec } from '../../../../hubs/app/api/(internal)/swagger/config';
 
 /**
  * Returns OpenAPI yaml file when in production

@@ -1,6 +1,8 @@
-import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
-import MarketplaceFunctionLayout from './loading';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
+
+import MarketplaceFunctionLayout from './loading';
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

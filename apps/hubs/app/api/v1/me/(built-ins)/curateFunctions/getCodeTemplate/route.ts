@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { Logger } from '@repo/shared/lib/logger';
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
-import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
 import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
+import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * @swagger
