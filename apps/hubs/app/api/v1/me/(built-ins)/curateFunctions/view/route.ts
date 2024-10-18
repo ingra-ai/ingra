@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { Logger } from '@repo/shared/lib/logger';
 import { Prisma } from '@repo/db/prisma';
-import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
-import { mixpanel } from '@repo/shared/lib/analytics';
 import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * @swagger

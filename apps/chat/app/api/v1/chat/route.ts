@@ -1,110 +1,102 @@
-/**
- * This file is created by following langgraph tutorial
- * @see https://langchain-ai.github.io/langgraphjs/tutorials/multi_agent/agent_supervisor
- */
+import { openai } from '@ai-sdk/openai';
+import { getAuthSession } from "@repo/shared/data/auth/session";
+import { deleteChatById, getChatById, saveChat } from "@repo/shared/data/chat";
+import { ActionError } from "@repo/shared/types";
+import { apiAuthTryCatch } from "@repo/shared/utils/apiAuthTryCatch";
+import { convertToCoreMessages, Message, streamText } from "ai";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
-import { NextRequest } from 'next/server';
-import { StreamingTextResponse } from 'ai';
-import { convertLangChainMessageToVercelMessage, convertVercelMessageToLangChainMessage } from './helpers/utils';
-import { Message as VercelChatMessage } from 'ai';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { createToolsGraph } from './helpers/toolsGraph';
-import { END } from '@langchain/langgraph';
-import { AgentStateChannels } from './helpers/types';
-import { APP_SESSION_COOKIE_NAME, LANGCHAIN_CHAT_RECURSION_LIMIT } from '@repo/shared/lib/constants';
-import { createToolsAgentsByAuthSession } from './helpers/createToolsAgents';
-import { cookies } from 'next/headers';
+import { customModel } from "@/ai";
 
-// export const runtime = 'nodejs';
-// export const dynamic = 'force-dynamic';
-// export const fetchCache = 'force-no-store';
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const cookieStore = cookies();
-  const appSessionCookie = cookieStore.get(APP_SESSION_COOKIE_NAME);
-  const { returnIntermediateSteps = false } = body || {};
+type ChatJson = {
+  id: string;
+  messages: Array<Message>;
+}
 
-  return await apiAuthTryCatch(async (authSession) => {
-    console.log(' ------------ START --------------');
-    const messages: ReturnType<typeof convertVercelMessageToLangChainMessage> = (body.messages ?? []).filter((message: VercelChatMessage) => ['user', 'assistant'].indexOf(message.role) >= 0).map(convertVercelMessageToLangChainMessage);
+export async function POST(request: NextRequest) {
+  const { id, messages }: ChatJson = await request.json();
+  const authSession = await getAuthSession();
 
-    // const app = await createSimpleGraph(authSession);
-    const app = await createToolsGraph(authSession, {
-      headers: {
-        Cookie: `${APP_SESSION_COOKIE_NAME}=${appSessionCookie?.value}`,
+  if ( !authSession ) {
+    return NextResponse.json({
+      status: 'error',
+      message: "Unauthorized",
+      data: null,
+    }, { status: 401 });
+  }
+
+  // let result: Awaited<ReturnType<typeof streamText<any>>>;
+  const coreMessages = convertToCoreMessages(messages);
+
+  const result = await streamText({
+    model: customModel,
+    system:
+      "you are a friendly assistant! keep your responses concise and helpful.",
+    messages: coreMessages,
+    maxSteps: 5,
+    tools: {
+      getWeather: {
+        description: "Get the current weather at a location",
+        parameters: z.object({
+          latitude: z.number(),
+          longitude: z.number(),
+        }),
+        execute: async ({ latitude, longitude }) => {
+          const response = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&hourly=temperature_2m&daily=sunrise,sunset&timezone=auto`,
+          );
+
+          const weatherData = await response.json();
+          return weatherData;
+        },
       },
-    });
-
-    const textEncoder = new TextEncoder();
-    const readableStream = new ReadableStream({
-      async start(controller) {
-        const graphStream = await app.stream(
-          {
-            messages,
-          },
-          {
-            debug: false,
-            configurable: {
-              threadId: 'test-threadid',
-            },
-            recursionLimit: LANGCHAIN_CHAT_RECURSION_LIMIT,
-            callbacks: [
-              {
-                handleLLMNewToken(token) {
-                  // console.log('\n| token: ', { token });
-                  controller.enqueue(textEncoder.encode(token));
-                },
-                handleToolStart(tool) {
-                  console.log('\n| Tool Start: ', { tool });
-                },
-                handleToolEnd(tool) {
-                  console.log('\n| Tool End: ', { tool });
-                },
-                handleAgentAction(agentAction) {
-                  console.log('\n| Agent Action: ', { agentAction });
-                },
-                handleText(text, runId) {
-                  console.log('\n| Text: ', { text, runId });
-                  // controller.enqueue(textEncoder.encode(text));
-                },
-              },
-            ],
-
-            /**
-             * 'updates': Example output for each streamResults iteration { output: { GoogleSuiteAgent: { messages: [Array] } } }
-             * 'values': Example output for each streamResults iteration { output: { messages: [Array] } }
-             */
-            streamMode: 'updates',
-          }
-        );
-
-        for await (const output of graphStream) {
-          for (const [nodeName, stateValue] of Object.entries<AgentStateChannels>(output)) {
-            const lastMessage = stateValue?.messages.slice(-1)[0];
-            const messageContent = typeof lastMessage?.content === 'string' ? lastMessage.content : '';
-            console.log(`:: nodeName|${nodeName} `, {
-              stateValue,
-              messageContent: messageContent ?? 'No content',
-            });
-
-            if (messageContent) {
-              // controller.enqueue(textEncoder.encode(messageContent));
-            }
-          }
-
-          // if ( output?.next === END ) {
-          //   const lastMessage = output?.messages.slice(-1)[0];
-          //   const messageContent = typeof lastMessage.content === 'string' ? lastMessage.content : '';
-          //   controller.enqueue(textEncoder.encode(messageContent));
-          // }
+    },
+    onFinish: async ({ responseMessages }) => {
+      if (authSession && authSession?.userId) {
+        try {
+          await saveChat(
+            id,
+            [...coreMessages, ...responseMessages],
+            authSession.userId,
+          );
+        } catch (error) {
+          console.error("Failed to save chat");
         }
+      }
+    },
+    experimental_telemetry: {
+      isEnabled: true,
+      functionId: "stream-text",
+    },
+  });
 
-        // Cleanup
-        controller.close();
-      },
-    });
+  return result.toDataStreamResponse({});
+}
 
-    return new StreamingTextResponse(readableStream);
+export async function DELETE(request: NextRequest) {
+  return await apiAuthTryCatch(async (authSession) => {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+  
+    if (!id) {
+      throw new ActionError("error", 400, "Chat ID is required");
+    }
+  
+    const chat = await getChatById( id, authSession.userId );
+
+    if ( chat && chat.userId === authSession.userId ) {
+      await deleteChatById( id, authSession.userId );
+
+      return NextResponse.json({
+        status: 'success',
+        message: "Chat deleted",
+        data: null,
+      });
+    }
+    else {
+      throw new ActionError("error", 401, "Unauthorized");
+    }
   });
 }

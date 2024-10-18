@@ -1,4 +1,5 @@
 import { Suspense, type PropsWithChildren } from 'react';
+
 import FunctionEditSkeleton from './loading';
 
 async function Layout({ children }: PropsWithChildren) {

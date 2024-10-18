@@ -1,7 +1,9 @@
-import { PropsWithChildren, Suspense } from 'react';
-import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
-import SideNavItem from '@/components/navs/SideNavItem';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { PropsWithChildren, Suspense } from 'react';
+
+import SideNavItem from '@/components/navs/SideNavItem';
+import { SettingsNavRoutes } from '@protected/settings/SettingsNavRoutes';
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

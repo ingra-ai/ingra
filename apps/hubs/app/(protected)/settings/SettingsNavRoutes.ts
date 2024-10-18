@@ -1,5 +1,6 @@
-import { NavItemChild } from '@/components/navs/types';
 import { HUBS_SETTINGS_PROFILE_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI } from '@repo/shared/lib/constants';
+
+import { NavItemChild } from '@/components/navs/types';
 
 export const SettingsNavRoutes: Omit<NavItemChild, 'icon'>[] = [
   {

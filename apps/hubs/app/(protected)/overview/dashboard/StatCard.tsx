@@ -1,5 +1,6 @@
-import type { FC, ForwardRefExoticComponent, SVGProps } from 'react';
 import Link from 'next/link';
+
+import type { FC, ForwardRefExoticComponent, SVGProps } from 'react';
 
 interface Stat {
   name: string;

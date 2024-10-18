@@ -16,6 +16,7 @@
     "./data/activeSession": "./src/data/activeSession.ts",
     "./data/oauthToken": "./src/data/oauthToken.ts",
     "./data/auth": "./src/data/auth.ts",
+    "./data/chat": "./src/data/chat.ts",
     "./data/auditLog": "./src/data/auditLog.ts",
     "./data/apiKey": "./src/data/apiKey.ts",
     "./data/auth/session/types": "./src/data/auth/session/types.ts",
@@ -77,15 +78,16 @@
     "@types/eslint": "^8.56.5",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.10",
-    "@types/node": "^22.7.4",
+    "@types/node": "^22.7.5",
     "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
+    "@types/react-dom": "^18.3.1",
     "eslint": "^8.57.0",
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.669.0",
+    "@aws-sdk/client-ses": "^3.670.0",
     "@octokit/rest": "^21.0.2",
+    "algoliasearch": "^5.9.1",
     "cheerio": "1.0.0",
     "chrono-node": "^2.7.7",
     "clsx": "^2.1.1",
@@ -96,13 +98,13 @@
     "lodash": "^4.17.21",
     "mixpanel": "^0.18.0",
     "node-fetch": "^3.3.2",
-    "tailwind-merge": "^2.5.3",
+    "tailwind-merge": "^2.5.4",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "ai": "^3.4.9",
-    "next": "^14.2.15"
+    "next": "^14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

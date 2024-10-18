@@ -1,7 +1,9 @@
-import { PropsWithChildren, Suspense, type ReactNode } from 'react';
-import { Metadata, ResolvingMetadata } from 'next';
-import LoaderSkeleton from './loading';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { Metadata, ResolvingMetadata } from 'next';
+import { PropsWithChildren, Suspense, type ReactNode } from 'react';
+
+import LoaderSkeleton from './loading';
+
 
 type Props = {
   params: { ownerUsername: string; recordIdOrSlug: string };

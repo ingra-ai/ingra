@@ -1,15 +1,15 @@
 'use server';
 
-import * as z from 'zod';
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { MagicLoginSchema } from '@repo/shared/schemas/auth';
-import { getOrCreateUserByEmail } from '@repo/shared/data/user';
-import { ActionError } from '@repo/shared/types';
 import { createActiveSession, createMagicLink, expireMagicLinkByToken, getMagicLinkByOtp } from '@repo/shared/data/auth';
-import { sendMagicLinkEmail } from '@repo/shared/lib/mail/sendMagicLinkEmail';
+import { getOrCreateUserByEmail } from '@repo/shared/data/user';
 import { APP_AUTH_COOKIE_DOMAIN, APP_LANDING_PAGE_URL, APP_SESSION_COOKIE_NAME } from '@repo/shared/lib/constants';
+import { sendMagicLinkEmail } from '@repo/shared/lib/mail/sendMagicLinkEmail';
+import { MagicLoginSchema } from '@repo/shared/schemas/auth';
+import { ActionError } from '@repo/shared/types';
 import { actionTryCatch } from '@repo/shared/utils/actionTryCatch';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import * as z from 'zod';
 
 export const magicLoginEmail = async (values: z.infer<typeof MagicLoginSchema>) => {
   const validatedFields = MagicLoginSchema.safeParse(values);

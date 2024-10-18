@@ -1,14 +1,15 @@
 'use client';
 
-import { EachRoute } from '@/lib/routes-config';
 import Anchor from '@repo/components/navs/anchor';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/components/ui/collapsible';
-import { cn } from '@/lib/utils';
-import { SheetClose } from '@repo/components/ui/sheet';
 import { Button } from '@repo/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/components/ui/collapsible';
+import { SheetClose } from '@repo/components/ui/sheet';
 import { ChevronDown, ChevronRight, ChevronsUpDownIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { EachRoute } from '@/lib/routes-config';
+import { cn } from '@/lib/utils';
 
 export default function SubLink({ title, href, items, noLink, level, isSheet }: EachRoute & { level: number; isSheet: boolean }) {
   const path = usePathname();

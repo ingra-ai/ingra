@@ -1,21 +1,26 @@
-import { compileMDX } from 'next-mdx-remote/rsc';
-import path from 'path';
 import { promises as fs } from 'fs';
-import remarkGfm from 'remark-gfm';
-import rehypePrism from 'rehype-prism-plus';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeSlug from 'rehype-slug';
-import rehypeCodeTitles from 'rehype-code-titles';
-import { DOCS_PAGE_ROUTES } from './routes-config';
-import { visit } from 'unist-util-visit';
+import path from 'path';
+
+import { Stepper, StepperItem } from '@repo/components/ui/stepper';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/components/ui/tabs';
 import * as constants from '@repo/shared/lib/constants';
+import { compileMDX } from 'next-mdx-remote/rsc';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeCodeTitles from 'rehype-code-titles';
+import rehypePrism from 'rehype-prism-plus';
+import rehypeSlug from 'rehype-slug';
+import remarkGfm from 'remark-gfm';
+import { visit } from 'unist-util-visit';
+
+import { Mermaid } from '@/components/mermaid';
+import Note from '@/components/note';
+import Pre from '@/components/pre';
+
+import { DOCS_PAGE_ROUTES } from './routes-config';
 
 // custom components imports
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/components/ui/tabs';
-import Pre from '@/components/pre';
-import Note from '@/components/note';
-import { Mermaid } from '@/components/mermaid';
-import { Stepper, StepperItem } from '@repo/components/ui/stepper';
+
+
 
 // shared regex
 const CONST_SHORTCODE_REGEX = /{CONST\.([A-Z_]+)}/g;

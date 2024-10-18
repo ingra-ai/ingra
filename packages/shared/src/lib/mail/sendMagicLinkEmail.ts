@@ -11,7 +11,7 @@ import { Logger } from '../logger';
  */
 const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
   const { token, otpCode } = magicLink;
-  const brandImageUrl = `${AUTH_APP_URL}/static/brand/ingra-logo.svg`;
+  const brandImageUrl = `${AUTH_APP_URL}/static/brand/ingra-logo-black.svg`;
   const magicLinkUrl = `${APP_AUTH_CALLBACK_URL}?type=magic&token=${token}`;
   const linkExpiration = '3 minutes';
   return `

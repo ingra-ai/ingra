@@ -1,7 +1,9 @@
-import type { FC } from 'react';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { PropsWithChildren } from 'react';
+
 import LayoutWithNav from '@/components/layouts/LayoutWithNav';
+
+import type { FC } from 'react';
 
 const ProtectedLayout: FC<PropsWithChildren> = async (props) => {
   const { children } = props;

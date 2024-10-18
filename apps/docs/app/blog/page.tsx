@@ -1,9 +1,10 @@
 import { Button } from '@repo/components/ui/button';
-import { BlogMdxFrontmatter, getAllBlogs } from '@/lib/markdown';
-import { formatDate2, stringToDate } from '@/lib/utils';
 import { ChevronRightIcon, CircleIcon } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+
+import { BlogMdxFrontmatter, getAllBlogs } from '@/lib/markdown';
+import { formatDate2, stringToDate } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'Blog | Ingra',

@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSwaggerSpec } from '../swagger/config';
 import { HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { getSwaggerSpec } from '../swagger/config';
 
 /**
  * Returns OpenAPI yaml file when in production

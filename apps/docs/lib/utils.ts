@@ -1,5 +1,6 @@
-import { EachRoute, ROUTES } from './routes-config';
 import { cn } from '@repo/shared/lib/utils';
+
+import { EachRoute, ROUTES } from './routes-config';
 
 export { cn };
 

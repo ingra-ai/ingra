@@ -1,10 +1,11 @@
-import { Typography } from '@/components/typography';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/components/ui/avatar';
 import { buttonVariants } from '@repo/components/ui/button';
-import { Author, getAllBlogStaticPaths, getBlogForSlug } from '@/lib/markdown';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/components/ui/avatar';
+
+import { Typography } from '@/components/typography';
+import { Author, getAllBlogStaticPaths, getBlogForSlug } from '@/lib/markdown';
 import { formatDate } from '@/lib/utils';
 
 type PageProps = {

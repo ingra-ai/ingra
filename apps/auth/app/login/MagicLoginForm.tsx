@@ -1,19 +1,21 @@
 'use client';
 
-import type { ChangeEvent, FC } from 'react';
-import * as z from 'zod';
-import { MagicLoginSchema } from '@repo/shared/schemas/auth';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { magicLoginEmail } from '../(actions)/login';
-import { useState } from 'react';
-import { useToast } from '@repo/components/ui/use-toast';
 import { Button } from '@repo/components/ui/button';
-import { RefreshCcw } from 'lucide-react';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@repo/components/ui/input-otp';
 import { Input } from '@repo/components/ui/input';
-import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@repo/components/ui/input-otp';
+import { useToast } from '@repo/components/ui/use-toast';
 import { censorEmail, cn } from '@repo/shared/lib/utils';
+import { MagicLoginSchema } from '@repo/shared/schemas/auth';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { RefreshCcw } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+import { magicLoginEmail } from '../(actions)/login';
+
+import type { ChangeEvent, FC } from 'react';
 
 export type FormViewState = 'email' | 'otp' | 'redirect';
 

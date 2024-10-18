@@ -1,5 +1,6 @@
-import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
+
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

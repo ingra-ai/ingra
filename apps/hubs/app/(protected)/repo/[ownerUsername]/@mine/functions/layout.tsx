@@ -1,4 +1,5 @@
 import { Suspense, type PropsWithChildren } from 'react';
+
 import LoaderSkeleton from './loading';
 
 async function Layout({ children }: PropsWithChildren) {

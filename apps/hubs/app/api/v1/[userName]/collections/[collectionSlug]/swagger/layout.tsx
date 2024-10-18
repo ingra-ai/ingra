@@ -1,7 +1,8 @@
-import type { FC } from 'react';
+import { APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
 import { PropsWithChildren } from 'react';
-import { APP_NAME } from '@repo/shared/lib/constants';
+
+import type { FC } from 'react';
 
 export async function generateMetadata({ params }: { params: { userName: string; collectionSlug: string } }) {
   const { userName, collectionSlug } = params;

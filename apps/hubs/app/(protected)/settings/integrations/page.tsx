@@ -1,11 +1,14 @@
-import { getAuthSession } from '@repo/shared/data/auth/session';
-import { RedirectType, redirect } from 'next/navigation';
-import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
-import { IntegrationsSection } from './IntegrationsSection';
-import { APP_NAME } from '@repo/shared/lib/constants';
-import type { Metadata } from 'next';
 import { GoogleIntegrationButton } from '@repo/components/GoogleIntegrationButton';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { APP_AUTH_LOGIN_URL , APP_NAME } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+
+import { IntegrationsSection } from './IntegrationsSection';
+
+
+import type { Metadata } from 'next';
+
 
 export const metadata: Metadata = {
   title: ['Integrations', APP_NAME].join(' | '),

@@ -1,10 +1,10 @@
-import { notFound } from 'next/navigation';
+import { CollectionSearchList } from '@repo/components/data/collections';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
-import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { CollectionSearchList } from '@repo/components/data/collections';
 import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
+import { getUserProfileByUsername } from '@repo/shared/data/profile';
+import { notFound } from 'next/navigation';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const { ownerUsername } = params;

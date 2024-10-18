@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import { RedirectType, redirect } from 'next/navigation';
-import db from '@repo/db/client';
-import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
-import { APP_NAME } from '@repo/shared/lib/constants';
 import { EnvVarsSection } from '@repo/components/data/envVars/EnvVarsSection';
+import db from '@repo/db/client';
 import { getAuthSession } from '@repo/shared/data/auth/session';
+import { APP_AUTH_LOGIN_URL , APP_NAME } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: ['Environment Variables', APP_NAME].join(' | '),

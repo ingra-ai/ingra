@@ -1,9 +1,11 @@
 'use server';
-import type { FC } from 'react';
-import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-import { OAuthToken } from '@repo/db/prisma';
 import db from '@repo/db/client';
+import { OAuthToken } from '@repo/db/prisma';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+
 import OAuthList from '@protected/settings/integrations/OAuthList';
+
+import type { FC } from 'react';
 
 type IntegrationsSectionProps = {
   authSession: AuthSessionResponse;

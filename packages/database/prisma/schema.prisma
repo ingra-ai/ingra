@@ -24,6 +24,8 @@ model User {
   functionSubscriptions   FunctionSubscription[]
   collections             Collection[]
   collectionSubscriptions CollectionSubscription[]
+  functionExecutionLogs   FunctionExecutionLog[]
+  chats                   Chat[]
 }
 
 model Profile {
@@ -123,6 +125,7 @@ model Function {
   description        String             @default("") @db.VarChar(1024)
   arguments          FunctionArgument[]
   tags               FunctionTag[]
+  executionLogs      FunctionExecutionLog[]
 
   // Relations
   owner User @relation(fields: [ownerUserId], references: [id])
@@ -248,4 +251,35 @@ model CollectionSubscription {
 
   @@unique([collectionId, userId])
   @@map("collection_subscriptions")
+}
+
+model FunctionExecutionLog {
+  id            String    @id @default(uuid()) @db.Uuid
+  functionId    String    @db.Uuid
+  userId        String?   @db.Uuid
+  executedAt    DateTime  @default(now())
+  requestData   Json?     @db.JsonB
+  responseData  Json?     @db.JsonB
+  executionTime Int?      // Execution time in milliseconds
+  error         String?   @db.Text
+
+  // Relations
+  function Function @relation(fields: [functionId], references: [id])
+  user     User?    @relation(fields: [userId], references: [id])
+
+  @@index([functionId])
+  @@index([userId])
+  @@map("function_execution_logs")
+}
+
+model Chat {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String?  @db.VarChar(128) @default("")
+  messages    Json     @db.JsonB
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }

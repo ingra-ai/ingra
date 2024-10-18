@@ -1,13 +1,15 @@
+import db from '@repo/db/client';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { APP_AUTH_LOGIN_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI } from '@repo/shared/lib/constants';
-import { redirect, RedirectType } from 'next/navigation';
-import { SuggestionsList } from './SuggestionsList';
-import { LayoutDashboardIcon } from 'lucide-react';
-import { KeyIcon, SquareFunctionIcon, LibraryIcon, KeyRoundIcon, VariableIcon } from 'lucide-react';
-import db from '@repo/db/client';
-import { StatCard } from './StatCard';
 import { getUserRepoCollectionsUri, getUserRepoFunctionsUri } from '@repo/shared/lib/constants/repo';
+import { LayoutDashboardIcon , KeyIcon, SquareFunctionIcon, LibraryIcon, KeyRoundIcon, VariableIcon } from 'lucide-react';
 import { headers } from 'next/headers';
+import { redirect, RedirectType } from 'next/navigation';
+
+import { StatCard } from './StatCard';
+import { SuggestionsList } from './SuggestionsList';
+
+
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();

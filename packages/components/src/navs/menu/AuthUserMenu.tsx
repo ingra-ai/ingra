@@ -11,12 +11,14 @@ import { Avatar, AvatarFallback } from '../../ui/avatar';
 
 type AuthUserMenuProps = {
   authSession?: AuthSessionResponse;
+  showUsername?: boolean;
   navlinks?: Navlink[];
 }
 
 export function AuthUserMenu(props: AuthUserMenuProps) {
   const {
     authSession,
+    showUsername = false,
     navlinks = [],
   } = props;
 
@@ -51,6 +53,11 @@ export function AuthUserMenu(props: AuthUserMenuProps) {
         <Avatar className="h-8 w-8">
           <AvatarFallback>{avatarFallbackText}</AvatarFallback>
         </Avatar>
+        {
+          showUsername && (
+            <span className="ml-2 text-sm font-semibold">{authSession?.user?.profile?.userName || authSession?.user?.email}</span>
+          )
+        }
         <ChevronDown className="ml-1 w-4 h-4" />
       </MenuButton>
       <Transition

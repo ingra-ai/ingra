@@ -1,9 +1,10 @@
-import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getSwaggerSpec } from '@app/api/(internal)/swagger/config';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } from '@repo/shared/lib/constants';
-import { generateOpenApiSchema } from '@v1/me/swagger/generateOpenApiSchema';
 import { kv } from '@vercel/kv';
 import isEmpty from 'lodash/isEmpty';
+
+import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getSwaggerSpec } from '@app/api/(internal)/swagger/config';
+import { generateOpenApiSchema } from '@v1/me/swagger/generateOpenApiSchema';
 
 export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
   if (!authSession) {

@@ -1,7 +1,7 @@
 'use client';
 
-import { CheckIcon, CopyIcon } from 'lucide-react';
 import { Button } from '@repo/components/ui/button';
+import { CheckIcon, CopyIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Copy({ content }: { content: string }) {

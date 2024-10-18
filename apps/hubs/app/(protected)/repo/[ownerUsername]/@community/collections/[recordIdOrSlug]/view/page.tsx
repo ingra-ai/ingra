@@ -1,14 +1,14 @@
-import { ResolvingMetadata, Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getAuthSession } from '@repo/shared/data/auth/session';
-import { getUserProfileByUsername } from '@repo/shared/data/profile';
-import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
-import { APP_NAME } from '@repo/shared/lib/constants';
-import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
-import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { CollectionDetailView } from '@repo/components/data/collections';
 import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
-import { CollectionDetailView } from '@repo/components/data/collections';
+import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
+import { getUserProfileByUsername } from '@repo/shared/data/profile';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import { ResolvingMetadata, Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { ownerUsername: string; recordIdOrSlug: string };

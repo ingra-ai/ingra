@@ -1,10 +1,10 @@
-import { getAuthSession } from '@repo/shared/data/auth/session';
-import { notFound } from 'next/navigation';
-import { BakaPagination } from '@repo/components/search/BakaPagination';
-import { getUserProfileByUsername } from '@repo/shared/data/profile';
-import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
 import { FunctionSearchList } from '@repo/components/data/functions';
+import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { getAuthSession } from '@repo/shared/data/auth/session';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
+import { getUserProfileByUsername } from '@repo/shared/data/profile';
+import { notFound } from 'next/navigation';
 
 export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
   const { ownerUsername } = params;

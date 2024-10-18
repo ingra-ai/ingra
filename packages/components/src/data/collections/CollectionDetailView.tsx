@@ -35,7 +35,9 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
 
   const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(ownerUsername, record.slug);
   const swaggerApiUrl = getUserApiCollectionsSwaggerUri(ownerUsername, record.slug);
-  const isNotOwnerOrSubscriber = !isOwner || !isSubscribed;
+  
+  // If the user is not the owner and not subscribed to the collection, restrict access to the OpenAPI JSON and Swagger URLs.
+  const isRestrictedAccess = !isOwner && !isSubscribed;
 
   const handleDelete = useCallback(() => {
     const confirmed = confirm(`Are you sure you want to delete this collection? This will only remove the collection; your functions will be disconnected from it.`);
@@ -87,16 +89,16 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
               asChild 
               type="button" 
               aria-label="OpenAPI JSON" 
-              title={!isNotOwnerOrSubscriber ? "OpenAPI JSON" : "OpenAPI JSON is not available for a collection you are not subscribed to."} 
+              title={isRestrictedAccess ? "OpenAPI JSON is not available for a collection you are not subscribed to." : "OpenAPI JSON"} 
               className={cn({ 
-                'cursor-not-allowed': isNotOwnerOrSubscriber
+                'cursor-not-allowed': isRestrictedAccess
               })}
               variant="outline" 
               size="icon" 
-              disabled={isNotOwnerOrSubscriber}
+              disabled={isRestrictedAccess}
             >
               {
-                isNotOwnerOrSubscriber ? (
+                isRestrictedAccess ? (
                   <div>
                     <span className="sr-only">OpenAPI JSON is not available for a collection you are not subscribed to.</span>
                     <FileJsonIcon className="h-4 w-4" aria-hidden="true" />
@@ -159,7 +161,7 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
               <p>
                 <span className="font-medium mr-2">Swagger: </span>
                 {
-                  isNotOwnerOrSubscriber ? (
+                  isRestrictedAccess ? (
                     <span 
                       className="text-muted-foreground cursor-not-allowed"
                       title="Swagger is not available for a collection you are not subscribed to."

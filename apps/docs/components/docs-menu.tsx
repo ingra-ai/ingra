@@ -1,8 +1,10 @@
 'use client';
 
-import { ROUTES } from '@/lib/routes-config';
-import SubLink from './sublink';
 import { usePathname } from 'next/navigation';
+
+import { ROUTES } from '@/lib/routes-config';
+
+import SubLink from './sublink';
 
 export default function DocsMenu({ isSheet = false }) {
   const pathname = usePathname();

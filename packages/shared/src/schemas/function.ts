@@ -16,6 +16,7 @@ VM Context:
   e.g. utils.date.parseDate('today at 23:59', 'America/New_York'))
 - 'Octokit': GitHub REST API client library
 - 'Cheerio': jQuery for Node.js
+- 'algoliaSearchLiteClient': Algolia search lite client, for search operations
 */
 
 async function handler(ctx) {

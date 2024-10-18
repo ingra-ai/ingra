@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@repo/components/ui/button';
-import Link from 'next/link';
 import { cn } from '@repo/shared/lib/utils';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 interface SideNavItemProps {

@@ -1,6 +1,7 @@
 'use client';
-import { NavItemChild } from '@/components/navs/types';
 import { LayoutDashboardIcon, BracesIcon } from 'lucide-react';
+
+import { NavItemChild } from '@/components/navs/types';
 
 export const OverviewNavRoutes: NavItemChild[] = [
   {

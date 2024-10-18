@@ -1,12 +1,14 @@
 'use client';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '@repo/components/ui/button';
+import { ScrollArea } from '@repo/components/ui/scroll-area';
+import { useToast } from '@repo/components/ui/use-toast';
+import { cn } from '@repo/shared/lib/utils';
 import { Copy, Loader, FileJsonIcon } from 'lucide-react';
 import Tree, { type FieldDataNode } from 'rc-tree';
-import { Button } from '@repo/components/ui/button';
-import { useToast } from '@repo/components/ui/use-toast';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { createPathTree } from './createPathTree';
-import { cn } from '@repo/shared/lib/utils';
-import { ScrollArea } from '@repo/components/ui/scroll-area';
+
 
 interface OpenAPISpecLoaderProps {
   openapiUrl: string;

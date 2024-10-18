@@ -1,8 +1,8 @@
-import { createActiveSession, expireMagicLinkByToken } from '@repo/shared/data/auth';
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { APP_AUTH_COOKIE_DOMAIN, APP_SESSION_COOKIE_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
 import db from '@repo/db/client';
+import { createActiveSession, expireMagicLinkByToken } from '@repo/shared/data/auth';
+import { APP_AUTH_COOKIE_DOMAIN, APP_SESSION_COOKIE_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

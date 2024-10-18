@@ -1,6 +1,7 @@
-import { getPreviousNext } from '@/lib/markdown';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import Link from 'next/link';
+
+import { getPreviousNext } from '@/lib/markdown';
 
 export default function Pagination({ pathname }: { pathname: string }) {
   const res = getPreviousNext(pathname);

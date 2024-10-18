@@ -1,9 +1,9 @@
-import { getAuthSession } from '@repo/shared/data/auth/session';
+import { CollectionSearchList } from '@repo/components/data/collections';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
-import { cn } from '@repo/shared/lib/utils';
-import { CollectionSearchList } from '@repo/components/data/collections';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
+import { cn } from '@repo/shared/lib/utils';
 
 export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
   const authSession = await getAuthSession();

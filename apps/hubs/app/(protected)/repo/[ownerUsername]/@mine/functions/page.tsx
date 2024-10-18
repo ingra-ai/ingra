@@ -1,12 +1,11 @@
-import { getAuthSession } from '@repo/shared/data/auth/session';
-import { notFound } from 'next/navigation';
+import { FunctionSearchList , CreateNewFunctionButton } from '@repo/components/data/functions';
 import { BakaPagination } from '@repo/components/search/BakaPagination';
-import { Metadata, ResolvingMetadata } from 'next';
-import { APP_NAME } from '@repo/shared/lib/constants';
-import { FunctionSearchList } from '@repo/components/data/functions';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
-import { CreateNewFunctionButton } from '@repo/components/data/functions';
+import { APP_NAME } from '@repo/shared/lib/constants';
+import { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { ownerUsername: string };

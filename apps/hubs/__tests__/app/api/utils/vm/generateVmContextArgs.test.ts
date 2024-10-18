@@ -1,15 +1,13 @@
 import { generateVmContextArgs } from '@repo/shared/utils/vm/generateVmContextArgs';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-import { FunctionArgument } from '@repo/db/prisma';
 import { mockAuthSession } from '@/__tests__/__mocks__/mockAuthSession';
 import { mockFunctionHelloWorld } from '@/__tests__/__mocks__/mockFunctions';
 
 describe('generateVmContextArgs', () => {
   const authSession = mockAuthSession as unknown as AuthSessionResponse;
-  const mockFunctionArguments: FunctionArgument[] = mockFunctionHelloWorld.arguments as unknown as FunctionArgument[];
 
   it('should generate the context with default values', () => {
-    const context = generateVmContextArgs(authSession, mockFunctionArguments, {
+    const context = generateVmContextArgs(authSession, mockFunctionHelloWorld, {
       arg1: 'Passed Argument #1',
       arg2: 5,
     });
@@ -32,7 +30,7 @@ describe('generateVmContextArgs', () => {
   });
 
   it('should fill requestArgs with default values if not provided', () => {
-    const context = generateVmContextArgs(authSession, mockFunctionArguments, {});
+    const context = generateVmContextArgs(authSession, mockFunctionHelloWorld, {});
 
     expect(context).toEqual({
       ATLASSIAN_API_KEY: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',

@@ -22,6 +22,11 @@ jest.mock('cheerio', () => ({
   default: jest.fn(),
 }));
 
+jest.mock('algoliasearch', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 jest.mock('node-fetch', () => ({
   __esModule: true,
   default: jest.fn(),

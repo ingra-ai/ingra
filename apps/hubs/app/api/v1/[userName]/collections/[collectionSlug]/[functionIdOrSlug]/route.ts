@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { handleRequest } from '@repo/shared/utils/handleRequest';
-import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { ActionError } from '@v1/types/api-response';
 import { getFunctionAccessibleByUser, type FunctionAccessType } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
-import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
 import { Logger } from '@repo/shared/lib/logger';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { handleRequest } from '@repo/shared/utils/handleRequest';
+import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { ActionError } from '@v1/types/api-response';
 
 type ContextShape = {
   params: {
@@ -84,14 +85,14 @@ async function handlerFn(args: HandlerArgs) {
     loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionIdOrSlug}`, metrics);
 
     if (errors?.length) {
-      const errorMessage = errors?.[0].message || 'An error occurred while executing the function.';
-      loggerObj.error(`Errored executing function: ${errorMessage}`);
+      const errorMessage = `Function run error: ${errors?.[0].message || 'An error occurred while running user function.'}`;
+      loggerObj.withTag(`function|${functionRecord.id}`).error(errorMessage);
 
       if ( isSandboxDebug ) {
         return NextResponse.json(
           {
-            status: 'error',
-            message: 'An error occurred while executing the function in sandbox debug mode.',
+            status: 'function-error',
+            message: errorMessage ?? 'Function run error: An error occurred while running user function in sandbox debug mode.',
             data: {
               result: result || null,
               metrics: metrics || {},

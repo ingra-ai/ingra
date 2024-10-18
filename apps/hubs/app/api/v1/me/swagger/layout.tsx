@@ -1,8 +1,10 @@
-import type { FC } from 'react';
+import { APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
 import { PropsWithChildren } from 'react';
+
 import type { Metadata } from 'next';
-import { APP_NAME } from '@repo/shared/lib/constants';
+import type { FC } from 'react';
+
 
 export const metadata: Metadata = {
   title: ['My Swagger', APP_NAME].join(' | '),
