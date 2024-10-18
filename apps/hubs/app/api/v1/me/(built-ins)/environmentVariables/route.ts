@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { Logger } from '@repo/shared/lib/logger';
 import db from '@repo/db/client'; // Assuming you have a db instance for interacting with your database
-import { upsertEnvVar } from '@repo/shared/data/envVars';
 import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
+import { upsertEnvVar } from '@repo/shared/data/envVars';
 import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * @swagger

@@ -1,11 +1,16 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/components/ui/tooltip';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
-import { RedirectType, redirect } from 'next/navigation';
-import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
 import { APP_AUTH_LOGIN_URL, APP_NAME } from '@repo/shared/lib/constants';
-import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { RedirectType, redirect } from 'next/navigation';
+
+import { UserProfileForm } from '@protected/settings/profile/UserProfileForm';
+
+import { DeleteAccountButtonForm } from './DeleteAccountButtonForm';
+
+
+import type { Metadata } from 'next';
+
 
 export const metadata: Metadata = {
   title: ['Profile', APP_NAME].join(' | '),

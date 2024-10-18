@@ -1,22 +1,23 @@
 'use client';
 
-import type { FC, ChangeEvent } from 'react';
-import * as z from 'zod';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useToast } from '@repo/components/ui/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/components/ui/tooltip';
-import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-import { ProfileSchema } from '@repo/shared/schemas/profile';
-import { censorEmail } from '@repo/shared/lib/utils';
-import { updateProfile } from '@repo/shared/actions/profile';
-import { useCallback, useState, useTransition } from 'react';
-import { Input } from '@repo/components/ui/input';
-import timezones from 'timezones-list';
-import { RefreshCcw, Info } from 'lucide-react';
-import { Button } from '@repo/components/ui/button';
-import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '@repo/components/ui/avatar';
+import { Button } from '@repo/components/ui/button';
+import { Input } from '@repo/components/ui/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/components/ui/tooltip';
+import { useToast } from '@repo/components/ui/use-toast';
+import { updateProfile } from '@repo/shared/actions/profile';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
+import { censorEmail } from '@repo/shared/lib/utils';
+import { ProfileSchema } from '@repo/shared/schemas/profile';
+import { RefreshCcw, Info } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import timezones from 'timezones-list';
+import * as z from 'zod';
+
+import type { FC, ChangeEvent } from 'react';
 
 type UserProfileFormProps = {
   authSession: AuthSessionResponse;

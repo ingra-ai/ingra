@@ -1,12 +1,13 @@
 'use client';
 
-import type { FC } from 'react';
-import { useCallback, useState, useTransition } from 'react';
-import { useToast } from '@repo/components/ui/use-toast';
 import { Button } from '@repo/components/ui/button';
-import { RefreshCcw } from 'lucide-react';
+import { useToast } from '@repo/components/ui/use-toast';
 import { generateApiKey } from '@repo/shared/actions/apiKey';
+import { RefreshCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useCallback, useState, useTransition } from 'react';
+
+import type { FC } from 'react';
 
 type GenerateApiKeyButtonProps = {
   noop?: any;

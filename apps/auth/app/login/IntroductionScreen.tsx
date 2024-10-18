@@ -1,8 +1,9 @@
-import React from 'react';
-import { Code, Cpu, Cloud, Rocket, Shield, Users } from 'lucide-react';
-import { cn } from '@repo/shared/lib/utils';
 import { APP_NAME } from '@repo/shared/lib/constants';
+import { cn } from '@repo/shared/lib/utils';
+import { Code, Cpu, Cloud, Rocket, Shield, Users } from 'lucide-react';
 import Image from 'next/image';
+import React from 'react';
+
 import { FeatureCard } from './FeatureCard';
 
 type IntroductionScreenProps = {

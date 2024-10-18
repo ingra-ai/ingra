@@ -1,11 +1,15 @@
-import { type PropsWithChildren } from 'react';
-import type { Metadata } from 'next';
-import { Inter as FontSans } from 'next/font/google';
+
+import { HotjarAnalytics } from '@repo/components/analytics/HotjarAnalytics';
+import { Toaster } from '@repo/components/ui/toaster';
 import { APP_DESCRIPTION, APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
+import { Inter as FontSans } from 'next/font/google';
+import Head from 'next/head';
+
+import type { Metadata } from 'next';
+import type { PropsWithChildren } from 'react';
+
 import '@css/globals.scss';
-import { Toaster } from '@repo/components/ui/toaster';
-import { HotjarAnalytics } from '@repo/components/analytics/HotjarAnalytics';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -23,10 +27,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <html lang="en">
-      <head>
+      <Head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <HotjarAnalytics />
-      </head>
+      </Head>
       <body className={bodyClasses} data-testid="layout-body">
         {children}
         <Toaster />

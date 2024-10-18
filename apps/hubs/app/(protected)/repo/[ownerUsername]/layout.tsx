@@ -1,12 +1,12 @@
-import { Suspense, type ReactNode } from 'react';
-import type { Metadata } from 'next';
-import { APP_DESCRIPTION, APP_NAME } from '@repo/shared/lib/constants';
-import { getAuthSession } from '@repo/shared/data/auth/session';
 import { UserCircleIcon, LinkIcon } from '@heroicons/react/20/solid';
-import { HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
-import Link from 'next/link';
+import { getAuthSession } from '@repo/shared/data/auth/session';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
+import { APP_DESCRIPTION, APP_NAME , HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense, type ReactNode } from 'react';
+
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: ['Hubs', APP_NAME].join(' | '),

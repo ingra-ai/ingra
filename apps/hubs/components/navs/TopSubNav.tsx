@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
-import { NavItemChild } from './types';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
 import { cn } from '@repo/shared/lib/utils';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React from 'react';
+
+import { NavItemChild } from './types';
 
 type TopSubNavNavItem = Omit<NavItemChild, 'icon'> & {
   icon?: NavItemChild['icon'];

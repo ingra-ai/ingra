@@ -5,10 +5,5 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
-  },
-  rules: {
-    "no-unused-vars": "warn",
-    "no-undef": "error",
-    "no-case-declarations": "warn"
   }
 };

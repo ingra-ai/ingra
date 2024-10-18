@@ -1,5 +1,5 @@
-import SwaggerDocs from './SwaggerDocs';
 import { getSwaggerSpec } from './config';
+import SwaggerDocs from './SwaggerDocs';
 
 import '@css/swagger.scss';
 
