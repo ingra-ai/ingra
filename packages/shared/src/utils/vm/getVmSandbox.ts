@@ -3,6 +3,7 @@ import { parseStartAndEnd, parseDate } from '../chronoUtils';
 import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
 import { Octokit } from '@octokit/rest';
 import * as Cheerio from 'cheerio';
+import { algoliasearch } from 'algoliasearch';
 import { MetricSandboxOutput, UserSandboxOutput } from './types';
 
 export interface Sandbox {
@@ -20,6 +21,7 @@ export interface Sandbox {
   URLSearchParams: typeof URLSearchParams;
   Octokit: typeof Octokit;
   Cheerio: typeof Cheerio;
+  algoliasearch: typeof algoliasearch;
 }
 
 export interface SandboxAnalytics {
@@ -61,6 +63,7 @@ export const getVmSandbox = (ctx: VmContextArgs, analytics: SandboxAnalytics): S
     URLSearchParams,
     Octokit,
     Cheerio,
+    algoliasearch,
     handler: null,
   };
 
