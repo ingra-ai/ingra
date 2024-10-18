@@ -1,16 +1,16 @@
-export type UserSandboxOutput = {
+import { Prisma } from "@repo/db/prisma";
+
+export interface UserSandboxOutput {
   type: 'log' | 'error' | 'output';
   message: string;
-};
+}
 
-export type MetricSandboxOutput = {
+export interface MetricSandboxOutput {
   type: 'metric';
   metric: 'executionTime' | 'memoryUsed' | 'apiCallCount';
   value: number;
-};
+}
 
-export type MetricValues = {
-  [key in MetricSandboxOutput['metric']]: number;
-};
-
-export type SandboxOutput = UserSandboxOutput | MetricSandboxOutput;
+export interface MetricValues {
+  [key: string]: number;
+}

@@ -3,7 +3,7 @@ import { parseStartAndEnd, parseDate } from '../chronoUtils';
 import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
 import { Octokit } from '@octokit/rest';
 import * as Cheerio from 'cheerio';
-import { SandboxOutput } from './types';
+import { MetricSandboxOutput, UserSandboxOutput } from './types';
 
 export interface Sandbox {
   console: Pick<typeof console, 'log' | 'error'>;
@@ -24,7 +24,7 @@ export interface Sandbox {
 
 export interface SandboxAnalytics {
   apiCallCount: number;
-  outputs: SandboxOutput[];
+  outputs: (UserSandboxOutput | MetricSandboxOutput)[];
   [key: string]: any;
 }
 
