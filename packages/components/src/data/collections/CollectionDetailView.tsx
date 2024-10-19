@@ -31,13 +31,17 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
   const [isPending, startTransition] = useTransition();
   const ownerUsername = record?.owner?.profile?.userName || '';
   const isOwner = authSession?.user?.profile?.userName && ownerUsername && authSession?.user?.profile?.userName === ownerUsername;
-  const isSubscribed = ( record?.subscribers || [] ).some((subscriber) => subscriber.id === authSession?.user?.id);
+
+  // The fetched record of subscribers should already only fetch subscribers of current user.
+  const isSubscribed = ( record?.subscribers || [] ).length > 0;
 
   const openApiJsonUrl = getUserApiCollectionsOpenApiJsonUri(ownerUsername, record.slug);
   const swaggerApiUrl = getUserApiCollectionsSwaggerUri(ownerUsername, record.slug);
   
   // If the user is not the owner and not subscribed to the collection, restrict access to the OpenAPI JSON and Swagger URLs.
   const isRestrictedAccess = !isOwner && !isSubscribed;
+
+  console.log({ isOwner, isSubscribed, isRestrictedAccess, record, authSession });
 
   const handleDelete = useCallback(() => {
     const confirmed = confirm(`Are you sure you want to delete this collection? This will only remove the collection; your functions will be disconnected from it.`);
