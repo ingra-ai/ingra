@@ -21,14 +21,14 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
 
   return (
     <nav className="w-full border-b h-16 sticky top-0 z-50 backdrop-filter backdrop-blur-xl bg-opacity-5">
-      <div className="xl:container mx-auto h-full flex items-center justify-between md:gap-2">
+      <div className="xl:container px-2 sm:px-8 mx-auto h-full flex items-center justify-between md:gap-2">
         <div className="flex items-center gap-5">
           <SheetLeftbar navlinks={navlinks}>{sheetChildren}</SheetLeftbar>
           <div className="flex items-center gap-6">
-            <div className="sm:flex hidden">
+            <div className="md:flex hidden">
               <Logo />
             </div>
-            <div className="lg:flex hidden items-center gap-5 text-sm font-medium text-muted-foreground">
+            <div className="md:flex hidden items-center gap-5 text-sm font-medium text-muted-foreground">
               <NavMenu navlinks={navlinks} />
             </div>
           </div>
@@ -64,7 +64,7 @@ export function Logo({ className }: { className?: string }) {
   const classes = cn('flex items-center gap-2.5', className);
   return (
     <Link href={PARENT_APP_URL} className={ classes }>
-      <Image src={ '/static/brand/ingra-logo-dark.svg' } width={50} height={50} className="h-7 w-auto hidden lg:block" alt={ APP_NAME + ' Logo'} suppressHydrationWarning />
+      <Image src={ '/static/brand/ingra-logo-dark.svg' } width={50} height={50} className="h-7 w-auto block" alt={ APP_NAME + ' Logo'} suppressHydrationWarning />
       <h2 className="text-md font-light sr-only">{APP_NAME.toUpperCase()}</h2>
     </Link>
   );
