@@ -1,5 +1,5 @@
 import { ModeToggle } from '../theme/theme-toggle';
-import { GithubIcon, TwitterIcon, MoveUpRightIcon } from 'lucide-react';
+import { GithubIcon, TwitterIcon, ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Anchor from './anchor';
@@ -76,7 +76,7 @@ export function NavMenu({ navlinks, isSheet = false }: NavMenuProps) {
       {navlinks.map((item) => {
         const Comp = (
           <Anchor key={item.title + item.href} activeClassName="text-primary font-semibold" absolute className="flex items-center gap-1" href={item.href} title={item?.description || ''}>
-            {item.title} {item.external && <MoveUpRightIcon className="w-3 h-3 align-super" strokeWidth={3} />}
+            {item.title} {item.external && <ExternalLinkIcon className="w-3 h-3 align-super" strokeWidth={3} />}
           </Anchor>
         );
         return isSheet ? (
