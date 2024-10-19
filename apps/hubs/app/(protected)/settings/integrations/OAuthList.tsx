@@ -13,6 +13,7 @@ import { format } from 'date-fns/format';
 import { RefreshCcw, RocketIcon, TentIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
+import { formatDistance, differenceInSeconds } from 'date-fns';
 
 import type { FC } from 'react';
 
@@ -31,6 +32,14 @@ type TokenDetailReturnType = {
 const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
   const isActive = new Date() < token.expiryDate;
   const unableToRenew = !isActive && token.service === 'google-oauth' && !token.refreshToken;
+  const formatExpiredAt = formatDistance(token.expiryDate, Date.now(), {
+    addSuffix: true,
+  });
+
+  const ExpiredAtNode = (
+    <span title={formatExpiredAt} aria-label={formatExpiredAt}>Expired</span>
+  );
+
   const defaultProps: TokenDetailReturnType = {
     label: 'Unknown',
     alert: unableToRenew ? (
@@ -45,7 +54,7 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
         </AlertDescription>
       </Alert>
     ) : null,
-    state: isActive ? 'Active' : 'Expired',
+    state: isActive ? 'Active' : ExpiredAtNode,
     autoRenew: !unableToRenew && (
       <div className='flex flex-row items-center justify-start text-info'>
         <RefreshCcw className='w-4 h-4 mr-2' />
@@ -63,7 +72,7 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
       return {
         ...defaultProps,
         label: 'Google',
-        state: isActive ? 'Active' : 'Expired',
+        state: isActive ? 'Active' : ExpiredAtNode,
         icon: (
           <svg className="h-10 w-10 flex-shrink-0 rounded-full" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
             <path
@@ -147,11 +156,17 @@ const OAuthList: FC<OAuthListProps> = (props) => {
   }
 
   return (
-    <ul role="list" className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+    <ul role="list" className="flex flex-wrap gap-4">
       {oAuthTokens.map((token) => {
         const tokenDetail = getTokenDetail(token);
         const isTokenLoading = isLoading === token.id;
         const isTokenDefault = token.isDefault;
+        const hasBeenExpiredFor = formatDistance(token.expiryDate, Date.now(), {
+          addSuffix: true,
+        });
+        const lastUpdatedAt = formatDistance(token.updatedAt, Date.now(), {
+          addSuffix: true,
+        });
         const stateClasses = cn(tokenDetail.state === 'Active' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-red-50 text-red-700 ring-red-600/20');
 
         return (
@@ -170,7 +185,7 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                     {isTokenDefault && <Badge>Default</Badge>}
                   </div>
                   <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
-                  <p className="mt-2 truncate text-xs dark:text-gray-400 text-gray-600">Created at: {format(token.createdAt, 'yyyy-MM-dd')}</p>
+                  <p className="mt-2 truncate text-xs dark:text-gray-400 text-gray-600">Last Update: {lastUpdatedAt}</p>
                   { tokenDetail.autoRenew && <div className="mt-2">{tokenDetail.autoRenew}</div> }
                 </div>
                 {tokenDetail.icon}
