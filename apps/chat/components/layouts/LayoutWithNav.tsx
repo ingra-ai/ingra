@@ -40,7 +40,7 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     NAVLINKS.splice(1, 0, {
       title: 'Repository',
       description: 'Manage your collections and functions that you own or have access to.',
-      href: getUserRepoUri(authSession.user.profile.userName)
+      href: HUBS_APP_URL + getUserRepoUri(authSession.user.profile.userName)
     });
   }
 
