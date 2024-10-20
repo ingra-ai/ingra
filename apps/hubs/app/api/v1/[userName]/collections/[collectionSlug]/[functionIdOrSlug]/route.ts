@@ -8,6 +8,7 @@ import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ActionError } from '@v1/types/api-response';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 
 type ContextShape = {
   params: {
@@ -80,6 +81,16 @@ async function handlerFn(args: HandlerArgs) {
       accessTypes,
       metrics,
       errors,
+    });
+
+    // Log function execution
+    await logFunctionExecution({
+      functionId: functionRecord.id, 
+      userId: authSession.user.id,
+      requestData: requestArgs,
+      responseData: result,
+      executionTime: metrics?.executionTime || 0,
+      error: errors?.[0]?.message || null,
     });
 
     loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionIdOrSlug}`, metrics);

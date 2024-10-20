@@ -18,6 +18,7 @@
     "./data/auth": "./src/data/auth.ts",
     "./data/chat": "./src/data/chat.ts",
     "./data/auditLog": "./src/data/auditLog.ts",
+    "./data/functionExecutionLog": "./src/data/functionExecutionLog.ts",
     "./data/apiKey": "./src/data/apiKey.ts",
     "./data/auth/session/types": "./src/data/auth/session/types.ts",
     "./data/auth/session/caches": "./src/data/auth/session/caches.ts",
