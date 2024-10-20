@@ -2,12 +2,10 @@
 import { Transition, TransitionChild } from '@headlessui/react';
 import { Navlink } from '@repo/components/navs/types';
 import { Button } from '@repo/components/ui/button';
-import { Separator } from '@repo/components/ui/separator';
 import { DOCS_APP_URL, HUBS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
 import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
 import { cn } from '@repo/shared/lib/utils';
 import { MenuIcon } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
 
 import { History } from '../custom/history';
@@ -26,7 +24,8 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     {
       title: 'Marketplace',
       description: 'Browse public collections and functions shared by other users.',
-      href: HUBS_APP_URL + '/marketplace/collections'
+      href: HUBS_APP_URL + '/marketplace/collections',
+      external: true
     },
     {
       title: 'Docs',
@@ -40,7 +39,8 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     NAVLINKS.splice(1, 0, {
       title: 'Repository',
       description: 'Manage your collections and functions that you own or have access to.',
-      href: HUBS_APP_URL + getUserRepoUri(authSession.user.profile.userName)
+      href: HUBS_APP_URL + getUserRepoUri(authSession.user.profile.userName),
+      external: true
     });
   }
 
@@ -72,7 +72,6 @@ const generateAuthNavLinks = (authSession?: AuthSessionResponse) => {
 
 export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const { className, authSession, children, ...restOfDivProps } = props;
-  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const classes = cn(
     'relative h-full w-full overflow-hidden',
@@ -142,7 +141,6 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
                       onMenuClick={() => setSidebarOpen(false)}
                       className='bg-card border-r border-gray-300 dark:border-gray-700 flex flex-1 flex-col overflow-x-hidden'
                     >
-                      <Separator className="my-4" />
                       <History authSession={authSession} />
                     </SideNav>
                   </TransitionChild>

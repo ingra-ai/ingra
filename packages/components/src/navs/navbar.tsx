@@ -70,15 +70,21 @@ export function Logo({ className }: { className?: string }) {
   );
 }
 
-export function NavMenu({ navlinks, isSheet = false }: NavMenuProps) {
+export function NavMenu(props: NavMenuProps) {
+  const { 
+    className,
+    navlinks, 
+    isSheet = false 
+  } = props;
   return (
     <>
       {navlinks.map((item) => {
         const Comp = (
-          <Anchor key={item.title + item.href} activeClassName="text-primary font-semibold" absolute className="flex items-center gap-1" href={item.href} title={item?.description || ''}>
+          <Anchor key={item.title + item.href} activeClassName="text-primary font-semibold" absolute className={ cn("flex items-center gap-1", className ) } href={item.href} title={item?.description || ''}>
             {item.title} {item.external && <ExternalLinkIcon className="w-3 h-3 align-super" strokeWidth={3} />}
           </Anchor>
         );
+
         return isSheet ? (
           <SheetClose key={item.title + item.href} asChild>
             {Comp}

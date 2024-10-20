@@ -5,6 +5,7 @@ import { Navlink } from '@repo/components/navs/types';
 import { ModeToggle } from '@repo/components/theme/theme-toggle';
 import { Button, buttonVariants } from '@repo/components/ui/button';
 import { ScrollArea } from '@repo/components/ui/scroll-area';
+import { Separator } from '@repo/components/ui/separator';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { APP_GITHUB_URL } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
@@ -33,7 +34,7 @@ const SideNav: FC<PropsWithChildren<SideNavProps>> = (props) => {
         </div>
         {
           typeof onMenuClick === 'function' && (
-            <Button onClick={ onMenuClick } variant={'outline'} className="p-2 w-auto h-auto">
+            <Button onClick={onMenuClick} variant={'outline'} className="p-2 w-auto h-auto">
               <span className="sr-only">Toggle sidebar</span>
               <MenuIcon className="w-4 h-4" />
             </Button>
@@ -41,22 +42,21 @@ const SideNav: FC<PropsWithChildren<SideNavProps>> = (props) => {
         }
       </div>
       <ScrollArea className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2.5">
-          <NavMenu navlinks={navlinks} />
-        </div>
         {children}
       </ScrollArea>
-      <div className="mt-auto space-y-1">
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center">
-            <AuthUserMenu showUsername={true} authSession={authSession} navlinks={authNavlinks} />
-          </div>
-          <div className="flex items-center justify-center">
-            <Link href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-              <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
-            </Link>
-            <ModeToggle />
-          </div>
+      <div className="block mt-auto space-y-2">
+        <div className="text-sm space-y-4 py-6">
+          <div className="dark:text-zinc-300 text-sm">Resources</div>
+          <NavMenu className="text-left pl-4" navlinks={navlinks} />
+        </div>
+        <div className="flex items-center justify-center">
+          <AuthUserMenu showUsername={true} authSession={authSession} navlinks={authNavlinks} />
+        </div>
+        <div className="flex items-center justify-center">
+          <Link href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+            <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
+          </Link>
+          <ModeToggle />
         </div>
       </div>
     </nav>

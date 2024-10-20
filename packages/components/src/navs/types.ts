@@ -18,6 +18,7 @@ export type NavbarProps = {
 };
 
 export type NavMenuProps = {
+  className?: string;
   navlinks: Navlink[];
   isSheet?: boolean;
 };
