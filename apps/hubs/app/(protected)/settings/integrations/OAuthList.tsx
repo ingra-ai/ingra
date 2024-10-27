@@ -9,11 +9,11 @@ import { OAuthToken } from '@repo/db/prisma';
 import { revokeOAuth, setTokenAsDefault } from '@repo/shared/actions/oauth';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
+import { formatDistance, differenceInSeconds } from 'date-fns';
 import { format } from 'date-fns/format';
 import { RefreshCcw, RocketIcon, TentIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
-import { formatDistance, differenceInSeconds } from 'date-fns';
 
 import type { FC } from 'react';
 

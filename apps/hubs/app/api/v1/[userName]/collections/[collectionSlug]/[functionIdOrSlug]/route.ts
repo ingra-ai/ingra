@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { getFunctionAccessibleByUser, type FunctionAccessType } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -8,7 +9,6 @@ import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ActionError } from '@v1/types/api-response';
-import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 
 type ContextShape = {
   params: {

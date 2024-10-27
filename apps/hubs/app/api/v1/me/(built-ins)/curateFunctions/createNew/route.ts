@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { createNewFunction } from '@repo/shared/actions/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -6,6 +5,7 @@ import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { FunctionSchema } from '@repo/shared/schemas/function';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 /**
  * @swagger
