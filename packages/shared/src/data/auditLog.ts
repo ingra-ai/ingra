@@ -1,6 +1,7 @@
 'use server';
 import db from '@repo/db/client';
 import type { LogObject } from 'consola/core';
+import { Logger } from '@repo/shared/lib/logger';
 
 export async function pushToAuditTable(logObj: LogObject) {
   const { date, args, type, level, tag } = logObj;
@@ -9,7 +10,7 @@ export async function pushToAuditTable(logObj: LogObject) {
   const truncatedTag = tag && tag.length > 255 ? tag.substring(0, 255) : tag;
 
   try {
-    await db.auditLog.create({
+    return await db.auditLog.create({
       data: {
         date: new Date(date),
         args,
@@ -19,6 +20,7 @@ export async function pushToAuditTable(logObj: LogObject) {
       },
     });
   } catch (error) {
-    console.error('Error inserting audit log:', error);
+    Logger.withTag('auditLog').error('Error inserting audit log:', error);
+    return false;
   }
 }

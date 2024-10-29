@@ -151,7 +151,7 @@ export const UserProfileForm: FC<UserProfileFormProps> = (props) => {
           </label>
           <div className="mt-2">
             <select
-              className="dark:bg-gray-50 bg-gray-950 w-[280px] border border-gray-700 dark:border-gray-300 text-gray-100 dark:text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-secondary dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="dark:bg-gray-950 bg-gray-50 w-[280px] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-secondary dark:placeholder-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
               onChange={onTimezoneChanged}
               defaultValue={userProfile?.timeZone}
             >

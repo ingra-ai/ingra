@@ -1,20 +1,19 @@
 'use client';
 import { Transition, TransitionChild } from '@headlessui/react';
 import { Navlink } from '@repo/components/navs/types';
+import { FormSlideOver } from '@repo/components/slideovers/FormSlideOver';
 import { Button } from '@repo/components/ui/button';
-import { Separator } from '@repo/components/ui/separator';
 import { DOCS_APP_URL, HUBS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
 import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
 import { cn } from '@repo/shared/lib/utils';
-import { MenuIcon } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { MenuIcon, SettingsIcon } from 'lucide-react';
 import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
 
 import { History } from '../custom/history';
+import ChatConfigForm from '../forms/ChatConfigForm';
 import SideNav from '../navs/SideNav';
 
 import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-
 
 type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   authSession?: AuthSessionResponse;
@@ -26,7 +25,8 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     {
       title: 'Marketplace',
       description: 'Browse public collections and functions shared by other users.',
-      href: HUBS_APP_URL + '/marketplace/collections'
+      href: HUBS_APP_URL + '/marketplace/collections',
+      external: true
     },
     {
       title: 'Docs',
@@ -40,7 +40,8 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     NAVLINKS.splice(1, 0, {
       title: 'Repository',
       description: 'Manage your collections and functions that you own or have access to.',
-      href: getUserRepoUri(authSession.user.profile.userName)
+      href: HUBS_APP_URL + getUserRepoUri(authSession.user.profile.userName),
+      external: true
     });
   }
 
@@ -72,8 +73,8 @@ const generateAuthNavLinks = (authSession?: AuthSessionResponse) => {
 
 export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
   const { className, authSession, children, ...restOfDivProps } = props;
-  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const classes = cn(
     'relative h-full w-full overflow-hidden',
     className
@@ -88,15 +89,19 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
 
   return (
     <div className={classes} data-testid="layout-with-nav" {...restOfDivProps}>
-    <div className="fixed z-30 left-0 top-0 flex flex-1 p-2">
-      {/* Mobile sidenav toggler */}
-      <div className="flex items-center gap-x-2">
-        <Button onClick={ () => setSidebarOpen(true) } variant={'outline'} className="p-2 w-auto h-auto">
-          <span className="sr-only">Toggle sidebar</span>
-          <MenuIcon className="w-4 h-4" />
-        </Button>
+      <div className="fixed z-30 left-0 top-0 flex flex-1 p-2">
+        {/* Mobile sidenav toggler */}
+        <div className="flex items-center space-x-2">
+          <Button onClick={() => setSidebarOpen(true)} variant={'outline'} className="p-2 w-auto h-auto">
+            <span className="sr-only">Toggle sidebar</span>
+            <MenuIcon className="w-4 h-4" />
+          </Button>
+          <Button onClick={() => setSettingsOpen(true)} variant={'outline'} className="p-2 w-auto h-auto">
+            <span className="sr-only">Toggle settings</span>
+            <SettingsIcon className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
-    </div>
       <div className='lg:visible lg:inset-y-0 lg:flex lg:w-60 lg:flex-col'>
         <div className="relative z-30">
           <Transition show={sidebarOpen} as={'div'}>
@@ -117,16 +122,16 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
               <TransitionChild
                 as={'div'}
                 enter="transition ease-in-out duration-300 transform"
-                enterFrom="-translate-x-64"
+                enterFrom="-translate-x-60"
                 enterTo="translate-x-0"
                 leave="transition ease-in-out duration-300 transform"
                 leaveFrom="translate-x-0"
-                leaveTo="-translate-x-64"
+                leaveTo="-translate-x-60"
               >
-                <div className="flex max-w-xs flex-1 h-screen max-h-screen w-64">
+                <div className="flex max-w-xs flex-1 h-screen max-h-screen w-60">
                   <TransitionChild
                     as={'div'}
-                    className={'flex w-64'}
+                    className={'flex w-60'}
                     enter="ease-in-out duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
@@ -135,14 +140,14 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
                     leaveTo="opacity-0"
                   >
                     {/* Sidebar component, swap this element with another sidebar if you like */}
-                    <SideNav 
+                    <SideNav
                       authSession={authSession}
                       navlinks={generateNavLinks(authSession)}
                       authNavlinks={generateAuthNavLinks(authSession)}
+                      onGearClick={() => setSettingsOpen(!settingsOpen)}
                       onMenuClick={() => setSidebarOpen(false)}
                       className='bg-card border-r border-gray-300 dark:border-gray-700 flex flex-1 flex-col overflow-x-hidden'
                     >
-                      <Separator className="my-4" />
                       <History authSession={authSession} />
                     </SideNav>
                   </TransitionChild>
@@ -155,6 +160,9 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
       <main className={mainClasses}>
         {children}
       </main>
+      <FormSlideOver title="Presets" open={settingsOpen} setOpen={setSettingsOpen} className="w-xl">
+        <ChatConfigForm />
+      </FormSlideOver>
     </div>
   );
 };

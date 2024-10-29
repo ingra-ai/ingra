@@ -7,7 +7,7 @@ import { Button } from '@repo/components/ui/button';
 import { Badge } from '@repo/components/ui/badge';
 import { EyeIcon, FolderIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { getUserApiCollectionsOpenApiJsonUri } from '@repo/shared/lib/constants/repo';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../../ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@repo/components/ui/dropdown-menu';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 
 interface CollectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -23,7 +23,9 @@ export const CollectionCard: React.FC<React.PropsWithChildren<CollectionCardProp
   const { authSession, collection, href, children, handleDelete: onHandleDelete, handleSubscribe: onHandleSubscribe, handleUnsubscribe: onHandleUnsubscribe, ...divProps } = props;
 
   const isOwner = authSession?.user?.profile?.userName && collection.owner?.profile?.userName && authSession?.user?.profile?.userName === collection.owner?.profile?.userName;
-  const isSubscribed = ( collection?.subscribers || [] ).some((subscriber) => subscriber.id === authSession?.user?.id);
+
+  // The fetched record of subscribers should already only fetch subscribers of current user.
+  const isSubscribed = ( collection?.subscribers || [] ).length > 0;
 
   const [cardState, setCardState] = React.useState({
     isSubscribing: false,
