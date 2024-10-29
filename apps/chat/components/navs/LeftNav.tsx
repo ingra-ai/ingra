@@ -5,26 +5,25 @@ import { Navlink } from '@repo/components/navs/types';
 import { ModeToggle } from '@repo/components/theme/theme-toggle';
 import { Button, buttonVariants } from '@repo/components/ui/button';
 import { ScrollArea } from '@repo/components/ui/scroll-area';
-import { Separator } from '@repo/components/ui/separator';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { APP_GITHUB_URL } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
-import { GithubIcon, MenuIcon, SettingsIcon } from 'lucide-react';
+import { GithubIcon, MenuIcon, CogIcon } from 'lucide-react';
 import Link from 'next/link';
 
 import type { FC, PropsWithChildren } from 'react';
 
-export type SideNavProps = {
+export type LeftNavProps = {
   className?: string;
   authSession?: AuthSessionResponse;
   authNavlinks: Navlink[];
   navlinks: Navlink[];
-  onGearClick?: () => void;
   onMenuClick?: () => void;
+  onCogClick?: () => void;
 };
 
-const SideNav: FC<PropsWithChildren<SideNavProps>> = (props) => {
-  const { className, navlinks = [], authSession, authNavlinks, onGearClick, onMenuClick, children } = props;
+const LeftNav: FC<PropsWithChildren<LeftNavProps>> = (props) => {
+  const { className, navlinks = [], authSession, authNavlinks, onMenuClick, onCogClick, children } = props;
   const classes = cn('px-2.5 py-2', className);
 
   return (
@@ -35,18 +34,18 @@ const SideNav: FC<PropsWithChildren<SideNavProps>> = (props) => {
         </div>
         <div className="flex space-x-2">
           {
-            typeof onGearClick === 'function' && (
-              <Button onClick={onGearClick} variant={'outline'} className="p-2 w-auto h-auto">
-                <span className="sr-only">Settings</span>
-                <SettingsIcon className="w-4 h-4" />
+            typeof onMenuClick === 'function' && (
+              <Button onClick={onMenuClick} variant={'outline'} className="p-2 w-auto h-auto" title="Toggle sidenav">
+                <span className="sr-only">Toggle sidenav</span>
+                <MenuIcon className="w-4 h-4" />
               </Button>
             )
           }
           {
-            typeof onMenuClick === 'function' && (
-              <Button onClick={onMenuClick} variant={'outline'} className="p-2 w-auto h-auto">
-                <span className="sr-only">Toggle sidebar</span>
-                <MenuIcon className="w-4 h-4" />
+            typeof onCogClick === 'function' && (
+              <Button onClick={onCogClick} variant={'outline'} className="p-2 w-auto h-auto" title="Toggle control">
+                <span className="sr-only">Toggle control</span>
+                <CogIcon className="w-4 h-4" />
               </Button>
             )
           }
@@ -74,4 +73,4 @@ const SideNav: FC<PropsWithChildren<SideNavProps>> = (props) => {
   );
 };
 
-export default SideNav;
+export default LeftNav;

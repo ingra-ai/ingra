@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { getFunctionAccessibleByUser, type FunctionAccessType } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -80,6 +81,16 @@ async function handlerFn(args: HandlerArgs) {
       accessTypes,
       metrics,
       errors,
+    });
+
+    // Log function execution
+    await logFunctionExecution({
+      functionId: functionRecord.id, 
+      userId: authSession.user.id,
+      requestData: requestArgs,
+      responseData: result,
+      executionTime: metrics?.executionTime || 0,
+      error: errors?.[0]?.message || null,
     });
 
     loggerObj.withTag(`function|${functionRecord.id}`).info(`Finished executing function: ${functionIdOrSlug}`, metrics);

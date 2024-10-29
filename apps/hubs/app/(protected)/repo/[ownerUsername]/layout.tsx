@@ -54,7 +54,7 @@ async function Layout(props: LayoutProps) {
   }
 
   return (
-    <div className="relative xl:container" data-testid="repo-layout">
+    <div className="relative xl:container px-2 sm:px-8" data-testid="repo-layout">
       <Suspense fallback={<div>Loading...</div>}>{itsMe ? mine : community}</Suspense>
     </div>
   );

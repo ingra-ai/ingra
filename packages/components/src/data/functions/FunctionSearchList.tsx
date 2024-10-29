@@ -42,7 +42,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
           description: result.message,
         });
 
-        startTransition(router.refresh);
+        return startTransition(router.refresh);
       })
       .catch((error) => {
         toast({
@@ -75,7 +75,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
             description: 'Function has been deleted successfully.',
           });
 
-          startTransition(router.refresh);
+          return startTransition(router.refresh);
         })
         .catch((error) => {
           toast({
@@ -101,7 +101,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
           description: result?.message || 'Function has been subscribed successfully.',
         });
 
-        startTransition(router.refresh);
+        return startTransition(router.refresh);
       })
       .catch((error) => {
         toast({
@@ -124,7 +124,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
           description: result?.message || 'Function has been unsubscribed successfully.',
         });
 
-        startTransition(router.refresh);
+        return startTransition(router.refresh);
       })
       .catch((error) => {
         toast({
@@ -159,7 +159,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
         }
 
         toast(toastProps);
-        router.refresh();
+        return startTransition(router.refresh);
       })
       .catch((error: Error) => {
         toast({
@@ -188,7 +188,7 @@ export const FunctionSearchList: React.FC<FunctionSearchListProps> = (props) => 
             description: `Function has been ${isPublished ? 'unpublished' : 'published'} successfully.`,
           });
 
-          startTransition(router.refresh);
+          return startTransition(router.refresh);
         })
         .catch((error: Error) => {
           toast({

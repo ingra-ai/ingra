@@ -4,7 +4,8 @@
   "private": true,
   "exports": {
     ".": "./tailwind.config.ts",
-    "./postcss-config": "./postcss.config.js"
+    "./postcss-config": "./postcss.config.js",
+    "./globals.scss": "./globals.scss"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

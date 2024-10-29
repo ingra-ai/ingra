@@ -2,22 +2,30 @@
 import { Fragment, type PropsWithChildren, FC } from 'react';
 import { Dialog, Transition, TransitionChild, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { cn } from '@repo/shared/lib/utils';
 
 type FormSlideOverProps = {
-  title: string;
+  title: React.ReactNode;
   open: boolean;
   setOpen: (value: boolean) => void;
+  className?: string;
 };
 
 export const FormSlideOver: FC<PropsWithChildren<FormSlideOverProps>> = (props) => {
-  const { title = 'Panel Title', open = true, setOpen, children } = props;
+  const { 
+    title = 'Panel Title', 
+    open = true, 
+    setOpen, 
+    children, 
+    className = 'w-full max-w-xl'
+  } = props;
 
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={setOpen}>
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex">
               <TransitionChild
                 as={Fragment}
                 enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -27,7 +35,7 @@ export const FormSlideOver: FC<PropsWithChildren<FormSlideOverProps>> = (props) 
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <DialogPanel className="flex flex-col pointer-events-auto w-screen max-w-2xl bg-secondary text-secondary-foreground max-h-full p-4 sm:p-6">
+                <DialogPanel className={cn("flex flex-col pointer-events-auto bg-card text-card-foreground max-h-full p-4 sm:p-6", className)}>
                   <div className="flex items-start justify-between">
                     <DialogTitle className="text-base font-semibold leading-6">{title}</DialogTitle>
                     <div className="ml-3 flex h-7 items-center">

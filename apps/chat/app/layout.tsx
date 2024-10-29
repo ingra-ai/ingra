@@ -5,7 +5,7 @@ import { ThemeProvider } from '@repo/components/theme/theme-provider';
 import { Toaster } from '@repo/components/ui/toaster';
 import '@css/globals.scss';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { APP_AUTH_LOGIN_URL, APP_DESCRIPTION, APP_NAME } from '@repo/shared/lib/constants';
+import { APP_AUTH_LOGIN_URL, APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
 import { Inter as FontSans } from 'next/font/google';
 import Head from 'next/head';
@@ -47,7 +47,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       </Head>
       <body className={bodyClasses} data-testid="layout-body">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <LayoutWithNav authSession={authSession}>{children}</LayoutWithNav>;
+          <LayoutWithNav authSession={authSession}>
+            {children}
+          </LayoutWithNav>
         </ThemeProvider>
         <Toaster />
       </body>

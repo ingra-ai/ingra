@@ -1,4 +1,3 @@
-import db from '@repo/db/client';
 import { upsertFunction as dataUpsertFunctions, getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 import { validateAction } from '@repo/shared/lib/action-helpers';
 import { mixpanel } from '@repo/shared/lib/analytics';

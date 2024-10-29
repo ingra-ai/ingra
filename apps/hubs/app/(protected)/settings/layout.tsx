@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function SettingsLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen bg-background" data-testid="settings-layout">
-      <div className="2xl:container mx-auto px-4 py-8">
+      <div className="xl:container px-2 sm:px-8 mx-auto py-8">
         <h1 className="sr-only">Settings</h1>
         <div className="flex flex-row gap-8">
           <nav className="w-64 space-y-2">
