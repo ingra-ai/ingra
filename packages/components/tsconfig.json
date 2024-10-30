@@ -4,6 +4,7 @@
     "outDir": "dist",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "rootDir": "src",
     "strictNullChecks": false,
     "strictPropertyInitialization": false,
   },
