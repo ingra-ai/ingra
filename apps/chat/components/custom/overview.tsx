@@ -1,7 +1,7 @@
+import { Logo } from "@repo/components/navs/navbar";
+import { DOCS_APP_URL } from "@repo/shared/lib/constants";
 import { motion } from "framer-motion";
 import Link from "next/link";
-
-import { LogoOpenAI, MessageIcon, VercelIcon } from "./icons";
 
 export const Overview = () => {
   return (
@@ -15,29 +15,37 @@ export const Overview = () => {
     >
       <div className="border rounded-lg p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
         <p className="flex flex-row justify-center gap-4 items-center text-zinc-900 dark:text-zinc-50">
-          <VercelIcon />
-          <span>+</span>
-          <MessageIcon />
+          <Logo />
+          <span>Ingra Chat</span>
         </p>
         <p>
-          This is an open source Chatbot template built with Next.js and the AI
-          SDK by Vercel. It uses the{" "}
-          <code className="rounded-md bg-muted px-1 py-0.5">streamText</code>{" "}
-          function in the server and the{" "}
-          <code className="rounded-md bg-muted px-1 py-0.5">useChat</code> hook
-          on the client to create a seamless chat experience.
-        </p>
-        <p>
-          {" "}
-          You can learn more about the AI SDK by visiting the{" "}
+          Welcome to Ingra&apos;s AI-powered chatbot! This chatbot is designed to enhance your experience by providing instant assistance and information. It leverages the power of{" "}
           <Link
             className="text-blue-500 dark:text-blue-400"
-            href="https://sdk.vercel.ai/docs"
+            href="https://vercel.com/ai"
             target="_blank"
           >
-            Docs
-          </Link>
-          .
+            Vercel AI
+          </Link>{" "}
+          and{" "}
+          <Link
+            className="text-blue-500 dark:text-blue-400"
+            href="https://js.langchain.com/docs/"
+            target="_blank"
+          >
+            LangChain
+          </Link>{" "}
+          to deliver a seamless and intelligent conversation.
+        </p>
+        <p>
+          Learn more about how Ingra is utilizing cutting-edge technology to serve you better by visiting our{" "}
+          <Link
+            className="text-blue-500 dark:text-blue-400"
+            href={DOCS_APP_URL}
+          >
+            Documentation
+          </Link>{" "}
+          page.
         </p>
       </div>
     </motion.div>
