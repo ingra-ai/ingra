@@ -27,7 +27,7 @@ export const createNewFunction = async (functionPayload: z.infer<typeof Function
     }
   
     if (functionPayload.id) {
-      throw new Error("Creating new function doesn't require an ID. Please remove the ID from the function schema.");
+      throw new Error("Creating new function doesn't require an ID. Please remove the ID from the payload.");
     }
   
     if (isNil(functionPayload.slug.trim())) {
