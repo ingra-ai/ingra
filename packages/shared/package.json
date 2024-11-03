@@ -11,6 +11,7 @@
     "./schemas/function": "./src/schemas/function.ts",
     "./schemas/profile": "./src/schemas/profile.ts",
     "./schemas/schema-constants": "./src/schemas/schema-constants.ts",
+    "./data/bio": "./src/data/bio/index.ts",
     "./data/profile": "./src/data/profile.ts",
     "./data/user": "./src/data/user.ts",
     "./data/envVars": "./src/data/envVars.ts",
@@ -47,6 +48,7 @@
     "./actions/oauth": "./src/actions/oauth.ts",
     "./actions/profile": "./src/actions/profile.ts",
     "./utils/actionAuthTryCatch": "./src/utils/actionAuthTryCatch.ts",
+    "./utils/embeddings": "./src/utils/embeddings/index.ts",
     "./utils/functions/functionArgsToZod": "./src/utils/functions/functionArgsToZod.ts",
     "./utils/functions/convertFunctionRecordToOpenApiSchema": "./src/utils/functions/convertFunctionRecordToOpenApiSchema.ts",
     "./utils/vm/functions/generateCodeDefaultTemplate": "./src/utils/vm/functions/generateCodeDefaultTemplate.ts",
@@ -107,6 +109,7 @@
   "peerDependencies": {
     "ai": "^3.4.9",
     "next": "^14.2.15",
+    "openai": "^4.67.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }
