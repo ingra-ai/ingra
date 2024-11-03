@@ -29,3 +29,5 @@ export function censorEmail(email: string) {
 
   return [censoredUserPart, `${censoredUserPart}@${domainPart}`];
 }
+
+export * from './generateUuid';
