@@ -308,7 +308,7 @@ export default function ChatConfigForm({ className }: ChatConfigFormProps) {
 
             <div className="flex justify-between items-center">
               <div>
-                <Button type="submit" disabled={configFormState.loading}>
+                <Button variant="default" type="submit" disabled={configFormState.loading}>
                   {configFormState.loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Save Changes
                 </Button>
