@@ -1,11 +1,12 @@
 // File: /pages/api/v1/me/bio/route.ts
 
-import { NextRequest, NextResponse } from 'next/server';
-import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
-import { Logger } from '@repo/shared/lib/logger';
-import { mixpanel } from '@repo/shared/lib/analytics';
-import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { storeMemory, retrieveMemory, updateMemory, deleteMemory, type BioMetadata, mapBioMetadata } from '@repo/shared/data/bio';
+import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
+import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
+import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { ActionError } from '@v1/types/api-response';
 
 /**
