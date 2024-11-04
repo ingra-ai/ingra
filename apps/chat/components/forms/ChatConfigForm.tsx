@@ -36,9 +36,9 @@ import { toast } from "@repo/components/ui/use-toast";
 import { deleteChatConfig, listChatConfigs, upsertChatConfig } from "@repo/shared/actions/chatConfig";
 import { CHAT_DEFAULT_CONFIG, ChatConfigSchema } from "@repo/shared/schemas/chatConfig";
 import { Loader2, Trash2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const SEARCH_PARAMS_KEY = 'config';
@@ -65,7 +65,6 @@ export default function ChatConfigForm({ className }: ChatConfigFormProps) {
     configurations: [],
     selectedConfig: null,
   })
-  const router = useRouter()
   const searchParams = useSearchParams()
   const configKey = searchParams.get(SEARCH_PARAMS_KEY)
 
@@ -113,7 +112,8 @@ export default function ChatConfigForm({ className }: ChatConfigFormProps) {
     } else {
       params.set(SEARCH_PARAMS_KEY, key)
     }
-    router.replace(`?${params.toString()}`)
+
+    window.history.pushState({}, '', `?${params.toString()}`);
   }
 
   const handleSelectChange = (key: string) => {
