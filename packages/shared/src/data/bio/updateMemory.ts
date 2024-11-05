@@ -38,7 +38,7 @@ export async function updateMemory(
     ...(existingMemory.matches?.[0]?.metadata || {}),
     ...metadata,
     text,
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date().getTime(),
   };
 
   // Upsert the updated vector into Pinecone

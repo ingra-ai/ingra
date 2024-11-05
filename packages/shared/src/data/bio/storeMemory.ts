@@ -20,13 +20,15 @@ export async function storeMemory(
   // Generate embedding vector for the input text
   const embeddingVector = await generateEmbeddings(text);
   const id = generateUuid();
+  const currentTime = new Date().getTime();
 
   // Include userId and createdAt in metadata
   const enrichedMetadata: BioMetadata = {
     ...metadata,
     text,
     userId,
-    createdAt: new Date().toISOString(),
+    createdAt: currentTime,
+    updatedAt: currentTime,
   };
 
   // Upsert the vector into Pinecone

@@ -5,6 +5,6 @@ export type BioMetadata = Metadata & {
   text: string;
   tags: string[];
   category: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: number;
+  updatedAt?: number;
 };
