@@ -3,6 +3,8 @@ import { formatDistance } from 'date-fns/formatDistance';
 
 export const mapBioMetadata = (metadata?: BioMetadata) => {
   return {
+    memoryId: metadata?.memoryId || '',
+    chunkIndex: metadata?.chunkIndex || 0,
     text: metadata?.text || '',
     tags: metadata?.tags,
     category: metadata?.category,
