@@ -17,25 +17,39 @@ export async function updateMemory(
   text: string,
   metadata: BioMetadata
 ): Promise<string> {
+  let memoryIdToUpdate = memoryId;
+
   // Generate new embedding vector for the updated text
   const updatedEmbeddingVector = await generateEmbeddings(text);
+
+  // Validate if memoryId is a chunked memory ID
+  if (memoryId.includes('_')) {
+    memoryIdToUpdate = memoryId.split('_')?.[0] || '';
+  }
+
+  if ( !memoryIdToUpdate ) {
+    throw new Error('Failed to update, invalid memory ID');
+  }
 
   // Fetch first to get the existing metadata
   const existingMemory = await pcBio.query({
     id: memoryId,
     topK: 1,
     filter: {
+      memoryId: memoryIdToUpdate,
       userId,
     },
   });
 
-  if (!existingMemory.matches?.[0]) {
+  const foundMemory = existingMemory.matches?.[0];
+
+  if (!foundMemory) {
     throw new Error('Failed to update, memory not found');
   }
 
   // Include userId and update updatedAt in metadata
   const enrichedMetadata: BioMetadata = {
-    ...(existingMemory.matches?.[0]?.metadata || {}),
+    ...(foundMemory?.metadata || {}),
     ...metadata,
     text,
     updatedAt: new Date().getTime(),

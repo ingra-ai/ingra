@@ -1,6 +1,7 @@
 import { pcBio } from "@repo/db/pinecone";
 import { generateUuid } from "@repo/shared/lib/utils";
 import { generateEmbeddings } from "@repo/shared/utils/embeddings";
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import type { BioMetadata } from "./types";
 
 /**
@@ -17,28 +18,41 @@ export async function storeMemory(
   text: string,
   metadata: BioMetadata
 ): Promise<string> {
-  // Generate embedding vector for the input text
-  const embeddingVector = await generateEmbeddings(text);
-  const id = generateUuid();
+  const memoryId = generateUuid();
+
+  // Split the text into chunks
+  const textSplitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 200,
+  });
+  const textChunks = await textSplitter.splitText(text);
+
+  // Generate embeddings for each chunk
+  const embeddingPromises = textChunks.map((chunk) => generateEmbeddings(chunk));
+  const embeddings = await Promise.all(embeddingPromises);
+
+  // Prepare vectors for upsert
   const currentTime = new Date().getTime();
+  const vectors = embeddings.map((embeddingVector, index) => {
+    const enrichedMetadata: BioMetadata = {
+      ...metadata,
+      userId,
+      text: textChunks[index] || '',
+      chunkIndex: index,
+      memoryId,
+      createdAt: currentTime,
+      updatedAt: currentTime,
+    };
 
-  // Include userId and createdAt in metadata
-  const enrichedMetadata: BioMetadata = {
-    ...metadata,
-    text,
-    userId,
-    createdAt: currentTime,
-    updatedAt: currentTime,
-  };
-
-  // Upsert the vector into Pinecone
-  await pcBio.upsert([
-    {
-      id,
+    return {
+      id: `${memoryId}_${index}`,
       values: embeddingVector,
       metadata: enrichedMetadata,
-    },
-  ]);
+    };
+  });
 
-  return id;
+  // Upsert the vector into Pinecone
+  await pcBio.upsert(vectors);
+
+  return memoryId;
 }
