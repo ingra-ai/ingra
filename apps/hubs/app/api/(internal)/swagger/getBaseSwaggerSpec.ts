@@ -22,11 +22,8 @@ export const BASE_SWAGGER_SPEC_KEY = 'BASE_SWAGGER_SPEC';
 
 export const getBaseSwaggerSpec = async (storeToCache = false) => {
   const swaggerOptions: SwaggerOptions = {
-    apiFolder: 'app/api', // define api folder under app folder
-    apis: [
-      'app/api/**/*.ts',
-      '../../packages/shared/src/**/*.ts'
-    ],
+    apiFolder: 'api', // define api folder under app folder
+    apis: ['app/api/**/*.ts', '../../packages/shared/src/**/*.ts'],
     definition: {
       openapi: '3.1.0',
       info: {
