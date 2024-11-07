@@ -1,10 +1,12 @@
 // File: /pages/api/v1/me/bio/route.ts
 
-import { storeMemory, retrieveMemory, updateMemory, deleteMemory, type BioMetadata, mapBioMetadata } from '@repo/shared/data/bio';
+import { storeMemory, retrieveMemory, updateMemory, deleteMemory, type BioMetadata, mapBioMetadata, type AdditionalFilterType, type FilterOptions } from '@repo/shared/data/bio';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { parseStartAndEnd } from '@repo/shared/utils/chronoUtils';
+import { formatDistance } from 'date-fns/formatDistance';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ActionError } from '@v1/types/api-response';
@@ -30,7 +32,7 @@ import { ActionError } from '@v1/types/api-response';
  *               metadata:
  *                 type: object
  *                 description: Additional metadata for personalization.
- *                additionalProperties: true
+ *                 additionalProperties: true
  *                 properties:
  *                   tags:
  *                     type: array
@@ -97,7 +99,7 @@ export async function POST(req: NextRequest) {
  * @swagger
  * /api/v1/me/bio:
  *   get:
- *     summary: Retrieve memories based on a query.
+ *     summary: Retrieve memories based on a query and optional filters.
  *     operationId: retrieveMemory
  *     parameters:
  *       - in: query
@@ -113,6 +115,38 @@ export async function POST(req: NextRequest) {
  *           default: 5
  *         required: false
  *         description: Number of top results to retrieve.
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: |
+ *           Start date for filtering memories. Can be a natural language date (e.g., 'last Monday', '2023-10-01').
+ *           If only startDate is provided, memories from this date onwards are retrieved.
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: |
+ *           End date for filtering memories. Can be a natural language date (e.g., 'today', '2023-10-15').
+ *           If only endDate is provided, memories up to this date are retrieved.
+ *       - in: query
+ *         name: dateField
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, updatedAt, both]
+ *           default: createdAt
+ *         required: false
+ *         description: Date field to filter on.
+ *       - in: query
+ *         name: operator
+ *         schema:
+ *           type: string
+ *           enum: [AND, OR]
+ *           default: AND
+ *         required: false
+ *         description: Logical operator to combine date filters.
  *     responses:
  *       '200':
  *         description: Memories retrieved successfully.
@@ -132,27 +166,85 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const text = searchParams.get('query');
+  const text = searchParams.get('query') || '';
   const topK = parseInt(searchParams.get('topK') || '5', 10);
+  const startInput = searchParams.get('startDate');
+  const endInput = searchParams.get('endDate');
+  const dateField = searchParams.get('dateField') as 'createdAt' | 'updatedAt' | 'both';
+  const operator = searchParams.get('operator') as 'AND' | 'OR';
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    if (!text) {
-      throw new ActionError('error', 400, 'Query text is required to retrieve memories.');
+    const userId = authSession.user.id,
+      userTz = authSession.user.profile?.timeZone || 'America/New_York';
+
+    // Build extraFilters and filterOptions
+    const extraFilters: AdditionalFilterType = {};
+    const filterOptions: FilterOptions = {
+      dateFilterType: dateField || 'createdAt',
+      dateFilterOperator: operator || 'AND',
+    };
+
+    let adjustedStartInput = startInput;
+    let adjustedEndInput = endInput;
+
+    // If only one of startInput or endInput is provided, set the other to a default value
+    if (startInput && !endInput) {
+      // If only startDate is provided, set endDate to 'now'
+      adjustedEndInput = 'now';
+    } 
+    else if (!startInput && endInput) {
+      // If only endDate is provided, set startDate to a date far in the past
+      adjustedStartInput = '2024-01-01';
     }
 
-    const userId = authSession.user.id;
+    if (startInput || endInput) {
+      try {
+        const { startDate, endDate } = parseStartAndEnd(adjustedStartInput!, adjustedEndInput!, userTz);
+
+        if (endDate < startDate) {
+          throw new Error('endDate cannot be earlier than startDate.');
+        }
+
+        const dateFilter: Record<string, number> = {};
+        
+        if (startDate) {
+          dateFilter.$gte = startDate.getTime();
+        }
+
+        if (endDate) {
+          dateFilter.$lte = endDate.getTime();
+        }
+
+        if (filterOptions.dateFilterType === 'createdAt' || filterOptions.dateFilterType === 'both') {
+          extraFilters.createdAt = dateFilter;
+        }
+
+        if (filterOptions.dateFilterType === 'updatedAt' || filterOptions.dateFilterType === 'both') {
+          extraFilters.updatedAt = dateFilter;
+        }
+      } catch (error: any) {
+        throw new ActionError(
+          'error',
+          400,
+          error?.message || 'Invalid date input. Please check your startDate and endDate inputs.'
+        );
+      }
+    }
 
     // Retrieve memories
-    const results = await retrieveMemory(userId, text, topK);
+    const results = await retrieveMemory(userId, text, topK, extraFilters, filterOptions);
 
     // Logging and analytics
-    const logger = Logger.withTag('api|memory').withTag('operation|retrieveMemory').withTag(`user|${userId}`);
+    const logger = Logger.withTag('api|memory')
+      .withTag('operation|retrieveMemory')
+      .withTag(`user|${userId}`);
     logger.info(`Retrieved ${results.matches?.length || 0} memories.`);
 
     mixpanel.track('Memory Retrieved', {
       distinct_id: userId,
       ...getAnalyticsObject(req),
       query: text,
+      extraFilters,
       resultsCount: results.matches?.length || 0,
       readUnits: results?.usage?.readUnits || 0,
     });
@@ -160,7 +252,59 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         status: 'success',
-        message: 'Memories retrieved successfully.',
+        message: (() => {
+          const totalMemories = results.matches.length;
+          let msg = `Found ${totalMemories} memor${totalMemories !== 1 ? 'ies' : 'y'}`;
+        
+          const dateDescriptions = [];
+          const now = new Date();
+        
+          // Helper function to format dates nicely
+          const formatDate = (dateString: number) => {
+            const date = new Date(dateString);
+            return formatDistance(date, now, { addSuffix: true });
+          };
+        
+          if (extraFilters.createdAt) {
+            const createdAtFilter = extraFilters.createdAt;
+            const parts = [];
+        
+            if (createdAtFilter.$gte && createdAtFilter.$lte) {
+              parts.push(`created between ${formatDate(createdAtFilter.$gte)} and ${formatDate(createdAtFilter.$lte)}`);
+            } else if (createdAtFilter.$gte) {
+              parts.push(`created from ${formatDate(createdAtFilter.$gte)} until now`);
+            } else if (createdAtFilter.$lte) {
+              parts.push(`created up to ${formatDate(createdAtFilter.$lte)} ago`);
+            }
+        
+            if (parts.length > 0) {
+              dateDescriptions.push(parts.join(' '));
+            }
+          }
+        
+          if (extraFilters.updatedAt) {
+            const updatedAtFilter = extraFilters.updatedAt;
+            const parts = [];
+        
+            if (updatedAtFilter.$gte && updatedAtFilter.$lte) {
+              parts.push(`updated between ${formatDate(updatedAtFilter.$gte)} and ${formatDate(updatedAtFilter.$lte)}`);
+            } else if (updatedAtFilter.$gte) {
+              parts.push(`updated from ${formatDate(updatedAtFilter.$gte)} until now`);
+            } else if (updatedAtFilter.$lte) {
+              parts.push(`updated up to ${formatDate(updatedAtFilter.$lte)} ago`);
+            }
+        
+            if (parts.length > 0) {
+              dateDescriptions.push(parts.join(' '));
+            }
+          }
+        
+          if (dateDescriptions.length > 0) {
+            msg += ` that were ${dateDescriptions.join(' and ')}`;
+          }
+        
+          return msg + '.';
+        })(),
         data: results.matches.map((match) => {
           return {
             id: match.id,
@@ -170,7 +314,7 @@ export async function GET(req: NextRequest) {
               ...mapBioMetadata(match.metadata),
               text: undefined,
             },
-          }
+          };
         }),
       },
       { status: 200 }

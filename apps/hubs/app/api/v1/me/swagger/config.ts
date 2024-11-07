@@ -3,7 +3,7 @@ import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN } from '@repo/shared/lib/c
 import { kv } from '@vercel/kv';
 import isEmpty from 'lodash/isEmpty';
 
-import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getSwaggerSpec } from '@app/api/(internal)/swagger/config';
+import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getBaseSwaggerSpec } from '@app/api/(internal)/swagger/getBaseSwaggerSpec';
 import { generateOpenApiSchema } from '@v1/me/swagger/generateOpenApiSchema';
 
 export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
@@ -13,7 +13,7 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const username = authSession?.user?.profile?.userName || authSession.user.email;
 
-  const [userFunctionsPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(authSession), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getSwaggerSpec(false)]);
+  const [userFunctionsPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(authSession), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getBaseSwaggerSpec(false)]);
 
   const mySwaggerSpec = {
     ...(baseSwaggerSpec || {}),
