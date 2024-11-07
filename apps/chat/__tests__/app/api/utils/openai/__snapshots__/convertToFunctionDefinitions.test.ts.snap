@@ -1,0 +1,584 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests parse OpenAI function tool definitions parsers should parse Swagger OpenAPI Spec into OpenAI Function Tools Definitions 1`] = `
+[
+  {
+    "description": "Store a new memory for the user.",
+    "name": "storeMemory",
+    "parameters": {
+      "properties": {
+        "metadata": {
+          "additionalProperties": true,
+          "description": "Additional metadata for personalization.",
+          "properties": {
+            "category": {
+              "description": "Category of the memory.",
+              "type": "string",
+            },
+            "tags": {
+              "description": "Tags for the memory.",
+              "items": {
+                "type": "string",
+              },
+              "type": "array",
+            },
+          },
+          "type": "object",
+        },
+        "text": {
+          "description": "The text content to store and embed.",
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Retrieve memories based on a query and optional filters.",
+    "name": "retrieveMemory",
+    "parameters": {
+      "properties": {
+        "dateField": {
+          "description": "Date field to filter on.",
+          "type": "string",
+        },
+        "endDate": {
+          "description": "End date for filtering memories. Can be a natural language date (e.g., 'today', '2023-10-15').
+If only endDate is provided, memories up to this date are retrieved.
+",
+          "type": "string",
+        },
+        "operator": {
+          "description": "Logical operator to combine date filters.",
+          "type": "string",
+        },
+        "query": {
+          "description": "The query text to search for similar memories.",
+          "type": "string",
+        },
+        "startDate": {
+          "description": "Start date for filtering memories. Can be a natural language date (e.g., 'last Monday', '2023-10-01').
+If only startDate is provided, memories from this date onwards are retrieved.
+",
+          "type": "string",
+        },
+        "topK": {
+          "description": "Number of top results to retrieve.",
+          "type": "integer",
+        },
+      },
+      "required": [
+        "query",
+      ],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Update an existing memory.",
+    "name": "updateMemory",
+    "parameters": {
+      "properties": {
+        "metadata": {
+          "additionalProperties": true,
+          "description": "Updated metadata for personalization.",
+          "properties": {
+            "category": {
+              "description": "Category of the memory.",
+              "type": "string",
+            },
+            "tags": {
+              "description": "Tags for the memory.",
+              "items": {
+                "type": "string",
+              },
+              "type": "array",
+            },
+          },
+          "type": "object",
+        },
+        "text": {
+          "description": "The updated text content for the memory.",
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Delete a memory by ID.",
+    "name": "deleteMemory",
+    "parameters": {
+      "properties": {
+        "memoryId": {
+          "description": "The ID of the memory to delete.",
+          "type": "string",
+        },
+      },
+      "required": [
+        "memoryId",
+      ],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Generate an exact copy of a function and its arguments by providing referenced function ID. Useful for fast-prototyping of a new function using an existing similar one.",
+    "name": "cloneFunction",
+    "parameters": {
+      "properties": {
+        "functionId": {
+          "description": "The ID of the function to clone. In UUID format.",
+          "examples": [
+            "090abc6e-0e19-466d-8549-83dd24c5c8e5",
+          ],
+          "format": "uuid",
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Create a new function for the current user by providing a function schema.",
+    "name": "createNewFunction",
+    "parameters": {
+      "properties": {
+        "function": {
+          "properties": {
+            "arguments": {
+              "items": {
+                "properties": {
+                  "defaultValue": {
+                    "default": "",
+                    "description": "The default value of the argument.",
+                    "nullable": true,
+                    "type": "string",
+                  },
+                  "description": {
+                    "default": "",
+                    "description": "A description of the argument.",
+                    "nullable": true,
+                    "type": "string",
+                  },
+                  "id": {
+                    "default": "",
+                    "description": "Unique identifier for the function argument.",
+                    "format": "uuid",
+                    "type": "string",
+                  },
+                  "isRequired": {
+                    "default": false,
+                    "description": "Indicates if the argument is required.",
+                    "type": "boolean",
+                  },
+                  "name": {
+                    "default": "",
+                    "description": "The name of the argument.",
+                    "type": "string",
+                  },
+                  "type": {
+                    "default": "string",
+                    "description": "The data type of the argument (e.g., string, number, boolean).",
+                    "enum": [
+                      "string",
+                      "number",
+                      "boolean",
+                    ],
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+              "type": "array",
+            },
+            "code": {
+              "description": "The code of the function",
+              "type": "string",
+            },
+            "description": {
+              "description": "The description of the function",
+              "type": "string",
+            },
+            "httpVerb": {
+              "description": "The HTTP verb of the function",
+              "type": "string",
+            },
+            "isPrivate": {
+              "description": "If the function is private",
+              "type": "boolean",
+            },
+            "isPublished": {
+              "description": "If the function is published",
+              "type": "boolean",
+            },
+            "slug": {
+              "description": "The slug of the function to be edited",
+              "type": "string",
+            },
+            "tags": {
+              "items": {
+                "properties": {
+                  "functionId": {
+                    "default": "",
+                    "description": "The ID of the function this tag belongs to.",
+                    "format": "uuid",
+                    "type": "string",
+                  },
+                  "id": {
+                    "default": "",
+                    "description": "Unique identifier for the function tag.",
+                    "format": "uuid",
+                    "type": "string",
+                  },
+                  "name": {
+                    "default": "",
+                    "description": "The name of the tag.",
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+              "type": "array",
+            },
+          },
+          "required": [
+            "slug",
+            "description",
+          ],
+          "type": "object",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Dry run the code without arguments and returns the result. Expecting hard-coded values in replacement for the arguments. User variables and environment variables are still available in the VM context.",
+    "name": "dryRunFunction",
+    "parameters": {
+      "properties": {
+        "code": {
+          "description": "The sandbox code that follows the guideline to be executed.",
+          "type": "string",
+        },
+        "requestArgs": {
+          "description": "The request arguments to pass to the function in a form of an object. This will be part of requestArgs in the VM context.",
+          "type": "object",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Edits or updates one or more fields on an existing function after knowing the function ID.",
+    "name": "editFunction",
+    "parameters": {
+      "properties": {
+        "function": {
+          "properties": {
+            "arguments": {
+              "items": {
+                "properties": {
+                  "defaultValue": {
+                    "default": "",
+                    "description": "The default value of the argument.",
+                    "nullable": true,
+                    "type": "string",
+                  },
+                  "description": {
+                    "default": "",
+                    "description": "A description of the argument.",
+                    "nullable": true,
+                    "type": "string",
+                  },
+                  "id": {
+                    "default": "",
+                    "description": "Unique identifier for the function argument.",
+                    "format": "uuid",
+                    "type": "string",
+                  },
+                  "isRequired": {
+                    "default": false,
+                    "description": "Indicates if the argument is required.",
+                    "type": "boolean",
+                  },
+                  "name": {
+                    "default": "",
+                    "description": "The name of the argument.",
+                    "type": "string",
+                  },
+                  "type": {
+                    "default": "string",
+                    "description": "The data type of the argument (e.g., string, number, boolean).",
+                    "enum": [
+                      "string",
+                      "number",
+                      "boolean",
+                    ],
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+              "type": "array",
+            },
+            "code": {
+              "description": "The code of the function",
+              "type": "string",
+            },
+            "description": {
+              "description": "The description of the function",
+              "type": "string",
+            },
+            "httpVerb": {
+              "description": "The HTTP verb of the function",
+              "type": "string",
+            },
+            "id": {
+              "description": "The ID of the function to be edited",
+              "type": "string",
+            },
+            "isPrivate": {
+              "description": "If the function is private",
+              "type": "boolean",
+            },
+            "isPublished": {
+              "description": "If the function is published",
+              "type": "boolean",
+            },
+            "slug": {
+              "description": "The slug of the function to be edited",
+              "type": "string",
+            },
+            "tags": {
+              "items": {
+                "properties": {
+                  "functionId": {
+                    "default": "",
+                    "description": "The ID of the function this tag belongs to.",
+                    "format": "uuid",
+                    "type": "string",
+                  },
+                  "id": {
+                    "default": "",
+                    "description": "Unique identifier for the function tag.",
+                    "format": "uuid",
+                    "type": "string",
+                  },
+                  "name": {
+                    "default": "",
+                    "description": "The name of the tag.",
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+              "type": "array",
+            },
+          },
+          "required": [
+            "id",
+          ],
+          "type": "object",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Dry run a function by providing referenced function ID and "requestArgs" for the function's arguments.",
+    "name": "executeFunction",
+    "parameters": {
+      "properties": {
+        "functionIdOrSlug": {
+          "description": "The ID in UUID format, or slug of the function to run.",
+          "examples": [
+            "090abc6e-0e19-466d-8549-83dd24c5c8e5",
+            "myFunction",
+          ],
+          "type": "string",
+        },
+        "requestArgs": {
+          "additionalProperties": true,
+          "description": "The request arguments to pass to the function in a form of an object. This will be part of requestArgs in the VM context.",
+          "properties": {},
+          "type": "object",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Getting the code template for current user. It will show what are the available user vars, environment vars, and VM globals in the comment that are ready to be utilized when generating code.",
+    "name": "getCodeTemplate",
+    "parameters": {
+      "properties": {},
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Search functions for id, slug, description, arguments and tags references. The returned records would be from user's own functions and subscribed functions.",
+    "name": "searchFunctions",
+    "parameters": {
+      "properties": {
+        "fieldsToRetrieve": {
+          "description": "Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected. Only return \`code\` when requested since the payload is large.",
+          "items": {
+            "enum": [
+              "description",
+              "code",
+              "httpVerb",
+              "isPrivate",
+              "isPublished",
+              "arguments",
+              "tags",
+            ],
+            "type": "string",
+          },
+          "type": "array",
+        },
+        "q": {
+          "description": "Query string to search functions by slug, description, or tags.",
+          "type": "string",
+        },
+        "skip": {
+          "description": "Number of records to skip. Default is 0.",
+          "type": "integer",
+        },
+        "take": {
+          "description": "Number of records to retrieve. Default is 50.",
+          "type": "integer",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "View a specific function details including by providing id or slug. Function code is visible in the response.",
+    "name": "viewFunction",
+    "parameters": {
+      "properties": {
+        "fieldsToRetrieve": {
+          "description": "Specifies which fields to retrieve. If left empty, all fields will be returned. ID and Slug will always be selected.",
+          "items": {
+            "enum": [
+              "description",
+              "code",
+              "httpVerb",
+              "isPrivate",
+              "isPublished",
+              "arguments",
+              "tags",
+            ],
+            "type": "string",
+          },
+          "type": "array",
+        },
+        "functionIdOrSlug": {
+          "description": "The ID in UUID format, or slug of the function to view.",
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Retrieve all available environment variable keys and their record IDs.",
+    "name": "getEnvironmentVariablesList",
+    "parameters": {
+      "properties": {},
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Create a new environment variable.",
+    "name": "createEnvironmentVariable",
+    "parameters": {
+      "properties": {
+        "key": {
+          "examples": [
+            "DATABASE_URL",
+          ],
+          "type": "string",
+        },
+        "value": {
+          "examples": [
+            "postgres://user:password@localhost:5432/dbname",
+          ],
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Delete an environment variable.",
+    "name": "deleteEnvironmentVariable",
+    "parameters": {
+      "properties": {},
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Update an environment variable.",
+    "name": "updateEnvironmentVariable",
+    "parameters": {
+      "properties": {
+        "id": {
+          "type": "string",
+        },
+        "key": {
+          "type": "string",
+        },
+        "value": {
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Retrieve all available OAuth tokens for the authenticated user.",
+    "name": "getOAuthTokensList",
+    "parameters": {
+      "properties": {},
+      "required": [],
+      "type": "object",
+    },
+  },
+  {
+    "description": "Set an OAuth token as the default for a specific service.",
+    "name": "setOAuthTokenAsDefault",
+    "parameters": {
+      "properties": {
+        "id": {
+          "examples": [
+            "123e4567-e89b-12d3-a456-426614174000",
+          ],
+          "type": "string",
+        },
+        "service": {
+          "examples": [
+            "google-oauth",
+          ],
+          "type": "string",
+        },
+      },
+      "required": [],
+      "type": "object",
+    },
+  },
+]
+`;
