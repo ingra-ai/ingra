@@ -5,11 +5,11 @@ import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
+import { parseStartAndEnd } from '@repo/shared/utils/chronoUtils';
+import { formatDistance } from 'date-fns/formatDistance';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ActionError } from '@v1/types/api-response';
-import { parseStartAndEnd } from '@repo/shared/utils/chronoUtils';
-import { formatDistance } from 'date-fns/formatDistance';
 
 /**
  * @swagger
