@@ -20,10 +20,13 @@ export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]
  */
 export const BASE_SWAGGER_SPEC_KEY = 'BASE_SWAGGER_SPEC';
 
-export const getSwaggerSpec = async (storeToCache = false) => {
+export const getBaseSwaggerSpec = async (storeToCache = false) => {
   const swaggerOptions: SwaggerOptions = {
-    apiFolder: 'api', // define api folder under app folder
-    apis: ['app/api/**/*.ts', 'schemas/**/*.ts'],
+    apiFolder: 'app/api', // define api folder under app folder
+    apis: [
+      'app/api/**/*.ts',
+      '../../packages/shared/src/**/*.ts'
+    ],
     definition: {
       openapi: '3.1.0',
       info: {
@@ -37,11 +40,13 @@ export const getSwaggerSpec = async (storeToCache = false) => {
     },
   };
 
-  const spec = createSwaggerSpec(swaggerOptions),
-    specLength = Object.keys(spec || {}).length;
+  const spec = createSwaggerSpec(swaggerOptions) as Record<string, any>,
+    specPathsLength = Object.keys(spec?.paths || {}).length;
 
-  if (storeToCache) {
-    await Promise.all([kv.set(BASE_SWAGGER_SPEC_KEY, spec), Logger.withTag('api|swagger').log('Stored base swagger spec to KV store', { specLength })]);
+  Logger.withTag('api|baseSwagger').log('Accessed base swagger spec', { specPathsLength });
+
+  if (storeToCache && specPathsLength > 0) {
+    await Promise.all([kv.set(BASE_SWAGGER_SPEC_KEY, spec), Logger.withTag('api|baseSwagger').log('Stored base swagger spec to KV store', { specPathsLength })]);
   }
 
   return spec;
