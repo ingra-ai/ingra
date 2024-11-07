@@ -5,7 +5,7 @@ import { convertFunctionRecordToOpenApiSchema } from '@repo/shared/utils/functio
 import { kv } from '@vercel/kv';
 import isEmpty from 'lodash/isEmpty';
 
-import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getSwaggerSpec } from '@app/api/(internal)/swagger/config';
+import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getBaseSwaggerSpec } from '@app/api/(internal)/swagger/getBaseSwaggerSpec';
 
 async function generateCommunityCollectionOpenApiSchema(invokerUserId: string, ownerUsername: string, recordIdOrSlug: string) {
   if (!ownerUsername) {
@@ -74,7 +74,7 @@ export const getCommunityCollectionSpec = async (authSession: AuthSessionRespons
   const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([
     generateCommunityCollectionOpenApiSchema(authSession.userId, ownerUsername, recordIdOrSlug), 
     kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), 
-    getSwaggerSpec(false)
+    getBaseSwaggerSpec(false)
   ]);
 
   const mySwaggerSpec = {
