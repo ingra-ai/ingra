@@ -16,11 +16,22 @@ DEFAULT_LOG_FILE = 'command_execution.log'
 
 def setup_logging(log_file_path):
     """Set up logging configuration."""
-    logging.basicConfig(
-        filename=log_file_path,
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # File handler
+    file_handler = logging.FileHandler(log_file_path)
+    file_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
     logging.info(f'Logging is set up. Log file path: {log_file_path}')
 
 def load_config():
@@ -31,9 +42,9 @@ def load_config():
         try:
             with open(config_path, 'r') as file:
                 config = json.load(file)
-                logging.info(f"Configuration loaded from temp file: {config_path}")
+                # Logging will be set up after this function
         except Exception as e:
-            logging.error(f'Failed to load configuration: {e}')
+            print(f'Failed to load configuration: {e}', file=sys.stderr)
     return config
 
 def save_config(config):
@@ -42,9 +53,8 @@ def save_config(config):
     try:
         with open(config_path, 'w') as file:
             json.dump(config, file)
-            logging.info(f"Configuration saved to temp file: {config_path}")
     except Exception as e:
-        logging.error(f'Failed to save configuration: {e}')
+        print(f'Failed to save configuration: {e}', file=sys.stderr)
 
 def prompt_user_for_config(existing_config):
     """Prompt the user for configuration, using existing values as defaults."""
@@ -76,6 +86,7 @@ def prompt_user_for_config(existing_config):
     ).strip()
     if not log_file_path:
         log_file_path = existing_config.get('LOG_FILE_PATH', DEFAULT_LOG_FILE)
+    log_file_path = os.path.abspath(log_file_path)  # Convert to absolute path
 
     # Save configuration
     config = {
@@ -97,10 +108,11 @@ def change_working_directory(directory):
 
 # Load existing configuration or prompt the user
 config = load_config()
-config = prompt_user_for_config(config)
 
-# Set up logging
-setup_logging(config['LOG_FILE_PATH'])
+# Set up logging before prompting for config
+setup_logging(config.get('LOG_FILE_PATH', DEFAULT_LOG_FILE))
+
+config = prompt_user_for_config(config)
 
 # Change working directory
 change_working_directory(config['WORKING_DIRECTORY'])
@@ -123,6 +135,8 @@ logging.info('Server started. Listening for command executions.')
 @app.route('/execute', methods=['POST'])
 @auth.login_required
 def execute_command():
+    logging.info('Received command execution request.')
+
     """Execute a whitelisted command."""
     data = request.json
     if not data:
@@ -139,34 +153,38 @@ def execute_command():
     # Log the received command
     logging.info(f'Received command request: {command}')
 
-    # Split the command into arguments
-    try:
-        # Avoid using shell=True for security reasons
-        command_args = shlex.split(command)
-    except Exception as e:
-        error_message = f'Error parsing command: {e}'
-        logging.error(error_message)
-        return jsonify({"error": error_message}), 400
+    # Optional: Whitelist allowed commands
+    # ALLOWED_COMMANDS = ['echo', 'ls', 'pwd']  # Example commands
+    # command_name = shlex.split(command)[0]
+    # if command_name not in ALLOWED_COMMANDS:
+    #     error_message = f'Command "{command_name}" is not allowed.'
+    #     logging.warning(error_message)
+    #     return jsonify({"error": error_message}), 403
 
-
-    # Execute the command
+    # Execute the command with shell=True to allow shell operators
     try:
         result = subprocess.check_output(
-            command_args,
+            command,
             stderr=subprocess.STDOUT,
+            shell=True,  # Enable shell to process operators like '>'
             text=True
         )
         # Log the command output (truncated for safety)
         logging.info(f'Command output: {result[:1000]}')  # Limit output length
         return jsonify({"output": result}), 200
     except subprocess.CalledProcessError as e:
-        error_message = f'Error executing command "{command_name}": {e.output}'
+        error_message = f'Error executing command "{command}": {e.output}'
         logging.error(error_message)
         return jsonify({"error": e.output}), 500
     except Exception as e:
         error_message = f'Unexpected error: {e}'
         logging.error(error_message)
         return jsonify({"error": "Internal server error"}), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logging.error(f"Unhandled exception: {e}")
+    return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
     # Run the app on localhost to limit exposure
