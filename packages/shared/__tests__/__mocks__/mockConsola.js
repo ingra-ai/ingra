@@ -50,4 +50,4 @@ const createConsola = function () {
 
 const consola = createConsola();
 
-export { consola, createConsola };
+module.exports = { consola, createConsola };

@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "types": ["jest", "node"],
+    "allowJs": true,
+    "target": "ES2019",
+    "noEmit": true,
+    "isolatedModules": true
+  },
+  "include": ["src/**/*", "__tests__/**/*", "jest.*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
