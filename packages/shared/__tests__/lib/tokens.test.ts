@@ -1,9 +1,10 @@
+import { describe, it, expect, vi } from 'vitest';
 import { generateToken, decodeToken } from '@repo/shared/lib/tokens';
 import jwt from 'jsonwebtoken';
 
 describe('Token functions', () => {
-  const mockJwtSign = jest.fn().mockReturnValue('mockToken');
-  const mockJwtVerify = jest.fn().mockReturnValue({ data: 'mockPayload' });
+  const mockJwtSign = vi.fn().mockReturnValue('mockToken');
+  const mockJwtVerify = vi.fn().mockReturnValue({ data: 'mockPayload' });
 
   beforeAll(() => {
     jwt.sign = mockJwtSign;

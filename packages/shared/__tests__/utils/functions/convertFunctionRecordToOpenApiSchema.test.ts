@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { convertFunctionRecordToOpenApiSchema } from '@repo/shared/utils/functions/convertFunctionRecordToOpenApiSchema';
 
 describe('convertFunctionRecordToOpenApiSchema', () => {
