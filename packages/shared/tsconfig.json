@@ -4,7 +4,15 @@
     "outDir": "dist",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@repo/db/*": ["../database/src/*"],
+      "@repo/shared/*": ["src/*"],
+      "@repo/components/*": ["../components/src/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "__tests__/**/*", "jest.*.ts"],
   "exclude": ["node_modules", "dist"]
 }
