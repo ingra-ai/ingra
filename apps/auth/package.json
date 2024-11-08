@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests --runInBand --detectOpenHandles"
   },
   "contributors": [
     "Vadi Taslim <vadz77@hotmail.com>"
