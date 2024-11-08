@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { generateVmContextArgs } from '@repo/shared/utils/vm/generateVmContextArgs';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { mockAuthSession } from '@/__tests__/__mocks__/mockAuthSession';

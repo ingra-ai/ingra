@@ -11,7 +11,6 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
   moduleNameMapper: {
-    consola: '<rootDir>/../../packages/shared/__tests__/__mocks__/mockConsola.js',
     '^@/(.*)$': '<rootDir>/$1',
     '@v1/(.*)$': '<rootDir>/app/api/v1/$1',
     '@app/(.*)$': '<rootDir>/app/$1',

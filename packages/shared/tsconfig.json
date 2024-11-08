@@ -4,6 +4,7 @@
     "outDir": "dist",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "types": ["node", "vitest/globals"],
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
@@ -13,6 +14,6 @@
       "@repo/components/*": ["../components/src/*"]
     }
   },
-  "include": ["src/**/*", "__tests__/**/*", "jest.*.ts"],
+  "include": ["src/**/*", "__tests__/**/*", "jest.*.ts", "vitest.*.ts"],
   "exclude": ["node_modules", "dist"]
 }

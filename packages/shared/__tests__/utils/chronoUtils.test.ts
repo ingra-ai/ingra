@@ -1,17 +1,18 @@
+import { describe, it, expect, vi } from 'vitest';
 import { parseStartAndEnd } from '@repo/shared/utils/chronoUtils';
 
 describe('parseStartAndEnd', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should parse start and end dates correctly in UTC timezone', () => {
     const machineDateNow = new Date('2022-01-01T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'tomorrow 0:00';
     const endInput = 'tomorrow 23:59';
@@ -25,7 +26,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in AEST timezone when current date is 2022-01-03', () => {
     const machineDateNow = new Date('2022-01-03T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'tomorrow 0:00';
     const endInput = 'tomorrow 23:59';
@@ -39,7 +40,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in AEST timezone when startInput is 2022-01-01 and endInput is 2022-01-02', () => {
     const machineDateNow = new Date('2022-01-03T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = '2022-01-01';
     const endInput = '2022-01-02';
@@ -53,7 +54,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in UTC timezone with natural language input', () => {
     const machineDateNow = new Date('2022-01-01T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'tomorrow at 9am';
     const endInput = 'tomorrow at 5pm';
@@ -67,7 +68,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in AEST timezone with natural language input when current date is 2022-01-03', () => {
     const machineDateNow = new Date('2022-01-03T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'tomorrow at 9am';
     const endInput = 'tomorrow at 5pm';
@@ -81,7 +82,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in AEST timezone with natural language input when startInput is "next week" and endInput is "next week + 1 day"', () => {
     const machineDateNow = new Date('2022-01-03T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'next week';
     const endInput = 'next week + 1 day';
@@ -95,7 +96,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in AEST timezone with natural language input when startInput is "in 2 weeks" and endInput is "in 3 weeks"', () => {
     const machineDateNow = new Date('2022-01-03T00:00:00.000Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'in 2 weeks';
     const endInput = 'in 3 weeks';
@@ -109,7 +110,7 @@ describe('parseStartAndEnd', () => {
 
   it('should parse start and end dates correctly in AEST timezone with natural language input when startInput is "today at 00:00" and endInput is "today at 23:59"', () => {
     const machineDateNow = new Date('2024-05-17T11:25:28.918Z').getTime();
-    jest.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
 
     const startInput = 'today at 00:00';
     const endInput = 'today at 23:59';
