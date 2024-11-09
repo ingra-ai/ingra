@@ -40,6 +40,14 @@ vi.mock('@repo/db/client', () => ({
   default: mockDeep<PrismaClient>(),
 }));
 
+
+// vi.mock("@repo/db/client", async () => {
+//   const actual = await vi.importActual<typeof import('@repo/db/client')>("@repo/db/client")
+//   return {
+//     ...actual,
+//   };
+// });
+
 vi.mock('@repo/shared/lib/constants', async () => {
   const actualConstants = await vi.importActual<typeof import('@repo/shared/lib/constants')>(
     '@repo/shared/lib/constants'
