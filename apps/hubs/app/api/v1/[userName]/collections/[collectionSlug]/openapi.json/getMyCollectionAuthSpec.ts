@@ -2,10 +2,9 @@ import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
 import { APP_OPENAI_MANIFEST_DESC_FOR_HUMAN , USERS_API_COLLECTION_FUNCTION_URI } from '@repo/shared/lib/constants';
 import { convertFunctionRecordToOpenApiSchema } from '@repo/shared/utils/functions/convertFunctionRecordToOpenApiSchema';
-import { kv } from '@vercel/kv';
 import isEmpty from 'lodash/isEmpty';
 
-import { BASE_SWAGGER_SPEC_KEY, SwaggerOptions, getBaseSwaggerSpec } from '@app/api/(internal)/swagger/getBaseSwaggerSpec';
+import { getBaseSwaggerSpec } from '@app/api/(internal)/swagger/getBaseSwaggerSpec';
 
 async function generateOpenApiSchema(authSession: AuthSessionResponse, recordIdOrSlug: string) {
   if (!authSession || !authSession.user.id) {
@@ -64,11 +63,10 @@ export const getMyCollectionAuthSpec = async (authSession: AuthSessionResponse, 
     return null;
   }
 
-  const [openApiPaths, baseSwaggerSpecCache, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(authSession, recordIdOrSlug), kv.get<SwaggerOptions>(BASE_SWAGGER_SPEC_KEY), getBaseSwaggerSpec(false)]);
+  const [openApiPaths, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(authSession, recordIdOrSlug), getBaseSwaggerSpec()]);
 
   const mySwaggerSpec = {
     ...(baseSwaggerSpec || {}),
-    ...(baseSwaggerSpecCache || {}),
   };
 
   if (isEmpty(mySwaggerSpec)) {
