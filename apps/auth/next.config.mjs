@@ -4,11 +4,6 @@ const nextConfig = {
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   redirects: async () => {
     return [
-      {
-        source: '/marketplace',
-        destination: '/marketplace/collections',
-        permanent: false,
-      }
     ];
   },
   headers: async () => {
@@ -84,9 +79,6 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: [
-      "ui-avatars.com"
-    ]
   }
 };
 

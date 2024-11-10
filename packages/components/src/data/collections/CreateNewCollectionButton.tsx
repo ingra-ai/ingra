@@ -17,7 +17,7 @@ export const CreateNewCollectionButton: React.FC<CreateNewCollectionButtonProps>
   return (
     <div data-testid="create-new-collection-button" { ...props }>
       <Button variant="indigo" size={'xs'} onClick={ () => setOpen(true) }>
-        <PlusIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+        <PlusIcon className="h-5 w-5" aria-hidden="true" />
         Create New Collection
       </Button>
       <FormSlideOver title={'Add new collection'} open={open} setOpen={setOpen}>

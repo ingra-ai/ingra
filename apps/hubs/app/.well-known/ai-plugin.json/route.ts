@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         type: 'openapi',
         url: `${HUBS_APP_URL}/api/openapi.json`,
       },
-      logo_url: `${HUBS_APP_URL}/static/brand/ingra-logo-black.svg`,
+      logo_url: `${HUBS_APP_URL}/static/brand/ingra-logo-dark.svg`,
       contact_email: APP_SUPPORT_MAILTO,
       legal_info_url: `${PARENT_APP_URL}/legal`,
     },
