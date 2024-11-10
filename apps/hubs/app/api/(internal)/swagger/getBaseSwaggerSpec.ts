@@ -21,7 +21,7 @@ export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]
 export const BASE_SWAGGER_SPEC_KEY = 'BASE_SWAGGER_SPEC';
 
 export const getBaseSwaggerSpec = async (storeToCache = false) => {
-  const spec = baseSwaggerJson || {},
+  const spec = ( baseSwaggerJson || {} ) as Record<string, any>,
     specPathsLength = Object.keys(spec?.paths || {}).length;
 
   if (storeToCache && specPathsLength > 0) {
