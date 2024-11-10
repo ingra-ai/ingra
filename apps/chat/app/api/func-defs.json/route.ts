@@ -10,7 +10,7 @@ import { getBaseSwaggerSpec } from '../../../../hubs/app/api/(internal)/swagger/
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
 export async function GET(request: NextRequest) {
-  const swaggerSpec = await getBaseSwaggerSpec(true);
+  const swaggerSpec = await getBaseSwaggerSpec();
   const funcDefs = convertToFunctionDefinitions(swaggerSpec);
 
   return NextResponse.json(funcDefs, {

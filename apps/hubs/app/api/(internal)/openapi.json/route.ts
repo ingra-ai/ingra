@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
 export async function GET(request: NextRequest) {
-  const swaggerSpec = await getBaseSwaggerSpec(true);
+  const swaggerSpec = await getBaseSwaggerSpec();
 
   /**
    * Extras for swaggerSpec that if I add in the swagger/config, it will throw an error and the swagger UI won't load

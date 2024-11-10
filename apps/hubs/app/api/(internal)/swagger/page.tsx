@@ -5,7 +5,7 @@ import '@css/swagger.scss';
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const swaggerSpec = await getBaseSwaggerSpec(true);
+  const swaggerSpec = await getBaseSwaggerSpec();
 
   return (
     <section className="container">
