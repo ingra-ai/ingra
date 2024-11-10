@@ -4,10 +4,10 @@
  * @see https://platform.openai.com/docs/plugins/examples To create your first plugin with OAuth
  */
 
-import { APP_NAME, APP_OPENAI_MANIFEST_DESC_FOR_HUMAN, APP_PACKAGE_VERSION } from '@repo/shared/lib/constants';
 import { Logger } from '@repo/shared/lib/logger';
 import { kv } from '@vercel/kv';
 import { createSwaggerSpec } from 'next-swagger-doc';
+import baseSwaggerJson from '@/public/static/base-swagger.json';
 
 export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]>;
 
@@ -21,26 +21,8 @@ export type SwaggerOptions = NonNullable<Parameters<typeof createSwaggerSpec>[0]
 export const BASE_SWAGGER_SPEC_KEY = 'BASE_SWAGGER_SPEC';
 
 export const getBaseSwaggerSpec = async (storeToCache = false) => {
-  const swaggerOptions: SwaggerOptions = {
-    apiFolder: 'api', // define api folder under app folder
-    apis: ['app/api/**/*.ts', '../../packages/shared/src/**/*.ts'],
-    definition: {
-      openapi: '3.1.0',
-      info: {
-        title: `${APP_NAME} Plugin API`,
-        version: APP_PACKAGE_VERSION,
-        description: APP_OPENAI_MANIFEST_DESC_FOR_HUMAN,
-      },
-      paths: {},
-      components: {},
-      security: [],
-    },
-  };
-
-  const spec = createSwaggerSpec(swaggerOptions) as Record<string, any>,
+  const spec = baseSwaggerJson || {},
     specPathsLength = Object.keys(spec?.paths || {}).length;
-
-  Logger.withTag('api|baseSwagger').log('Accessed base swagger spec', { specPathsLength });
 
   if (storeToCache && specPathsLength > 0) {
     await Promise.all([kv.set(BASE_SWAGGER_SPEC_KEY, spec), Logger.withTag('api|baseSwagger').log('Stored base swagger spec to KV store', { specPathsLength })]);
