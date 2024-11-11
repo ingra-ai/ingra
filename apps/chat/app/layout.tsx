@@ -12,7 +12,7 @@ import Head from 'next/head';
 import { headers } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 
-import LayoutWithNav from '@/components/layouts/LayoutWithNav';
+import { LayoutWithNav } from '@/components/layouts/LayoutWithNav';
 
 import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
