@@ -4,6 +4,7 @@
  */
 
 import { AuthUserMenu } from "@repo/components/navs/menu/AuthUserMenu"
+import { Logo } from "@repo/components/navs/navbar"
 import { ModeToggle } from "@repo/components/theme/theme-toggle"
 import { buttonVariants } from "@repo/components/ui/button"
 import {
@@ -23,12 +24,10 @@ import {
   GithubIcon,
   ShoppingBag,
 } from "lucide-react"
-import Link from "next/link"
 import * as React from "react"
 
 import { NavSecondary } from ".//nav-secondary"
 import { NavHistories } from "./nav-histories"
-import { Logo } from "@repo/components/navs/navbar"
 
 const generateNavLinks = (authSession?: AuthSessionResponse) => {
   const NAVLINKS = [
