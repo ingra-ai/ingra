@@ -48,6 +48,7 @@ import { fetcher } from "@/lib/utils";
 
 import type { Chat } from "@repo/db/prisma";
 import type { ApiSuccess } from "@repo/shared/types";
+import { Skeleton } from "@repo/components/ui/skeleton";
 
 type HistoryItem = Pick<Chat, "id" | "name">;
 
@@ -120,7 +121,7 @@ export function NavHistories({ authSession }: NavHistoriesProps) {
 
   return (
     <>
-      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden" data-testid="nav-histories">
         <SidebarGroupLabel>Threads</SidebarGroupLabel>
         <SidebarMenu>
           {authSession && (
@@ -136,18 +137,20 @@ export function NavHistories({ authSession }: NavHistoriesProps) {
 
           {isLoading && authSession && (
             <SidebarMenuItem>
-              <div className="w-full animate-pulse bg-gray-200 h-4 rounded"></div>
+              <Skeleton className="h-4 mb-3 bg-gray-300 rounded"></Skeleton>
+              <Skeleton className="h-4 mb-3 bg-gray-300 rounded w-[90%]"></Skeleton>
+              <Skeleton className="h-4 bg-gray-300 rounded w-[95%]"></Skeleton>
             </SidebarMenuItem>
           )}
 
           {!isLoading && history.length === 0 && authSession && (
-            <SidebarMenuItem>
+            <SidebarMenuItem className="p-2 my-10">
               <div className="text-sm text-gray-500">No chats found</div>
             </SidebarMenuItem>
           )}
 
           {!authSession && (
-            <SidebarMenuItem>
+            <SidebarMenuItem className="p-2 my-10">
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Folder />
                 <span>Login to save and revisit previous chats!</span>
