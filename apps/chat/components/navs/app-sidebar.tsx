@@ -28,6 +28,7 @@ import * as React from "react"
 
 import { NavSecondary } from ".//nav-secondary"
 import { NavHistories } from "./nav-histories"
+import { Logo } from "@repo/components/navs/navbar"
 
 const generateNavLinks = (authSession?: AuthSessionResponse) => {
   const NAVLINKS = [
@@ -93,12 +94,15 @@ export function AppSidebar(props: AppSidebarProps) {
     <Sidebar variant="inset" {...restOfProps}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center justify-center">
-            <a href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })} target="_blank" rel="noopener noreferrer">
-              <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
-            </a>
-            <ModeToggle />
-          </SidebarMenuItem>
+          <div className="flex items-center justify-between">
+            <Logo />
+            <SidebarMenuItem className="flex items-center justify-center">
+              <a href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })} target="_blank" rel="noopener noreferrer">
+                <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
+              </a>
+              <ModeToggle />
+            </SidebarMenuItem>
+          </div>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
