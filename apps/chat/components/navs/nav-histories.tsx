@@ -27,6 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@repo/components/ui/sidebar";
+import { Skeleton } from "@repo/components/ui/skeleton";
 import { useToast } from "@repo/components/ui/use-toast";
 import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 import cx from "classnames";
@@ -48,7 +49,6 @@ import { fetcher } from "@/lib/utils";
 
 import type { Chat } from "@repo/db/prisma";
 import type { ApiSuccess } from "@repo/shared/types";
-import { Skeleton } from "@repo/components/ui/skeleton";
 
 type HistoryItem = Pick<Chat, "id" | "name">;
 
