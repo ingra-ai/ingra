@@ -38,9 +38,9 @@ export function Navbar(props: PropsWithChildren<NavbarProps>) {
           <div className="flex items-center gap-2" suppressHydrationWarning>
             {children}
             <div className="flex ml-2.5 sm:ml-0 items-center">
-              <Link href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+              <a href={APP_GITHUB_URL} className={buttonVariants({ variant: 'ghost', size: 'icon' })} target="_blank" rel="noopener noreferrer">
                 <GithubIcon className="h-[1.1rem] w-[1.1rem]" />
-              </Link>
+              </a>
               {/* <Link
                 href="#"
                 className={buttonVariants({
