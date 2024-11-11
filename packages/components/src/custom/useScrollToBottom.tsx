@@ -11,6 +11,11 @@ export function useScrollToBottom<T extends HTMLElement>(): [
     const container = containerRef.current;
     const end = endRef.current;
 
+    if ( end ) {
+      // Initial scroll on mount
+      end.scrollIntoView({ behavior: "auto", block: "end" });
+    }
+
     if (container && end) {
       const observer = new MutationObserver(() => {
         end.scrollIntoView({ behavior: "instant", block: "end" });

@@ -2,7 +2,7 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { Transition, Menu, MenuSection, MenuButton, MenuItems, MenuItem, MenuHeading, MenuSeparator } from '@headlessui/react';
-import { ChevronDown, LogIn } from 'lucide-react';
+import { ChevronDown, ChevronsUpDown, LogIn } from 'lucide-react';
 import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 import { Button } from '@repo/components/ui/button';
 import { APP_AUTH_LOGIN_URL, AUTH_APP_URL } from '@repo/shared/lib/constants';
@@ -55,10 +55,12 @@ export function AuthUserMenu(props: AuthUserMenuProps) {
         </Avatar>
         {
           showUsername && (
-            <span className="ml-2 text-sm font-semibold">{authSession?.user?.profile?.userName || authSession?.user?.email}</span>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="ml-2 font-semibold truncate">{authSession?.user?.profile?.userName || authSession?.user?.email}</span>
+            </div>
           )
         }
-        <ChevronDown className="ml-1 w-4 h-4" />
+        <ChevronsUpDown className="ml-auto size-4" />
       </MenuButton>
       <Transition
         as={Fragment}
