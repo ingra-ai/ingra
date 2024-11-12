@@ -26,8 +26,8 @@ import {
 } from "lucide-react"
 import * as React from "react"
 
-import { NavSecondary } from ".//nav-secondary"
 import { NavHistories } from "./nav-histories"
+import { NavSecondary } from "./nav-secondary"
 
 const generateNavLinks = (authSession?: AuthSessionResponse) => {
   const NAVLINKS = [
