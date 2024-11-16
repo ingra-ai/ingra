@@ -10,6 +10,25 @@ describe('parseStartAndEnd', () => {
     vi.clearAllMocks();
   });
 
+  it('should parse start and end dates correctly when startInput is "last Monday" and endInput is "today"', () => {
+    // In Australia/Sydney, the current date is Saturday, Nov 16 at 08:00 (2024-11-16T08:00:00.000+11:00)
+    const machineDateNow = new Date('2024-11-15T21:00:00.000Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+  
+    const startInput = 'last Monday';
+    const endInput = 'today';
+    const userTz = 'Australia/Sydney'; 
+  
+    const result = parseStartAndEnd(startInput, endInput, userTz);
+
+
+    // In Australia/Sydney, last Monday is Monday, 11 November at 00:00 (2024-11-11T00:00:00.000+11:00)
+    expect(result.startDate.toISOString()).toBe('2024-11-10T13:00:00.000Z');
+
+    // In Australia/Sydney, today is Saturday, Nov 16 at 23:59:59 (2024-11-16T23:59:59.999+11:00)
+    expect(result.endDate.toISOString()).toBe('2024-11-16T12:59:59.999Z');
+  });
+
   it('should parse start and end dates correctly in UTC timezone', () => {
     const machineDateNow = new Date('2022-01-01T00:00:00.000Z').getTime();
     vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
