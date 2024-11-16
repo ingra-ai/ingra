@@ -10,6 +10,25 @@ describe('parseStartAndEnd', () => {
     vi.clearAllMocks();
   });
 
+  it('should parse start and end dates correctly when startInput is "last Monday" and endInput is "today"', () => {
+    // In Australia/Sydney, the current date is Saturday, Nov 16 at 08:00 (2024-11-16T08:00:00.000+11:00)
+    const machineDateNow = new Date('2024-11-15T21:00:00.000Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+  
+    const startInput = 'last Monday';
+    const endInput = 'today';
+    const userTz = 'Australia/Sydney'; 
+  
+    const result = parseStartAndEnd(startInput, endInput, userTz);
+
+
+    // In Australia/Sydney, last Monday is Monday, 11 November at 00:00 (2024-11-11T00:00:00.000+11:00)
+    expect(result.startDate.toISOString()).toBe('2024-11-10T13:00:00.000Z');
+
+    // In Australia/Sydney, today is Saturday, Nov 16 at 23:59:59 (2024-11-16T23:59:59.999+11:00)
+    expect(result.endDate.toISOString()).toBe('2024-11-16T12:59:59.999Z');
+  });
+
   it('should parse start and end dates correctly in UTC timezone', () => {
     const machineDateNow = new Date('2022-01-01T00:00:00.000Z').getTime();
     vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
@@ -22,6 +41,36 @@ describe('parseStartAndEnd', () => {
 
     expect(result.startDate.toISOString()).toBe('2022-01-02T00:00:00.000Z');
     expect(result.endDate.toISOString()).toBe('2022-01-02T23:59:00.000Z');
+  });
+
+  it('should parse start and end dates correctly in UTC timezone when both inputs are "tomorrow"', () => {
+    // Mock the current date to 2022-01-01T00:00:00.000Z
+    const machineDateNow = new Date('2022-01-01T19:00:00.000Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+  
+    const startInput = 'tomorrow';
+    const endInput = 'tomorrow';
+    const userTz = 'UTC';
+  
+    const result = parseStartAndEnd(startInput, endInput, userTz);
+  
+    expect(result.startDate.toISOString()).toBe('2022-01-02T00:00:00.000Z');
+    expect(result.endDate.toISOString()).toBe('2022-01-02T23:59:59.999Z');
+  });
+
+  it('should parse start and end dates correctly in AEST timezone when both inputs are "tomorrow"', () => {
+    // Mock the current date to 2022-01-01T00:00:00.000Z
+    const machineDateNow = new Date('2024-11-13T10:27:09.216Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(machineDateNow);
+  
+    const startInput = 'tomorrow';
+    const endInput = 'tomorrow';
+    const userTz = 'Australia/Sydney';
+  
+    const result = parseStartAndEnd(startInput, endInput, userTz);
+  
+    expect(result.startDate.toISOString()).toBe('2024-11-13T13:00:00.000Z');
+    expect(result.endDate.toISOString()).toBe('2024-11-14T12:59:59.999Z');
   });
 
   it('should parse start and end dates correctly in AEST timezone when current date is 2022-01-03', () => {
@@ -48,8 +97,8 @@ describe('parseStartAndEnd', () => {
 
     const result = parseStartAndEnd(startInput, endInput, userTz);
 
-    expect(result.startDate.toISOString()).toBe('2022-01-01T01:00:00.000Z');
-    expect(result.endDate.toISOString()).toBe('2022-01-02T01:00:00.000Z');
+    expect(result.startDate.toISOString()).toBe('2021-12-31T13:00:00.000Z');
+    expect(result.endDate.toISOString()).toBe('2022-01-02T12:59:59.999Z');
   });
 
   it('should parse start and end dates correctly in UTC timezone with natural language input', () => {
@@ -90,8 +139,8 @@ describe('parseStartAndEnd', () => {
 
     const result = parseStartAndEnd(startInput, endInput, userTz);
 
-    expect(result.startDate.toISOString()).toBe('2022-01-10T00:00:00.000Z');
-    expect(result.endDate.toISOString()).toBe('2022-01-11T00:00:00.000Z');
+    expect(result.startDate.toISOString()).toBe('2022-01-09T13:00:00.000Z');
+    expect(result.endDate.toISOString()).toBe('2022-01-11T12:59:59.999Z');
   });
 
   it('should parse start and end dates correctly in AEST timezone with natural language input when startInput is "in 2 weeks" and endInput is "in 3 weeks"', () => {
@@ -104,8 +153,8 @@ describe('parseStartAndEnd', () => {
 
     const result = parseStartAndEnd(startInput, endInput, userTz);
 
-    expect(result.startDate.toISOString()).toBe('2022-01-17T00:00:00.000Z');
-    expect(result.endDate.toISOString()).toBe('2022-01-24T00:00:00.000Z');
+    expect(result.startDate.toISOString()).toBe('2022-01-16T13:00:00.000Z');
+    expect(result.endDate.toISOString()).toBe('2022-01-24T12:59:59.999Z');
   });
 
   it('should parse start and end dates correctly in AEST timezone with natural language input when startInput is "today at 00:00" and endInput is "today at 23:59"', () => {
