@@ -41,8 +41,6 @@ export const CollectionDetailView: React.FC<CollectionDetailViewsProps> = ({ aut
   // If the user is not the owner and not subscribed to the collection, restrict access to the OpenAPI JSON and Swagger URLs.
   const isRestrictedAccess = !isOwner && !isSubscribed;
 
-  console.log({ isOwner, isSubscribed, isRestrictedAccess, record, authSession });
-
   const handleDelete = useCallback(() => {
     const confirmed = confirm(`Are you sure you want to delete this collection? This will only remove the collection; your functions will be disconnected from it.`);
 
