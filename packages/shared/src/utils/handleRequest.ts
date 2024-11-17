@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ApiError } from '../types/api-response';
+import { ApiError } from '@repo/shared/types';
 import { Logger } from '../lib/logger';
 import { getAnalyticsObject } from '../lib/utils/getAnalyticsObject';
 

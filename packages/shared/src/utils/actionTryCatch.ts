@@ -1,4 +1,4 @@
-import { ActionError, PrismaActionError } from '../types/api-response';
+import { ActionError, PrismaActionError } from '@repo/shared/types';
 import { Logger } from '../lib/logger';
 import type { ActionTryCatchReturnType } from './types';
 import { Prisma } from '@repo/db/prisma';

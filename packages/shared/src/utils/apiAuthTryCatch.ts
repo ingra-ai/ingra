@@ -1,6 +1,6 @@
 import type { ApiTryCatchReturnType } from './types';
 import { apiTryCatch } from './apiTryCatch';
-import { ActionError } from '../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import { getAuthSession } from '../data/auth/session';
 import { AuthSessionResponse, GetAuthSessionOptions } from '../data/auth/session/types';
 

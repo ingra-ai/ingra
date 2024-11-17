@@ -1,10 +1,10 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { APP_AUTH_LOGIN_URL, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { ActionError } from '@repo/shared/types';
 import { headers } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { ActionError } from '@v1/types/api-response';
 
 import { getAuthSwaggerSpec } from '../swagger/config';
 

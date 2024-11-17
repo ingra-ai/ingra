@@ -1,4 +1,4 @@
-import { type ApiSuccess, type ApiError } from '../types/api-response';
+import { type ApiSuccess, type ApiError } from '@repo/shared/types';
 import { type NextResponse } from 'next/server';
 
 export type ActionTryCatchReturnType<T> =
