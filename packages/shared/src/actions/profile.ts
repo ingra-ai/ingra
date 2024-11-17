@@ -1,7 +1,7 @@
 'use server';
 
 import * as z from 'zod';
-import { ActionError } from '../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import { validateAction } from '../lib/action-helpers';
 import { ProfileSchema } from '../schemas/profile';
 import { actionAuthTryCatch } from '../utils/actionAuthTryCatch';

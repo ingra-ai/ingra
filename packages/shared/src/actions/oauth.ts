@@ -1,6 +1,6 @@
 'use server';
 
-import { ActionError } from '../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import { OAuthToken } from '@repo/db/prisma';
 import { actionAuthTryCatch } from '../utils/actionAuthTryCatch';
 import { clearAuthCaches } from '../data/auth/session/caches';

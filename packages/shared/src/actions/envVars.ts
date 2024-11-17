@@ -1,7 +1,7 @@
 'use server';
 
 import * as z from 'zod';
-import { ActionError } from '../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import { EnvVarsSchema } from '../schemas/envVars';
 import { validateAction } from '../lib/action-helpers';
 import { actionAuthTryCatch } from '../utils/actionAuthTryCatch';

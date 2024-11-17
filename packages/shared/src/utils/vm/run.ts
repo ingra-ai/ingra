@@ -1,5 +1,5 @@
 'use server';
-import { ActionError } from '../../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import { setTimeout } from 'timers/promises';
 import type { VmContextArgs } from './generateVmContextArgs';
 import * as vm from 'vm';

@@ -1,9 +1,9 @@
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { ActionError } from '@repo/shared/types';
 import { apiTryCatch } from '@repo/shared/utils/apiTryCatch';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { ActionError } from '@v1/types/api-response';
 
 
 import { getCommunityCollectionSpec } from './getCommunityCollectionSpec';

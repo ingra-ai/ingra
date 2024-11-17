@@ -1,6 +1,6 @@
 'use server';
 
-import { ActionError } from '../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import db from '@repo/db/client';
 import crypto from 'crypto';
 import { MAX_API_KEYS_PER_USER } from '../schemas/apiKey';

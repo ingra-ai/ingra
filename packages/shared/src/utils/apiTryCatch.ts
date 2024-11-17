@@ -1,4 +1,4 @@
-import { ActionError, PrismaActionError, type ApiError } from '../types/api-response';
+import { ActionError, PrismaActionError, type ApiError } from '@repo/shared/types';
 import { Logger } from '../lib/logger';
 import { NextResponse } from 'next/server';
 import type { ApiTryCatchReturnType } from './types';

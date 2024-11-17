@@ -1,4 +1,4 @@
-import { ActionError } from '../types/api-response';
+import { ActionError } from '@repo/shared/types';
 import type { ActionTryCatchReturnType } from './types';
 import { actionTryCatch } from './actionTryCatch';
 import { getAuthSession } from '../data/auth/session';
