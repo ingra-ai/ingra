@@ -223,7 +223,7 @@ export async function deleteFunction(functionId: string, userId: string) {
     return true;
   } catch (error) {
     await Logger.withTag('action|deleteFunction').withTag(`user|${userId}`).info('Error deleting function and related records', { error });
-    return false;
+    throw error;
   }
 }
 
