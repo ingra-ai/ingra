@@ -125,7 +125,6 @@ model Function {
   description        String             @default("") @db.VarChar(1024)
   arguments          FunctionArgument[]
   tags               FunctionTag[]
-  executionLogs      FunctionExecutionLog[]
 
   // Relations
   owner User @relation(fields: [ownerUserId], references: [id])
@@ -264,7 +263,6 @@ model FunctionExecutionLog {
   error         String?   @db.Text
 
   // Relations
-  function Function @relation(fields: [functionId], references: [id])
   user     User?    @relation(fields: [userId], references: [id])
 
   @@index([functionId])
