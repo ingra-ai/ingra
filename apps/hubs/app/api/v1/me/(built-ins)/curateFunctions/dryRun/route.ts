@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -48,6 +49,7 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function POST(req: NextRequest) {
   const { code, requestArgs = {} } = await req.json();
+  const startTime = Date.now();
 
   if (!code) {
     throw new ActionError('error', 400, 'Node.js code is required to run this method. Please follow the guideline by running "getCodeTemplate" API endpoint.');
@@ -76,6 +78,16 @@ export async function POST(req: NextRequest) {
       operationId: 'dryRunFunction',
       metrics,
       errors,
+    });
+            
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: { code, requestArgs },
+      responseData: result,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     loggerObj.info('Finished dry run a user function');

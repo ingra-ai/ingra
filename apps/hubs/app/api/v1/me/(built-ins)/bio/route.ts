@@ -1,6 +1,7 @@
 // File: /pages/api/v1/me/bio/route.ts
 
 import { storeMemory, retrieveMemory, updateMemory, deleteMemory, type BioMetadata, mapBioMetadata, type AdditionalFilterType, type FilterOptions } from '@repo/shared/data/bio';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -10,6 +11,7 @@ import { parseStartAndEnd } from '@repo/shared/utils/chronoUtils';
 import { formatDistance } from 'date-fns/formatDistance';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { formatRetrieveMemoryMessage } from './formatter';
 
 /**
  * @swagger
@@ -60,7 +62,9 @@ import { NextRequest, NextResponse } from 'next/server';
  *       - Memory
  */
 export async function POST(req: NextRequest) {
-  const { text, metadata }: { text: string; metadata: BioMetadata } = await req.json();
+  const requestArgs: { text: string; metadata: BioMetadata } = await req.json(),
+    { text, metadata } = requestArgs,
+    startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (!text) {
@@ -78,10 +82,23 @@ export async function POST(req: NextRequest) {
     const logger = Logger.withTag('api|memory').withTag('operation|storeMemory').withTag(`user|${userId}`);
     logger.info(`Stored a new memory with ID: ${memoryId}`);
 
+    /**
+     * Analytics & Logging
+     */
     mixpanel.track('Memory Stored', {
       distinct_id: userId,
       ...getAnalyticsObject(req),
       memoryId,
+    });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: requestArgs,
+      responseData: { memoryId },
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     return NextResponse.json(
@@ -172,6 +189,7 @@ export async function GET(req: NextRequest) {
   const endInput = searchParams.get('endDate');
   const dateField = searchParams.get('dateField') as 'createdAt' | 'updatedAt' | 'both';
   const operator = searchParams.get('operator') as 'AND' | 'OR';
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     const userId = authSession.user.id,
@@ -240,6 +258,25 @@ export async function GET(req: NextRequest) {
       .withTag(`user|${userId}`);
     logger.info(`Retrieved ${results.matches?.length || 0} memories.`);
 
+    /**
+     * Format results and message
+     */
+    const resultData = results.matches.map((match) => {
+        return {
+          id: match.id,
+          score: match.score,
+          text: match.metadata?.text || '',
+          metadata: {
+            ...mapBioMetadata(match.metadata),
+            text: undefined,
+          },
+        };
+      }),
+      resultMessage = formatRetrieveMemoryMessage(results, extraFilters);
+
+    /**
+     * Analytics & Logging
+     */
     mixpanel.track('Memory Retrieved', {
       distinct_id: userId,
       ...getAnalyticsObject(req),
@@ -248,74 +285,29 @@ export async function GET(req: NextRequest) {
       resultsCount: results.matches?.length || 0,
       readUnits: results?.usage?.readUnits || 0,
     });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: {
+        query: text,
+        topK,
+        startDate: startInput,
+        endDate: endInput,
+        dateField,
+        operator,
+      },
+      responseData: resultData,
+      executionTime: Date.now() - startTime,
+      error: null,
+    });
 
     return NextResponse.json(
       {
         status: 'success',
-        message: (() => {
-          const totalMemories = results.matches.length;
-          let msg = `Found ${totalMemories} memor${totalMemories !== 1 ? 'ies' : 'y'}`;
-        
-          const dateDescriptions = [];
-          const now = new Date();
-        
-          // Helper function to format dates nicely
-          const formatDate = (dateString: number) => {
-            const date = new Date(dateString);
-            return formatDistance(date, now, { addSuffix: true });
-          };
-        
-          if (extraFilters.createdAt) {
-            const createdAtFilter = extraFilters.createdAt;
-            const parts = [];
-        
-            if (createdAtFilter.$gte && createdAtFilter.$lte) {
-              parts.push(`created between ${formatDate(createdAtFilter.$gte)} and ${formatDate(createdAtFilter.$lte)}`);
-            } else if (createdAtFilter.$gte) {
-              parts.push(`created from ${formatDate(createdAtFilter.$gte)} until now`);
-            } else if (createdAtFilter.$lte) {
-              parts.push(`created up to ${formatDate(createdAtFilter.$lte)} ago`);
-            }
-        
-            if (parts.length > 0) {
-              dateDescriptions.push(parts.join(' '));
-            }
-          }
-        
-          if (extraFilters.updatedAt) {
-            const updatedAtFilter = extraFilters.updatedAt;
-            const parts = [];
-        
-            if (updatedAtFilter.$gte && updatedAtFilter.$lte) {
-              parts.push(`updated between ${formatDate(updatedAtFilter.$gte)} and ${formatDate(updatedAtFilter.$lte)}`);
-            } else if (updatedAtFilter.$gte) {
-              parts.push(`updated from ${formatDate(updatedAtFilter.$gte)} until now`);
-            } else if (updatedAtFilter.$lte) {
-              parts.push(`updated up to ${formatDate(updatedAtFilter.$lte)} ago`);
-            }
-        
-            if (parts.length > 0) {
-              dateDescriptions.push(parts.join(' '));
-            }
-          }
-        
-          if (dateDescriptions.length > 0) {
-            msg += ` that were ${dateDescriptions.join(' and ')}`;
-          }
-        
-          return msg + '.';
-        })(),
-        data: results.matches.map((match) => {
-          return {
-            id: match.id,
-            score: match.score,
-            text: match.metadata?.text || '',
-            metadata: {
-              ...mapBioMetadata(match.metadata),
-              text: undefined,
-            },
-          };
-        }),
+        message: resultMessage,
+        data: resultData,
       },
       { status: 200 }
     );
@@ -381,7 +373,9 @@ export async function PUT(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const memoryId = searchParams.get('memoryId');
 
-  const { text, metadata }: { text: string; metadata: BioMetadata } = await req.json();
+  const requestData: { text: string; metadata: BioMetadata } = await req.json(),
+    { text, metadata } = requestData,
+    startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (!memoryId) {
@@ -400,10 +394,23 @@ export async function PUT(req: NextRequest) {
     const logger = Logger.withTag('api|memory').withTag('operation|updateMemory').withTag(`user|${userId}`);
     logger.info(`Updated memory with ID: ${memoryId}`);
 
+    /**
+     * Analytics & Logging
+     */
     mixpanel.track('Memory Updated', {
       distinct_id: userId,
       ...getAnalyticsObject(req),
       memoryId,
+    });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData,
+      responseData: { memoryId },
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     return NextResponse.json(
@@ -450,6 +457,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const memoryId = searchParams.get('memoryId');
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (!memoryId) {
@@ -465,10 +473,23 @@ export async function DELETE(req: NextRequest) {
     const logger = Logger.withTag('api|memory').withTag('operation|deleteMemory').withTag(`user|${userId}`);
     logger.info(`Deleted memory with ID: ${memoryId}`);
 
+    /**
+     * Analytics & Logging
+     */
     mixpanel.track('Memory Deleted', {
       distinct_id: userId,
       ...getAnalyticsObject(req),
       memoryId,
+    });
+
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: { memoryId },
+      responseData: { memoryId },
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     return NextResponse.json(

@@ -1,5 +1,6 @@
 import db from '@repo/db/client'; // Assuming you have a db instance for interacting with your database
 import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { setTokenAsDefault } from '@repo/shared/data/oauthToken';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -55,6 +56,8 @@ import { NextRequest, NextResponse } from 'next/server';
  *       - OAuth Token
  */
 export async function GET(req: NextRequest) {
+  const startTime = Date.now();
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const oAuthTokens = await db.oAuthToken.findMany({
       where: {
@@ -63,6 +66,15 @@ export async function GET(req: NextRequest) {
       orderBy: {
         createdAt: 'desc',
       },
+    });
+
+    const result = oAuthTokens.map((elem) => {
+      return {
+        id: elem.id,
+        service: elem.service,
+        primaryEmailAddress: elem.primaryEmailAddress,
+        isDefault: elem.isDefault,
+      };
     });
 
     /**
@@ -75,20 +87,23 @@ export async function GET(req: NextRequest) {
       operationId: 'getOAuthTokensList',
     });
 
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000',
+      userId: authSession.user.id,
+      requestData: {},
+      responseData: result,
+      executionTime: Date.now() - startTime,
+      error: null,
+    });
+
     Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info('Fetching available OAuth tokens.');
 
     return NextResponse.json(
       {
         status: 'success',
         message: `Discovered ${oAuthTokens.length} oAuth tokens set.`,
-        data: oAuthTokens.map((elem) => {
-          return {
-            id: elem.id,
-            service: elem.service,
-            primaryEmailAddress: elem.primaryEmailAddress,
-            isDefault: elem.isDefault,
-          };
-        }),
+        data: result,
       },
       {
         status: 200,
@@ -158,6 +173,8 @@ export async function GET(req: NextRequest) {
  *       - OAuth Token
  */
 export async function PATCH(req: NextRequest) {
+  const startTime = Date.now();
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const { id, service } = await req.json();
 
@@ -169,6 +186,13 @@ export async function PATCH(req: NextRequest) {
 
     await clearAuthCaches(authSession);
 
+    const result = {
+      id: defaultOAuthToken.id,
+      service: defaultOAuthToken.service,
+      primaryEmailAddress: defaultOAuthToken.primaryEmailAddress,
+      isDefault: defaultOAuthToken.isDefault,
+    };
+
     /**
      * Analytics & Logging
      */
@@ -179,18 +203,23 @@ export async function PATCH(req: NextRequest) {
       operationId: 'setOAuthTokenAsDefault',
     });
 
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000',
+      userId: authSession.user.id,
+      requestData: {},
+      responseData: result,
+      executionTime: Date.now() - startTime,
+      error: null,
+    });
+
     Logger.withTag('api|builtins').withTag('operation|oAuthTokens').withTag(`user|${authSession.user.id}`).info(`Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`);
 
     return NextResponse.json(
       {
         status: 'success',
         message: `Sets default OAuth token for service "${service}" to ${defaultOAuthToken.primaryEmailAddress}.`,
-        data: {
-          id: defaultOAuthToken.id,
-          service: defaultOAuthToken.service,
-          primaryEmailAddress: defaultOAuthToken.primaryEmailAddress,
-          isDefault: defaultOAuthToken.isDefault,
-        },
+        data: result,
       },
       {
         status: 200,

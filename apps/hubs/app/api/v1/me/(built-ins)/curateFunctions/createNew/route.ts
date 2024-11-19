@@ -1,4 +1,5 @@
 import { createNewFunction } from '@repo/shared/actions/functions';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -70,6 +71,7 @@ import { z } from 'zod';
 export async function POST(req: NextRequest) {
   const requestArgs = await req.json();
   const functionPayload = requestArgs?.function as z.infer<typeof FunctionSchema>;
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     const result = await createNewFunction(functionPayload);
@@ -86,6 +88,16 @@ export async function POST(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'createNewFunction',
+    });
+        
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: requestArgs,
+      responseData: result,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|curateFunctions-createNew').withTag(`user|${authSession.user.id}`).withTag(`function|${result.data.id}`).info(`Created new function ${result.data.slug}`);

@@ -1,6 +1,7 @@
 import db from '@repo/db/client'; // Assuming you have a db instance for interacting with your database
 import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
 import { upsertEnvVar } from '@repo/shared/data/envVars';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -43,6 +44,8 @@ import { NextRequest, NextResponse } from 'next/server';
  *       - Environment Variables
  */
 export async function GET(req: NextRequest) {
+  const startTime = Date.now();
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const envVars = await db.envVars.findMany({
       select: {
@@ -59,6 +62,16 @@ export async function GET(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'getEnvironmentVariablesList',
+    });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: {},
+      responseData: envVars,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Fetching environment variables');
@@ -125,6 +138,8 @@ export async function GET(req: NextRequest) {
  *       - Environment Variables
  */
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const requestArgs = await req.json();
     const { key, value } = requestArgs;
@@ -145,6 +160,16 @@ export async function POST(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'createEnvironmentVariable',
+    });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: requestArgs,
+      responseData: record,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('envVars').withTag(`user|${authSession.user.id}`).info('Upserted environment variable');
@@ -210,6 +235,8 @@ export async function POST(req: NextRequest) {
  *       - Environment Variables
  */
 export async function DELETE(req: NextRequest) {
+  const startTime = Date.now();
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const { key, id } = await req.json();
 
@@ -237,6 +264,16 @@ export async function DELETE(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'deleteEnvironmentVariable',
+    });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: {},
+      responseData: deletedEnvVar,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Deleted env var: ${key}`);
@@ -303,6 +340,8 @@ export async function DELETE(req: NextRequest) {
  *       - Environment Variables
  */
 export async function PATCH(req: NextRequest) {
+  const startTime = Date.now();
+
   return await apiAuthTryCatch<any>(async (authSession) => {
     const { id, key, value } = await req.json();
 
@@ -334,6 +373,16 @@ export async function PATCH(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'updateEnvironmentVariable',
+    });
+
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: {},
+      responseData: updatedEnvVar,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|envVars').withTag(`user|${authSession.user.id}`).info(`Updated env var: ${key}`);
