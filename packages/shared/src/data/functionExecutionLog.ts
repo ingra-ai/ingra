@@ -1,6 +1,7 @@
 'use server';
 import db from '@repo/db/client';
 import { Logger } from '@repo/shared/lib/logger';
+import { sanitizeJson } from '../lib/utils/sanitizeJson';
 
 export async function logFunctionExecution({
   functionId,
@@ -22,8 +23,8 @@ export async function logFunctionExecution({
       data: {
         functionId,
         userId,
-        requestData,
-        responseData,
+        requestData: sanitizeJson(requestData),
+        responseData: sanitizeJson(responseData),
         executionTime,
         error,
       },

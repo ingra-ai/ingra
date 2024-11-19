@@ -8,7 +8,6 @@ import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { ActionError } from '@repo/shared/types';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
 import { parseStartAndEnd } from '@repo/shared/utils/chronoUtils';
-import { formatDistance } from 'date-fns/formatDistance';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { formatRetrieveMemoryMessage } from './formatter';
