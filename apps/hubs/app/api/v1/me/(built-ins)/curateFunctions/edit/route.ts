@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { upsertFunction as dataUpsertFunctions, getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 import { validateAction } from '@repo/shared/lib/action-helpers';
 import { mixpanel } from '@repo/shared/lib/analytics';
@@ -78,6 +79,7 @@ import { z } from 'zod';
 export async function PATCH(req: NextRequest) {
   const requestArgs = await req.json();
   const functionPayload = requestArgs?.function as z.infer<typeof FunctionSchema>;
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (!functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0) {
@@ -169,6 +171,20 @@ export async function PATCH(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'editFunction',
+    });
+                
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: requestArgs,
+      responseData: {
+        id: result.id,
+        slug: result.slug,
+        ...fieldsToUpdate,
+      },
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|curateFunctions-edit').withTag(`user|${authSession.user.id}`).withTag(`function|${result.id}`).info(`Editing function ${result.slug}`);

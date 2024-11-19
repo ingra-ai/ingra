@@ -1,4 +1,5 @@
 import { Prisma } from '@repo/db/prisma';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -55,6 +56,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const functionIdOrSlug = searchParams.get('functionIdOrSlug');
   const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     // Validate that either id or slug is provided
@@ -146,6 +148,18 @@ export async function GET(req: NextRequest) {
       operationId: 'viewFunction',
       functionId: functionRecord.id,
       functionSlug: functionRecord.slug,
+    });
+
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000',
+      userId: authSession.user.id,
+      requestData: {
+        functionIdOrSlug
+      },
+      responseData: functionRecord,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins')

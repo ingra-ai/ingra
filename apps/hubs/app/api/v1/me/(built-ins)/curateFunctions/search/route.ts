@@ -1,5 +1,6 @@
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -59,6 +60,7 @@ export async function GET(req: NextRequest) {
   const take = parseInt(searchParams.get('take') || '50') || 50;
   const skip = parseInt(searchParams.get('skip') || '0') || 0;
   const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
+  const startTime = Date.now();
 
   const selectFields: Prisma.FunctionSelect = {
     id: true,
@@ -139,31 +141,31 @@ export async function GET(req: NextRequest) {
         ],
         ...(q
           ? {
-              OR: [
-                {
-                  slug: {
-                    contains: q,
-                    mode: 'insensitive',
-                  },
+            OR: [
+              {
+                slug: {
+                  contains: q,
+                  mode: 'insensitive',
                 },
-                {
-                  description: {
-                    contains: q,
-                    mode: 'insensitive',
-                  },
+              },
+              {
+                description: {
+                  contains: q,
+                  mode: 'insensitive',
                 },
-                {
-                  tags: {
-                    some: {
-                      name: {
-                        contains: q,
-                        mode: 'insensitive',
-                      },
+              },
+              {
+                tags: {
+                  some: {
+                    name: {
+                      contains: q,
+                      mode: 'insensitive',
                     },
                   },
                 },
-              ],
-            }
+              },
+            ],
+          }
           : {}),
       },
       select: selectFields,
@@ -182,6 +184,21 @@ export async function GET(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'searchFunctions',
+    });
+
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000',
+      userId: authSession.user.id,
+      requestData: {
+        q,
+        fieldsToRetrieve: fieldsToRetrieveParams,
+        take,
+        skip,
+      },
+      responseData: functionRecords,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|curateFunctions-list').withTag(`user|${authSession.user.id}`).info('Listing some recent user functions', { fieldsToRetrieveParams });

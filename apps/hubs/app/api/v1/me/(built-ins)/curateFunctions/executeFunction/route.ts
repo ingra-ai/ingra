@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { getFunctionAccessibleByUser } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -60,6 +61,7 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function POST(req: NextRequest) {
   const { functionIdOrSlug, requestArgs = {} } = await req.json();
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     if (!functionIdOrSlug) {
@@ -97,6 +99,16 @@ export async function POST(req: NextRequest) {
       functionSlug: functionRecord.slug,
       metrics,
       errors,
+    });
+                    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: { functionIdOrSlug, requestArgs },
+      responseData: result,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     loggerObj.info('Ran a user function');

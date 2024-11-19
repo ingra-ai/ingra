@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -35,6 +36,8 @@ import { NextRequest, NextResponse } from 'next/server';
  *       - Built-ins Internal
  */
 export async function GET(req: NextRequest) {
+  const startTime = Date.now();
+  
   return await apiAuthTryCatch<any>(async (authSession) => {
     /**
      * Populate skeleton function record with user and environment variables as code template.
@@ -57,6 +60,16 @@ export async function GET(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'getCodeTemplate',
+    });
+                        
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: {},
+      responseData: {},
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|curateFunctions-getCodeTemplate').withTag(`user|${authSession.user.id}`).info('Retrieved code template for the user.');

@@ -1,3 +1,4 @@
+import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
 import { cloneFunction } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
@@ -49,6 +50,7 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function POST(req: NextRequest) {
   const { functionId } = await req.json();
+  const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     // Clone the function
@@ -62,6 +64,16 @@ export async function POST(req: NextRequest) {
       type: 'built-ins',
       ...getAnalyticsObject(req),
       operationId: 'cloneFunction',
+    });
+    
+    // Log function execution
+    await logFunctionExecution({
+      functionId: '00000000-0000-0000-0000-000000000000', 
+      userId: authSession.user.id,
+      requestData: { functionId },
+      responseData: clonedFunction,
+      executionTime: Date.now() - startTime,
+      error: null,
     });
 
     Logger.withTag('api|builtins').withTag('operation|curateFunctions-clone').withTag(`user|${authSession.user.id}`).withTag(`function|${functionId}`).info('Cloned a function');
