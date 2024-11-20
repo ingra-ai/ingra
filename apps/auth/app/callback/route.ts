@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Set session cookies
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set(APP_SESSION_COOKIE_NAME, session.jwt, {
       domain: APP_AUTH_COOKIE_DOMAIN,
       path: '/',

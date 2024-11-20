@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       });
 
       // Remove session cookies
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       cookieStore.delete(APP_SESSION_COOKIE_NAME);
       request.cookies.delete(APP_SESSION_COOKIE_NAME);
 

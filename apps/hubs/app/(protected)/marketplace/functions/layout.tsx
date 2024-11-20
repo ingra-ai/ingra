@@ -1,5 +1,5 @@
 import { APP_NAME } from '@repo/shared/lib/constants';
-import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 import MarketplaceFunctionLayout from './loading';
 

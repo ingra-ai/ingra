@@ -4,7 +4,8 @@ import { PropsWithChildren } from 'react';
 
 import type { FC } from 'react';
 
-export async function generateMetadata({ params }: { params: { userName: string; collectionSlug: string } }) {
+export async function generateMetadata(props: { params: Promise<{ userName: string; collectionSlug: string }> }) {
+  const params = await props.params;
   const { userName, collectionSlug } = params;
   return {
     title: [`${userName}'s ${collectionSlug} Collection | Swagger`, APP_NAME].join(' | '),

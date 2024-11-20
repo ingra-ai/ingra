@@ -1,7 +1,15 @@
 import { getUserRepoCollectionsUri } from '@repo/shared/lib/constants/repo';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 
-export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
+type Props = {
+  params: Promise<{ ownerUsername: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Page(props: Props) {
+  const [params] = await Promise.all([
+    props.params
+  ]);
   const { ownerUsername } = params;
 
   if (ownerUsername) {

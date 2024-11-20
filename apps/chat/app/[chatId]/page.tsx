@@ -7,16 +7,17 @@ import { notFound } from "next/navigation";
 import { Chat as PreviewChat } from "@/components/custom/chat";
 import { convertToUIMessages } from "@/lib/utils";
 
-
 type Props = {
-  params: { chatId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ chatId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export default async function Page(props: Props) {
   const { params, searchParams } = props;
-  const { chatId } = params;
-  const authSession = await getAuthSession();
+  const [{ chatId }, authSession] = await Promise.all([
+    params, 
+    getAuthSession()
+  ]);
 
   if ( !authSession || !isUuid(chatId) ) {
     return notFound();

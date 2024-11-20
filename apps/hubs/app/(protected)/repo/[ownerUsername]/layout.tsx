@@ -16,15 +16,15 @@ export const metadata: Metadata = {
 type LayoutProps = {
   mine: ReactNode;
   community: ReactNode;
-  params: {
+  params: Promise<{
     ownerUsername: string;
-  };
+  }>;
   children: ReactNode;
 };
 
 async function Layout(props: LayoutProps) {
   const { mine, community, params, children } = props;
-  const { ownerUsername } = params;
+  const { ownerUsername } = await params;
 
   const [authSession, ownerProfile] = await Promise.all([getAuthSession(), getUserProfileByUsername(ownerUsername)]);
 

@@ -8,10 +8,16 @@ import { getDocsForSlug } from '@/lib/markdown';
 import { DOCS_PAGE_ROUTES } from '@/lib/routes-config';
 
 type PageProps = {
-  params: { slug: string[] };
+  params: Promise<{ slug: string[] }>;
 };
 
-export default async function DocsPage({ params: { slug = [] } }: PageProps) {
+export default async function DocsPage(props: PageProps) {
+  const params = await props.params;
+
+  const {
+    slug = []
+  } = params;
+
   const pathName = slug.join('/');
   const res = await getDocsForSlug(pathName);
 
@@ -32,7 +38,13 @@ export default async function DocsPage({ params: { slug = [] } }: PageProps) {
   );
 }
 
-export async function generateMetadata({ params: { slug = [] } }: PageProps) {
+export async function generateMetadata(props: PageProps) {
+  const params = await props.params;
+
+  const {
+    slug = []
+  } = params;
+
   const pathName = slug.join('/');
   const res = await getDocsForSlug(pathName);
   if (!res) return null;

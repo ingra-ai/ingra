@@ -12,6 +12,7 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { visit } from 'unist-util-visit';
 
+
 import { Mermaid } from '@/components/mermaid';
 import Note from '@/components/note';
 import Pre from '@/components/pre';
@@ -19,8 +20,6 @@ import Pre from '@/components/pre';
 import { DOCS_PAGE_ROUTES } from './routes-config';
 
 // custom components imports
-
-
 
 // shared regex
 const CONST_SHORTCODE_REGEX = /{CONST\.([A-Z_]+)}/g;
@@ -50,7 +49,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
       },
       scope: {},
     },
-    components,
+    components: components as any,
   });
 }
 

@@ -7,8 +7,8 @@ import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 type Props = {
-  params: { paths: string[] };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ paths: string[] }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export default async function Page(props: Props) {
@@ -19,7 +19,7 @@ export default async function Page(props: Props) {
     return notFound();
   }
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const assistantThreadId = cookieStore.get(BAKA_ASSISTANT_USER_THREAD_COOKIE_NAME)?.value;
 
   return (

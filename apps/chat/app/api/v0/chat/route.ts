@@ -21,7 +21,7 @@ import { convertLangChainMessageToVercelMessage, convertVercelMessageToLangChain
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const appSessionCookie = cookieStore.get(APP_SESSION_COOKIE_NAME);
   const { returnIntermediateSteps = false } = body || {};
 

@@ -1,15 +1,11 @@
 import type { ReactNode } from 'react';
 
-type FunctionLayoutProps = {
-  children: ReactNode;
-};
-
-export default function Layout(props: FunctionLayoutProps) {
-  const { children } = props;
-
+async function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="relative" data-testid="collections-layout">
       {children}
     </div>
   );
 }
+
+export default Layout;

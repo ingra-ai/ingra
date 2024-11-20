@@ -4,17 +4,18 @@ import { ActionError } from '@repo/shared/types';
 import { apiTryCatch } from '@repo/shared/utils/apiTryCatch';
 import { NextRequest, NextResponse } from 'next/server';
 
-
-
 import { getCommunityCollectionSpec } from './getCommunityCollectionSpec';
 import { getMyCollectionAuthSpec } from './getMyCollectionAuthSpec';
-
 
 /**
  * Returns OpenAPI json file when in development
  * This serves for OpenAI GPT Plugin to access it at /openapi.yaml
  */
-export async function GET(req: NextRequest, { params }: { params: { userName: string; collectionSlug: string } }) {
+export async function GET(
+  req: NextRequest,
+  props: { params: Promise<{ userName: string; collectionSlug: string }> }
+) {
+  const params = await props.params;
   return await apiTryCatch( async () => {
     const authSession = await getAuthSession();
     const { userName, collectionSlug } = params;

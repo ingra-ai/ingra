@@ -3,13 +3,17 @@ import { getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
 import { RedirectType, notFound, redirect } from 'next/navigation';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ ownerUsername: string; recordIdOrSlug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function Page({ params }: Props) {
+export default async function Page(props: Props) {
+  const [params, searchParams, authSession] = await Promise.all([
+    props.params,
+    props.searchParams,
+    getAuthSession()
+  ]);
   const { ownerUsername, recordIdOrSlug } = params;
-  const authSession = await getAuthSession();
 
   if (!authSession || authSession.user.profile?.userName !== ownerUsername) {
     return notFound();

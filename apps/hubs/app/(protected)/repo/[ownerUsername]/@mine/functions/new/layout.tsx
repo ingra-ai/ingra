@@ -1,5 +1,5 @@
 import { APP_NAME } from '@repo/shared/lib/constants';
-import { Suspense, type ReactNode, type PropsWithChildren } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 import FunctionNewSkeleton from './loading';
 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: ['New Function', APP_NAME].join(' | '),
 };
 
-async function Layout({ params, children }: { params: { ownerUsername: string; recordId: string }; children: ReactNode }) {
+async function Layout({ children }: { children: ReactNode }) {
   return <Suspense fallback={<FunctionNewSkeleton />}>{children}</Suspense>;
 }
 

@@ -13,7 +13,7 @@ import { SuggestionsList } from './SuggestionsList';
 
 export default async function Dashboard() {
   const authSession = await getAuthSession();
-  const headersList = headers(),
+  const headersList = await headers(),
     headerUrl = headersList.get('X-URL') || '',
     redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 

@@ -8,11 +8,12 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
 type Props = {
-  params: { ownerUsername: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ ownerUsername: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const { ownerUsername } = params;
 
   return {
@@ -20,8 +21,12 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   };
 }
 
-export default async function Page({ searchParams, params }: Props) {
-  const authSession = await getAuthSession();
+export default async function Page(props: Props) {
+  const [params, searchParams, authSession] = await Promise.all([
+    props.params,
+    props.searchParams,
+    getAuthSession()
+  ]);
 
   if (!authSession || !authSession?.userId) {
     return notFound();

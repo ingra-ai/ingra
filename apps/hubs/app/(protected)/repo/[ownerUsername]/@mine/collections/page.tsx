@@ -5,8 +5,17 @@ import { getAuthSession } from '@repo/shared/data/auth/session';
 import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
-  const authSession = await getAuthSession();
+type Props = {
+  params: Promise<{ ownerUsername: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Page(props: Props) {
+  const [params, searchParams, authSession] = await Promise.all([
+    props.params,
+    props.searchParams,
+    getAuthSession(),
+  ]);
 
   if (!authSession || !params.ownerUsername) {
     return notFound();

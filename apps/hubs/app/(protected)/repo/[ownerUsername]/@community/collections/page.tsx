@@ -6,7 +6,16 @@ import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ searchParams, params }: { searchParams: Record<string, string | string[] | undefined>; params: { ownerUsername: string } }) {
+type Props = {
+  params: Promise<{ ownerUsername: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Page(props: Props) {
+  const [params, searchParams] = await Promise.all([
+    props.params,
+    props.searchParams,
+  ]);
   const { ownerUsername } = params;
 
   const [ownerProfile, authSession] = await Promise.all([

@@ -5,8 +5,16 @@ import { getAuthSession } from '@repo/shared/data/auth/session';
 import { fetchCollectionPaginationData } from '@repo/shared/data/collections';
 import { cn } from '@repo/shared/lib/utils';
 
-export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
-  const authSession = await getAuthSession();
+type Props = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Page(props: Props) {
+  const [searchParams, authSession] = await Promise.all([
+    props.searchParams, 
+    getAuthSession()
+  ]);
 
   const paginationData = await fetchCollectionPaginationData(searchParams, {
       invokerUserId: authSession?.userId || '',
