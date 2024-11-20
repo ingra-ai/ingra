@@ -10,13 +10,20 @@ import { MagicLoginForm } from './MagicLoginForm';
 
 import type { Metadata } from 'next';
 
-
 export const metadata: Metadata = {
   title: ['Sign In', APP_NAME].join(' | '),
 };
 
-export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
-  const authSession = await getAuthSession();
+type Props = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Page(props: Props) {
+  const [searchParams, authSession] = await Promise.all([
+    props.searchParams, 
+    getAuthSession()
+  ]);
 
   if (authSession) {
     const { redirectTo } = searchParams;

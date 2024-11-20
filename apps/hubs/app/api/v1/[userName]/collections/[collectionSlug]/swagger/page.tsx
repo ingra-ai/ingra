@@ -7,7 +7,8 @@ import { getCommunityCollectionSpec } from '../openapi.json/getCommunityCollecti
 import { getMyCollectionAuthSpec } from '../openapi.json/getMyCollectionAuthSpec';
 import '@css/swagger.scss';
 
-export default async function Page({ params }: { params: { userName: string; collectionSlug: string } }) {
+export default async function Page(props: { params: Promise<{ userName: string; collectionSlug: string }> }) {
+  const params = await props.params;
   const authSession = await getAuthSession();
   const { userName, collectionSlug } = params;
   const itsMe = Boolean(authSession?.user?.profile?.userName && authSession.user.profile.userName === userName);

@@ -9,7 +9,7 @@ import { OpenAPISpecLoader } from '@/components/openapi/OpenAPISpecLoader';
 
 export default async function Page() {
   const authSession = await getAuthSession();
-  const headersList = headers(),
+  const headersList = await headers(),
     headerUrl = headersList.get('X-URL') || '',
     redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
 

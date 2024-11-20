@@ -5,11 +5,10 @@ import { APP_DESCRIPTION, APP_NAME, HUBS_APP_URL } from '@repo/shared/lib/consta
 // eslint-disable-next-line import/no-unresolved
 import { GeistSans } from 'geist/font/sans';
 import Head from 'next/head';
-import { type PropsWithChildren } from 'react';
+import { type ReactNode } from 'react';
 
 import type { Metadata } from 'next';
 import '@css/globals.scss';
-
 
 export const metadata: Metadata = {
   title: APP_NAME,
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow',
 };
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+async function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <Head>
@@ -34,3 +33,5 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     </html>
   );
 }
+
+export default RootLayout;

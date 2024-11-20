@@ -3,8 +3,16 @@ import { APP_AUTH_LOGIN_URL, APP_LANDING_PAGE_URL } from '@repo/shared/lib/const
 import { isSafeRedirectUrl } from '@repo/shared/lib/utils/isSafeRedirectUrl';
 import { RedirectType, redirect } from 'next/navigation';
 
-export default async function Page({ searchParams }: { searchParams: Record<string, string | string[] | undefined> }) {
-  const authSession = await getAuthSession();
+type Props = {
+  params: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function Page(props: Props) {
+  const [searchParams, authSession] = await Promise.all([
+    props.searchParams, 
+    getAuthSession()
+  ]);
   const { redirectTo } = searchParams;
 
   if (!authSession) {

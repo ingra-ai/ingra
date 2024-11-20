@@ -33,14 +33,14 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "lucide-react": "^0.453.0",
-    "next": "14.2.15",
+    "next": "15.0.3",
     "node-fetch": "^3.3.2",
     "rc-tree": "^5.10.1",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react": "19.0.0-rc-66855b96-20241106",
+    "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-hook-form": "^7.53.0",
     "sass": "^1.79.5",
-    "swagger-ui-react": "^5.17.14",
+    "swagger-ui-react": "^5.18.2",
     "timezones-list": "^3.0.3",
     "zod": "^3.23.8"
   },
@@ -54,8 +54,8 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.10",
     "@types/node": "^22.7.5",
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-react": "^4.18.3",
     "autoprefixer": "^10.4.20",
@@ -71,7 +71,9 @@
   },
   "resolutions": {
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   },
   "pnpm": {
     "overrides": {}

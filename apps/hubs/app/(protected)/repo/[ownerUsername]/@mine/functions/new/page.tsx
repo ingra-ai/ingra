@@ -2,7 +2,8 @@ import { FunctionForm } from '@repo/components/data/functions/mine/FunctionForm'
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { ownerUsername: string } }) {
+export default async function Page(props: { params: Promise<{ ownerUsername: string }> }) {
+  const params = await props.params;
   const authSession = await getAuthSession();
   const { ownerUsername } = params;
 

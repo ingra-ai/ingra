@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   // Parse the request body
   const { threadId, message } = await request.json();
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const bakaSessionCookie = cookieStore.get(APP_SESSION_COOKIE_NAME);
 
   return await apiAuthTryCatch(async (authSession) => {

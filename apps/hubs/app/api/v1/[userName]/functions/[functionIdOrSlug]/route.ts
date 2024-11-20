@@ -11,10 +11,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 
 type ContextShape = {
-  params: {
+  params: Promise<{
     userName: string;
     functionIdOrSlug: string;
-  };
+  }>;
 };
 
 type HandlerArgs = ContextShape & {
@@ -26,7 +26,7 @@ type HandlerArgs = ContextShape & {
 async function handlerFn(args: HandlerArgs) {
   return await apiAuthTryCatch<any>(async (authSession) => {
     const { params, requestArgs, requestHeaders, analyticsObject } = args;
-    const { userName, functionIdOrSlug } = params;
+    const { userName, functionIdOrSlug } = await params;
     const isSandboxDebug = requestHeaders.get('SANDBOX_DEBUG') === 'true';
     const userId = authSession.user.id,
       loggerObj = Logger.withTag('api|functions').withTag(`user|${userId}`).withTag(`functionIdOrSlug|${functionIdOrSlug}`);
@@ -154,21 +154,21 @@ async function handlerFn(args: HandlerArgs) {
 }
 
 export async function GET(req: NextRequest, context: ContextShape) {
-  return handleRequest<ContextShape['params'], HandlerArgs>('GET', req, context.params, handlerFn);
+  return handleRequest<ContextShape['params'], HandlerArgs>('GET', req, (context.params), handlerFn);
 }
 
 export async function POST(req: NextRequest, context: ContextShape) {
-  return handleRequest<ContextShape['params'], HandlerArgs>('POST', req, context.params, handlerFn);
+  return handleRequest<ContextShape['params'], HandlerArgs>('POST', req, (context.params), handlerFn);
 }
 
 export async function PUT(req: NextRequest, context: ContextShape) {
-  return handleRequest<ContextShape['params'], HandlerArgs>('PUT', req, context.params, handlerFn);
+  return handleRequest<ContextShape['params'], HandlerArgs>('PUT', req, (context.params), handlerFn);
 }
 
 export async function PATCH(req: NextRequest, context: ContextShape) {
-  return handleRequest<ContextShape['params'], HandlerArgs>('PATCH', req, context.params, handlerFn);
+  return handleRequest<ContextShape['params'], HandlerArgs>('PATCH', req, (context.params), handlerFn);
 }
 
 export async function DELETE(req: NextRequest, context: ContextShape) {
-  return handleRequest<ContextShape['params'], HandlerArgs>('DELETE', req, context.params, handlerFn);
+  return handleRequest<ContextShape['params'], HandlerArgs>('DELETE', req, (context.params), handlerFn);
 }

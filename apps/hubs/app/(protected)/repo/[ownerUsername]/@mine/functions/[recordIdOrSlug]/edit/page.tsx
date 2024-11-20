@@ -11,11 +11,12 @@ import { notFound } from 'next/navigation';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
-  params: { ownerUsername: string; recordIdOrSlug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ ownerUsername: string; recordIdOrSlug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const { ownerUsername, recordIdOrSlug } = params;
 
   return {
@@ -23,8 +24,11 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   };
 }
 
-export default async function Page({ params }: Props) {
-  const authSession = await getAuthSession();
+export default async function Page(props: Props) {
+  const [params, authSession] = await Promise.all([
+    props.params, 
+    getAuthSession()
+  ]);
   const { ownerUsername, recordIdOrSlug } = params;
 
   if (!recordIdOrSlug || !authSession) {

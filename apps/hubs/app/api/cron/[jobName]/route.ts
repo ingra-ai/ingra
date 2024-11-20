@@ -7,7 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // export const runtime = 'edge';
 
-export async function GET(request: NextRequest, { params }: { params: { jobName: string } }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ jobName: string }> }) {
+  const params = await props.params;
   const jobName = params.jobName || '';
 
   switch (jobName) {

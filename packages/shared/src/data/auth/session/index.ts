@@ -14,8 +14,7 @@ import { deleteOAuthToken, updateOAuthToken } from '@repo/shared/data/oauthToken
 export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<AuthSessionResponse | null> => {
   const { introspectOAuthTokens = false } = opts || {};
 
-  const cookieStore = cookies();
-  const headersList = headers();
+  const [cookieStore, headersList] = await Promise.all([cookies(), headers()]);
   const jwt = cookieStore.get(APP_SESSION_COOKIE_NAME)?.value;
   const xApiKey = headersList.get(APP_SESSION_API_KEY_NAME);
 
