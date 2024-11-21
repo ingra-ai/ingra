@@ -37,8 +37,11 @@ export const OpenAPISpecLoader: React.FC<OpenAPISpecLoaderProps> = (props) => {
         .then((res) => res.json())
         .then((data) => {
           setSpec(data);
-          setRefinedSpec(data);
-          setSelectedPaths(Object.keys(data.paths)); // Check all paths by default
+          setRefinedSpec({
+            ...data,
+            paths: {},
+          });
+          // setSelectedPaths(Object.keys(data.paths));
         })
         .catch((error) => {
           console.error('Error fetching OpenAPI spec:', error);
@@ -107,7 +110,17 @@ export const OpenAPISpecLoader: React.FC<OpenAPISpecLoaderProps> = (props) => {
   return (
     <div className={classes} data-testid="openapi-spec-loader">
       <ScrollArea className="w-[400px] pt-4 pb-4 overflow-y-auto border-r">
-        <Tree checkable defaultExpandAll treeData={treeData} onCheck={onChecked} checkedKeys={selectedPaths} showIcon={false} showLine={true} draggable={false} selectable={false} />
+        <Tree
+          checkable
+          treeData={treeData}
+          onCheck={onChecked}
+          checkedKeys={selectedPaths}
+          showIcon={false}
+          showLine={true}
+          draggable={false}
+          selectable={false}
+          defaultExpandedKeys={['/api/v1']}
+        />
       </ScrollArea>
       <div className="flex-1 overflow-hidden">
         <div className="flex justify-end space-x-4">
