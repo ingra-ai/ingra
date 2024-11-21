@@ -2,15 +2,21 @@
 import { Body, SESClient, SESClientConfig, SendEmailCommand, SendEmailCommandInput, SendEmailCommandOutput } from '@aws-sdk/client-ses';
 import { Logger } from '../logger';
 
-const SESConfig: SESClientConfig = {
-  region: process.env.AWS_SES_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_SES_ACCESS_KEY || '',
-    secretAccessKey: process.env.AWS_SES_SECRET || '',
-  },
-};
-
 export async function sendEmailHtml(from: string | null | undefined, to: string, subject: string, body: Body): Promise<SendEmailCommandOutput | null> {
+  // Check if SES configuration is setup, if it's not setup log it and return null
+  if (!process.env.AWS_SES_REGION || !process.env.AWS_SES_ACCESS_KEY || !process.env.AWS_SES_SECRET) {
+    Logger.withTag('action|sendEmailHtml').error('SES configuration not setup properly in environment variables - Failed to send email to', to);
+    return null;
+  }
+
+  const SESConfig: SESClientConfig = {
+    region: process.env.AWS_SES_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_SES_ACCESS_KEY || '',
+      secretAccessKey: process.env.AWS_SES_SECRET || '',
+    },
+  };
+
   const ses = new SESClient(SESConfig);
 
   const params: SendEmailCommandInput = {
