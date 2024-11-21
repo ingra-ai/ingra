@@ -21,7 +21,7 @@ export default async function Page() {
   const userSwaggerUrl = ME_API_ROOT_URL + '/swagger';
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="xl:container">
       <h1 className="text-base font-semibold leading-10">
         <BracesIcon className="inline-block mr-2 w-5 h-5" />
         Open API
