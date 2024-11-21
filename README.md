@@ -17,6 +17,7 @@ Visit [Ingra Documentation](https://docs.ingra.ai) to view the full documentatio
 
 - **`hubs`**: FS - Next.js application serving UI for hubs interface and serving LLM api calls for collections and functions.
 - **`auth`**: FE - Next.js application serving auth UI.
+- **`chat`**: FE - Next.js application serving chat UI.
 - **`docs`**: Another Next.js application for documentation purposes.
 
 ### Packages
@@ -31,12 +32,12 @@ Visit [Ingra Documentation](https://docs.ingra.ai) to view the full documentatio
 
 The project leverages a modern tech stack for optimal performance and scalability:
 
-- **Frontend Framework**: Next.js (^14.1.0)
+- **Frontend Framework**: Next.js (^15)
 - **UI Components**: Headless UI, Radix UI, Heroicons, Lucide React
 - **Form Handling**: React Hook Form, @hookform/resolvers
 - **State Management**: Built-in Next.js capabilities, Context API
 - **Styling**: Tailwind CSS, SASS, Tailwind Merge, Tailwindcss Animate
-- **Backend**: Prisma (5.10.2) as the ORM
+- **Backend**: Prisma (5.20.2) as the ORM
 - **Database**: PostgreSQL (Prisma)
 - **Deployment**: [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
 - **Email Service**: AWS SES
@@ -53,7 +54,7 @@ The project leverages a modern tech stack for optimal performance and scalabilit
 - [x] **Function Marketplace**: A marketplace where users can share, rate, and review functions, enhancing discoverability and quality.
 - [x] **Self Function Generation**: Provide an API endpoint for user to curate their own functions by using GPT.
 - [ ] **Chat**: Provides built-in AI Assistant utilizing LangChain to converse and interact with tools calling. Has Cron.
-- [x] **Self Hosting**: An option to switch database endpoint, or running local LLMs. This should help users flexibly to host their own data. Configurables would be psql, redis, pinecone and aws ses setup. (google oauth or openai api key are overridable from env variables built-in)
+- [ ] **Self Hosting**: An option to switch database endpoint, or running local LLMs. This should help users flexibly to host their own data. Configurables would be psql, redis, pinecone and aws ses setup. (google oauth or openai api key are overridable from env variables built-in)
 - [ ]
 - [ ] **Workflows Hub**: Integrate workflow to curate one or more functions for more comprehensive task.
 - [ ] **User Onboarding**: Streamlined onboarding process to help new users get started quickly and efficiently, including step-by-step guides and support resources.
@@ -86,6 +87,7 @@ The project leverages a modern tech stack for optimal performance and scalabilit
    cp .env.example apps/hubs/.env
    cp .env.example apps/docs/.env
    cp .env.example apps/auth/.env
+   cp .env.example apps/chat/.env
    ```
 
    Copy the `.env.example` file to a new file named `./apps/hubs/.env` and fill in your database connection details and any other environment variables required.
@@ -126,7 +128,7 @@ To understand how to play around with Prisma, view the [Prisma readme](https://g
 
 ## Authentication
 
-We're just using [Magic Link AUTH](https://owasp.org/www-chapter-vancouver/assets/presentations/2020-08_The_Evolution_of_Authentication.pdf) to authenticate user.
+We're using [Magic Link AUTH](https://owasp.org/www-chapter-vancouver/assets/presentations/2020-08_The_Evolution_of_Authentication.pdf) to authenticate user.
 
 Therefore, the following configuration is needed
 
