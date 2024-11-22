@@ -4,7 +4,7 @@ import { BreadcrumbNav } from '@repo/components/navs/menu/BreadcrumbNav';
 import { Navbar } from '@repo/components/navs/navbar';
 import { Navlink } from '@repo/components/navs/types';
 import { CHAT_APP_URL, DOCS_APP_URL, HUBS_SETTINGS_APIKEY_URI, HUBS_SETTINGS_ENVVARS_URI, HUBS_SETTINGS_INTEGRATIONS_URI, HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
-import { getUserRepoUri } from '@repo/shared/lib/constants/repo';
+import { getUserRepoCollectionsUri } from '@repo/shared/lib/constants/repo';
 import { cn } from '@repo/shared/lib/utils';
 import { usePathname } from 'next/navigation';
 import { type DetailedHTMLProps, type HTMLAttributes, useState, type FC, type PropsWithChildren } from 'react';
@@ -50,7 +50,7 @@ const generateNavLinks = (authSession?: AuthSessionResponse) => {
     NAVLINKS.splice(1, 0, {
       title: 'Repository',
       description: 'Manage your collections and functions that you own or have access to.',
-      href: getUserRepoUri(authSession.user.profile.userName)
+      href: getUserRepoCollectionsUri(authSession.user.profile.userName)
     });
   }
 

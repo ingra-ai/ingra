@@ -5,9 +5,7 @@ import { headers } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
-
 import { getAuthSwaggerSpec } from '../swagger/config';
-
 
 /**
  * Returns OpenAPI json file when in development

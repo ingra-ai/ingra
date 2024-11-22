@@ -14,8 +14,9 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const [userFunctionsPaths, baseSwaggerSpec] = await Promise.all([generateOpenApiSchema(authSession), getBaseSwaggerSpec()]);
 
-  const mySwaggerSpec = {
+  const mySwaggerSpec: Record<string, any> = {
     ...(baseSwaggerSpec || {}),
+    paths: {},
   };
 
   if (isEmpty(mySwaggerSpec)) {
