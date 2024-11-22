@@ -1,3 +1,4 @@
+import { LoaderV1 } from '@repo/components/loaders/loader-v1';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { PropsWithChildren, Suspense } from 'react';
 
@@ -25,7 +26,11 @@ export default async function SettingsLayout({ children }: PropsWithChildren) {
             ))}
           </nav>
           <main className="flex-1 bg-card rounded-lg shadow-sm p-6">
-            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            <Suspense 
+              fallback={<LoaderV1 message="Loading..." cloudSize={24} duration={1.5} delay={0.2} fallbackUrl="/" />}
+            >
+              {children}
+            </Suspense>
           </main>
         </div>
       </div>
