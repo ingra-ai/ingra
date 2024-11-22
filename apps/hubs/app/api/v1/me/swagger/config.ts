@@ -16,11 +16,22 @@ export const getAuthSwaggerSpec = async (authSession: AuthSessionResponse) => {
 
   const mySwaggerSpec: Record<string, any> = {
     ...(baseSwaggerSpec || {}),
+    // Clear the paths
     paths: {},
   };
 
   if (isEmpty(mySwaggerSpec)) {
     return null;
+  }
+
+  // Clear components schemas if its not ApiError or ApiSuccess
+  if (mySwaggerSpec?.components?.schemas) {
+    const schemas = Object.keys(mySwaggerSpec.components.schemas);
+    for (const schema of schemas) {
+      if (schema !== 'ApiError' && schema !== 'ApiSuccess') {
+        delete mySwaggerSpec.components.schemas[schema];
+      }
+    }
   }
 
   /**
