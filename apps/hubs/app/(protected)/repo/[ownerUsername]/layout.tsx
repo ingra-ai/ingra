@@ -1,4 +1,5 @@
 import { UserCircleIcon, LinkIcon } from '@heroicons/react/20/solid';
+import { LoaderV1 } from '@repo/components/loaders/loader-v1';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { APP_DESCRIPTION, APP_NAME , HUBS_SETTINGS_PROFILE_URI } from '@repo/shared/lib/constants';
@@ -55,7 +56,11 @@ async function Layout(props: LayoutProps) {
 
   return (
     <div className="relative xl:container px-2 sm:px-8" data-testid="repo-layout">
-      <Suspense fallback={<div>Loading...</div>}>{itsMe ? mine : community}</Suspense>
+      <Suspense 
+        fallback={<LoaderV1 message="Loading..." cloudSize={24} duration={1.5} delay={0.2} fallbackUrl="/" />}
+      >
+          {itsMe ? mine : community}
+      </Suspense>
     </div>
   );
 }

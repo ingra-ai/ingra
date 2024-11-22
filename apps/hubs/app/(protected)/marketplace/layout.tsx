@@ -1,3 +1,4 @@
+import { LoaderV1 } from '@repo/components/loaders/loader-v1';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { Suspense, type ReactNode } from 'react';
 
@@ -10,7 +11,12 @@ export const metadata: Metadata = {
 async function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="relative xl:container px-2 sm:px-8" data-testid="marketplace-layout">
-      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+      <Suspense 
+        fallback={<LoaderV1 message="Loading..." cloudSize={24} duration={1.5} delay={0.2} fallbackUrl="/" />}
+      >
+        {children}
+      </Suspense>
+      
     </div>
   );
 }
