@@ -15,12 +15,14 @@ import {
 } from '@repo/shared/data/functions';
 import { addFunctionToCollection, removeFunctionFromCollection } from '@repo/shared/data/collections';
 import { getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
-import isNil from 'lodash/isNil';
+import isEmpty from 'lodash/isEmpty';
 import isBoolean from 'lodash/isBoolean';
 import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
 
-export const createNewFunction = async (functionPayload: z.infer<typeof FunctionSchema>, collectionRecordIdOrSlug?: string) => {
+type FunctionPayload = z.infer<typeof FunctionSchema>;
+
+export const createNewFunction = async (functionPayload: FunctionPayload, collectionRecordIdOrSlug?: string) => {
   return await actionAuthTryCatch(async (authSession) => {
     if (!functionPayload || typeof functionPayload !== 'object' || Object.keys(functionPayload).length === 0) {
       throw new Error('Function payload is empty or invalid. Are you passing the patch data as "{ function: { ... } }"?');
@@ -30,11 +32,11 @@ export const createNewFunction = async (functionPayload: z.infer<typeof Function
       throw new Error("Creating new function doesn't require an ID. Please remove the ID from the payload.");
     }
   
-    if (isNil(functionPayload.slug.trim())) {
+    if (isEmpty((functionPayload?.slug || '').trim())) {
       throw new Error('Function slug is required to create a new function.');
     }
   
-    if (isNil(functionPayload.description.trim())) {
+    if (isEmpty((functionPayload?.description || '').trim())) {
       throw new Error('Function description is required to create a new function.');
     }
 
@@ -43,7 +45,7 @@ export const createNewFunction = async (functionPayload: z.infer<typeof Function
       throw new ActionError('error', 400, 'Profile username is not setup.');
     }
     
-    const providedFields: (keyof z.infer<typeof FunctionSchema>)[] = ['slug', 'description'];
+    const providedFields: (keyof FunctionPayload)[] = ['slug', 'description'];
 
     /**
      * Populate skeleton function record with user and environment variables as code template.
@@ -66,12 +68,12 @@ export const createNewFunction = async (functionPayload: z.infer<typeof Function
       description: functionPayload.description.trim(),
       arguments: [] as z.infer<typeof FunctionArgumentSchema>[],
       tags: [] as z.infer<typeof FunctionTagsSchema>[],
-    } as z.infer<typeof FunctionSchema>;
+    } as FunctionPayload;
 
     /**
      * Populate all the provided fields from the payload. If the field is not provided, it will be populated with the default value.
      */
-    const acceptableFieldNames: (keyof z.infer<typeof FunctionSchema>)[] = [
+    const acceptableFieldNames: (keyof FunctionPayload)[] = [
       'code', 
       'httpVerb', 
       'isPrivate', 
@@ -146,7 +148,7 @@ export const createNewFunction = async (functionPayload: z.infer<typeof Function
   });
 }
 
-export const upsertFunction = async (values: z.infer<typeof FunctionSchema>, collectionRecordIdOrSlug?: string) => {
+export const upsertFunction = async (values: FunctionPayload, collectionRecordIdOrSlug?: string) => {
   const validatedValues = await validateAction(FunctionSchema, values);
   const { data } = validatedValues;
 

@@ -3,10 +3,11 @@
 import { describe, it, expect, vi, beforeEach, MockedFunction} from 'vitest';
 import db from '@repo/db/client'; // This imports the mocked Prisma client
 import { Prisma } from '@repo/db/prisma';
-import { isUuid } from '@repo/shared/lib/utils'; // Actual implementation, not mocked
+// import { isUuid } from '@repo/shared/lib/utils'; // Actual implementation, not mocked
 import { getFunctionAccessibleByUser } from '@/src/data/functions/getFunctionAccessibleByUser';
 
 // Import types for better TypeScript support
+/*
 type FunctionAccessType = 'owner' | 'subscriber' | 'subscribedCollection' | 'marketplace';
 type GetFunctionAccessibleByUserOptionsType<T> = {
   accessTypes: FunctionAccessType[];
@@ -15,6 +16,7 @@ type GetFunctionAccessibleByUserOptionsType<T> = {
 type GetFunctionAccessibleByUserDefaultArgsType = Pick<Prisma.FunctionFindFirstArgs, 'include' | 'select'> & {
   where?: Prisma.FunctionFindFirstArgs['where'];
 };
+*/
 
 type FunctionPayloadType = Prisma.FunctionGetPayload<{ 
   include: { 
