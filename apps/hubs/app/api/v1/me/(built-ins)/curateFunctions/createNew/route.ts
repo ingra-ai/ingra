@@ -76,8 +76,12 @@ export async function POST(req: NextRequest) {
   return await apiAuthTryCatch<any>(async (authSession) => {
     const result = await createNewFunction(functionPayload);
 
+    if ( result?.status === 'error' ) {
+      throw new Error( result?.message ?? 'Failed to create new function');
+    }
+
     if ( !result?.data ) {
-      throw new Error('Failed to create new function');
+      throw new Error( 'Failed to create new function');
     }
 
     /**
