@@ -1,4 +1,7 @@
-# Ingra
+[![CC BY-NC 4.0][cc-by-nc-shield]][cc-by-nc]
+
+# INGRA
+
 
 Ingra is an open-source platform designed to enrich developer experience to curate and hook AI function tool calling capabilities.
 Seamlessly integrate to any LLMs by providing capabilities to curate, manage, and host functions that can be used to create your own personal assistant suite tailored to your needs.
@@ -186,9 +189,6 @@ npx turbo link
 
 We welcome contributions to the Ingra Hubs! Whether it's bug reports, feature requests, or contributions to code, please feel free to make a pull request or open an issue. Thanks in advance
 
-## License
-
-Ingra Hubs is open source software licensed as [MIT](https://choosealicense.com/licenses/mit/).
 
 ## Learn More
 
@@ -203,7 +203,7 @@ To further enhance your development with Ingra Hubs, explore the documentation a
 - [AWS SES Documentation](https://docs.aws.amazon.com/ses/latest/dg/welcome.html) - Get started with Amazon Simple Email Service for email sending.
 - [jsonwebtoken GitHub Repository](https://github.com/auth0/node-jsonwebtoken) - Learn about creating and verifying JWTs with this popular library.
 
-### Turborepo Useful Links
+##### Turborepo Useful Links
 
 Learn more about the power of Turborepo:
 
@@ -213,3 +213,15 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+
+## License
+
+INGRA is licensed under a
+[Creative Commons Attribution-NonCommercial 4.0 International License][cc-by-nc].
+
+[![CC BY-NC 4.0][cc-by-nc-image]][cc-by-nc]
+
+[cc-by-nc]: https://creativecommons.org/licenses/by-nc/4.0/
+[cc-by-nc-image]: https://licensebuttons.net/l/by-nc/4.0/88x31.png
+[cc-by-nc-shield]: https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg
