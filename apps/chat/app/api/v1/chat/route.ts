@@ -53,12 +53,13 @@ export async function POST(request: NextRequest) {
         },
       },
     },
-    onFinish: async ({ responseMessages }) => {
+    onFinish: async ( event ) => {
+      const { response } = event;
       if (authSession && authSession?.userId) {
         try {
           await saveChat(
             id,
-            [...coreMessages, ...responseMessages],
+            [...coreMessages, ...response.messages],
             authSession.userId,
           );
         } catch (error) {

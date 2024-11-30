@@ -22,5 +22,8 @@
     "noEmit": true,
     "allowJs": true,
     "jsx": "preserve"
-  }
+  },
+  "include": [
+    "next.config.mjs",
+  ],
 }

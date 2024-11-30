@@ -31,11 +31,11 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.10.6",
+    "@types/node": "^22.10.1",
     "tsup": "^8.3.5",
-    "type-fest": "^4.26.1",
-    "typescript": "^5.6.3",
-    "vitest": "^2.1.4"
+    "type-fest": "^4.29.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.6"
   },
   "dependencies": {
     "chalk": "^5.3.0",
