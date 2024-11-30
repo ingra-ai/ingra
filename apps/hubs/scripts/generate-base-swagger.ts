@@ -57,39 +57,26 @@ const outputFile = path.join(outputDir, 'base-swagger.json');
 // Main async function to generate Swagger JSON
 const generateBaseSwagger = async () => {
   try {
-    Logger.withTag('api|generateBaseSwagger').info(`Generating base swagger from following ${options.apis.length} paths:\n`, options.apis);
+    Logger.withTag('api|generateBaseSwagger').info(`Generating base swagger from paths:\n`, options.apis);
 
     // Ensure the output directory exists
     try {
       await accessAsync(outputDir, fs.constants.F_OK);
-      Logger.withTag('api|generateBaseSwagger').info(`Output directory: ${outputDir}`);
     } catch {
-      Logger.withTag('api|generateBaseSwagger').info(`Output directory does not exist. Creating: ${outputDir}`);
       await mkdirAsync(outputDir, { recursive: true });
-      Logger.withTag('api|generateBaseSwagger').info(`Successfully created directory: ${outputDir}`);
     }
 
-    Logger.withTag('api|generateBaseSwagger').info('Generating Swagger specification...');
     const swaggerSpec = swaggerJSDoc(options);
-    Logger.withTag('api|generateBaseSwagger').info('Swagger specification generated.');
-
-    Logger.withTag('api|generateBaseSwagger').info(`Writing Swagger JSON to ${outputFile}...`);
     await writeFileAsync(outputFile, JSON.stringify(swaggerSpec, null, 2), 'utf8');
-
-    // Write Swagger JSON to the file, specifying permissions
-    await writeFileAsync(outputFile, JSON.stringify(swaggerSpec, null, 2), 'utf8');
-    Logger.withTag('api|generateBaseSwagger').info(`Swagger JSON generated successfully at ${outputFile}`);
 
     // Set permissions to 777 for the output file
     await chmodAsync(outputFile, 0o777);
-    Logger.withTag('api|generateBaseSwagger').info(`Permissions set to 777 for file: ${outputFile}`);
 
     // Validate file existence and permissions (optional, but recommended)
     const fileStats = await statAsync(outputFile);
 
     if (fileStats.isFile()) {
-      Logger.withTag('api|generateBaseSwagger').info(`File ${outputFile} exists and is a file.`);
-      Logger.withTag('api|generateBaseSwagger').info(`File permissions: ${fileStats.mode.toString(8).slice(-3)}`);
+      Logger.withTag('api|generateBaseSwagger').info(`Swagger JSON generated successfully at ${outputFile}`);
     } else {
       Logger.withTag('api|generateBaseSwagger').error(`File ${outputFile} does not exist or is not a file.`);
     }
@@ -101,4 +88,3 @@ const generateBaseSwagger = async () => {
 
 // Execute the main function
 generateBaseSwagger();
-

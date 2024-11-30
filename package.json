@@ -20,17 +20,17 @@
     "node": ">=18.19.0"
   },
   "dependencies": {
-    "@pinecone-database/pinecone": "^3.0.3",
-    "@prisma/client": "^5.20.0",
-    "@vercel/blob": "^0.25.1",
+    "@pinecone-database/pinecone": "^4.0.0",
+    "@prisma/client": "^6.0.0",
+    "@vercel/blob": "^0.26.0",
     "@vercel/kv": "^3.0.0"
   },
   "devDependencies": {
     "consola": "^3.2.3",
-    "prettier": "^3.3.3",
-    "prisma": "^5.20.0",
-    "tsup": "^8.3.0",
-    "turbo": "^2.2.3"
+    "prettier": "^3.4.1",
+    "prisma": "^6.0.0",
+    "tsup": "^8.3.5",
+    "turbo": "^2.3.3"
   },
   "pnpm": {
     "overrides": {

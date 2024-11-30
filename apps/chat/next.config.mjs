@@ -2,6 +2,9 @@
 const nextConfig = {
   transpilePackages: ['lucide-react'],
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+  sassOptions: {
+    silenceDeprecations: ['legacy-js-api'],
+  },
   redirects: async () => {
     return [
     ];
