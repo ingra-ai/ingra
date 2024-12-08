@@ -86,11 +86,11 @@ async function handlerFn(args: HandlerArgs) {
   }
 
   return NextResponse.json({
-    status: 400,
-    code: 'BAD_REQUEST',
-    message: 'Missing required parameters'
+    status: 401,
+    code: 'UNAUTHORIZED',
+    message: 'Invalid or missing credentials'
   } as ApiError, {
-    status: 400
+    status: 401
   });
 };
 
