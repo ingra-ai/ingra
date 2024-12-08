@@ -92,27 +92,8 @@ export const getOAuthAuthSession = async (accessToken: string) => {
   let sessionWithUser: AuthSessionResponse | null = null;
 
   if (accessToken) {
-    const decodedJwt = decodeToken<{ id: string }>(accessToken);
-
-    if (typeof decodedJwt?.id === 'string' && decodedJwt.id.length > 0) {
-      const userId = decodedJwt.id;
-      sessionWithUser = await kv.get<AuthSessionResponse>(OAUTH_SESSION_KEY_PREFIX + userId);
-
-      if (sessionWithUser) {
-        // We need to fix all date type objects to be Date objects
-        // Since redis stores all dates as strings
-        convertDateStringsToDates(sessionWithUser);
-      }
-    }
-
-    if (!sessionWithUser) {
-      sessionWithUser = await getActiveSessionByAccessToken(accessToken);
-
-      // Add to cache
-      if (sessionWithUser) {
-        await kv.set(OAUTH_SESSION_KEY_PREFIX + sessionWithUser.userId, sessionWithUser, { ex: ACTIVE_SESSION_REDIS_EXPIRY });
-      }
-    }
+    // Caching is removed for this type of session
+    sessionWithUser = await getActiveSessionByAccessToken(accessToken);
   }
 
   return sessionWithUser;
