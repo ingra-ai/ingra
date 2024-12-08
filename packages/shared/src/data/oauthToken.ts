@@ -13,6 +13,7 @@ export async function createOAuthToken(credentials: OAuthTokenCredentials, userI
   const defaultOAuthToken = await db.oAuthToken.findFirst({
     where: {
       userId,
+      service: credentials.service,
       isDefault: true,
     },
   });

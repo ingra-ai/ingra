@@ -95,8 +95,5 @@ async function handlerFn(args: HandlerArgs) {
 };
 
 export async function POST(req: NextRequest, context: ContextShape) {
-
-
   return handleRequest<ContextShape['params'], HandlerArgs>('POST', req, (context.params), handlerFn);
 }
-
