@@ -1,4 +1,4 @@
-import { AuthSessionResponse } from '@/src/data';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 import { CODE_DEFAULT_TEMPLATE } from '@repo/shared/schemas/function';
 import { generateUserVars } from '../generateUserVars';
 
