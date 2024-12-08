@@ -163,6 +163,7 @@ export const clearAuthCaches = async (authSession: AuthSessionResponse) => {
 
     const allRedisKeys = [
       USERID_SESSION_KEY_PREFIX + authSession.userId,
+      OAUTH_SESSION_KEY_PREFIX + authSession.userId,
       ...(userApiKeys).map((apiKey) => {
         return APIKEY_SESSION_KEY_PREFIX + apiKey.key;
       }),

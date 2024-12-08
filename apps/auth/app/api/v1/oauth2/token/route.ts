@@ -1,22 +1,46 @@
 /**
- * OpenAI support
- *  - After user clicks 'Sign in' on Custom ChatGPT, it will bring it in this route;
+ * OAuth2 Token Endpoint
  * 
- * Example hit:
- * https://auth.ingra.ai/api/v1/oauth2/token
+ * This endpoint handles the OAuth2 token exchange process. It supports both the 
+ * `authorization_code` and `refresh_token` grant types.
  * 
- * Example request body:
+ * Example endpoint:
+ * ```
+ * POST https://auth.ingra.ai/api/v1/oauth2/token
+ * ```
+ * 
+ * Example request body for `authorization_code` grant type:
+ * ```json
  * {
- *   'grant_type': 'authorization_code',
- *   'client_id': '123',
- *   'client_secret': '123',
- *   'code': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRjMTU1ZmU3LWExOWUtNGNjMi04MjJkLWY3YzdhNmU0MTIwMCIsImVtYWlsIjoidmFkaUBiYWthYml0LmNvbSIsImNsaWVudElkIjoiMTIzIiwic2NvcGUiOiJjaGF0Z3B0IiwidHlwZSI6ImlkIiwiaWF0IjoxNzMzNjI1MDg4LCJleHAiOjE3MzM3MTE0ODh9.notL5CBjHchfMYd7RkvaN9eYlz222ranukjTuax0vlk',
- *   'redirect_uri': 'https://chat.openai.com/aip/g-0635bc4d3822cb8e34e6970c89332f8fe4fbd28b/oauth/callback'
+ *   "grant_type": "authorization_code",
+ *   "client_id": "123",
+ *   "client_secret": "123",
+ *   "code": "<redacted>",
+ *   "redirect_uri": "https://chat.openai.com/aip/g-0635bc4d3822cb8e34e6970c89332f8fe4fbd28b/oauth/callback"
  * }
+ * ```
+ * 
+ * Example request body for `refresh_token` grant type:
+ * ```json
+ * {
+ *   "grant_type": "refresh_token",
+ *   "client_id": "123",
+ *   "client_secret": "123",
+ *   "refresh_token": "<redacted>"
+ * }
+ * ```
+ * 
+ * @param req - The incoming request object.
+ * @param context - The context object containing route parameters.
+ * 
+ * @returns A JSON response containing the access token, token type, expiration time, and refresh token.
+ * 
+ * @throws {ApiError} If the credentials are invalid or missing.
  */
 'use server';
 import { getAppOAuthTokenByIdOrRefreshToken } from '@repo/shared/data/oauthToken';
 import { mixpanel } from '@repo/shared/lib/analytics';
+import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { ApiError } from '@repo/shared/types';
 import { handleRequest } from '@repo/shared/utils/handleRequest';
@@ -40,6 +64,8 @@ type HandlerArgs = ContextShape & {
 
 async function handlerFn(args: HandlerArgs) {
   const { params, requestArgs, requestHeaders, analyticsObject } = args;
+
+  Logger.withTag('oauth2|token').info('OAuth2 Token Request', { requestArgs });
 
   /**
    * Analytics & Logging
@@ -68,6 +94,9 @@ async function handlerFn(args: HandlerArgs) {
     }
   }
   else if ( requestArgs.grant_type === 'refresh_token' && requestArgs.refresh_token ) {
+    /**
+     * We're not actually refreshing, just getting the token by refresh token.
+     */
     const oAuthToken = await getAppOAuthTokenByIdOrRefreshToken(requestArgs.refresh_token);
 
     // Calculate expires in seconds
