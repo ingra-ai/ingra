@@ -28,7 +28,6 @@ import { FormSlideOver } from '@repo/components/slideovers/FormSlideOver';
 import { getUserRepoFunctionsUri, getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
 import AddFunctionToCollectionButton from '../AddFunctionToCollectionButton';
 import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 
 type FunctionFormProps = {
   authSession?: AuthSessionResponse | null;
@@ -64,14 +63,6 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
     return null;
   }
 
-  const envVars = authSession.user.envVars.map((envVar) => ({
-    id: envVar.id,
-    ownerUserId: envVar.ownerUserId,
-    key: envVar.key,
-    value: envVar.value,
-  }));
-  const userVars = generateUserVars(authSession);
-  const allUserAndEnvKeys = Object.keys(userVars).concat(envVars.map((envVar) => envVar.key));
   const methods = useForm<z.infer<typeof FunctionSchema>>({
       reValidateMode: 'onSubmit',
       resolver: zodResolver(FunctionSchema),
@@ -79,7 +70,7 @@ export const FunctionForm: FC<FunctionFormProps> = (props) => {
         id: functionRecord?.id || '',
         slug: functionRecord?.slug || '',
         description: functionRecord?.description || '',
-        code: functionRecord?.code || generateCodeDefaultTemplate(allUserAndEnvKeys),
+        code: functionRecord?.code || generateCodeDefaultTemplate(authSession),
         isPrivate: typeof functionRecord?.isPrivate === 'undefined' ? true : !!functionRecord?.isPrivate,
         isPublished: typeof functionRecord?.isPublished === 'undefined' ? false : !!functionRecord?.isPublished,
         tags: functionRecord?.tags

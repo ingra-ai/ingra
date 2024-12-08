@@ -1,10 +1,10 @@
 import { kv } from '@vercel/kv';
-import { getSessionByApiKey, updateApiKeyLastUpdatedAt } from '../../apiKey';
-import { decodeToken } from '../../../lib/tokens';
+import { getApiKeysByUserId, getSessionByApiKey, updateApiKeyLastUpdatedAt } from '@repo/shared/data/apiKey';
+import { decodeToken } from '@repo/shared/lib/tokens';
 import { AuthSessionResponse } from './types';
-import { getActiveSessionByJwt } from '../../activeSession';
-import { Logger } from '../../../lib/logger';
-import { getActiveSessionByAccessToken } from '../../oauthToken';
+import { getActiveSessionByJwt } from '@repo/shared/data/activeSession';
+import { Logger } from '@repo/shared/lib/logger';
+import { getActiveSessionByAccessToken } from '@repo/shared/data/oauthToken';
 
 // KV prefixes
 const ACTIVE_SESSION_REDIS_EXPIRY = 3600 * 24 * 7; // 7 days in seconds
@@ -155,14 +155,19 @@ export const getApiAuthSession = async (xApiKey: string) => {
 };
 
 export const clearAuthCaches = async (authSession: AuthSessionResponse) => {
-  const allRedisKeys = [
-    authSession?.userId && USERID_SESSION_KEY_PREFIX + authSession.userId,
-    ...(authSession?.user?.apiKeys || []).map((apiKey) => {
-      return APIKEY_SESSION_KEY_PREFIX + apiKey.key;
-    }),
-  ].filter(Boolean) as string[];
 
   if (authSession?.userId) {
+    const userApiKeys = await getApiKeysByUserId(authSession.userId, {
+      key: true,
+    });
+
+    const allRedisKeys = [
+      USERID_SESSION_KEY_PREFIX + authSession.userId,
+      ...(userApiKeys).map((apiKey) => {
+        return APIKEY_SESSION_KEY_PREFIX + apiKey.key;
+      }),
+    ].filter(Boolean) as string[];
+
     const result = await kv.del(...allRedisKeys);
 
     // Total auth caches deleted

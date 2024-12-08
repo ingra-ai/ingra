@@ -31,3 +31,4 @@ export function censorEmail(email: string) {
 }
 
 export * from './generateUuid';
+export * from './generateRandomNumber';
