@@ -3,7 +3,7 @@ import { cookies, headers } from 'next/headers';
 import { APP_SESSION_API_KEY_NAME, APP_SESSION_COOKIE_NAME } from '@repo/shared/lib/constants';
 import { Logger } from '@repo/shared/lib/logger';
 import { AuthSessionResponse, GetAuthSessionOptions } from './types';
-import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
+import { clearAuthCaches, getApiAuthSession, getOAuthAuthSession, getWebAuthSession } from './caches';
 import { refreshGoogleOAuthCredentials } from '@repo/shared/lib/google-oauth/refreshGoogleOAuthCredentials';
 import { revokeOAuth, updateOAuthToken } from '@repo/shared/actions/oauth';
 
@@ -18,6 +18,10 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
   const jwt = cookieStore.get(APP_SESSION_COOKIE_NAME)?.value;
   const xApiKey = headersList.get(APP_SESSION_API_KEY_NAME);
 
+  // Get bearer token from headers
+  const bearerToken = headersList.get('Authorization');
+  
+
   try {
     let sessionWithUser: AuthSessionResponse | null = null;
     let shouldClearCache = false;
@@ -26,6 +30,12 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
       sessionWithUser = await getWebAuthSession(jwt);
     } else if (xApiKey) {
       sessionWithUser = await getApiAuthSession(xApiKey);
+    } else if (bearerToken) {
+      const [tokenType, token] = bearerToken.split(' ');
+
+      if (tokenType?.toLocaleLowerCase() === 'Bearer' && token) {
+        sessionWithUser = await getOAuthAuthSession(token);
+      }
     }
 
     // If we have a session with a user, and we need to introspect OAuth tokens, do so.

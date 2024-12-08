@@ -4,10 +4,12 @@ import { decodeToken } from '../../../lib/tokens';
 import { AuthSessionResponse } from './types';
 import { getActiveSessionByJwt } from '../../activeSession';
 import { Logger } from '../../../lib/logger';
+import { getActiveSessionByAccessToken } from '../../oauthToken';
 
 // KV prefixes
 const ACTIVE_SESSION_REDIS_EXPIRY = 3600 * 24 * 7; // 7 days in seconds
 const USERID_SESSION_KEY_PREFIX = 'userId_Session:';
+const OAUTH_SESSION_KEY_PREFIX = 'oAuth_Session:';
 const APIKEY_SESSION_KEY_PREFIX = 'apiKey_Session:';
 
 /**
@@ -73,6 +75,48 @@ export const getWebAuthSession = async (jwt: string) => {
 
   return sessionWithUser;
 };
+
+/**
+ * Retrieves an OAuth authentication session using the provided access token.
+ * 
+ * This function first attempts to decode the access token to extract the user ID.
+ * If a valid user ID is found, it tries to retrieve the session from the cache.
+ * If the session is found in the cache, it converts any date strings to Date objects.
+ * If the session is not found in the cache, it retrieves the active session by the access token
+ * and stores it in the cache with an expiration time.
+ * 
+ * @param {string} accessToken - The access token used to retrieve the session.
+ * @returns {Promise<AuthSessionResponse | null>} - A promise that resolves to the authentication session or null if not found.
+ */
+export const getOAuthAuthSession = async (accessToken: string) => {
+  let sessionWithUser: AuthSessionResponse | null = null;
+
+  if (accessToken) {
+    const decodedJwt = decodeToken<{ id: string }>(accessToken);
+
+    if (typeof decodedJwt?.id === 'string' && decodedJwt.id.length > 0) {
+      const userId = decodedJwt.id;
+      sessionWithUser = await kv.get<AuthSessionResponse>(OAUTH_SESSION_KEY_PREFIX + userId);
+
+      if (sessionWithUser) {
+        // We need to fix all date type objects to be Date objects
+        // Since redis stores all dates as strings
+        convertDateStringsToDates(sessionWithUser);
+      }
+    }
+
+    if (!sessionWithUser) {
+      sessionWithUser = await getActiveSessionByAccessToken(accessToken);
+
+      // Add to cache
+      if (sessionWithUser) {
+        await kv.set(OAUTH_SESSION_KEY_PREFIX + sessionWithUser.userId, sessionWithUser, { ex: ACTIVE_SESSION_REDIS_EXPIRY });
+      }
+    }
+  }
+
+  return sessionWithUser;
+}
 
 /**
  * Responsible to return sessionWithUser, and update the last updated timestamp of an API key in the database.
