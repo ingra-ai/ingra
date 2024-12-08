@@ -141,11 +141,12 @@ export async function GET(request: NextRequest) {
         primaryEmailAddress: primaryEmailAddress.value,
         service: 'google-oauth',
         accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
-        idToken: tokens.id_token,
+        refreshToken: tokens.refresh_token || '',
+        idToken: tokens.id_token || '',
         scope,
-        tokenType: tokens.token_type,
-        expiryDate: tokens.expiry_date
+        tokenType: tokens.token_type || '',
+        expiryDate: new Date(tokens.expiry_date || 0),
+        userId: authSession.userId
       });
 
       if (!createdToken || !createdToken.data) {
