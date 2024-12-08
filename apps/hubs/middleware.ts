@@ -1,3 +1,4 @@
+// import { getRequestArgs } from '@repo/shared/utils/handleRequest';
 import { NextResponse, type NextRequest } from 'next/server';
 
 async function middleware(request: NextRequest) {
@@ -7,30 +8,12 @@ async function middleware(request: NextRequest) {
   requestHeaders.set('X-URL', request.url);
 
   if (pathname.includes('/api/v1')) {
-    console.info(`:: [hubs middleware] [api-v1] pathname: ${pathname}`);
-
-    // Log the request headers and body
-    const allHeaders = Object.fromEntries(requestHeaders.entries());
-    console.info(`:: [hubs middleware] [api-v1] request headers:`, JSON.stringify( allHeaders ));
-
-    const method = request.method.toUpperCase();
-    const contentType = requestHeaders.get('Content-Type');
-    let requestArgs: Record<string, any> = {};
-
-    if (method === 'GET' || method === 'DELETE') {
-      const { searchParams } = new URL(request.url);
-      requestArgs = Object.fromEntries(searchParams);
-    } else {
-      if ( contentType === 'application/x-www-form-urlencoded' ) {
-        const formData = await request.formData();
-        requestArgs = Object.fromEntries(formData);
-      }
-      else {
-        requestArgs = await request.json();
-      }
-    }
-
-    console.info(`:: [hubs middleware] [api-v1] request body:`, JSON.stringify(requestArgs));
+    console.info(`:: [hubs middleware] [api-v1]`, {
+      pathname,
+      method: request.method,
+      // headers: JSON.stringify( Object.fromEntries(requestHeaders.entries()) ),
+      // args: JSON.stringify(getRequestArgs(request)),
+    });
   }
 
   return NextResponse.next({

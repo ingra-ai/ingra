@@ -17,10 +17,7 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
   const [cookieStore, headersList] = await Promise.all([cookies(), headers()]);
   const jwt = cookieStore.get(APP_SESSION_COOKIE_NAME)?.value;
   const xApiKey = headersList.get(APP_SESSION_API_KEY_NAME);
-
-  // Get bearer token from headers
-  const bearerToken = headersList.get('Authorization');
-  
+  const authHeader = headersList.get('Authorization');
 
   try {
     let sessionWithUser: AuthSessionResponse | null = null;
@@ -30,10 +27,10 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
       sessionWithUser = await getWebAuthSession(jwt);
     } else if (xApiKey) {
       sessionWithUser = await getApiAuthSession(xApiKey);
-    } else if (bearerToken) {
-      const [tokenType, token] = bearerToken.split(' ');
+    } else if (authHeader) {
+      const [tokenType, token] = authHeader.split(' ');
 
-      if (tokenType?.toLocaleLowerCase() === 'Bearer' && token) {
+      if (tokenType?.toLocaleLowerCase() === 'bearer' && token) {
         sessionWithUser = await getOAuthAuthSession(token);
       }
     }
