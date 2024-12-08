@@ -9,7 +9,6 @@ export const oAuthTokenSchema = z.object({
   tokenType: z.string().default("Bearer"),
   scope: z.string().optional().default(""),
   service: z.enum(["google-oauth", "ingra-oauth"]),
-  isDefault: z.boolean().default(false),
   expiryDate: z.date(),
 });
 
