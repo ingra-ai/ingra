@@ -1,27 +1,14 @@
 import type { User, MagicLinkToken, ActiveSession } from '@repo/db/prisma';
-import { generateToken } from '../lib/tokens';
+import { generateToken } from '@repo/shared/lib/tokens';
 import db from '@repo/db/client';
 import type { AuthSessionResponse } from './auth/session/types';
+import { generateRandomNumber } from '@repo/shared/lib/utils/generateRandomNumber';
 
 /**
  * ---------------------------------
  * MagicLink
  * ---------------------------------
  */
-
-/**
- * Generates a random number with the specified length.
- *
- * @param {number} length - The length of the random number. Defaults to 6.
- * @returns {string} The generated random number as a string.
- */
-const generateRandomNumber = (length = 6) => {
-  // Generate a random number between 0 and 999999
-  const randomNumber = Math.floor(Math.random() * 10 ** length);
-  // Convert to a string and pad with leading zeros to ensure it is 6 digits
-  const paddedRandomNumber = randomNumber.toString().padStart(6, '0');
-  return paddedRandomNumber;
-};
 
 /**
  * Creates a magic link token for the given user.

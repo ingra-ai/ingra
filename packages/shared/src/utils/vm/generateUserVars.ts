@@ -1,11 +1,11 @@
-import { AuthSessionResponse } from '../../data/auth/session/types';
+import { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 
 /**
  * Generates necessary user variables to run VM from the user's profile.
  * @param { AuthSessionResponse } authSession - The authentication session response object.
  * @returns { Record<string, any> } A record of user variables.
  */
-export const generateUserVars = (authSession: AuthSessionResponse): Record<string, string> => {
+export const generateUserVars = (authSession: Pick<AuthSessionResponse, 'user'>): Record<string, string> => {
   /**
    * Generate necessary user variables to run VM from the user's profile
    * 1. OAuthTokens - e.g. GOOGLE_OAUTH_ACCESS_TOKEN
