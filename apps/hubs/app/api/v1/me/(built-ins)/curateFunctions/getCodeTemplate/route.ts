@@ -4,7 +4,6 @@ import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
 import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -39,18 +38,7 @@ export async function GET(req: NextRequest) {
   const startTime = Date.now();
   
   return await apiAuthTryCatch<any>(async (authSession) => {
-    /**
-     * Populate skeleton function record with user and environment variables as code template.
-     */
-    const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
-        id: envVar.id,
-        ownerUserId: envVar.ownerUserId,
-        key: envVar.key,
-        value: envVar.value,
-      })),
-      userVarsRecord = generateUserVars(authSession),
-      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map((envVar) => envVar.key)),
-      codeTemplate = generateCodeDefaultTemplate(allUserAndEnvKeys);
+    const codeTemplate = generateCodeDefaultTemplate(authSession);
 
     /**
      * Analytics & Logging
