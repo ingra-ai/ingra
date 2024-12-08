@@ -15,7 +15,7 @@
  * }
  */
 'use server';
-import { getOAuthTokenByCode } from '@repo/shared/data/oauthToken';
+import { getAppOAuthTokenByIdOrRefreshToken } from '@repo/shared/data/oauthToken';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
 import { ApiError } from '@repo/shared/types';
@@ -51,7 +51,7 @@ async function handlerFn(args: HandlerArgs) {
   });
 
   if ( requestArgs.grant_type === 'authorization_code' && requestArgs.code ) {
-    const oAuthToken = await getOAuthTokenByCode(requestArgs.code);
+    const oAuthToken = await getAppOAuthTokenByIdOrRefreshToken(requestArgs.code);
 
     // Calculate expires in seconds
     const expiresIn = oAuthToken?.expiryDate ? Math.floor((oAuthToken.expiryDate.getTime() - Date.now()) / 1000) : 3600;
@@ -68,7 +68,7 @@ async function handlerFn(args: HandlerArgs) {
     }
   }
   else if ( requestArgs.grant_type === 'refresh_token' && requestArgs.refresh_token ) {
-    const oAuthToken = await getOAuthTokenByCode(requestArgs.refresh_token);
+    const oAuthToken = await getAppOAuthTokenByIdOrRefreshToken(requestArgs.refresh_token);
 
     // Calculate expires in seconds
     const expiresIn = oAuthToken?.expiryDate ? Math.floor((oAuthToken.expiryDate.getTime() - Date.now()) / 1000) : 3600;
