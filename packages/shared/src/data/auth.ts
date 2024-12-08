@@ -1,6 +1,7 @@
 import type { User, MagicLinkToken, ActiveSession } from '@repo/db/prisma';
 import { generateToken } from '../lib/tokens';
 import db from '@repo/db/client';
+import type { AuthSessionResponse } from './auth/session/types';
 
 /**
  * ---------------------------------
@@ -116,3 +117,45 @@ export const createActiveSession = async (user: Pick<User, 'id' | 'email'>, expi
     },
   });
 };
+
+/**
+ * ---------------------------------
+ * INGRA OAuth Token
+ * ---------------------------------
+ */
+/**
+ * Creates App credentials for a given user.
+ * This function generates an access token, refresh token, and id token for the user for external OAuth authentication.
+ *
+ * @param user - An object containing the user's id and email.
+ * @param expiresSeconds - The number of seconds until the tokens expire. Defaults to 86400 seconds (24 hours).
+ * @returns An object containing the generated access token, refresh token, id token, token type, and expiry date.
+ */
+export const createAppCredentials = async (authSession: AuthSessionResponse, clientId: string, scope: string, expiresSeconds = 86400) => {
+  // Calculate expiry date
+  const expiresTs = Date.now() + expiresSeconds * 1000;
+  const expiryDate = new Date(expiresTs);
+
+  // Generate object to encrypt
+  const rawCredentials = {
+    id: authSession.userId,
+    email: authSession.user.email,
+    clientId: clientId || '',
+    scope: scope || '',
+  };
+
+  const accessToken = generateToken({ ...rawCredentials, type: 'access' }, expiresSeconds);
+  const refreshToken = generateToken({ ...rawCredentials, type: 'refresh' }, 86400 * 7);
+  const idToken = generateToken({ ...rawCredentials, type: 'id' }, expiresSeconds);
+
+  const tokens = {
+    accessToken,
+    refreshToken,
+    idToken,
+    scope: rawCredentials.scope,
+    tokenType: 'Bearer',
+    expiryDate,
+  };
+
+  return tokens;
+}

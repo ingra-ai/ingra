@@ -1,10 +1,11 @@
 'use server';
 import db from '@repo/db/client';
-import type { Credentials } from '../lib/google-oauth/client';
 import { Prisma } from '@repo/db/prisma';
 
-export async function createOAuthToken(userId: string, primaryEmailAddress: string, credentials: Credentials) {
-  if (!userId || !primaryEmailAddress || !credentials?.access_token) {
+type OAuthTokenCredentials = Pick<Prisma.OAuthTokenCreateInput, 'primaryEmailAddress' | 'service' | 'accessToken' | 'refreshToken' | 'idToken' | 'scope' | 'tokenType' | 'expiryDate'>;
+
+export async function createOAuthToken(credentials: OAuthTokenCredentials, userId: string) {
+  if (!userId || !credentials.primaryEmailAddress || !credentials?.accessToken) {
     return null;
   }
 
@@ -22,44 +23,45 @@ export async function createOAuthToken(userId: string, primaryEmailAddress: stri
   const oauthToken = await db.oAuthToken.create({
     data: {
       userId: userId,
-      primaryEmailAddress: primaryEmailAddress || '',
-      service: 'google-oauth',
-      accessToken: credentials.access_token || '',
-      refreshToken: credentials.refresh_token || '',
-      idToken: credentials.id_token || '',
+      primaryEmailAddress: credentials.primaryEmailAddress || '',
+      service: credentials.service,
+      accessToken: credentials.accessToken || '',
+      refreshToken: credentials.refreshToken || '',
+      idToken: credentials.idToken || '',
       scope: credentials.scope || '',
-      tokenType: credentials.token_type || '',
+      tokenType: credentials.tokenType || '',
       isDefault,
-      expiryDate: new Date(credentials.expiry_date || 0),
+      expiryDate: new Date(credentials.expiryDate || 0),
     },
   });
 
   return oauthToken;
 }
 
-export async function updateOAuthToken(userId: string, primaryEmailAddress: string, credentials: Credentials) {
-  if (!userId || !primaryEmailAddress || !credentials?.access_token) {
+export async function updateOAuthToken(credentials: OAuthTokenCredentials, recordId: string, userId: string) {
+  if (!userId || !credentials.primaryEmailAddress || !credentials?.accessToken) {
     return null;
   }
 
   const updateData: Prisma.OAuthTokenUpdateInput = {
-    idToken: credentials.id_token || '',
-    accessToken: credentials.access_token || '',
+    idToken: credentials.idToken || '',
+    accessToken: credentials.accessToken || '',
     scope: credentials.scope || '',
-    tokenType: credentials.token_type || '',
-    expiryDate: new Date(credentials.expiry_date || 0),
+    tokenType: credentials.tokenType || '',
+    expiryDate: new Date(credentials.expiryDate || 0),
     updatedAt: new Date(),
   };
 
-  if (credentials.refresh_token) {
-    updateData.refreshToken = credentials.refresh_token;
+  if (credentials.refreshToken) {
+    updateData.refreshToken = credentials.refreshToken;
   }
 
   const oauthToken = await db.oAuthToken.update({
     where: {
+      id: recordId,
       userId_primaryEmailAddress: {
         userId,
-        primaryEmailAddress,
+        primaryEmailAddress: credentials.primaryEmailAddress,
       },
     },
     data: updateData,
