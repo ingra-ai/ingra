@@ -137,7 +137,7 @@ export const createAppCredentials = async (authSession: AuthSessionResponse, cli
   const expiryDate = new Date(expiresTs);
 
   // Generate object to encrypt
-  const rawCredentials = {
+  const rawCredentials: Record<string, string> = {
     id: authSession.userId,
     email: authSession.user.email,
     clientId: clientId || '',
