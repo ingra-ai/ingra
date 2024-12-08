@@ -12,6 +12,7 @@ type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
     idToken: true;
     refreshToken: true;
     expiryDate: true;
+    service: true;
   };
 }> & {
   [key: string]: any;
@@ -26,11 +27,18 @@ type RefreshTokenResponse = {
 
 /**
  * Renews the Google OAuth credentials by refreshing the access token if its almost expired.
+ * Only works if it's a google-oauth token.
  * @param oAuthToken - The OAuth token object containing the necessary properties.
  * @returns The new token response if successful, otherwise null.
  */
 export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps) => {
   const { userId = 'N/A', primaryEmailAddress = '', accessToken: access_token, refreshToken: refresh_token, idToken: id_token, expiryDate } = oAuthToken;
+
+  // Check if this is google-oauth
+  if (oAuthToken.service !== 'google-oauth') {
+    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).error('Not a Google OAuth token.');
+    return null;
+  }
 
   // Check if the required properties are present
   if (!access_token || !refresh_token) {
