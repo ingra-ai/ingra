@@ -5,7 +5,7 @@ import { Logger } from '@repo/shared/lib/logger';
 import { AuthSessionResponse, GetAuthSessionOptions } from './types';
 import { clearAuthCaches, getApiAuthSession, getWebAuthSession } from './caches';
 import { refreshGoogleOAuthCredentials } from '@repo/shared/lib/google-oauth/refreshGoogleOAuthCredentials';
-import { deleteOAuthToken, updateOAuthToken } from '@repo/shared/data/oauthToken';
+import { revokeOAuth, updateOAuthToken } from '@repo/shared/actions/oauth';
 
 /**
  * Retrieves the authentication session for the current user.
@@ -47,7 +47,7 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
         }
 
         /**
-         * 1. Refresh google OAuth credentials if necessary.
+         * 1. Refresh google OAuth credentials if necessary (only works if it's a google-oauth token).
          */
         const newOAuthCredentials = await refreshGoogleOAuthCredentials(defaultOAuthToken)
           .then(async (newOAuth) => {
@@ -55,7 +55,17 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
               /**
                * 2. After refreshing credentials, always update the OAuth token in the database.
                */
-              const updatedOAuthRecord = updateOAuthToken(newOAuth.userId, newOAuth.primaryEmailAddress, newOAuth.credentials).then((updatedOAuth) => {
+              const updatedOAuthRecord = updateOAuthToken({
+                id: defaultOAuthToken.id,
+                primaryEmailAddress: newOAuth.primaryEmailAddress,
+                accessToken: newOAuth.credentials?.access_token || '',
+                refreshToken: newOAuth.credentials?.refresh_token || '',
+                idToken: newOAuth.credentials?.id_token || '',
+                tokenType: newOAuth.credentials?.token_type || '',
+                expiryDate: new Date(newOAuth.credentials?.expiry_date || 0),
+                scope: defaultOAuthToken.scope,
+                service: defaultOAuthToken.service as 'google-oauth',
+              }).then(({ data: updatedOAuth }) => {
                 if (updatedOAuth) {
                   Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).info('Refreshed OAuth tokens:', {
                     oauthId: updatedOAuth?.id,
@@ -91,7 +101,7 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
              */
             Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).error('Error refreshing OAuth credentials:', err);
             Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).error('Deleting oauth token due to refresh token may be corrupted.', { id: defaultOAuthToken?.id });
-            await deleteOAuthToken(defaultOAuthToken?.id, user.id);
+            await revokeOAuth(defaultOAuthToken);
           });
 
         /**

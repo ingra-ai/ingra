@@ -9,7 +9,6 @@ import { handleRequest } from '@repo/shared/utils/handleRequest';
 import { runUserFunction } from '@repo/shared/utils/vm/functions/runUserFunction';
 import { NextRequest, NextResponse } from 'next/server';
 
-
 type ContextShape = {
   params: Promise<{
     userName: string;

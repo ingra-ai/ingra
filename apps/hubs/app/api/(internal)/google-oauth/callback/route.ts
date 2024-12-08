@@ -1,6 +1,6 @@
 'use server';
+import { createOAuthToken } from '@repo/shared/actions/oauth';
 import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
-import { createOAuthToken } from '@repo/shared/data/oauthToken';
 import { APP_GOOGLE_OAUTH_CLIENT_ID, APP_GOOGLE_OAUTH_CLIENT_SECRET, APP_GOOGLE_OAUTH_CALLBACK_URL, APP_GOOGLE_OAUTH_REDIRECT_URL } from '@repo/shared/lib/constants';
 import { ActionError, ApiError } from '@repo/shared/types';
 import { apiAuthTryCatch } from '@repo/shared/utils/apiAuthTryCatch';
@@ -137,11 +137,22 @@ export async function GET(request: NextRequest) {
         throw new ActionError('error', 400, 'Invalid token response');
       }
 
-      const oauthToken = await createOAuthToken(authSession.user.id, primaryEmailAddress.value, tokens);
+      const createdToken = await createOAuthToken({
+        primaryEmailAddress: primaryEmailAddress.value,
+        service: 'google-oauth',
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        idToken: tokens.id_token,
+        scope,
+        tokenType: tokens.token_type,
+        expiryDate: tokens.expiry_date
+      });
 
-      if (!oauthToken) {
+      if (!createdToken || !createdToken.data) {
         throw new ActionError('error', 400, 'Failed to create OAuth token');
       }
+
+      const oauthToken = createdToken.data;
 
       // Clear user caches
       await clearAuthCaches(authSession);

@@ -9,6 +9,7 @@
     "./schemas/collections": "./src/schemas/collections.ts",
     "./schemas/envVars": "./src/schemas/envVars.ts",
     "./schemas/function": "./src/schemas/function.ts",
+    "./schemas/oAuthToken": "./src/schemas/oAuthToken.ts",
     "./schemas/profile": "./src/schemas/profile.ts",
     "./schemas/schema-constants": "./src/schemas/schema-constants.ts",
     "./data/bio": "./src/data/bio/index.ts",

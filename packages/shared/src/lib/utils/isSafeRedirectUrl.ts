@@ -1,12 +1,23 @@
-import { HUBS_APP_URL } from '../constants';
-
 export function isSafeRedirectUrl(url: string) {
   try {
-    const allowedDomain = 'ingra.ai';
-    const parsedUrl = new URL(url, HUBS_APP_URL); // Parse the URL relative to the current domain
+    const allowedDomains = [
+      /^(hubs|chat|docs|auth)\.ingra\.ai$/, 
+      /^(www|chat)\.openai\.com$/, 
+      /^localhost:(300[0-5])$/, // Accept localhost with ports 3000 to 3005
+    ]; // Add more allowed domains as needed
+    const parsedUrl = new URL(url); // Parse the URL relative to the current domain
 
-    // Check if the hostname ends with the allowed domain, including subdomains
-    const isAllowedDomain = parsedUrl.hostname === allowedDomain || parsedUrl.hostname.endsWith(`.${allowedDomain}`);
+    // If failing to parse, return false
+    if (!parsedUrl.host) {
+      return false;
+    }
+
+    // Check if the host matches any of the allowed domains, including subdomains
+    // ✅ E.g. host example value - 'subdomain.ingra.ai', 'ingra.ai', 'localhost:3000'
+    // E.g. hostname value - 'subdomain.ingra.ai', 'ingra.ai', 'localhost'
+    const isAllowedDomain = allowedDomains.some((allowedDomain) => {
+      return allowedDomain.test(parsedUrl.host);
+    });
 
     // List of potentially dangerous strings or patterns to look for in URLs
     const maliciousPatterns = [
@@ -21,7 +32,7 @@ export function isSafeRedirectUrl(url: string) {
     ];
 
     // Check if the URL contains any malicious patterns
-    const isMalicious = maliciousPatterns.some((pattern) => url.toLowerCase().includes(pattern));
+    const isMalicious = maliciousPatterns.some((pattern) => url.toString().includes(pattern));
 
     return isAllowedDomain && !isMalicious;
   } catch (e) {

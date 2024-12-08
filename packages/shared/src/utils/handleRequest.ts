@@ -7,11 +7,19 @@ import { getAnalyticsObject } from '../lib/utils/getAnalyticsObject';
 export async function handleRequest<T extends {}, U extends {}>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', req: NextRequest, params: T, handlerFn: (args: U) => Promise<Response | NextResponse>) {
   let requestArgs: Record<string, any>;
 
+  const contentType = req.headers.get('Content-Type');
+
   if (method === 'GET' || method === 'DELETE') {
     const { searchParams } = new URL(req.url);
     requestArgs = Object.fromEntries(searchParams);
   } else {
-    requestArgs = await req.json();
+    if ( contentType === 'application/x-www-form-urlencoded' ) {
+      const formData = await req.formData();
+      requestArgs = Object.fromEntries(formData);
+    }
+    else {
+      requestArgs = await req.json();
+    }
   }
 
   // Check if the handler function exists

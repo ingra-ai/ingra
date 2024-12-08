@@ -9,9 +9,9 @@ import { OAuthToken } from '@repo/db/prisma';
 import { revokeOAuth, setTokenAsDefault } from '@repo/shared/actions/oauth';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
-import { formatDistance, differenceInSeconds } from 'date-fns';
-import { format } from 'date-fns/format';
+import { formatDistance } from 'date-fns';
 import { RefreshCcw, RocketIcon, TentIcon } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { startTransition, useState } from 'react';
 
@@ -29,15 +29,24 @@ type TokenDetailReturnType = {
   icon: React.ReactNode;
 };
 
-const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
+const getTokenDetail = (token: OAuthToken): TokenDetailReturnType => {
   const isActive = new Date() < token.expiryDate;
   const unableToRenew = !isActive && token.service === 'google-oauth' && !token.refreshToken;
   const formatExpiredAt = formatDistance(token.expiryDate, Date.now(), {
     addSuffix: true,
   });
 
+  const stateClasses = cn('inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset', {
+    'bg-green-50 text-green-700 ring-green-600/20': isActive,
+    'bg-red-50 text-red-700 ring-red-600/20': !isActive,
+  });
+
   const ExpiredAtNode = (
-    <span title={formatExpiredAt} aria-label={formatExpiredAt}>Expired</span>
+    <span className={ stateClasses } title={formatExpiredAt} aria-label={formatExpiredAt}>Expired</span>
+  );
+
+  const ActiveNode = (
+    <span className={ stateClasses } title={formatExpiredAt} aria-label={formatExpiredAt}>Active</span>
   );
 
   const defaultProps: TokenDetailReturnType = {
@@ -54,7 +63,7 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
         </AlertDescription>
       </Alert>
     ) : null,
-    state: isActive ? 'Active' : ExpiredAtNode,
+    state: isActive ? ActiveNode : ExpiredAtNode,
     autoRenew: !unableToRenew && (
       <div className='flex flex-row items-center justify-start text-info'>
         <RefreshCcw className='w-4 h-4 mr-2' />
@@ -62,7 +71,6 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
           Auto-refresh on API calls
         </p>
       </div>
-
     ),
     icon: null,
   };
@@ -72,7 +80,7 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
       return {
         ...defaultProps,
         label: 'Google',
-        state: isActive ? 'Active' : ExpiredAtNode,
+        state: isActive ? ActiveNode : ExpiredAtNode,
         icon: (
           <svg className="h-10 w-10 flex-shrink-0 rounded-full" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
             <path
@@ -80,6 +88,16 @@ const getTokenDetail = (token: OAuthToken) : TokenDetailReturnType => {
               d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
             ></path>
           </svg>
+        ),
+      };
+    case 'ingra-oauth':
+      return {
+        ...defaultProps,
+        label: APP_NAME,
+        state: isActive ? ActiveNode : ExpiredAtNode,
+        alert: null,
+        icon: (
+          <Image src={'/static/brand/ingra-logo-dark.svg'} width={50} height={50} className="h-10 w-10 flex-shrink-0" alt={APP_NAME + ' Logo'} suppressHydrationWarning />
         ),
       };
     default:
@@ -161,16 +179,15 @@ const OAuthList: FC<OAuthListProps> = (props) => {
         const tokenDetail = getTokenDetail(token);
         const isTokenLoading = isLoading === token.id;
         const isTokenDefault = token.isDefault;
-        const hasBeenExpiredFor = formatDistance(token.expiryDate, Date.now(), {
-          addSuffix: true,
-        });
+        // const hasBeenExpiredFor = formatDistance(token.expiryDate, Date.now(), {
+        //   addSuffix: true,
+        // });
         const lastUpdatedAt = formatDistance(token.updatedAt, Date.now(), {
           addSuffix: true,
         });
-        const stateClasses = cn(tokenDetail.state === 'Active' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-red-50 text-red-700 ring-red-600/20');
 
         return (
-          <li key={token.id}>
+          <li key={token.id} className="flex-auto max-w-96">
             {
               tokenDetail.alert && (
                 <div className="mb-2">{tokenDetail.alert}</div>
@@ -181,19 +198,19 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                 <div className="flex-1 truncate">
                   <div className="flex items-center space-x-3">
                     <h3 className="truncate text-sm font-medium dark:text-gray-300 text-gray-700">{tokenDetail.label}</h3>
-                    <span className={cn('inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset', stateClasses)}>{tokenDetail.state}</span>
+                    {tokenDetail.state}
                     {isTokenDefault && <Badge>Default</Badge>}
                   </div>
                   <p className="mt-2 truncate text-sm text-gray-500">{token.primaryEmailAddress}</p>
                   <p className="mt-2 truncate text-xs dark:text-gray-400 text-gray-600">Last Update: {lastUpdatedAt}</p>
-                  { tokenDetail.autoRenew && <div className="mt-2">{tokenDetail.autoRenew}</div> }
+                  {tokenDetail.autoRenew && <div className="mt-2">{tokenDetail.autoRenew}</div>}
                 </div>
                 {tokenDetail.icon}
               </div>
               <div>
                 <div className="-mt-px flex divide-x divide-gray-500">
                   {
-                    !tokenDetail.alert && (
+                    !token.isDefault && (
                       <div className="flex w-0 flex-1">
                         <Button type="button" onClick={() => onSetDefault(token)} disabled={isTokenLoading} className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center h-full py-2 hover:text-info">
                           {isTokenLoading ? <RefreshCcw className="animate-spin inline-block mr-2" /> : <TentIcon className="h-4 w-4 mr-2" aria-hidden="true" />}
@@ -214,19 +231,25 @@ const OAuthList: FC<OAuthListProps> = (props) => {
                           <DialogDescription className="py-4 space-y-4 leading-6">
                             <p>Your privacy is paramount to us, and we handle it with the utmost seriousness. Should you choose to revoke access, re-authorization of our application for your account access will be necessary.</p>
 
-                            <p>
-                              For enhanced security, we recommend visiting your Google Account&apos;s connections section before proceeding with this step. This allows you to remove <strong>{APP_NAME}</strong> from your list of connected
-                              applications directly.
-                            </p>
+                            {
+                              token.service === 'google-oauth' && (
+                                <>
+                                  <p>
+                                    For enhanced security, we recommend visiting your Google Account&apos;s connections section before proceeding with this step. This allows you to remove <strong>{APP_NAME}</strong> from your list of connected
+                                    applications directly.
+                                  </p>
 
-                            <p>
-                              For convenience, you can follow the link below:
-                              <br />
-                              <a className="underline text-white" href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">
-                                Manage your Google Account connections
-                              </a>
-                              .
-                            </p>
+                                  <p>
+                                    For convenience, you can follow the link below:
+                                    <br />
+                                    <a className="underline text-white" href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">
+                                      Manage your Google Account connections
+                                    </a>
+                                    .
+                                  </p>
+                                </>
+                              )
+                            }
                           </DialogDescription>
                           <DialogFooter>
                             <Button variant="destructive" type="button" onClick={() => onRevoke(token)} disabled={isTokenLoading}>
