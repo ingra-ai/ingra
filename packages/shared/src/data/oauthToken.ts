@@ -4,6 +4,20 @@ import { Prisma } from '@repo/db/prisma';
 
 type OAuthTokenCredentials = Pick<Prisma.OAuthTokenCreateInput, 'primaryEmailAddress' | 'service' | 'accessToken' | 'refreshToken' | 'idToken' | 'scope' | 'tokenType' | 'expiryDate'>;
 
+export type GetActiveSessionByOAuthReturnType = Prisma.ActiveSessionGetPayload<{
+  select: {
+    userId: true;
+    user: {
+      include: {
+        profile: true;
+        oauthTokens: true;
+        envVars: true;
+        apiKeys: true;
+      };
+    };
+  };
+}>;
+
 export async function createOAuthToken(credentials: OAuthTokenCredentials, userId: string) {
   if (!userId || !credentials.primaryEmailAddress || !credentials?.accessToken) {
     return null;
@@ -71,10 +85,39 @@ export async function updateOAuthToken(credentials: OAuthTokenCredentials, recor
   return oauthToken;
 }
 
-export async function getOAuthTokenByCode(code: string) {
+export async function getOAuthTokenByCode(idToken: string) {
   const record = await db.oAuthToken.findFirst({
     where: {
-      idToken: code,
+      idToken,
+    },
+  });
+
+  if ( !record ) {
+    return null;
+  }
+
+  return record;
+}
+
+export async function getActiveSessionByAccessToken(accessToken: string): Promise<GetActiveSessionByOAuthReturnType | null> {
+  const record = await db.oAuthToken.findFirst({
+    select: {
+      id: true,
+      userId: true,
+      user: {
+        include: {
+          profile: true,
+          oauthTokens: true,
+          envVars: true,
+          apiKeys: true,
+        },
+      },
+    },
+    where: {
+      accessToken,
+      expiryDate: {
+        gte: new Date(),
+      },
     },
   });
 
