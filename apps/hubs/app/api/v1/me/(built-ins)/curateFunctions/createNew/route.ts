@@ -74,7 +74,16 @@ export async function POST(req: NextRequest) {
   const startTime = Date.now();
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    const result = await createNewFunction(functionPayload);
+    const result = await createNewFunction({
+      ...functionPayload,
+
+      /*
+       * Any function created via this endpoint is private and unpublished, therefore it won't appear in Marketplace.
+       * User may have to go through the web if they want to publish it.
+       */
+      isPrivate: true,
+      isPublished: false,
+    });
 
     if ( result?.status === 'error' ) {
       throw new Error( result?.message ?? 'Failed to create new function');
