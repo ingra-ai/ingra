@@ -64,6 +64,7 @@ export const getOrCreateAppOAuthToken = async (clientId: string, scope: string, 
         ...appCredentials,
         primaryEmailAddress: authSession.user.email,
         service: 'ingra-oauth',
+        scope: scope || '',
       }, authSession.user.id);
     }
     else if ( appOAuthToken && appOAuthToken.id && shouldRenew ) {
@@ -73,6 +74,7 @@ export const getOrCreateAppOAuthToken = async (clientId: string, scope: string, 
         ...appCredentials,
         primaryEmailAddress: authSession.user.email,
         service: 'ingra-oauth',
+        scope: scope || '',
       }, appOAuthToken.id, authSession.user.id);
     }
 

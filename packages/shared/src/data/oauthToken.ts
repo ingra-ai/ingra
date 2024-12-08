@@ -70,6 +70,20 @@ export async function updateOAuthToken(credentials: OAuthTokenCredentials, recor
   return oauthToken;
 }
 
+export async function getOAuthTokenByCode(code: string) {
+  const record = await db.oAuthToken.findFirst({
+    where: {
+      idToken: code,
+    },
+  });
+
+  if ( !record ) {
+    return null;
+  }
+
+  return record;
+}
+
 export async function deleteOAuthToken(recordId: string, userId: string) {
   const record = await db.oAuthToken.findFirst({
     where: {
