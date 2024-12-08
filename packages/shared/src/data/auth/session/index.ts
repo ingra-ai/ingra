@@ -106,7 +106,7 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
              * @todo We can also send an email to the user to let them know that their OAuth token is expired.
              * @todo And we should probably flag it in database, and also in the UI. So user can re-authenticate.
              */
-            Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).error('Error refreshing OAuth credentials:', err);
+            Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).error('Error refreshing OAuth credentials:', err?.message);
             Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).error('Deleting oauth token due to refresh token may be corrupted.', { id: defaultOAuthToken?.id });
             await revokeOAuth(defaultOAuthToken);
           });

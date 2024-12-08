@@ -5,12 +5,21 @@ describe('isSafeRedirectUrl', () => {
   it('should not allow relative url redirect', () => {
     expect(isSafeRedirectUrl('/relative')).toBe(false);
   });
+
   it('should return true for allowed domain ingra.ai', () => {
     expect(isSafeRedirectUrl('https://ingra.ai')).toBe(true);
   });
 
-  it('should return true for allowed domain openai.com', () => {
+  it('should return true for allowed subdomains of ingra.ai', () => {
+    expect(isSafeRedirectUrl('https://docs.ingra.ai')).toBe(true);
+    expect(isSafeRedirectUrl('https://chat.ingra.ai')).toBe(true);
+    expect(isSafeRedirectUrl('https://hubs.ingra.ai')).toBe(true);
+    expect(isSafeRedirectUrl('https://auth.ingra.ai')).toBe(true);
+  });
+
+  it('should return true for allowed domain chat.openai.com', () => {
     expect(isSafeRedirectUrl('https://chat.openai.com/aip/g-111/oauth/callback&state=uuid&scope=chatgpt')).toBe(true);
+    expect(isSafeRedirectUrl('https://www.openai.com')).toBe(true);
   });
 
   it('should return true for allowed localhost with port 3000', () => {
