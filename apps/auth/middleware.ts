@@ -10,7 +10,8 @@ async function middleware(request: NextRequest) {
     console.info(`:: [auth middleware] [api-v1] pathname: ${pathname}`);
 
     // Log the request headers and body
-    console.info(`:: [auth middleware] [api-v1] request headers:`, JSON.stringify({ ...Object.entries(requestHeaders) }));
+    const allHeaders = Object.fromEntries(requestHeaders.entries());
+    console.info(`:: [auth middleware] [api-v1] request headers:`, JSON.stringify( allHeaders ));
 
     const method = request.method.toUpperCase();
     const contentType = requestHeaders.get('Content-Type');
