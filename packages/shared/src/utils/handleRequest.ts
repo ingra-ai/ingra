@@ -3,11 +3,11 @@ import { ApiError } from '@repo/shared/types';
 import { Logger } from '../lib/logger';
 import { getAnalyticsObject } from '../lib/utils/getAnalyticsObject';
 
-// Common handler for all HTTP methods
-export async function handleRequest<T extends {}, U extends {}>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', req: NextRequest, params: T, handlerFn: (args: U) => Promise<Response | NextResponse>) {
-  let requestArgs: Record<string, any>;
-
+export async function getRequestArgs(req: NextRequest) {
+  const method = req.method.toUpperCase();
   const contentType = req.headers.get('Content-Type');
+
+  let requestArgs: Record<string, any> = {};
 
   if (method === 'GET' || method === 'DELETE') {
     const { searchParams } = new URL(req.url);
@@ -21,6 +21,13 @@ export async function handleRequest<T extends {}, U extends {}>(method: 'GET' | 
       requestArgs = await req.json();
     }
   }
+
+  return requestArgs;
+}
+
+// Common handler for all HTTP methods
+export async function handleRequest<T extends {}, U extends {}>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', req: NextRequest, params: T, handlerFn: (args: U) => Promise<Response | NextResponse>) {
+  const requestArgs = await getRequestArgs(req);
 
   // Check if the handler function exists
   if (typeof handlerFn !== 'function') {
