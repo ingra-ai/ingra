@@ -1,7 +1,7 @@
 export function isSafeRedirectUrl(url: string) {
   try {
     const allowedDomains = [
-      /^(hubs|chat|docs|auth)\.ingra\.ai$/, 
+      /^(?:(hubs|chat|docs|auth)\.)?ingra\.ai$/, 
       /^(www|chat)\.openai\.com$/, 
       /^localhost:(300[0-5])$/, // Accept localhost with ports 3000 to 3005
     ]; // Add more allowed domains as needed
