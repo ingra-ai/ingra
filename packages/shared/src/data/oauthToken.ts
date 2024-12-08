@@ -63,7 +63,7 @@ export async function updateOAuthToken(credentials: OAuthTokenCredentials, recor
     accessToken: credentials.accessToken || '',
     scope: credentials.scope || '',
     tokenType: credentials.tokenType || '',
-    expiryDate: new Date(credentials.expiryDate || 0),
+    expiryDate: new Date(credentials.expiryDate || Date.now()),
     updatedAt: new Date(),
   };
 
@@ -85,10 +85,18 @@ export async function updateOAuthToken(credentials: OAuthTokenCredentials, recor
   return oauthToken;
 }
 
-export async function getOAuthTokenByCode(idToken: string) {
+export async function getAppOAuthTokenByIdOrRefreshToken(idOrRefreshToken: string) {
   const record = await db.oAuthToken.findFirst({
     where: {
-      idToken,
+      service: 'ingra-oauth',
+      OR: [
+        {
+          idToken: idOrRefreshToken,
+        },
+        {
+          refreshToken: idOrRefreshToken,
+        },
+      ],
     },
   });
 
@@ -114,6 +122,7 @@ export async function getActiveSessionByAccessToken(accessToken: string): Promis
       },
     },
     where: {
+      service: 'ingra-oauth',
       accessToken,
       expiryDate: {
         gte: new Date(),
