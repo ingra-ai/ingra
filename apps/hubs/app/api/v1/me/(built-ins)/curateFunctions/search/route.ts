@@ -137,6 +137,8 @@ export async function GET(req: NextRequest) {
                 userId: authSession.user.id,
               },
             },
+            isPrivate: false,
+            isPublished: true,
           },
         ],
         ...(q
