@@ -1,7 +1,7 @@
 'use server';
 import { Logger } from '../logger';
 import { Prisma } from '@repo/db/prisma';
-import { GoogleOAuthClient, Credentials } from '../google-oauth/client';
+import { GoogleOAuthClient, Credentials } from '@repo/shared/lib/google-oauth/client';
 import { formatDistance, differenceInSeconds } from 'date-fns';
 
 type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
