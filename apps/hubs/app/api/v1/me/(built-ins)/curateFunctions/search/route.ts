@@ -125,51 +125,46 @@ export async function GET(req: NextRequest) {
   }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    const functionRecords = await db.function.findMany({
-      where: {
-        OR: [
-          {
-            ownerUserId: authSession.user.id,
-          },
-          {
-            subscribers: {
-              some: {
-                userId: authSession.user.id,
-              },
+    const whereQuery: Prisma.FunctionWhereInput = {
+      OR: [
+        {
+          ownerUserId: authSession.user.id,
+        },
+        {
+          subscribers: {
+            some: {
+              userId: authSession.user.id,
             },
-            isPrivate: false,
-            isPublished: true,
           },
-        ],
-        ...(q
-          ? {
-            OR: [
-              {
-                slug: {
-                  contains: q,
-                  mode: 'insensitive',
-                },
-              },
-              {
-                description: {
-                  contains: q,
-                  mode: 'insensitive',
-                },
-              },
-              {
-                tags: {
-                  some: {
-                    name: {
-                      contains: q,
-                      mode: 'insensitive',
-                    },
-                  },
-                },
-              },
-            ],
-          }
-          : {}),
-      },
+          isPrivate: false,
+          isPublished: true,
+        },
+      ]
+    };
+
+    if (q) {
+      Object.assign(whereQuery, {
+        slug: {
+          contains: q,
+          mode: 'insensitive',
+        },
+        description: {
+          contains: q,
+          mode: 'insensitive',
+        },
+        tags: {
+          some: {
+            name: {
+              contains: q,
+              mode: 'insensitive',
+            },
+          },
+        },
+      });
+    }
+
+    const functionRecords = await db.function.findMany({
+      where: whereQuery,
       select: selectFields,
       take,
       skip,

@@ -2,7 +2,7 @@ import type { User, MagicLinkToken, ActiveSession } from '@repo/db/prisma';
 import { generateToken } from '@repo/shared/lib/tokens';
 import db from '@repo/db/client';
 import type { AuthSessionResponse } from './auth/session/types';
-import { generateRandomNumber } from '@repo/shared/lib/utils/generateRandomNumber';
+import { generateRandomNumber } from '@repo/shared/lib/utils';
 
 /**
  * ---------------------------------
