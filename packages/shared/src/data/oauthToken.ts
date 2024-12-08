@@ -12,7 +12,7 @@ export type GetActiveSessionByOAuthReturnType = Prisma.ActiveSessionGetPayload<{
         profile: true;
         oauthTokens: true;
         envVars: true;
-        apiKeys: true;
+        apiKeys: false;
       };
     };
   };
@@ -117,7 +117,7 @@ export async function getActiveSessionByAccessToken(accessToken: string): Promis
           profile: true,
           oauthTokens: true,
           envVars: true,
-          apiKeys: true,
+          apiKeys: false,
         },
       },
     },

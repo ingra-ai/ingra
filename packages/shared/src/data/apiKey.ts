@@ -10,7 +10,7 @@ export type GetSessionByApiKeyReturnType = Prisma.ApiKeyGetPayload<{
         profile: true;
         oauthTokens: true;
         envVars: true;
-        apiKeys: true;
+        apiKeys: false;
       };
     };
   };
@@ -35,12 +35,30 @@ export const getSessionByApiKey = async (apiKey: string): Promise<GetSessionByAp
           profile: true,
           oauthTokens: true,
           envVars: true,
-          apiKeys: true,
+          apiKeys: false,
         },
       },
     },
     where: {
       key: apiKey, // Use the API key to find the session
+    },
+  });
+};
+
+/**
+ * Retrieves all API keys associated with a given user ID.
+ * @param userId - The user ID to find the API keys for.
+ * @returns A Promise that resolves to an array of API keys.
+ */
+export const getApiKeysByUserId = async (userId: string, select?: Prisma.ApiKeySelect) => {
+  if (!userId) {
+    return [];
+  }
+
+  return await db.apiKey.findMany({
+    ...(select && { select }),
+    where: {
+      userId,
     },
   });
 };

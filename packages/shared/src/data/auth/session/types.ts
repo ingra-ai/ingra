@@ -1,5 +1,6 @@
-import type { GetActiveSessionByJwtReturnType } from '../../activeSession';
-import type { GetSessionByApiKeyReturnType } from '../../apiKey';
+import type { GetActiveSessionByJwtReturnType } from '@repo/shared/data/activeSession';
+import type { GetSessionByApiKeyReturnType } from '@repo/shared/data/apiKey';
+import type { GetActiveSessionByOAuthReturnType } from '@repo/shared/data/oauthToken';
 
 /**
  * Options for getting an authentication session.
@@ -18,4 +19,4 @@ export type GetAuthSessionOptions = {
 /**
  * Declare type contract for reusability and caching purposes.
  */
-export type AuthSessionResponse = GetActiveSessionByJwtReturnType | GetSessionByApiKeyReturnType;
+export type AuthSessionResponse = GetActiveSessionByJwtReturnType | GetSessionByApiKeyReturnType | GetActiveSessionByOAuthReturnType;

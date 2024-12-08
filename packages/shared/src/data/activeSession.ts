@@ -10,7 +10,7 @@ export type GetActiveSessionByJwtReturnType = Prisma.ActiveSessionGetPayload<{
         profile: true;
         oauthTokens: true;
         envVars: true;
-        apiKeys: true;
+        apiKeys: false;
       };
     };
   };
@@ -39,7 +39,7 @@ export const getActiveSessionByJwt = async (jwt: string): Promise<GetActiveSessi
           profile: true,
           oauthTokens: true,
           envVars: true,
-          apiKeys: true,
+          apiKeys: false,
         },
       },
     },

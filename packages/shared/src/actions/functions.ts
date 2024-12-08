@@ -17,7 +17,6 @@ import { addFunctionToCollection, removeFunctionFromCollection } from '@repo/sha
 import { getUserRepoFunctionsEditUri } from '@repo/shared/lib/constants/repo';
 import isEmpty from 'lodash/isEmpty';
 import isBoolean from 'lodash/isBoolean';
-import { generateUserVars } from '@repo/shared/utils/vm/generateUserVars';
 import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
 
 type FunctionPayload = z.infer<typeof FunctionSchema>;
@@ -47,21 +46,9 @@ export const createNewFunction = async (functionPayload: FunctionPayload, collec
     
     const providedFields: (keyof FunctionPayload)[] = ['slug', 'description'];
 
-    /**
-     * Populate skeleton function record with user and environment variables as code template.
-     */
-    const optionalEnvVars = authSession.user.envVars.map((envVar) => ({
-        id: envVar.id,
-        ownerUserId: envVar.ownerUserId,
-        key: envVar.key,
-        value: envVar.value,
-      })),
-      userVarsRecord = generateUserVars(authSession),
-      allUserAndEnvKeys = Object.keys(userVarsRecord).concat(optionalEnvVars.map((envVar) => envVar.key));
-
     const safeFunctionRecord = {
       slug: functionPayload.slug.trim(),
-      code: generateCodeDefaultTemplate(allUserAndEnvKeys),
+      code: generateCodeDefaultTemplate(authSession),
       isPrivate: true,
       isPublished: true,
       httpVerb: 'GET',
