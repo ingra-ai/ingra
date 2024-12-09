@@ -1,22 +1,8 @@
 'use server';
-import { Logger } from '../logger';
-import { Prisma } from '@repo/db/prisma';
+import { OAuthTokenProps } from '@/src/data/auth/session/types';
+import { Logger } from '@repo/shared/lib/logger';
 import { GoogleOAuthClient, Credentials } from '@repo/shared/lib/google-oauth/client';
 import { formatDistance, differenceInSeconds } from 'date-fns';
-
-type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
-  select: {
-    userId: true;
-    primaryEmailAddress: true;
-    accessToken: true;
-    idToken: true;
-    refreshToken: true;
-    expiryDate: true;
-    service: true;
-  };
-}> & {
-  [key: string]: any;
-};
 
 // Define a specific return type for clarity and to avoid inferred types
 type RefreshTokenResponse = {

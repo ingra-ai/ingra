@@ -1,3 +1,4 @@
+import { Prisma } from '@repo/db/prisma';
 import type { GetActiveSessionByJwtReturnType } from '@repo/shared/data/activeSession';
 import type { GetSessionByApiKeyReturnType } from '@repo/shared/data/apiKey';
 import type { GetActiveSessionByOAuthReturnType } from '@repo/shared/data/oauthToken';
@@ -20,3 +21,16 @@ export type GetAuthSessionOptions = {
  * Declare type contract for reusability and caching purposes.
  */
 export type AuthSessionResponse = GetActiveSessionByJwtReturnType | GetSessionByApiKeyReturnType | GetActiveSessionByOAuthReturnType;
+
+export type OAuthTokenProps = Prisma.OAuthTokenGetPayload<{
+  select: {
+    id: true;
+    userId: true;
+    primaryEmailAddress: true;
+    accessToken: true;
+    idToken: true;
+    refreshToken: true;
+    expiryDate: true;
+    service: true;
+  };
+}>;

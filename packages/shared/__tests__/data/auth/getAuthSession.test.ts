@@ -123,15 +123,19 @@ describe('getAuthSession', () => {
       id_token: 'newIdToken', 
       token_type: 'Bearer', 
       expiry_date: Date.now() + 3600,
+      scope: 'scope1',
     };
-    const mockUpdatedOAuth = { id: 'token1', expiryDate: new Date(mockNewCredentials.expiry_date) };
+    const mockUpdatedOAuth = { 
+      id: 'token1', 
+      expiryDate: new Date(mockNewCredentials.expiry_date)
+    };
 
     (cookies as Mock).mockResolvedValueOnce({ get: () => ({ value: mockJwt }) });
     (headers as Mock).mockResolvedValueOnce(new Map());
     (getWebAuthSession as Mock).mockResolvedValueOnce(mockSession);
     (refreshGoogleOAuthCredentials as Mock).mockResolvedValueOnce({ 
       credentials: mockNewCredentials,
-      primaryEmailAddress: 'user3@example.com',
+      primaryEmailAddress: 'user3@example.com'
     });
     (updateOAuthToken as Mock).mockResolvedValueOnce({ data: mockUpdatedOAuth });
     (revokeOAuth as Mock).mockResolvedValueOnce(null);
