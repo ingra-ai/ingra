@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach, MockedFunction} from 'vitest';
 import db from '@repo/db/client'; // This imports the mocked Prisma client
 import { Prisma } from '@repo/db/prisma';
 // import { isUuid } from '@repo/shared/lib/utils'; // Actual implementation, not mocked
-import { getFunctionAccessibleByUser } from '@/src/data/functions/getFunctionAccessibleByUser';
+import { getFunctionAccessibleByUser } from '@repo/shared/data/functions/getFunctionAccessibleByUser';
 
 // Import types for better TypeScript support
 /*

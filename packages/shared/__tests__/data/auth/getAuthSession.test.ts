@@ -2,7 +2,7 @@ import { describe, it, expect, vi, Mock } from 'vitest';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { cookies, headers } from 'next/headers';
 import { getWebAuthSession, getApiAuthSession, getOAuthAuthSession, clearAuthCaches } from '@repo/shared/data/auth/session/caches';
-import { APP_SESSION_API_KEY_NAME } from '@/src/lib/constants';
+import { APP_SESSION_API_KEY_NAME } from '@repo/shared/lib/constants';
 import { refreshGoogleOAuthCredentials } from '@repo/shared/lib/google-oauth/refreshGoogleOAuthCredentials';
 import { updateOAuthToken, revokeOAuth } from '@repo/shared/actions/oauth';
 import { GoogleOAuthClient, Credentials } from '@repo/shared/lib/google-oauth/client';

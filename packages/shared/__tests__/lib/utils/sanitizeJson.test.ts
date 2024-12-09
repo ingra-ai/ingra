@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { sanitizeJson } from '@/src/lib/utils/sanitizeJson';
+import { sanitizeJson } from '@repo/shared/lib/utils/sanitizeJson';
 
 describe('sanitizeJson', () => {
   it('should sanitize a nested JSON object by replacing values with their types', () => {
