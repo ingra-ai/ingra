@@ -44,14 +44,7 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
       // And, also update to database if there are any changes.
       // Otherwise, newOAuthCredentials will all be falseys.
       if (user.id && user.email && user.oauthTokens.length) {
-        // Grab defaults oauth token to refresh
-        const defaultOAuthTokenIndex = user.oauthTokens.findIndex((oauth) => oauth.isDefault),
-          defaultOAuthToken = user.oauthTokens[defaultOAuthTokenIndex];
-
-        if (!defaultOAuthToken) {
-          Logger.withTag('action|getAuthSession').withTag(`user|${user.id}`).error('User has no default OAuth token.');
-          return sessionWithUser;
-        }
+        user.oauthTokens.filter((oauth) => oauth.isDefault).forEach(async (defaultOAuthToken) => {
 
         /**
          * 1. Refresh google OAuth credentials if necessary (only works if it's a google-oauth token).
@@ -88,7 +81,11 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
                  * 3. Update the user's oauth references with the new OAuth record.
                  */
                 if (updatedOAuth) {
-                  user.oauthTokens[defaultOAuthTokenIndex] = updatedOAuth;
+                  const oauthTokenIdx = user.oauthTokens.findIndex((oauth) => oauth.id === updatedOAuth.id);
+
+                  if ( oauthTokenIdx >= 0 ) {
+                    user.oauthTokens[oauthTokenIdx] = updatedOAuth;
+                  }
                 }
               });
 
@@ -111,10 +108,13 @@ export const getAuthSession = async ( opts?: GetAuthSessionOptions ): Promise<Au
             await revokeOAuth(defaultOAuthToken);
           });
 
-        /**
-         * 4. One or more oauth tokens for this user was refreshed.
-         */
-        shouldClearCache = !!newOAuthCredentials;
+          /**
+           * 4. One or more oauth tokens for this user was refreshed.
+           */
+          if ( !shouldClearCache ) {
+            shouldClearCache = !!newOAuthCredentials;
+          }
+        });
       }
     }
 

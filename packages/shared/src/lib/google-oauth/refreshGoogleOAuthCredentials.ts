@@ -36,7 +36,7 @@ export const refreshGoogleOAuthCredentials = async (oAuthToken: OAuthTokenProps)
 
   // Check if this is google-oauth
   if (oAuthToken.service !== 'google-oauth') {
-    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).error('Not a Google OAuth token.');
+    Logger.withTag('action|refreshGoogleOAuthCredentials').withTag(`user|${userId}`).error(`${ oAuthToken.service } is not a Google OAuth token.`);
     return null;
   }
 
