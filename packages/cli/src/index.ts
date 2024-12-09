@@ -1,4 +1,4 @@
-import { example } from "@repo/shared/commands/example";
+import { example } from "@/src/commands/example";
 import { Command } from "commander";
 import { version } from "../package.json";
 
