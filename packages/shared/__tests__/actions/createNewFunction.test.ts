@@ -3,7 +3,7 @@ import * as actionAuthTryCatch from '@repo/shared/utils/actionAuthTryCatch';
 import * as dataFunctions from '@repo/shared/data/functions';
 import { FunctionSchema } from '@repo/shared/schemas/function';
 import { z } from 'zod';
-import { createNewFunction } from '@/src/actions/functions';
+import { createNewFunction } from '@repo/shared/actions/functions';
 
 vi.mock('@repo/shared/utils/actionAuthTryCatch');
 vi.mock('@repo/shared/data/functions');

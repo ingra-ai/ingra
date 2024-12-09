@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCodeDefaultTemplate } from '@/src/utils/vm/functions/generateCodeDefaultTemplate';
-import { AuthSessionResponse } from '@/src/data';
+import { generateCodeDefaultTemplate } from '@repo/shared/utils/vm/functions/generateCodeDefaultTemplate';
+import { AuthSessionResponse } from '@repo/shared/data';
 import { CODE_DEFAULT_TEMPLATE } from '@repo/shared/schemas/function';
 
 describe('generateCodeDefaultTemplate', () => {

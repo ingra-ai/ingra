@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isSafeRedirectUrl } from '@/src/lib/utils/isSafeRedirectUrl';
+import { isSafeRedirectUrl } from '@repo/shared/lib/utils/isSafeRedirectUrl';
 
 describe('isSafeRedirectUrl', () => {
   it('should not allow relative url redirect', () => {

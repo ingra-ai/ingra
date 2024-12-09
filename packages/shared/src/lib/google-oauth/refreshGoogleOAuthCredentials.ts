@@ -1,5 +1,5 @@
 'use server';
-import { OAuthTokenProps } from '@/src/data/auth/session/types';
+import { OAuthTokenProps } from '@repo/shared/data/auth/session/types';
 import { Logger } from '@repo/shared/lib/logger';
 import { GoogleOAuthClient, Credentials } from '@repo/shared/lib/google-oauth/client';
 import { formatDistance, differenceInSeconds } from 'date-fns';
