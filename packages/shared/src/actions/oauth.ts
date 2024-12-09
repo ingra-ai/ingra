@@ -91,7 +91,7 @@ export const getOrCreateAppOAuthToken = async (clientId: string, scope: string, 
   });
 }
 
-export const revokeOAuth = async (token: OAuthToken) => {
+export const revokeOAuth = async (token: Pick<OAuthToken, 'id'>) => {
   return await actionAuthTryCatch(async (authSession) => {
     const result = await deleteOAuthToken(token.id, authSession.user.id);
 
