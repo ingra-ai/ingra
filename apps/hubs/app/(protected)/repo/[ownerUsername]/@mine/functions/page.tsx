@@ -2,14 +2,14 @@ import { FunctionSearchList , CreateNewFunctionButton } from '@repo/components/d
 import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { getAuthSession } from '@repo/shared/data/auth/session';
-import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
+import { fetchFunctionPaginationData, FunctionPaginationSearchParams } from '@repo/shared/data/functions';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{ ownerUsername: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<FunctionPaginationSearchParams>;
 };
 
 export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {

@@ -1,6 +1,7 @@
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
+import { fetchFunctionPaginationData, FunctionPaginationSearchParams } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -31,12 +32,17 @@ import { type NextRequest, NextResponse } from 'next/server';
  *         name: take
  *         schema:
  *           type: integer
- *         description: Number of records to retrieve. Default is 50.
+ *         description: Number of records to retrieve. Default is 10.
  *       - in: query
  *         name: skip
  *         schema:
  *           type: integer
  *         description: Number of records to skip. Default is 0.
+ *       - in: query
+ *         name: marketplace
+ *         schema:
+ *           type: boolean
+ *         description: Toggle to include marketplace functions. Default is false.
  *     responses:
  *       '200':
  *         description: Successfully retrieved list of searched functions
@@ -57,8 +63,14 @@ import { type NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') || '';
-  const take = parseInt(searchParams.get('take') || '50') || 50;
+  const take = parseInt(searchParams.get('take') || '10') || 10;
   const skip = parseInt(searchParams.get('skip') || '0') || 0;
+  const showMarketplace = searchParams.get('marketplace') === 'true';
+
+  // Conver take and skip to be page and pageSize
+  const page = Math.floor(skip / take) + 1;
+  const pageSize = take;
+
   const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
   const startTime = Date.now();
 
@@ -70,6 +82,8 @@ export async function GET(req: NextRequest) {
   // Populate Function select fields
   if (fieldsToRetrieveParams.length) {
     const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
+
+    // Loop through the fieldsToRetrieveParams and only select the acceptable fields to avoid Prisma errors
     acceptableFieldNames.forEach((acceptableFieldName) => {
       if (fieldsToRetrieveParams.length === 0 || fieldsToRetrieveParams.includes(acceptableFieldName)) {
         // Non relational fields;
@@ -101,6 +115,7 @@ export async function GET(req: NextRequest) {
       }
     });
   } else {
+    // Default settings if no fieldsToRetrieve is specified
     selectFields.description = true;
     selectFields.code = false;
     selectFields.httpVerb = true;
@@ -125,52 +140,41 @@ export async function GET(req: NextRequest) {
   }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
-    const whereQuery: Prisma.FunctionWhereInput = {
+    const searchParams: FunctionPaginationSearchParams = {
+      q: q || undefined,
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+      sortBy: 'updatedAt_desc',
+    };
+
+    const whereQuery: Prisma.FunctionWhereInput = showMarketplace ? {
+      // Conditions for marketplace functions
+      NOT: {
+          ownerUserId: authSession.userId
+      },
+      isPublished: true,
+      isPrivate: false,
+    } : {
+      // Conditions for user's own functions and subscribed functions
       OR: [
         {
-          ownerUserId: authSession.user.id,
+          ownerUserId: authSession.userId,
         },
         {
           subscribers: {
             some: {
-              userId: authSession.user.id,
+              userId: authSession.userId,
             },
           },
-          isPrivate: false,
           isPublished: true,
+          isPrivate: false,
         },
       ]
     };
 
-    if (q) {
-      Object.assign(whereQuery, {
-        slug: {
-          contains: q,
-          mode: 'insensitive',
-        },
-        description: {
-          contains: q,
-          mode: 'insensitive',
-        },
-        tags: {
-          some: {
-            name: {
-              contains: q,
-              mode: 'insensitive',
-            },
-          },
-        },
-      });
-    }
-
-    const functionRecords = await db.function.findMany({
+    const paginationData = await fetchFunctionPaginationData(searchParams, {
+      invokerUserId: authSession.userId,
       where: whereQuery,
-      select: selectFields,
-      take,
-      skip,
-      orderBy: {
-        updatedAt: 'desc',
-      },
     });
 
     /**
@@ -193,7 +197,7 @@ export async function GET(req: NextRequest) {
         take,
         skip,
       },
-      responseData: functionRecords,
+      responseData: paginationData.records,
       executionTime: Date.now() - startTime,
       error: null,
     });
@@ -204,7 +208,7 @@ export async function GET(req: NextRequest) {
       {
         status: 'success',
         message: `Successfully retrieved list of searched functions.`,
-        data: functionRecords,
+        data: paginationData,
       },
       {
         status: 200,

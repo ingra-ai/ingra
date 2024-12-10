@@ -4,7 +4,7 @@ import { BakaPagination } from '@repo/components/search/BakaPagination';
 import { BakaSearch } from '@repo/components/search/BakaSearch';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { getCollectionAccessibleByUser } from '@repo/shared/data/collections';
-import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
+import { fetchFunctionPaginationData, FunctionPaginationSearchParams } from '@repo/shared/data/functions';
 import { getUserProfileByUsername } from '@repo/shared/data/profile';
 import { APP_NAME } from '@repo/shared/lib/constants';
 import { ResolvingMetadata, Metadata } from 'next';
@@ -12,7 +12,7 @@ import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{ ownerUsername: string; recordIdOrSlug: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<FunctionPaginationSearchParams>;
 };
 
 export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {

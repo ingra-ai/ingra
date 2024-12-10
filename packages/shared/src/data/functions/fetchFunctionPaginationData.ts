@@ -3,6 +3,13 @@ import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 
+export type FunctionPaginationSearchParams = {
+  q?: string | string[];
+  page?: string | string[];
+  pageSize?: string | string[];
+  sortBy?: string | string[];
+};
+
 type FetchFunctionPaginationDataOptions = {
   /**
    * The invoker user ID
