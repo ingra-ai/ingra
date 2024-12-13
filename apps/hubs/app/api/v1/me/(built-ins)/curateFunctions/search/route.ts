@@ -1,6 +1,7 @@
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -31,7 +32,7 @@ import { type NextRequest, NextResponse } from 'next/server';
  *         name: take
  *         schema:
  *           type: integer
- *         description: Number of records to retrieve. Default is 50.
+ *         description: Number of records to retrieve. Default is 10.
  *       - in: query
  *         name: skip
  *         schema:
@@ -57,12 +58,12 @@ import { type NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') || '';
-  const take = parseInt(searchParams.get('take') || '50') || 50;
+  const take = parseInt(searchParams.get('take') || '10') || 10;
   const skip = parseInt(searchParams.get('skip') || '0') || 0;
   const fieldsToRetrieveParams: string[] = searchParams.getAll('fieldsToRetrieve') || [];
   const startTime = Date.now();
 
-  const selectFields: Prisma.FunctionSelect = {
+  const selectQuery: Prisma.FunctionSelect = {
     id: true,
     slug: true,
   };
@@ -75,7 +76,7 @@ export async function GET(req: NextRequest) {
         // Non relational fields;
         switch (acceptableFieldName) {
           case 'arguments':
-            selectFields[acceptableFieldName] = {
+            selectQuery[acceptableFieldName] = {
               select: {
                 id: true,
                 name: true,
@@ -87,7 +88,7 @@ export async function GET(req: NextRequest) {
             };
             break;
           case 'tags':
-            selectFields[acceptableFieldName] = {
+            selectQuery[acceptableFieldName] = {
               select: {
                 id: true,
                 name: true,
@@ -95,18 +96,18 @@ export async function GET(req: NextRequest) {
             };
             break;
           default:
-            selectFields[acceptableFieldName] = true;
+            selectQuery[acceptableFieldName] = true;
             break;
         }
       }
     });
   } else {
-    selectFields.description = true;
-    selectFields.code = false;
-    selectFields.httpVerb = true;
-    selectFields.isPrivate = true;
-    selectFields.isPublished = true;
-    selectFields.arguments = {
+    selectQuery.description = true;
+    selectQuery.code = false;
+    selectQuery.httpVerb = true;
+    selectQuery.isPrivate = true;
+    selectQuery.isPublished = true;
+    selectQuery.arguments = {
       select: {
         id: true,
         name: true,
@@ -116,7 +117,7 @@ export async function GET(req: NextRequest) {
         isRequired: true,
       },
     };
-    selectFields.tags = {
+    selectQuery.tags = {
       select: {
         id: true,
         name: true,
@@ -126,51 +127,53 @@ export async function GET(req: NextRequest) {
 
   return await apiAuthTryCatch<any>(async (authSession) => {
     const whereQuery: Prisma.FunctionWhereInput = {
-      OR: [
-        {
-          ownerUserId: authSession.user.id,
-        },
-        {
-          subscribers: {
-            some: {
-              userId: authSession.user.id,
-            },
+      AND: {
+        OR: [
+          {
+            ownerUserId: authSession.user.id,
           },
-          isPrivate: false,
-          isPublished: true,
-        },
-      ]
+          {
+            subscribers: {
+              some: {
+                userId: authSession.user.id,
+              },
+            },
+            isPrivate: false,
+            isPublished: true,
+          },
+        ]
+      }
     };
 
-    if (q) {
-      Object.assign(whereQuery, {
-        slug: {
-          contains: q,
-          mode: 'insensitive',
-        },
-        description: {
-          contains: q,
-          mode: 'insensitive',
-        },
-        tags: {
-          some: {
-            name: {
-              contains: q,
-              mode: 'insensitive',
-            },
-          },
-        },
-      });
-    }
+    const searchParams = {
+      q,
+      page: String( Math.floor(skip / take) + 1 ),
+      pageSize: String( take ),
+    };
 
-    const functionRecords = await db.function.findMany({
+    const paginationData = await fetchFunctionPaginationData(searchParams, {
+      invokerUserId: authSession.user.id,
       where: whereQuery,
-      select: selectFields,
-      take,
-      skip,
-      orderBy: {
-        updatedAt: 'desc',
-      },
+      select: selectQuery,
+    }).then((data) => {
+      return {
+        ...data,
+        records: data.records.map((record) => {
+          return {
+            ...record,
+            tags: record.tags.map((tag) => tag.name),
+            arguments: record.arguments.map((argument) => {
+              return {
+                name: argument.name,
+                type: argument.type,
+                defaultValue: argument.defaultValue,
+                description: argument.description,
+                isRequired: argument.isRequired,
+              };
+            }),
+          };
+        }),
+      }
     });
 
     /**
@@ -193,7 +196,7 @@ export async function GET(req: NextRequest) {
         take,
         skip,
       },
-      responseData: functionRecords,
+      responseData: paginationData.records,
       executionTime: Date.now() - startTime,
       error: null,
     });
@@ -203,8 +206,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(
       {
         status: 'success',
-        message: `Successfully retrieved list of searched functions.`,
-        data: functionRecords,
+        message: `Successfully retrieved list of functions that user owns or subscribes to.`,
+        data: paginationData,
       },
       {
         status: 200,
