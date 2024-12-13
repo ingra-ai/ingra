@@ -1,6 +1,7 @@
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 import { logFunctionExecution } from '@repo/shared/data/functionExecutionLog';
+import { fetchFunctionPaginationData } from '@repo/shared/data/functions';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
@@ -162,6 +163,11 @@ export async function GET(req: NextRequest) {
         },
       });
     }
+
+    const paginationData = await fetchFunctionPaginationData(searchParams, {
+      invokerUserId: authSession.user.id,
+      where: whereQuery,
+    });
 
     const functionRecords = await db.function.findMany({
       where: whereQuery,

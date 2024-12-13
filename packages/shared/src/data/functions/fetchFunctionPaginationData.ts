@@ -3,7 +3,7 @@ import clamp from 'lodash/clamp';
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 
-type FetchFunctionPaginationDataOptions = {
+type FetchFunctionPaginationDataOptions<S extends Prisma.FunctionSelect> = {
   /**
    * The invoker user ID
    * if this value is provided, the function will return the subscription status of the user for each function
@@ -14,12 +14,21 @@ type FetchFunctionPaginationDataOptions = {
    * The where query to filter the functions
    */
   where?: Prisma.FunctionWhereInput;
+
+  /**
+   * The select query to filter the fields to be returned 
+   */
+  select?: S;
 }
 
-export async function fetchFunctionPaginationData(searchParams: Record<string, string | string[] | undefined> = {}, options: FetchFunctionPaginationDataOptions = {}) {
+export async function fetchFunctionPaginationData<S extends Prisma.FunctionSelect>(
+  searchParams: Record<string, string | string[] | undefined> = {},
+  options: FetchFunctionPaginationDataOptions<S> = {}
+) {
   const { 
     invokerUserId = '',
     where: argsWhere = {},
+    select: argsSelect = {},
   } = options;
 
   // Define available sort keys and orders
@@ -93,6 +102,68 @@ export async function fetchFunctionPaginationData(searchParams: Record<string, s
     });
   }
 
+  // Define the select query based on the argument 'select'
+  const selectQuery: Prisma.FunctionSelect = {
+    id: true,
+    slug: true,
+    code: false,
+    description: true,
+    httpVerb: true,
+    isPrivate: true,
+    isPublished: true,
+    ownerUserId: true,
+    createdAt: false,
+    updatedAt: true,
+    owner: {
+      select: {
+        id: true,
+        profile: {
+          select: {
+            userName: true,
+          },
+        },
+      },
+    },
+    tags: {
+      select: {
+        id: true,
+        name: true,
+        functionId: false,
+        function: false,
+      },
+    },
+    arguments: {
+      select: {
+        id: true,
+        name: true,
+        description: false,
+        type: true,
+        defaultValue: false,
+        isRequired: false,
+      },
+    },
+    _count: {
+      select: {
+        subscribers: true,
+      },
+    },
+    ...argsSelect,
+  };
+
+  // Include the subscribers field if the invokerUserId is provided
+  if ( invokerUserId ) {
+    Object.assign(selectQuery, {
+      subscribers: {
+        where: {
+          userId: invokerUserId,
+        },
+        select: {
+          id: true,
+        },
+      },
+    });
+  }
+
   const [totalCount, allFunctions] = await Promise.all([
     // Fetch the total count of functions
     db.function.count({
@@ -103,59 +174,7 @@ export async function fetchFunctionPaginationData(searchParams: Record<string, s
     db.function.findMany({
       where: whereQuery,
       orderBy: orderByQuery,
-      select: {
-        id: true,
-        slug: true,
-        code: false,
-        description: true,
-        httpVerb: true,
-        isPrivate: true,
-        isPublished: true,
-        ownerUserId: true,
-        createdAt: false,
-        updatedAt: true,
-        owner: {
-          select: {
-            id: true,
-            profile: {
-              select: {
-                userName: true,
-              },
-            },
-          },
-        },
-        tags: {
-          select: {
-            id: true,
-            name: true,
-            functionId: false,
-            function: false,
-          },
-        },
-        arguments: {
-          select: {
-            id: true,
-            name: true,
-            description: false,
-            type: true,
-            defaultValue: false,
-            isRequired: false,
-          },
-        },
-        subscribers: invokerUserId ? {
-          where: {
-            userId: invokerUserId,
-          },
-          select: {
-            id: true,
-          },
-        } : false,
-        _count: {
-          select: {
-            subscribers: true,
-          },
-        },
-      },
+      select: selectQuery,
       skip,
       take: pageSizeInt,
     }),
@@ -163,7 +182,24 @@ export async function fetchFunctionPaginationData(searchParams: Record<string, s
 
   // Transform the `subscribers` field into a boolean `isSubscribed`
   const functionsWithSubscriptionStatus = allFunctions.map((functionRecord) => ({
-    ...functionRecord,
+    id: functionRecord.id,
+    slug: functionRecord.slug,
+    code: functionRecord?.code || '',
+    description: functionRecord.description,
+    httpVerb: functionRecord.httpVerb,
+    ownerUserId: functionRecord.ownerUserId,
+    owner: {
+      id: functionRecord.owner?.id || functionRecord.ownerUserId,
+      profile: {
+        userName: ( functionRecord.owner as any )?.profile?.userName || null,
+      },
+    },
+    subscribers: functionRecord?.subscribers || [],
+    tags: functionRecord?.tags || [],
+    arguments: functionRecord?.arguments || [],
+    createdAt: functionRecord.createdAt || null,
+    updatedAt: functionRecord.updatedAt || null,
+    _count: functionRecord._count || { subscribers: 0 },
     isSubscribed: Array.isArray(functionRecord?.subscribers) && functionRecord.subscribers.length > 0,
   }));
 
