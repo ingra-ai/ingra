@@ -2,6 +2,7 @@ import { MagicLinkToken } from '@repo/db/prisma';
 import { sendEmailHtml } from './ses';
 import { APP_AUTH_CALLBACK_URL, APP_SUPPORT_MAILTO, AUTH_APP_URL, IS_PROD } from '../constants';
 import { Logger } from '../logger';
+import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 
 /**
  * Generates an HTML template for the magic link email.
@@ -11,9 +12,10 @@ import { Logger } from '../logger';
  */
 const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
   const { token, otpCode } = magicLink;
-  const brandImageUrl = `${AUTH_APP_URL}/static/brand/ingra-logo-black.svg`;
+  const brandImageUrl = `${AUTH_APP_URL}/static/brand/ingra-logo-dark.svg`;
   const magicLinkUrl = `${APP_AUTH_CALLBACK_URL}?type=magic&token=${token}`;
-  const linkExpiration = '3 minutes';
+  const linkExpiration = formatDistanceToNow(new Date(magicLink.expiresAt), { addSuffix: true });
+  
   return `
   <html lang="en">
     <head>
