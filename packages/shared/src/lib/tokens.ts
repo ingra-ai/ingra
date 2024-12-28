@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { randomBytes } from 'crypto';
 import { Logger } from './logger';
 
 /**
@@ -13,6 +14,16 @@ export const generateToken = <T extends string | object>(payload: T, expiresSeco
   });
   return token;
 };
+
+/**
+ * Generates a unique token of the specified length.
+ *
+ * @param {number} [length=32] - The length of the token to generate. Defaults to 32 if not specified.
+ * @returns {string} A unique token as a hexadecimal string.
+ */
+export const generateUniqueToken = (length = 32): string => {
+  return randomBytes(length).toString('hex');
+}
 
 /**
  * Decodes a JWT token and returns the payload.

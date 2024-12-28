@@ -38,13 +38,18 @@
  * @throws {ApiError} If the credentials are invalid or missing.
  */
 'use server';
-import { getAppOAuthTokenByIdOrRefreshToken } from '@repo/shared/data/oauthToken';
+import { getAppOAuthTokenByCodeOrToken } from '@repo/shared/data/oauthToken';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { Logger } from '@repo/shared/lib/logger';
 import { getAnalyticsObject } from '@repo/shared/lib/utils/getAnalyticsObject';
-import { ApiError } from '@repo/shared/types';
 import { handleRequest } from '@repo/shared/utils/handleRequest';
+import { 
+  createOAuthToken as dataCreateOAuthToken,
+  updateOAuthToken as dataUpdateOAuthToken,
+} from '@repo/shared/data/oauthToken';
 import { NextRequest, NextResponse } from 'next/server';
+import { createAppCredentials } from '@repo/shared/data/auth';
+import { clearAuthCaches } from '@repo/shared/data/auth/session/caches';
 
 type ContextShape = {
   params: Promise<{}>;
@@ -76,50 +81,81 @@ async function handlerFn(args: HandlerArgs) {
     requestArgs
   });
 
+  let oAuthToken: Awaited<ReturnType<typeof getAppOAuthTokenByCodeOrToken>> = null;
+  
   if ( requestArgs.grant_type === 'authorization_code' && requestArgs.code ) {
-    const oAuthToken = await getAppOAuthTokenByIdOrRefreshToken(requestArgs.code);
-
-    // Calculate expires in seconds
-    const expiresIn = oAuthToken?.expiryDate ? Math.floor((oAuthToken.expiryDate.getTime() - Date.now()) / 1000) : 3600;
-
-    if ( oAuthToken ) {
-      return NextResponse.json({
-        access_token: oAuthToken.accessToken,
-        token_type: oAuthToken.tokenType.toLocaleLowerCase(),
-        expires_in: expiresIn,
-        refresh_token: oAuthToken.refreshToken
-      }, {
-        status: 200
-      });
-    }
+    oAuthToken = await getAppOAuthTokenByCodeOrToken(requestArgs.code);
   }
   else if ( requestArgs.grant_type === 'refresh_token' && requestArgs.refresh_token ) {
-    /**
-     * We're not actually refreshing, just getting the token by refresh token.
-     */
-    const oAuthToken = await getAppOAuthTokenByIdOrRefreshToken(requestArgs.refresh_token);
+    oAuthToken = await getAppOAuthTokenByCodeOrToken(requestArgs.refresh_token);
 
-    // Calculate expires in seconds
-    const expiresIn = oAuthToken?.expiryDate ? Math.floor((oAuthToken.expiryDate.getTime() - Date.now()) / 1000) : 3600;
+    // If oauthToken is found, update the refresh token
+    if ( oAuthToken?.user?.email && oAuthToken?.userId && requestArgs.client_id ) {
+        // Get or create an OAuth token for the app
+        const refreshedCredentials = await createAppCredentials({
+          user: oAuthToken.user,
+          userId: oAuthToken.userId,
+        }, requestArgs.client_id  || '', oAuthToken.scope || '', 86400);
 
-    if ( oAuthToken ) {
-      return NextResponse.json({
-        access_token: oAuthToken.accessToken,
-        token_type: oAuthToken.tokenType.toLocaleLowerCase(),
-        expires_in: expiresIn,
-        refresh_token: oAuthToken.refreshToken
-      }, {
-        status: 200
-      });
+        // Validate the refreshed credentials
+        if ( refreshedCredentials?.accessToken && refreshedCredentials?.idToken && refreshedCredentials?.scope && refreshedCredentials?.tokenType ) {
+          const updatedOAuth = await dataUpdateOAuthToken({
+            accessToken: refreshedCredentials.accessToken,
+            idToken: refreshedCredentials.idToken,
+            scope: refreshedCredentials.scope,
+            tokenType: refreshedCredentials.tokenType
+          }, oAuthToken.id, oAuthToken.userId);
+
+          // Clear user caches
+          await clearAuthCaches({ userId: oAuthToken.userId });
+
+          // Update existing oAuthToken with the new refreshed credentials
+          oAuthToken.accessToken = refreshedCredentials.accessToken;
+          oAuthToken.idToken = refreshedCredentials.idToken;
+          oAuthToken.scope = refreshedCredentials.scope;
+          oAuthToken.tokenType = refreshedCredentials.tokenType;
+          oAuthToken.expiryDate = updatedOAuth?.expiryDate || oAuthToken.expiryDate;
+        }
     }
+  }
+  else {
+    return NextResponse.json({
+      error: "invalid_grant",
+      error_description: "Invalid grant type or missing code or refresh token."
+    }, {
+      status: 400
+    });
+  }
+
+  if ( !oAuthToken ) {
+    return NextResponse.json({
+      error: "invalid_grant",
+      error_description: "The provided authorization code is invalid."
+    }, {
+      status: 400
+    });
+  }
+
+  // Calculate expires in seconds
+  const expiresIn = oAuthToken?.expiryDate ? Math.floor((oAuthToken.expiryDate.getTime() - Date.now()) / 1000) : 3600;
+
+  // If its expired, return invalid_grant
+  if ( expiresIn <= 0 ) {
+    return NextResponse.json({
+      error: "invalid_grant",
+      error_description: "The provided authorization code is expired."
+    }, {
+      status: 400
+    });
   }
 
   return NextResponse.json({
-    status: 401,
-    code: 'UNAUTHORIZED',
-    message: 'Invalid or missing credentials'
-  } as ApiError, {
-    status: 401
+    access_token: oAuthToken.accessToken,
+    token_type: oAuthToken.tokenType.toLocaleLowerCase(),
+    expires_in: expiresIn,
+    refresh_token: oAuthToken.refreshToken
+  }, {
+    status: 200
   });
 };
 

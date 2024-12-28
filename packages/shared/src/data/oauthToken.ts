@@ -2,7 +2,7 @@
 import db from '@repo/db/client';
 import { Prisma } from '@repo/db/prisma';
 
-type OAuthTokenCredentials = Pick<Prisma.OAuthTokenCreateInput, 'primaryEmailAddress' | 'service' | 'accessToken' | 'refreshToken' | 'idToken' | 'scope' | 'tokenType' | 'expiryDate'>;
+type OAuthTokenCredentials = Pick<Prisma.OAuthTokenCreateInput, 'primaryEmailAddress' | 'service' | 'accessToken' | 'refreshToken' | 'idToken' | 'scope' | 'code' | 'state' | 'tokenType' | 'expiryDate'>;
 
 export type GetActiveSessionByOAuthReturnType = Prisma.ActiveSessionGetPayload<{
   select: {
@@ -45,6 +45,8 @@ export async function createOAuthToken(credentials: OAuthTokenCredentials, userI
       idToken: credentials.idToken || '',
       scope: credentials.scope || '',
       tokenType: credentials.tokenType || '',
+      code: '',
+      state: '',
       isDefault,
       expiryDate: new Date(credentials.expiryDate || 0),
     },
@@ -53,16 +55,13 @@ export async function createOAuthToken(credentials: OAuthTokenCredentials, userI
   return oauthToken;
 }
 
-export async function updateOAuthToken(credentials: OAuthTokenCredentials, recordId: string, userId: string) {
+export async function updateOAuthToken(credentials: Partial<OAuthTokenCredentials>, recordId: string, userId: string) {
   if (!userId || !credentials.primaryEmailAddress || !credentials?.accessToken) {
     return null;
   }
 
   const updateData: Prisma.OAuthTokenUpdateInput = {
-    idToken: credentials.idToken || '',
-    accessToken: credentials.accessToken || '',
-    scope: credentials.scope || '',
-    tokenType: credentials.tokenType || '',
+    ...credentials,
     expiryDate: new Date(credentials.expiryDate || Date.now()),
     updatedAt: new Date(),
   };
@@ -85,16 +84,40 @@ export async function updateOAuthToken(credentials: OAuthTokenCredentials, recor
   return oauthToken;
 }
 
-export async function getAppOAuthTokenByIdOrRefreshToken(idOrRefreshToken: string) {
+/**
+ * Retrieves an OAuth token record by either code or token.
+ *
+ * @param {string} codeOrToken - The OAuth code or token to search for. Must be at least 10 characters long.
+ * @returns {Promise<null | object>} - Returns the OAuth token record if found, otherwise returns null.
+ *
+ * @example
+ * const token = await getAppOAuthTokenByCodeOrToken('someCodeOrToken');
+ * if (token) {
+ *   console.log('Token found:', token);
+ * } else {
+ *   console.log('Token not found');
+ * }
+ */
+export async function getAppOAuthTokenByCodeOrToken(codeOrToken: string) {
+  if ( codeOrToken?.length < 10 ) {
+    return null;
+  }
+
   const record = await db.oAuthToken.findFirst({
+    include: {
+      user: true,
+    },
     where: {
       service: 'ingra-oauth',
       OR: [
         {
-          idToken: idOrRefreshToken,
+          code: codeOrToken,
         },
         {
-          refreshToken: idOrRefreshToken,
+          idToken: codeOrToken,
+        },
+        {
+          refreshToken: codeOrToken,
         },
       ],
     },

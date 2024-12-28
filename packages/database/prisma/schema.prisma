@@ -72,11 +72,13 @@ model OAuthToken {
   id                  String    @id @default(uuid())
   userId              String    @db.Uuid
   primaryEmailAddress String    @db.VarChar(255)
-  service             String // e.g., "google", "microsoft", to identify the OAuth service
+  service             String    // e.g., "google-oauth", "ingra-oauth", to identify the OAuth service
   accessToken         String
   refreshToken        String?
   idToken             String?
   scope               String
+  code                String?   @db.VarChar(255) // e.g. "authorization_code" - used to get the access token
+  state               String?   @db.VarChar(255) // e.g. "state"
   tokenType           String    @default("Bearer") @db.VarChar(64)
   isDefault           Boolean   @default(false)
   expiryDate          DateTime

@@ -154,7 +154,7 @@ export const getApiAuthSession = async (xApiKey: string) => {
   return sessionWithUser;
 };
 
-export const clearAuthCaches = async (authSession: AuthSessionResponse) => {
+export const clearAuthCaches = async (authSession: Pick<AuthSessionResponse, 'userId'>) => {
 
   if (authSession?.userId) {
     const userApiKeys = await getApiKeysByUserId(authSession.userId, {

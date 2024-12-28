@@ -1,5 +1,5 @@
 import type { User, MagicLinkToken, ActiveSession } from '@repo/db/prisma';
-import { generateToken } from '@repo/shared/lib/tokens';
+import { generateToken, generateUniqueToken } from '@repo/shared/lib/tokens';
 import db from '@repo/db/client';
 import type { AuthSessionResponse } from './auth/session/types';
 import { generateRandomNumber } from '@repo/shared/lib/utils';
@@ -118,10 +118,25 @@ export const createActiveSession = async (user: Pick<User, 'id' | 'email'>, expi
  * @param expiresSeconds - The number of seconds until the tokens expire. Defaults to 86400 seconds (24 hours).
  * @returns An object containing the generated access token, refresh token, id token, token type, and expiry date.
  */
-export const createAppCredentials = async (authSession: AuthSessionResponse, clientId: string, scope: string, expiresSeconds = 86400) => {
+export const createAppCredentials = async (
+  authSession: {
+    userId: string,
+    user: {
+      email: string,
+    }
+  },
+  clientId: string,
+  scope: string,
+  expiresSeconds = 86400
+) => {
   // Calculate expiry date
   const expiresTs = Date.now() + expiresSeconds * 1000;
   const expiryDate = new Date(expiresTs);
+
+  // Validate userId and email
+  if (!authSession.userId || !authSession.user?.email) {
+    return null;
+  }
 
   // Generate object to encrypt
   const rawCredentials: Record<string, string> = {
@@ -134,6 +149,7 @@ export const createAppCredentials = async (authSession: AuthSessionResponse, cli
   const accessToken = generateToken({ ...rawCredentials, type: 'access' }, expiresSeconds);
   const refreshToken = generateToken({ ...rawCredentials, type: 'refresh' }, 86400 * 7);
   const idToken = generateToken({ ...rawCredentials, type: 'id' }, expiresSeconds);
+  const code = generateUniqueToken(96);
 
   const tokens = {
     accessToken,
@@ -141,6 +157,8 @@ export const createAppCredentials = async (authSession: AuthSessionResponse, cli
     idToken,
     scope: rawCredentials.scope,
     tokenType: 'Bearer',
+    service: 'ingra-oauth',
+    code,
     expiryDate,
   };
 

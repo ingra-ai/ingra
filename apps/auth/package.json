@@ -22,6 +22,7 @@
     "@repo/components": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/shared": "workspace:*",
+    "googleapis": "^144.0.0",
     "input-otp": "^1.4.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.462.0",

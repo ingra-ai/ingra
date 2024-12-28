@@ -18,8 +18,11 @@
  * - state: An opaque value used to maintain state between the request and callback.
  */
 'use server';
-import { getOrCreateAppOAuthToken } from '@repo/shared/actions/oauth';
+import { createAppCredentials } from '@repo/shared/data/auth';
 import { getAuthSession } from '@repo/shared/data/auth/session';
+import { 
+  createOAuthToken as dataCreateOAuthToken,
+} from '@repo/shared/data/oauthToken';
 import { mixpanel } from '@repo/shared/lib/analytics';
 import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import { Logger } from '@repo/shared/lib/logger';
@@ -29,6 +32,8 @@ import { ApiError } from '@repo/shared/types';
 import { headers } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
+
+
 
 export async function GET(request: NextRequest) {
   // Parse query parameters from the request URL
@@ -80,24 +85,37 @@ export async function GET(request: NextRequest) {
   const redirectUrl = new URL(redirect_uri);
 
   try {
-    // Get or create an OAuth token for the app
-    const result = await getOrCreateAppOAuthToken(client_id || '', scope || '', true),
-      { status, message, data: appOAuthToken } = result;
-
     // Validate response_type params
     if (!response_type || response_type !== 'code') {
       throw new Error('Invalid response_type');
     }
 
+    // Get or create an OAuth token for the app
+    const appCredentials = await createAppCredentials(authSession, client_id || '', scope || '', 86400);
+
+    if ( !appCredentials ) {
+      throw new Error('Failed to create app credentials');
+    }
+
+    const appOAuthToken = await dataCreateOAuthToken({
+      ...appCredentials,
+      primaryEmailAddress: authSession.user.email,
+      service: 'ingra-oauth',
+      scope: scope || '',
+    }, authSession.user.id);
+
+    if ( !appOAuthToken ) {
+      throw new Error('Failed to create OAuth token');
+    }
+
     // If there was an error or token is not found, return error
     if (
-      status === 'error' || 
       !appOAuthToken || 
-      !appOAuthToken.idToken || 
+      !appOAuthToken.code || 
       !appOAuthToken.accessToken || 
       !appOAuthToken.refreshToken
     ) {
-      throw new Error(message || 'Failed to authorize the request');
+      throw new Error('Failed to authorize the request');
     }
 
     /**
@@ -116,7 +134,7 @@ export async function GET(request: NextRequest) {
 
 
     // Add query params to the redirect URL
-    redirectUrl.searchParams.append(response_type, appOAuthToken.idToken); // For now, `code` is id token
+    redirectUrl.searchParams.append(response_type, appOAuthToken.code);
     redirectUrl.searchParams.append('state', state);
   
     // Respond with redirect
