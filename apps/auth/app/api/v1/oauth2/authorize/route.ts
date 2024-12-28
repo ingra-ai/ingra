@@ -18,6 +18,7 @@
  * - state: An opaque value used to maintain state between the request and callback.
  */
 'use server';
+import db from '@repo/db/client';
 import { createAppCredentials } from '@repo/shared/data/auth';
 import { getAuthSession } from '@repo/shared/data/auth/session';
 import { 
@@ -32,8 +33,6 @@ import { ApiError } from '@repo/shared/types';
 import { headers } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
-
-
 
 export async function GET(request: NextRequest) {
   // Parse query parameters from the request URL
@@ -91,18 +90,29 @@ export async function GET(request: NextRequest) {
     }
 
     // Get or create an OAuth token for the app
-    const appCredentials = await createAppCredentials(authSession, client_id || '', scope || '', 86400);
+    let appOAuthToken = await db.oAuthToken.findFirst({
+      where: {
+        userId: authSession.user.id,
+        service: 'ingra-oauth',
+        scope: scope || '',
+      },
+    });
 
-    if ( !appCredentials ) {
-      throw new Error('Failed to create app credentials');
+    // If no OAuth token found, create a new one
+    if ( !appOAuthToken ) {
+      const appCredentials = await createAppCredentials(authSession, client_id || '', scope || '', 86400);
+  
+      if ( !appCredentials ) {
+        throw new Error('Failed to create app credentials');
+      }
+  
+      appOAuthToken = await dataCreateOAuthToken({
+        ...appCredentials,
+        primaryEmailAddress: authSession.user.email,
+        service: 'ingra-oauth',
+        scope: scope || '',
+      }, authSession.user.id);
     }
-
-    const appOAuthToken = await dataCreateOAuthToken({
-      ...appCredentials,
-      primaryEmailAddress: authSession.user.email,
-      service: 'ingra-oauth',
-      scope: scope || '',
-    }, authSession.user.id);
 
     if ( !appOAuthToken ) {
       throw new Error('Failed to create OAuth token');
@@ -115,7 +125,7 @@ export async function GET(request: NextRequest) {
       !appOAuthToken.accessToken || 
       !appOAuthToken.refreshToken
     ) {
-      throw new Error('Failed to authorize the request');
+      throw new Error('One or more OAuth token fields are missing');
     }
 
     /**

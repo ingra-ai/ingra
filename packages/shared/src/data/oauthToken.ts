@@ -45,8 +45,8 @@ export async function createOAuthToken(credentials: OAuthTokenCredentials, userI
       idToken: credentials.idToken || '',
       scope: credentials.scope || '',
       tokenType: credentials.tokenType || '',
-      code: '',
-      state: '',
+      code: credentials.code || '',
+      state: credentials.state || '',
       isDefault,
       expiryDate: new Date(credentials.expiryDate || 0),
     },
@@ -73,10 +73,8 @@ export async function updateOAuthToken(credentials: Partial<OAuthTokenCredential
   const oauthToken = await db.oAuthToken.update({
     where: {
       id: recordId,
-      userId_primaryEmailAddress: {
-        userId,
-        primaryEmailAddress: credentials.primaryEmailAddress,
-      },
+      userId,
+      primaryEmailAddress: credentials.primaryEmailAddress,
     },
     data: updateData,
   });

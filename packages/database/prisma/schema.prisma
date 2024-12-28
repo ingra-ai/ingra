@@ -87,7 +87,6 @@ model OAuthToken {
 
   user User @relation(fields: [userId], references: [id])
 
-  @@unique([userId, primaryEmailAddress])
   @@map("oauth_tokens")
 }
 
