@@ -15,7 +15,7 @@ const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
   const brandImageUrl = `${AUTH_APP_URL}/static/brand/ingra-logo-dark.svg`;
   const magicLinkUrl = `${APP_AUTH_CALLBACK_URL}?type=magic&token=${token}`;
   const linkExpiration = formatDistanceToNow(new Date(magicLink.expiresAt), { addSuffix: true });
-  
+
   return `
   <html lang="en">
     <head>
@@ -52,12 +52,9 @@ const generateHtmlTemplateWeb = (magicLink: MagicLinkToken) => {
             </tr>
             <tr>
               <td>
-                <h4>
-                  Note That:
-                </h4>
-                <ul style="line-height: 16px">
+                <ul style="line-height:16px;padding-left: 0;list-style: circle;">
                   <li>
-                    <p>Each sign-in option is valid for <strong>${linkExpiration}</strong> only.</p>
+                    <p>Each sign-in option is only valid for <strong>${linkExpiration}</strong></p>
                   </li>
                   <li>
                     <p>Each option can be used <strong>once</strong> for a single sign-in attempt.</p>

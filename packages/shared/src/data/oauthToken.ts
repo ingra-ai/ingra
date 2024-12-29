@@ -56,7 +56,7 @@ export async function createOAuthToken(credentials: OAuthTokenCredentials, userI
 }
 
 export async function updateOAuthToken(credentials: Partial<OAuthTokenCredentials>, recordId: string, userId: string) {
-  if (!userId || !credentials.primaryEmailAddress || !credentials?.accessToken) {
+  if (!userId || !credentials.primaryEmailAddress || !credentials?.accessToken || !credentials?.service) {
     return null;
   }
 
@@ -73,8 +73,11 @@ export async function updateOAuthToken(credentials: Partial<OAuthTokenCredential
   const oauthToken = await db.oAuthToken.update({
     where: {
       id: recordId,
-      userId,
-      primaryEmailAddress: credentials.primaryEmailAddress,
+      userId_primaryEmailAddress_service: {
+        userId,
+        primaryEmailAddress: credentials.primaryEmailAddress,
+        service: credentials.service,
+      },
     },
     data: updateData,
   });
