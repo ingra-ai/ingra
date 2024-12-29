@@ -4,6 +4,7 @@
   "extends": "./base.json",
   "compilerOptions": {
     "noUncheckedIndexedAccess": false,
+    "allowSyntheticDefaultImports": true,
     "declaration": false,
     "declarationMap": false,
     "downlevelIteration": true,

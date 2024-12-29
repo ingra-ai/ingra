@@ -1,0 +1,11 @@
+@import '@xyflow/react/dist/style.css';
+
+.dark .react-flow__node {
+  background: #777;
+  color: white;
+}
+ 
+.light .react-flow__node {
+  background: white;
+  color: #111;
+}

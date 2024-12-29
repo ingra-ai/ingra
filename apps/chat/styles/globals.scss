@@ -1,2 +1,3 @@
-@import "@repo/tailwind-config/globals.scss";
-@import "./main.scss";
+@use "@repo/tailwind-config/globals.scss";
+@use "react-flow.scss";
+@use "main.scss";

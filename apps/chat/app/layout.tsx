@@ -3,19 +3,15 @@
 import { HotjarAnalytics } from '@repo/components/analytics/HotjarAnalytics';
 import { ThemeProvider } from '@repo/components/theme/theme-provider';
 import { Toaster } from '@repo/components/ui/toaster';
-import '@css/globals.scss';
-import { getAuthSession } from '@repo/shared/data/auth/session';
-import { APP_AUTH_LOGIN_URL, APP_NAME } from '@repo/shared/lib/constants';
+import { APP_NAME } from '@repo/shared/lib/constants';
 import { cn } from '@repo/shared/lib/utils';
 import { Inter as FontSans } from 'next/font/google';
 import Head from 'next/head';
-import { headers } from 'next/headers';
-import { redirect, RedirectType } from 'next/navigation';
-
-import { LayoutWithNav } from '@/components/layouts/LayoutWithNav';
 
 import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
+
+import '@css/globals.scss';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -30,14 +26,6 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const bodyClasses = cn(fontSans.className);
-  const authSession = await getAuthSession();
-  const headersList = await headers(),
-    headerUrl = headersList.get('X-URL') || '',
-    redirectToQuery = headerUrl ? `?redirectTo=${encodeURIComponent(headerUrl)}` : '';
-
-  if (!authSession) {
-    return redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
-  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -47,9 +35,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       </Head>
       <body className={bodyClasses} data-testid="layout-body">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <LayoutWithNav authSession={authSession}>
-            {children}
-          </LayoutWithNav>
+          {children}
         </ThemeProvider>
         <Toaster />
       </body>
