@@ -79,11 +79,12 @@ const Flow: React.FC<FlowProps> = (props) => {
   );
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div className="w-full h-full">
       <ReactFlow
         colorMode={theme as 'light' | 'dark'}
         nodes={nodes}
         edges={edges}
+        fitView
         // @ts-ignore
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}

@@ -27,7 +27,7 @@ export default async function ConfigLayout({ children }: PropsWithChildren) {
   }
 
   return (
-    <LayoutWithNav authSession={authSession}>
+    <LayoutWithNav authSession={authSession} defaultOpen={false} className="p-0">
       {children}
     </LayoutWithNav>
   );

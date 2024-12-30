@@ -45,6 +45,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
+import { getChatUri } from "@/lib/constants";
 import { fetcher } from "@/lib/utils";
 
 import type { Chat } from "@repo/db/prisma";
@@ -161,7 +162,7 @@ export function NavHistories({ authSession }: NavHistoriesProps) {
           {history.map((chat) => (
             <SidebarMenuItem key={chat.id}>
               <SidebarMenuButton asChild>
-                <Link href={`/${chat.id}`} className="flex items-center gap-2">
+                <Link href={getChatUri(chat.id)} className="flex items-center gap-2">
                   <span
                     className={cx("truncate", {
                       "font-bold": chat.id === chatId,

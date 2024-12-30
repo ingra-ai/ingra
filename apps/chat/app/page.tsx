@@ -3,8 +3,7 @@ import { APP_AUTH_LOGIN_URL } from '@repo/shared/lib/constants';
 import { headers } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
-import { Chat } from "@/components/custom/chat";
-import { generateUUID } from "@/lib/utils";
+import { getChatUri } from '@/lib/constants';
 
 type Props = {
   params: Promise<Record<string, string | string[] | undefined>>;
@@ -21,6 +20,5 @@ export default async function Page(props: Props) {
     return redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
-  const newUuid = generateUUID();
-  return <Chat key={newUuid} id={newUuid} initialMessages={[]} />;
+  redirect(getChatUri(), RedirectType.replace);
 }

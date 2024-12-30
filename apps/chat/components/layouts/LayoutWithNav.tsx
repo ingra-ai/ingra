@@ -22,19 +22,26 @@ import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
 type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   authSession?: AuthSessionResponse;
   className?: string;
+  defaultOpen?: boolean;
 };
 
-
 export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
-  const { className, authSession, children, ...restOfDivProps } = props;
-  const classes = cn(
-    'relative h-full w-full overflow-hidden',
+  const {
+    className = 'p-4 pt-0',
+    authSession,
+    defaultOpen = true,
+    children,
+    ...restOfDivProps
+  } = props;
+
+  const containerClasses = cn(
+    'flex flex-1 flex-col gap-4 justify-between items-center max-h-[calc(100svh-4rem)]',
     className
   );
 
   return (
-    <div className={classes} data-testid="layout-with-nav" {...restOfDivProps}>
-      <SidebarProvider>
+    <div className={'relative h-full w-full overflow-hidden'} data-testid="layout-with-nav" {...restOfDivProps}>
+      <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar authSession={authSession} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2">
@@ -50,7 +57,7 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
               </Breadcrumb>
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 justify-between items-center p-4 pt-0 max-h-[calc(100svh-4rem)]">
+          <div className={ containerClasses }>
             {children}
           </div>
         </SidebarInset>

@@ -29,10 +29,11 @@ import { useToast } from '@repo/components/ui/use-toast';
 import { AuthSessionResponse } from "@repo/shared/data/auth/session/types";
 import cx from "classnames";
 import Link from "next/link";
-import { useParams, usePathname , useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
+import { getChatUri } from "@/lib/constants";
 import { fetcher } from "@/lib/utils";
 
 import {
@@ -43,7 +44,7 @@ import {
   TrashIcon,
 } from "./icons";
 
-import type { Chat, User } from '@repo/db/prisma';
+import type { Chat } from '@repo/db/prisma';
 import type { ApiSuccess } from "@repo/shared/types";
 
 
@@ -55,7 +56,6 @@ type HistoryProps = {
 export const History = (props: HistoryProps) => {
   const { chatId = '' } = useParams();
   const { toast } = useToast();
-  const router = useRouter();
   const pathname = usePathname();
   const { authSession, className } = props;
   const {
@@ -176,7 +176,7 @@ export const History = (props: HistoryProps) => {
                     asChild
                   >
                     <Link
-                      href={`/${chat.id}`}
+                      href={getChatUri(chat.id)}
                       className="text-ellipsis overflow-hidden text-left py-2 pl-2 rounded-lg outline-zinc-900"
                     >
                       {chatName}
