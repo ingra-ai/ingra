@@ -1,11 +1,11 @@
 import { getAuthSession } from "@repo/shared/data/auth/session";
 import { getChatById } from "@repo/shared/data/chat";
-import { isUuid } from "@repo/shared/lib/utils";
+import { generateUuid, isUuid } from "@repo/shared/lib/utils";
+import { CoreMessage } from "ai";
 import { notFound } from "next/navigation";
 
 import { Chat } from "@/components/custom/chat";
 import { convertToUIMessages } from "@/lib/utils";
-import { CoreMessage } from "ai";
 
 type Props = {
   params: Promise<{ chatId: string }>;
@@ -19,21 +19,23 @@ export default async function Page(props: Props) {
     getAuthSession()
   ]);
 
-  if ( !authSession || !isUuid(chatId) ) {
+  if ( !authSession ) {
     return notFound();
   }
 
-  const chatFromDb = await getChatById<CoreMessage>(chatId, authSession.userId);
+  if ( isUuid(chatId) ) {
+    const chatFromDb = await getChatById<CoreMessage>(chatId, authSession.userId);
 
-  if (chatFromDb) {
-    const chat = {
-      ...chatFromDb,
-      messages: convertToUIMessages(chatFromDb.messages),
-    };
+    if (chatFromDb) {
+      const chat = {
+        ...chatFromDb,
+        messages: convertToUIMessages(chatFromDb.messages),
+      };
+  
+      return <Chat key={chat.id} id={chat.id} initialMessages={chat.messages} />;
+    }
+  }
 
-    return <Chat key={chat.id} id={chat.id} initialMessages={chat.messages} />;
-  }
-  else {
-    return <Chat key={chatId} id={chatId} initialMessages={[]} />;
-  }
+  const newUuid = generateUuid();
+  return <Chat key={newUuid} id={newUuid} initialMessages={[]} />;
 }

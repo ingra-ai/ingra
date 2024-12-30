@@ -128,7 +128,7 @@ export function NavHistories({ authSession }: NavHistoriesProps) {
           {authSession && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="/" className="flex items-center gap-2">
+                <Link href={getChatUri()} prefetch={false} className="flex items-center gap-2">
                   <Plus />
                   <span>Start a new chat</span>
                 </Link>

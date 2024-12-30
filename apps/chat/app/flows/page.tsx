@@ -4,7 +4,6 @@ import { headers } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
 import Flow from '@/components/flow/Flow';
-import { generateUUID } from "@/lib/utils";
 
 type Props = {
   params: Promise<Record<string, string | string[] | undefined>>;
@@ -21,6 +20,7 @@ export default async function Page(props: Props) {
     return redirect(APP_AUTH_LOGIN_URL + redirectToQuery, RedirectType.replace);
   }
 
-  const newUuid = generateUUID();
-  return <Flow />
+  return (
+    <Flow />
+  );
 }

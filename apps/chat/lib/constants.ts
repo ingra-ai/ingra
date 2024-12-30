@@ -3,9 +3,9 @@ import { isUuid } from "@repo/shared/lib/utils";
 import { generateUUID } from "./utils";
 
 export const getChatUri = (chatId?: string) => {
-  if ( !chatId || !isUuid(chatId) ) {
+  if ( chatId && !isUuid(chatId) ) {
     chatId = generateUUID();
   }
 
-  return `/chat/${chatId}`;
+  return chatId ? `/chat/${chatId}` : '/chat';
 };

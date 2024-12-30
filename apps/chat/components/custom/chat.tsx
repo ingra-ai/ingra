@@ -2,12 +2,12 @@
 
 import { useScrollToBottom } from "@repo/components/custom";
 import { ScrollArea } from "@repo/components/ui/scroll-area";
+import { Attachment, Message } from "ai";
 import { useChat } from "ai/react";
 import { useState } from "react";
 
 import { Message as PreviewMessage } from "@/components/custom/message";
 import { getChatUri } from "@/lib/constants";
-import { Attachment, Message } from "ai";
 
 import { MultimodalInput } from "./multimodal-input";
 import { Overview } from "./overview";

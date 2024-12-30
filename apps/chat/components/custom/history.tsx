@@ -123,7 +123,7 @@ export const History = (props: HistoryProps) => {
             className="font-normal text-sm flex flex-row justify-between"
             asChild
           >
-            <Link href="/">
+            <Link href={getChatUri()} prefetch={false}>
               <div>Start a new chat</div>
               <PencilEditIcon size={14} />
             </Link>

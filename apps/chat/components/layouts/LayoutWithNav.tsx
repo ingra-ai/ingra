@@ -1,10 +1,21 @@
 'use client';
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
-  BreadcrumbPage,
 } from "@repo/components/ui/breadcrumb"
+import { Button } from "@repo/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@repo/components/ui/dropdown-menu"
 import { Separator } from "@repo/components/ui/separator"
 import {
   SidebarInset,
@@ -12,12 +23,13 @@ import {
   SidebarTrigger,
 } from "@repo/components/ui/sidebar"
 import { cn } from '@repo/shared/lib/utils';
-import { type DetailedHTMLProps, type HTMLAttributes, type FC, type PropsWithChildren } from 'react';
+import { Settings } from "lucide-react";
+import Link from "next/link";
+import { type DetailedHTMLProps, type HTMLAttributes, type FC, type PropsWithChildren, useState } from 'react';
 
 import { AppSidebar } from "@/components/navs/app-sidebar"
 
 import type { AuthSessionResponse } from '@repo/shared/data/auth/session/types';
-
 
 type NavbarProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   authSession?: AuthSessionResponse;
@@ -34,6 +46,8 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
     ...restOfDivProps
   } = props;
 
+  const [chatConfig, setChatConfig] = useState("Default Chat");
+
   const containerClasses = cn(
     'flex flex-1 flex-col gap-4 justify-between items-center max-h-[calc(100svh-4rem)]',
     className
@@ -44,20 +58,47 @@ export const LayoutWithNav: FC<PropsWithChildren<NavbarProps>> = (props) => {
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar authSession={authSession} />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2">
+          <header className="flex h-12 mt-[2px] shrink-0 items-center gap-2">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Chat</BreadcrumbPage>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button type="button" variant="ghost" className="dark:text-zinc-300 text-zinc-700">
+                          {chatConfig}
+                          <ChevronDownIcon className="h-4 w-4 ml-1" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Configurations</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup value={chatConfig} onValueChange={setChatConfig}>
+                          <DropdownMenuRadioItem value="Default Chat">Default Chat</DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="Config 2">Config 2</DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="Config 3">Config 3</DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Button asChild>
+                            <>
+                              <Settings />
+                              <Link href="/flows" prefetch={false}>
+                                Configure Flows
+                              </Link>
+                            </>
+                          </Button>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
           </header>
-          <div className={ containerClasses }>
+          <div className={containerClasses}>
             {children}
           </div>
         </SidebarInset>
