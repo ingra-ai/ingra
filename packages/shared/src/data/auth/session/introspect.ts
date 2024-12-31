@@ -23,8 +23,8 @@ export async function introspectOAuthToken (token: OAuthTokenProps) {
        * Log the error, revoke the OAuth token, and suggest user re-authentication.
        */
       Logger.withTag('introspectOAuthToken').withTag(`user|${token.userId}`).error('Error refreshing OAuth credentials:', err?.message);
-      Logger.withTag('introspectOAuthToken').withTag(`user|${token.userId}`).error('Deleting OAuth token due to potential corruption.', { id: token?.id });
-      await revokeOAuth(token);
+      // Logger.withTag('introspectOAuthToken').withTag(`user|${token.userId}`).error('Deleting OAuth token due to potential corruption.', { id: token?.id });
+      // await revokeOAuth(token);
       return null;
     });
 

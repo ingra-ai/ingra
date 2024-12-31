@@ -101,7 +101,8 @@ async function handlerFn(args: HandlerArgs) {
             accessToken: refreshedCredentials.accessToken,
             idToken: refreshedCredentials.idToken,
             scope: refreshedCredentials.scope,
-            tokenType: refreshedCredentials.tokenType
+            tokenType: refreshedCredentials.tokenType,
+            expiryDate: refreshedCredentials.expiryDate,
           }, oAuthToken.id, oAuthToken.userId);
 
           // Clear user caches
@@ -127,7 +128,7 @@ async function handlerFn(args: HandlerArgs) {
 
   if ( !oAuthToken ) {
     return NextResponse.json({
-      error: "invalid_grant",
+      error: "invalid_token",
       error_description: "The provided authorization code is invalid."
     }, {
       status: 400
@@ -140,10 +141,10 @@ async function handlerFn(args: HandlerArgs) {
   // If its expired, return invalid_grant
   if ( expiresIn <= 0 ) {
     return NextResponse.json({
-      error: "invalid_grant",
-      error_description: "The provided authorization code is expired."
+      error: "invalid_token",
+      error_description: "The access token expired."
     }, {
-      status: 400
+      status: 401
     });
   }
 
