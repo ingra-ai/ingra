@@ -22,6 +22,9 @@ import {
   // MiniMap,
   // Controls,
   // Background,
+  Node,
+  Edge,
+  ReactFlowProvider,
   useNodesState,
   useEdgesState,
   addEdge,
@@ -32,6 +35,10 @@ import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
 import React, { useCallback } from 'react';
 
+import { edgeTypes } from './EdgeTypes';
+import useLayout from './hooks/useLayout';
+import nodeTypes from './NodeTypes';
+
 /**
  * Dynamic import of ReactFlow, Controls, MiniMap, and Background components from `@xyflow/react`.
  * Since these components are not SSR compatible, we use dynamic imports to ensure that `useTheme` from `next-themes` works correctly in a Next.js environment.
@@ -41,27 +48,35 @@ const ReactFlow = dynamic(
   { ssr: false }
 );
 
-const Controls = dynamic(
-  async () => (await import("@xyflow/react")).Controls,
-  { ssr: false }
-);
-
-const MiniMap = dynamic(
-  async () => (await import("@xyflow/react")).MiniMap,
-  { ssr: false }
-);
-
 const Background = dynamic(
   async () => (await import("@xyflow/react")).Background,
   { ssr: false }
 );
 
-const initialNodes = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+const defaultNodes: Node[] = [
+  {
+    id: '1',
+    data: { label: '🌮 Taco' },
+    position: { x: 0, y: 0 },
+    type: 'workflow',
+  },
+  {
+    id: '2',
+    data: { label: '+' },
+    position: { x: 0, y: 150 },
+    type: 'placeholder',
+  },
 ];
 
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+// initial setup: connect the workflow node to the placeholder node with a placeholder edge
+const defaultEdges: Edge[] = [
+  {
+    id: '1=>2',
+    source: '1',
+    target: '2',
+    type: 'placeholder',
+  },
+];
 
 type FlowProps = {
   // theme?: 'light' | 'dark';
@@ -70,27 +85,44 @@ type FlowProps = {
 const Flow: React.FC<FlowProps> = (props) => {
   // const { theme = 'light' } = props;
   const { theme } = useTheme();
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(defaultNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(defaultEdges);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
 
+  // this hook call ensures that the layout is re-calculated every time the graph changes
+  useLayout();
+
   return (
     <div className="w-full h-full">
       <ReactFlow
         colorMode={theme as 'light' | 'dark'}
-        nodes={nodes}
-        edges={edges}
+        
+        defaultNodes={defaultNodes}
+        defaultEdges={defaultEdges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        // nodes={nodes}
+        // edges={edges}
+
+        minZoom={0.2}
+        nodesDraggable={true}
+        nodesConnectable={false}
+        zoomOnDoubleClick={false}
+        proOptions={{
+          hideAttribution: true,
+        }}
+
         fitView
         // @ts-ignore
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
       >
-        <Controls />
+        {/* <Controls /> */}
         {/* <MiniMap /> */}
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>
@@ -98,4 +130,12 @@ const Flow: React.FC<FlowProps> = (props) => {
   );
 };
 
-export default Flow;
+const FlowWrapper: React.FC<FlowProps> = (props) => {
+  return (
+    <ReactFlowProvider>
+      <Flow {...props} />
+    </ReactFlowProvider>
+  );
+};
+
+export default FlowWrapper;
