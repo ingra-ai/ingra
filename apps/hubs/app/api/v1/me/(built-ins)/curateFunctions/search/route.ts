@@ -12,7 +12,7 @@ import { type NextRequest, NextResponse } from 'next/server';
  * @swagger
  * /api/v1/me/curateFunctions/search:
  *   get:
- *     summary: Search functions for id, slug, description, arguments and tags references. The returned records would be from user's own functions and subscribed functions.
+ *     summary: Search functions for id, slug, description, arguments and tags references. The returned records would be from user's own functions, subscribed functions and functions in subscribed collections.
  *     operationId: searchFunctions
  *     parameters:
  *       - in: query
@@ -66,63 +66,70 @@ export async function GET(req: NextRequest) {
   const selectQuery: Prisma.FunctionSelect = {
     id: true,
     slug: true,
-  };
-
-  // Populate Function select fields
-  if (fieldsToRetrieveParams.length) {
-    const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = ['description', 'code', 'httpVerb', 'isPrivate', 'isPublished', 'arguments', 'tags'];
-    acceptableFieldNames.forEach((acceptableFieldName) => {
-      if (fieldsToRetrieveParams.length === 0 || fieldsToRetrieveParams.includes(acceptableFieldName)) {
-        // Non relational fields;
-        switch (acceptableFieldName) {
-          case 'arguments':
-            selectQuery[acceptableFieldName] = {
-              select: {
-                id: true,
-                name: true,
-                type: true,
-                defaultValue: true,
-                description: true,
-                isRequired: true,
-              },
-            };
-            break;
-          case 'tags':
-            selectQuery[acceptableFieldName] = {
-              select: {
-                id: true,
-                name: true,
-              },
-            };
-            break;
-          default:
-            selectQuery[acceptableFieldName] = true;
-            break;
-        }
-      }
-    });
-  } else {
-    selectQuery.description = true;
-    selectQuery.code = false;
-    selectQuery.httpVerb = true;
-    selectQuery.isPrivate = true;
-    selectQuery.isPublished = true;
-    selectQuery.arguments = {
+    description: false,
+    httpVerb: false,
+    isPrivate: false,
+    isPublished: false,
+    owner: false,
+    ownerUserId: false,
+    createdAt: false,
+    updatedAt: false,
+    arguments: {
       select: {
-        id: true,
+        id: false,
         name: true,
+        description: true,
         type: true,
         defaultValue: true,
-        description: true,
-        isRequired: true,
       },
-    };
-    selectQuery.tags = {
-      select: {
-        id: true,
-        name: true,
-      },
-    };
+    },
+    tags: false,
+  };
+
+  const acceptableFieldNames: (keyof Prisma.FunctionSelect)[] = [
+    'description',
+    'code',
+    'httpVerb',
+    'isPrivate',
+    'isPublished',
+    'arguments',
+    'tags'
+  ];
+
+  const validFieldsToRetrieve = fieldsToRetrieveParams.filter((field) => acceptableFieldNames.includes(field as keyof Prisma.FunctionSelect));
+
+  // Populate Function select fields
+  if (validFieldsToRetrieve.length) {
+    validFieldsToRetrieve.forEach((acceptableFieldName) => {
+      // Non relational fields;
+      switch (acceptableFieldName) {
+        case 'arguments':
+          selectQuery[acceptableFieldName] = {
+            select: {
+              id: false,
+              name: true,
+              type: true,
+              defaultValue: true,
+              description: true,
+              isRequired: true,
+            },
+          };
+          break;
+        case 'tags':
+          selectQuery[acceptableFieldName] = {
+            select: {
+              id: false,
+              name: true,
+            },
+          };
+          break;
+        default:
+          if ( acceptableFieldName in selectQuery ) {
+            selectQuery[acceptableFieldName as keyof Prisma.FunctionSelect] = true;
+          }
+          break;
+      }
+    });
   }
 
   return await apiAuthTryCatch<any>(async (authSession) => {
@@ -172,7 +179,7 @@ export async function GET(req: NextRequest) {
       return {
         ...data,
         records: data.records.map((record) => {
-          return {
+          const parsedRecord = {
             ...record,
             tags: record.tags.map((tag) => tag.name),
             arguments: record.arguments.map((argument) => {
@@ -185,6 +192,16 @@ export async function GET(req: NextRequest) {
               };
             }),
           };
+
+          // Remove fields from result that is set to false in selectQuery
+          Object.keys(parsedRecord).forEach((key) => {
+            const typedKey = key as keyof typeof parsedRecord;
+            if (Object.prototype.hasOwnProperty.call(parsedRecord, typedKey) && selectQuery[typedKey as keyof Prisma.FunctionSelect] === false) {
+              delete parsedRecord[typedKey];
+            }
+          });
+
+          return parsedRecord;
         }),
       }
     });
