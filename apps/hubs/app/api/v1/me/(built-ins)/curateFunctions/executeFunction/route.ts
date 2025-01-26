@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     // Find the function
     const functionRecord = await getFunctionAccessibleByUser(authSession.user.id, functionIdOrSlug, {
-      accessTypes: ['owner', 'subscriber'],
+      accessTypes: ['owner', 'subscriber', 'subscribedCollection'],
       findFirstArgs: {
         include: {
           arguments: true,
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!functionRecord) {
-      throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours or subscribed functions`);
+      throw new Error(`The function with ID or slug '${functionIdOrSlug}' was not found in any of yours, subscribed functions, or part of subscribed collections.`);
     }
 
     // Run the function

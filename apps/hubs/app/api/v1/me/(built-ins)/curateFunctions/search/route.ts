@@ -141,6 +141,19 @@ export async function GET(req: NextRequest) {
             isPrivate: false,
             isPublished: true,
           },
+          {
+            collectors: {
+              some: {
+                subscribers: {
+                  some: {
+                    userId: authSession.user.id,
+                  },
+                },
+              },
+            },
+            isPrivate: false,
+            isPublished: true,
+          }
         ]
       }
     };
