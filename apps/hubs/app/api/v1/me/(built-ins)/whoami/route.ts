@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
       {
         status: 'success',
         message: `You are authenticated.`,
-        data: result,
+        data: 'OK',
       },
       {
         status: 200,
