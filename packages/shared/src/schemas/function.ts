@@ -15,8 +15,8 @@ VM Context:
 - 'utils.date.parseDate': To parse a single date with natural language and timezone adjustment
   e.g. utils.date.parseDate('today at 23:59', 'America/New_York'))
 - 'Octokit': GitHub REST API client library
-- 'Cheerio': jQuery for Node.js
 - 'algoliaSearchLiteClient': Algolia search lite client, for search operations
+- 'importModule': Asynchronously import a module from a remote source
 */
 
 async function handler(ctx) {

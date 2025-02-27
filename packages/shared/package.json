@@ -98,7 +98,6 @@
     "@aws-sdk/client-ses": "^3.699.0",
     "@octokit/rest": "^21.0.2",
     "algoliasearch": "^5.15.0",
-    "cheerio": "1.0.0",
     "chrono-node": "^2.7.7",
     "clsx": "^2.1.1",
     "crypto": "^1.0.1",

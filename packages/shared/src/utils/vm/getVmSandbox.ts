@@ -2,9 +2,9 @@ import type { VmContextArgs } from '../vm/generateVmContextArgs';
 import { parseStartAndEnd, parseDate } from '../chronoUtils';
 import nodeFetch, { type RequestInfo, type RequestInit } from 'node-fetch';
 import { Octokit } from '@octokit/rest';
-import * as Cheerio from 'cheerio';
 import { liteClient } from 'algoliasearch/lite';
 import { MetricSandboxOutput, UserSandboxOutput } from './types';
+import { createImportModule } from './importModule';
 
 export interface Sandbox {
   console: Pick<typeof console, 'log' | 'error'>;
@@ -21,8 +21,8 @@ export interface Sandbox {
   Buffer: typeof Buffer;
   URLSearchParams: typeof URLSearchParams;
   Octokit: typeof Octokit;
-  Cheerio: typeof Cheerio;
   algoliaSearchLiteClient: typeof liteClient;
+  importModule: (specifier: string) => Promise<any>;
 }
 
 export interface SandboxAnalytics {
@@ -64,9 +64,9 @@ export const getVmSandbox = (ctx: VmContextArgs, analytics: SandboxAnalytics): S
     Buffer,
     URLSearchParams,
     Octokit,
-    Cheerio,
     algoliaSearchLiteClient: liteClient,
     handler: null,
+    importModule: createImportModule(analytics),
   };
 
   return sandbox;

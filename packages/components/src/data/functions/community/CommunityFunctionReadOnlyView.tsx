@@ -84,7 +84,7 @@ export const CommunityFunctionReadOnlyView: FC<CommunityFunctionReadOnlyViewProp
         const toastProps = {
           title: 'Function cloned!',
           description: 'Your function has been cloned.',
-          action: (<></>) as JSX.Element,
+          action: (<></>) as React.JSX.Element,
         };
 
         const functionHref = result?.data?.href;
