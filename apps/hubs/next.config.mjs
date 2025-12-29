@@ -8,9 +8,9 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
-        source: '/marketplace',
-        destination: '/marketplace/collections',
-        permanent: false,
+        source: '/:path*',
+        destination: 'https://docs.ingra.ai',
+        permanent: true,
       }
     ];
   },

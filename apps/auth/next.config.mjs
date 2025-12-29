@@ -7,6 +7,11 @@ const nextConfig = {
   },
   redirects: async () => {
     return [
+      {
+        source: '/:path*',
+        destination: 'https://docs.ingra.ai',
+        permanent: true,
+      }
     ];
   },
   headers: async () => {
