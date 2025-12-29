@@ -1,6 +1,7 @@
 import { Navbar } from '@repo/components/navs/navbar';
+import { DeprecationBanner } from '@repo/components/navs/DeprecationBanner';
 import { ThemeProvider } from '@repo/components/theme/theme-provider';
-import { DOCS_APP_URL, APP_NAME, HUBS_APP_URL } from '@repo/shared/lib/constants';
+import { DOCS_APP_URL, APP_NAME } from '@repo/shared/lib/constants';
 import { Inter as FontSans } from 'next/font/google';
 
 import DocsMenu from '@/components/docs-menu';
@@ -31,11 +32,6 @@ const NAVLINKS = [
     title: 'Blog',
     href: `/blog`,
   },
-  {
-    title: 'Hubs',
-    href: HUBS_APP_URL + '/marketplace',
-    external: true,
-  },
 ];
 
 export default function RootLayout({
@@ -47,6 +43,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={fontSans.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <DeprecationBanner />
           <Navbar navlinks={NAVLINKS} sheetChildren={<DocsMenu />}>
             <Search />
           </Navbar>

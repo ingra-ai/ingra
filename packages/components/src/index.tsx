@@ -1,6 +1,7 @@
 export * from './ai/AssistantForm';
 export * from './ai/ChatForm';
 export * from './analytics/HotjarAnalytics';
+export * from './navs/DeprecationBanner';
 export * from './slideovers/FormSlideOver';
 export * from './ui/alert-dialog';
 export * from './ui/alert';

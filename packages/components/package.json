@@ -38,6 +38,7 @@
     "./navs/anchor": "./src/navs/anchor.tsx",
     "./navs/leftbar": "./src/navs/leftbar.tsx",
     "./navs/navbar": "./src/navs/navbar.tsx",
+    "./navs/DeprecationBanner": "./src/navs/DeprecationBanner.tsx",
     "./navs/types": "./src/navs/types.ts",
     "./custom": "./src/custom/index.ts",
     "./theme/theme-provider": "./src/theme/theme-provider.tsx",
